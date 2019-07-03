@@ -1,0 +1,3 @@
+Dungeon1#tiles.bmp
+Dungeon1.tlc
+\\Mac\Home\github\ModusCreateOrg\modite-adventure\game\resources\tilemaps\Dungeon1.pmp#layer~Layer 1#map001.stm
