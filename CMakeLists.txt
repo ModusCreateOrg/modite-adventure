@@ -45,7 +45,7 @@ ADD_EXECUTABLE(
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
-        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h)
+        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h)
 
 # make genus.app
 if (APPLE)
