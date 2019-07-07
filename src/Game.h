@@ -9,7 +9,7 @@
 #undef FRAME_RATE_INFO
 
 #define ENABLE_AUDIO
-//#undef ENABLE_AUDIO
+#undef ENABLE_AUDIO
 
 #define ENABLE_OPTIONS
 #undef ENABLE_OPTIONS
@@ -24,7 +24,7 @@
 #include "GGame.h"
 //#include "GSoundPlayer.h"
 #include "GSplashState.h"
-//#include "GTitleState.h"
+#include "GTitleState.h"
 //#include "GGameState.h"
 
 extern BViewPort *gViewPort;

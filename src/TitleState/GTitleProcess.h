@@ -1,18 +1,14 @@
-#ifndef MODITE_GSPLASHPROCESS_H
-#define MODITE_GSPLASHPROCESS_H
+#ifndef MODITE_GTITLEPROCESS_H
+#define MODITE_GTITLEPROCESS_H
 
 #include "Game.h"
 
-class GSplashProcess : public BProcess {
+class GTitleProcess : public BProcess {
 public:
-  GSplashProcess();
-  ~GSplashProcess();
-
-public:
+  GTitleProcess();
+  virtual ~GTitleProcess();
   TBool RunBefore();
-
   TBool RunAfter();
-
 protected:
   void RenderText();
   TBool FadeInState();
@@ -30,4 +26,4 @@ protected:
   const char *mCurrentText;
 };
 
-#endif //MODITE_GSPLASHPROCESS_H
+#endif //MODITE_GTITLEPROCESS_H

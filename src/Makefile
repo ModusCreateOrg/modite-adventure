@@ -1,7 +1,7 @@
 # ESP-IDF Makefile for game project
-PROJECT_NAME = Genus
+PROJECT_NAME = MODITE
 
-GENUS_SRC_PATH = $(abspath ${PROJECT_PATH}/src)
+MODITE_SRC_PATH = $(abspath ${PROJECT_PATH}/src)
 
 
 ifndef CREATIVE_ENGINE_PATH
@@ -12,7 +12,7 @@ endif
 
 EXTRA_COMPONENT_DIRS = \
   ${CREATIVE_ENGINE_PATH} \
-  ${GENUS_SRC_PATH}
+  ${MODITE_SRC_PATH}
 
 COMPONENT_ADD_INCLUDEDIRS = ${EXTRA_COMPONENT_DIRS}
 
@@ -31,7 +31,7 @@ COMPONENT_DIRS := ${EXTRA_COMPONENT_DIRS}
 
 
 release: FORCE
-	./scripts/build.sh docker-build && cp ./build/Genus.tgz ~/Downloads/
+	./scripts/build.sh docker-build && cp ./build/MODITE.tgz ~/Downloads/
 
 rcomp: FORCE
 	echo "Building rcomp"
@@ -43,7 +43,7 @@ resources: rcomp FORCE
 
 reset: FORCE
 	echo "Resetting high score table (and options)"
-	 rm -f cmake-build-debug/Genus.app/Contents/MacOS/*.store
+	 rm -f cmake-build-debug/MODITE.app/Contents/MacOS/*.store
 
 FORCE:
 

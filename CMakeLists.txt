@@ -28,6 +28,7 @@ SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/MainMenuState
     ${CMAKE_SOURCE_DIR}/src/MainOptionsState
     ${CMAKE_SOURCE_DIR}/src/SplashState
+    ${CMAKE_SOURCE_DIR}/src/TitleState
     ${CMAKE_SOURCE_DIR}/src/RulesState
     ${CMAKE_BINARY_DIR}/usr/local/include
 )
@@ -45,7 +46,7 @@ ADD_EXECUTABLE(
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
-        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h)
+        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h src/GameState/GGameState.cpp src/GameState/GGameState.h src/GameState/GGamePlayfield.cpp src/GameState/GGamePlayfield.h creative-engine/src/BMapPlayfield.cpp creative-engine/src/BMapPlayfield.h)
 
 # make genus.app
 if (APPLE)

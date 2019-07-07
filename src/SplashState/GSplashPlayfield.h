@@ -1,5 +1,5 @@
-#ifndef GENUS_GSPLASHPLAYFIELD_H
-#define GENUS_GSPLASHPLAYFIELD_H
+#ifndef MODITE_GSPLASHPLAYFIELD_H
+#define MODITE_GSPLASHPLAYFIELD_H
 
 #include "Game.h"
 
@@ -15,4 +15,4 @@ public:
   BBitmap *mBackground;
 };
 
-#endif //GENUS_GSPLASHPLAYFIELD_H
+#endif //MODITE_GSPLASHPLAYFIELD_H
