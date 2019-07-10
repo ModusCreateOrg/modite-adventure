@@ -3,14 +3,11 @@
 
 #include "Game.h"
 
-class GGamePlayfield : public BPlayfield {
+class GGamePlayfield : public BMapPlayfield {
 public:
-    GGamePlayfield();
+  GGamePlayfield(BViewPort *aViewPort, TUint16 aTilesSlot, TUint16 aMapSlot, TUint16 aCodesSlot);
 
-    ~GGamePlayfield();
-
-public:
-    void Render();
+  ~GGamePlayfield();
 };
 
 

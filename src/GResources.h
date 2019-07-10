@@ -6,10 +6,13 @@
 
 enum {
     BKG_SLOT,
+    MAP_SLOT,
+    CODES_SLOT,
     PLAYER_SLOT,
     FONT_8x8_SLOT,
     FONT_16x16_SLOT,
 };
+
 
 // SPLASH_SPRITES.BMP
 static const TUint16 IMG_DROP1 = 0;

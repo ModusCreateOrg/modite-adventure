@@ -75,10 +75,10 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GTitleState();
           break;
-//        case GAME_STATE_GAME:
-//          delete gGameEngine;
-//          gGameEngine = new GGameState();
-//          break;
+        case GAME_STATE_GAME:
+          delete gGameEngine;
+          gGameEngine = new GGameState();
+          break;
         default:
           continue;
       }

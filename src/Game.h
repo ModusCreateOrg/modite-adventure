@@ -25,7 +25,7 @@
 //#include "GSoundPlayer.h"
 #include "GSplashState.h"
 #include "GTitleState.h"
-//#include "GGameState.h"
+#include "GGameState.h"
 
 extern BViewPort *gViewPort;
 extern BGameEngine *gGameEngine;

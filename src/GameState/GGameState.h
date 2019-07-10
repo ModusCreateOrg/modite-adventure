@@ -3,10 +3,18 @@
 
 #include "Game.h"
 
+class GGamePlayfield;
+class GPlayerProcess;
+
 class GGameState : public BGameEngine {
 public:
-    GGameState();
-    ~GGameState();
+  GGameState();
+
+  ~GGameState();
+
+protected:
+  GGamePlayfield *mGamePlayfield;
+  GPlayerProcess *mPlayerProcess;
 };
 
 

@@ -46,7 +46,7 @@ ADD_EXECUTABLE(
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
-        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h src/GameState/GGameState.cpp src/GameState/GGameState.h src/GameState/GGamePlayfield.cpp src/GameState/GGamePlayfield.h creative-engine/src/BMapPlayfield.cpp creative-engine/src/BMapPlayfield.h)
+        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h src/GameState/GGameState.cpp src/GameState/GGameState.h src/GameState/GGamePlayfield.cpp src/GameState/GGamePlayfield.h creative-engine/src/BMapPlayfield.cpp creative-engine/src/BMapPlayfield.h src/GameState/GPlayerProcess.cpp src/GameState/GPlayerProcess.h)
 
 # make genus.app
 if (APPLE)

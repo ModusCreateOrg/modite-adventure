@@ -6,10 +6,12 @@ BITMAP splash.bmp
 BITMAP splash_sprites.bmp
 BITMAP title.bmp
 
+BITMAP player.bmp
+
 PATH resources/tilemaps
 BITMAP Dungeon1#tiles.bmp
-RAW Dungeon1#files.txt
 RAW Dungeon1.pmp#layer~Layer 1#map001.stm
 RAW Dungeon1.tlc
 
-
+BITMAP Dungeon2.tiles.bmp
+RAW Dungeon2.Dungeon1.layer-Layer 1.map001.stm
