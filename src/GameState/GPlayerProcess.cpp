@@ -106,7 +106,7 @@ GPlayerProcess::~GPlayerProcess() {
 }
 
 #define DELTA 16
-#define VELOCITY (1)
+#define VELOCITY (2)
 
 void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
   mState = aState;
