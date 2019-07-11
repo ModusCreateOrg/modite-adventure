@@ -22,6 +22,13 @@ static const TUint16 IMG_DROP4 = 16;
 static const TUint16 IMG_DROP5 = 24;
 static const TUint16 IMG_DROP6 = 32;
 
+// PLAYER.BMP
+static const TUint16 IMG_IDLE = 0;
+static const TUint16 IMG_SELECTED = 4;
+static const TUint16 IMG_WALK_DOWN = 8;
+static const TUint16 IMG_WALK_LEFT_RIGHT = 12;
+static const TUint16 IMG_WALK_UP = 16;
+
 const TUint8 COLOR_TEXT = 8;
 
 #define MAX_BBITMAP 4

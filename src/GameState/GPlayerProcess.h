@@ -12,12 +12,16 @@ public:
   TBool RunBefore();
   TBool RunAfter();
 protected:
+  void NewState(TUint16 aState, TUint16 aDirection);
   TBool IdleState();
   TBool WalkState();
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   BAnimSprite *mSprite;
+  TUint16 mState;
+  TUint16 mDirection;
+  TUint16 mStep;
 };
 
 
