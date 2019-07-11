@@ -230,5 +230,17 @@ TBool GPlayerProcess::RunBefore() {
 
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
+  const TFloat xx = mSprite->x - gViewPort->mWorldX,
+    yy = mSprite->y - gViewPort->mWorldY;;
+
+  if (xx > 320) {
+    gViewPort->mWorldX += 320;
+  } else if (xx < 0) {
+    gViewPort->mWorldX -= 320;
+  } else if (yy > 240) {
+    gViewPort->mWorldY += 240;
+  } else if (yy < 0) {
+    gViewPort->mWorldY -= 240;
+  }
   return ETrue;
 }
