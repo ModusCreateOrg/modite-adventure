@@ -172,7 +172,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYUP)) {
-    if (mPlayfield->IsWall(mSprite->x, mSprite->y - VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y - VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_UP) {
@@ -182,7 +182,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x, mSprite->y + 16 + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y + 16 + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
