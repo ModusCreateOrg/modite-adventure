@@ -1,7 +1,7 @@
 #include "GSplashProcess.h"
 
 static const char *splash_message1 = "Press any button";
-// static const char *splash_message2 = "Press any button";
+//static const char *splash_message2 = "Press any button";
 
 GSplashProcess::GSplashProcess() : BProcess() {
   mColor       = 0;

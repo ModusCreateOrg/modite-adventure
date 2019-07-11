@@ -13,6 +13,7 @@ public:
   TBool RunAfter();
 protected:
   void NewState(TUint16 aState, TUint16 aDirection);
+  TBool MaybeWalk();
   TBool IdleState();
   TBool WalkState();
 protected:
