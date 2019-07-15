@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
-PROJECT(Genus)
+PROJECT(Modite)
 
-ADD_COMPILE_DEFINITIONS(CE_SDL2_WINDOW_TITLE="Genus :: by Modus Create")
+ADD_COMPILE_DEFINITIONS(CE_SDL2_WINDOW_TITLE="Modite Adventure :: by Modus Create")
 
 
 SET(CMAKE_CXX_STANDARD 14)
@@ -16,8 +16,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/cmake.files)
 # ${CREATIVE_ENGINE_LINK_LIBRARIES} - used in TARGET_LINK_LIBRARIES(...)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/CreativeEngine.cmake)
 
-SET(GENUS_INCLUDE_DIRS
+SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/resources
     ${CMAKE_SOURCE_DIR}/src/GameState
     ${CMAKE_SOURCE_DIR}/src/GameState/Playfields
     ${CMAKE_SOURCE_DIR}/src/GameState/Powerups
@@ -27,24 +28,25 @@ SET(GENUS_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/MainMenuState
     ${CMAKE_SOURCE_DIR}/src/MainOptionsState
     ${CMAKE_SOURCE_DIR}/src/SplashState
+    ${CMAKE_SOURCE_DIR}/src/TitleState
     ${CMAKE_SOURCE_DIR}/src/RulesState
     ${CMAKE_BINARY_DIR}/usr/local/include
 )
 
 INCLUDE_DIRECTORIES(
-    ${GENUS_INCLUDE_DIRS}
+    ${MODITE_INCLUDE_DIRS}
     ${CREATIVE_ENGINE_INCLUDE_DIRS}
 )
 
 # gather Genus sources
-FILE(GLOB_RECURSE GENUS_SRC RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
+FILE(GLOB_RECURSE MODITE_SRC RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 
 ADD_EXECUTABLE(
     ${PROJECT_NAME}
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
-    ${GENUS_SRC}
-)
+    ${MODITE_SRC}
+        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h src/GameState/GGameState.cpp src/GameState/GGameState.h src/GameState/GGamePlayfield.cpp src/GameState/GGamePlayfield.h creative-engine/src/BMapPlayfield.cpp creative-engine/src/BMapPlayfield.h src/GameState/GPlayerProcess.cpp src/GameState/GPlayerProcess.h)
 
 # make genus.app
 if (APPLE)
