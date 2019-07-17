@@ -97,7 +97,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfiel
     gDisplay.SetColor(i, pal[i]);
   }
   mSprite = new BAnimSprite(1, PLAYER_SLOT);
-  mSprite->x = mSprite->y = 16;
+  mSprite->x = mSprite->y = 32;
   mGameState->AddSprite(mSprite);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
@@ -138,7 +138,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-          mSprite->mDx = -18;
+          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
@@ -162,7 +162,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYRIGHT)) {
-    if (mPlayfield->IsWall(mSprite->x + 16 + VELOCITY, mSprite->y)) {
+    if (mPlayfield->IsWall(mSprite->x + 32 + VELOCITY, mSprite->y)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_RIGHT) {
@@ -172,7 +172,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYUP)) {
-    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y - VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x+16, mSprite->y - VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_UP) {
@@ -182,7 +182,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y + 16 + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y + 32 + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
