@@ -16,8 +16,8 @@ node_modules/
 /bower_components
 
 # ignore OS generated files
-ehthumbs.db
-Thumbs.db
+ehthumbs.db*
+Thumbs.db*
 .DS_Store
 
 # ignore Editor files

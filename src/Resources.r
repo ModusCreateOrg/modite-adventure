@@ -6,12 +6,13 @@ BITMAP splash.bmp
 BITMAP splash_sprites.bmp
 BITMAP title.bmp
 
-BITMAP player.bmp
+PATH resources/32x32/character
+BITMAP chara_hero.bmp
 
-PATH resources/tilemaps
-BITMAP Dungeon1#tiles.bmp
-RAW Dungeon1.pmp#layer~Layer 1#map001.stm
-RAW Dungeon1.tlc
+PATH resources/32x32/environment
 
-BITMAP Dungeon2.tiles.bmp
-RAW Dungeon2.Dungeon1.layer-Layer 1.map001.stm
+BITMAP Dungeon1.tiles.bmp
+RAW jays_example.tlc
+RAW Dungeon1.jays_example.layer-Layer 1.map001.stm
+
+
