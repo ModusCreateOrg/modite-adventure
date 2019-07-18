@@ -106,7 +106,7 @@ GPlayerProcess::~GPlayerProcess() {
   //
 }
 
-#define VELOCITY (2)
+#define VELOCITY (4)
 
 void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
   mState = aState;
@@ -161,7 +161,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYRIGHT)) {
-    if (mPlayfield->IsWall(mSprite->x + 32 + VELOCITY, mSprite->y)) {
+    if (mPlayfield->IsWall(mSprite->x + 28 + VELOCITY, mSprite->y)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_RIGHT) {
@@ -181,7 +181,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y + 32 + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y + 28 + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
