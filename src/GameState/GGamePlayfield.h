@@ -5,15 +5,14 @@
 
 // these match the codes set for tiles in Pro Motion:
 const TUint16 ATTR_FLOOR_BIT = 0;
-const TUint32 ATTR_FLOOR = (ATTR_FLOOR_BIT << 16);
-
 const TUint16 ATTR_WALL_BIT = 1;
-const TUint32 ATTR_WALL = (ATTR_WALL_BIT << 16);
-
-const TUint16 ATTR_FALSE_WALL_BIT = 3;
-const TUint32 ATTR_FALSE_WALL = (ATTR_FALSE_WALL_BIT << 16);
-
 const TUint16 ATTR_LEDGE_BIT = 3;
+const TUint16 ATTR_FALSE_WALL_BIT = 2;
+
+
+const TUint32 ATTR_FLOOR = (ATTR_FLOOR_BIT << 16);
+const TUint32 ATTR_WALL = (ATTR_WALL_BIT << 16);
+const TUint32 ATTR_FALSE_WALL = (ATTR_FALSE_WALL_BIT << 16);
 const TUint32 ATTR_LEDGE = (ATTR_LEDGE_BIT << 16);
 
 
