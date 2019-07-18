@@ -3,7 +3,7 @@
 #include "GPlayerProcess.h"
 
 GGameState::GGameState() : BGameEngine(gViewPort) {
-  gViewPort->SetRect(TRect(0,16, 10*32, 7*32+16));
+  gViewPort->SetRect(TRect(0,0, 10*32, 7*32));
   gResourceManager.LoadBitmap(DUNGEON1_TILES_BMP, BKG_SLOT, IMAGE_16x16);
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
   gResourceManager.LoadRaw(DUNGEON1_JAYS_EXAMPLE_LAYER_LAYER_1_MAP001_STM, MAP_SLOT);
@@ -20,4 +20,7 @@ GGameState::~GGameState() {
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
 }
 
+void GGameState::PreRender() {
+  gDisplay.renderBitmap->Clear();
+}
 

@@ -109,7 +109,6 @@ GPlayerProcess::~GPlayerProcess() {
 #define VELOCITY (2)
 
 void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
-//  printf("NewState %d %d\n", aState, aDirection);
   mState = aState;
   mDirection = aDirection;
   mSprite->mDx = 0;
@@ -172,7 +171,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYUP)) {
-    if (mPlayfield->IsWall(mSprite->x+16, mSprite->y - VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y - VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_UP) {
@@ -182,7 +181,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x+8, mSprite->y + 32 + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y + 32 + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
@@ -208,20 +207,26 @@ TBool GPlayerProcess::WalkState() {
   // can player keep walking?
   switch (mDirection) {
     case DIRECTION_LEFT:
-    case DIRECTION_UP:
       if (mPlayfield->IsWall(mSprite->x + mSprite->vx, mSprite->y + mSprite->vy)) {
         NewState(IDLE_STATE, DIRECTION_DOWN);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (mPlayfield->IsWall(mSprite->x + mSprite->vx + 16, mSprite->y + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + mSprite->vx + 30, mSprite->y + mSprite->vy)) {
+        NewState(IDLE_STATE, DIRECTION_DOWN);
+        return ETrue;
+      }
+      break;
+    case DIRECTION_UP:
+      if (mPlayfield->IsWall(mSprite->x + 2 + mSprite->vx, mSprite->y + mSprite->vy)) {
         NewState(IDLE_STATE, DIRECTION_DOWN);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + mSprite->vx, mSprite->y + mSprite->vy + 16)) {
+      if (mPlayfield->IsWall(mSprite->x + 2 + mSprite->vx, mSprite->y + mSprite->vy + 16)) {
+        printf("IDLE\n");
         NewState(IDLE_STATE, DIRECTION_DOWN);
         return ETrue;
       }
@@ -249,16 +254,18 @@ TBool GPlayerProcess::RunBefore() {
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
   const TFloat xx = mSprite->x - gViewPort->mWorldX,
-    yy = mSprite->y - gViewPort->mWorldY;;
+    yy = mSprite->y - gViewPort->mWorldY,
+    dx = gViewPort->mRect.Width(),
+    dy = gViewPort->mRect.Height();
 
-  if (xx > 320) {
-    gViewPort->mWorldX += 320;
+  if (xx > dx) {
+    gViewPort->mWorldX += dx;
   } else if (xx < 0) {
-    gViewPort->mWorldX -= 320;
-  } else if (yy > 240) {
-    gViewPort->mWorldY += 240;
+    gViewPort->mWorldX -= dx;
+  } else if (yy > dy) {
+    gViewPort->mWorldY += dy;
   } else if (yy < 0) {
-    gViewPort->mWorldY -= 240;
+    gViewPort->mWorldY -= dy;
   }
   return ETrue;
 }
