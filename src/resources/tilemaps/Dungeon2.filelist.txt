@@ -1,3 +1,0 @@
-Dungeon2.tiles.bmp
-Dungeon1.tlc
-Y:\modite-adventure\src\resources\tilemaps\Dungeon2.Dungeon1.layer-Layer 1.map001.stm

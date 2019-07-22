@@ -1,0 +1,4 @@
+Dungeon1.tiles.bmp
+jays_example.tlc
+Y:\modite-adventure\src\resources\32x32\environment\Dungeon1.jays_example.layer-DATA_LAYER.map001.stm
+Y:\modite-adventure\src\resources\32x32\environment\Dungeon1.jays_example.layer-Layer 1.map001.stm
