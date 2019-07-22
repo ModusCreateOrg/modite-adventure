@@ -12,6 +12,7 @@ public:
 
   ~GGameState();
 
+  void PreRender();
 protected:
   GGamePlayfield *mGamePlayfield;
   GPlayerProcess *mPlayerProcess;

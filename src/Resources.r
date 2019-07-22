@@ -1,17 +1,30 @@
-PATH resources
+PATH resources/charset
 BITMAP charset_8x8.bmp
 BITMAP charset_16x16.bmp
 
+PATH resources/
 BITMAP splash.bmp
 BITMAP splash_sprites.bmp
 BITMAP title.bmp
 
-BITMAP player.bmp
+PATH resources/sprites/
+BITMAP chara_hero.bmp
 
-PATH resources/tilemaps
-BITMAP Dungeon1#tiles.bmp
-RAW Dungeon1.pmp#layer~Layer 1#map001.stm
-RAW Dungeon1.tlc
+#PATH src/resources/sprites/enemies
+#BITMAP chara_bat.bmp
+#BITMAP chara_goblin.bmp
+#BITMAP chara_goblin_sniper.bmp
+#BITMAP chara_orc.bmp
+#BITMAP chara_rat.bmp
+#BITMAP chara_slime.bmp
+#BITMAP chara_spider.bmp
+#BITMAP chara_troll.bmp
+#BITMAP projectile_arrow.bmp
 
-BITMAP Dungeon2.tiles.bmp
-RAW Dungeon2.Dungeon1.layer-Layer 1.map001.stm
+
+PATH resources/tilemaps/example_dungeon
+BITMAP Dungeon1.tiles.bmp
+RAW jays_example.tlc
+RAW Dungeon1.jays_example.layer-Layer 1.map001.stm
+
+
