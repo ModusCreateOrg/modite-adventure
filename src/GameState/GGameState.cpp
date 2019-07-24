@@ -4,9 +4,9 @@
 
 GGameState::GGameState() : BGameEngine(gViewPort) {
   gViewPort->SetRect(TRect(0,0, 10*32, 7*32));
-  gResourceManager.LoadBitmap(DUNGEON1_TILES_BMP, BKG_SLOT, IMAGE_16x16);
+  gResourceManager.LoadBitmap(EXAMPLE_TILES_BMP, BKG_SLOT, IMAGE_32x32);
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
-  gResourceManager.LoadRaw(DUNGEON1_JAYS_EXAMPLE_LAYER_LAYER_1_MAP001_STM, MAP_SLOT);
+  gResourceManager.LoadRaw(EXAMPLE_JAYS_EXAMPLE_LAYER_LAYER_1_MAP001_STM, MAP_SLOT);
   gResourceManager.LoadRaw(JAYS_EXAMPLE_TLC, CODES_SLOT);
   mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, BKG_SLOT, MAP_SLOT, CODES_SLOT);
   mPlayerProcess = new GPlayerProcess(this, mGamePlayfield);
@@ -21,6 +21,6 @@ GGameState::~GGameState() {
 }
 
 void GGameState::PreRender() {
-  gDisplay.renderBitmap->Clear();
+//  gDisplay.renderBitmap->Clear();
 }
 

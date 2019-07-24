@@ -6,6 +6,8 @@ ADD_COMPILE_DEFINITIONS(CE_SDL2_WINDOW_TITLE="Modite Adventure :: by Modus Creat
 
 SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-exception-spec-mismatch")
+include(ProcessorCount)
+
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/cmake.files)
 
@@ -46,7 +48,13 @@ ADD_EXECUTABLE(
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
-        creative-engine/src/BTileMap.cpp creative-engine/src/BTileMap.h src/main.cpp src/Game.h src/GResources.h src/GameState/GGameState.cpp src/GameState/GGameState.h src/GameState/GGamePlayfield.cpp src/GameState/GGamePlayfield.h creative-engine/src/BMapPlayfield.cpp creative-engine/src/BMapPlayfield.h src/GameState/GPlayerProcess.cpp src/GameState/GPlayerProcess.h)
+)
+
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+    set(${PROJECT_NAME}_FLAGS -j${N})
+    set(${PROJECT_NAME}_args ${${PROJECT_NAME}_args} PARALLEL_LEVEL ${N})
+endif()
 
 # make genus.app
 if (APPLE)

@@ -95,3 +95,6 @@ sdkconfig
 sdkconfig.old
 *.store
 *.tmp
+Resources.bin
+Resources.h
+

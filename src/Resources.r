@@ -23,8 +23,8 @@ BITMAP chara_hero.bmp
 
 
 PATH resources/tilemaps/example_dungeon
-BITMAP Dungeon1.tiles.bmp
+BITMAP example.tiles.bmp
 RAW jays_example.tlc
-RAW Dungeon1.jays_example.layer-Layer 1.map001.stm
+RAW example.jays_example.layer-Layer 1.map001.stm
 
 
