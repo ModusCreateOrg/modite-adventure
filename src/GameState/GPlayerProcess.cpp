@@ -1,4 +1,5 @@
 #include "GPlayerProcess.h"
+#include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
 
 const TUint16 IDLE_STATE = 0;
@@ -32,59 +33,106 @@ static ANIMSCRIPT selectedAnimation[] = {
 };
 
 #define WALKSPEED 5
-static ANIMSCRIPT walkDownAnimation1[] = {
+//#define WALKSPEED 15
+#define VELOCITY (4)
+//#define VELOCITY (0)
+
+
+static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
+  ASTEP(1, IMG_WALK_DOWN),
   AEND
 };
 
+// left foot
+static ANIMSCRIPT walkDownAnimation1[] = {
+  ABITMAP(PLAYER_SLOT),
+  ADELTA(1,0),
+  ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
+  ADELTA(-3, 0),
+  ASTEP(WALKSPEED, IMG_WALK_DOWN + 2),
+  AEND
+};
+
+// right foot
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 2),
+  ADELTA(-2, 0),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 3),
+  ADELTA(0, 0),
+  ASTEP(WALKSPEED, IMG_WALK_DOWN + 0),
+  AEND
+};
+
+static ANIMSCRIPT idleLeftAnimation[] = {
+  ABITMAP(PLAYER_SLOT),
+  AFLIP(1, IMG_WALK_LEFT_RIGHT),
   AEND
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT),
+  ADELTA(0,0),
   AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 1),
+  ADELTA(-4,0),
+  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 2),
   AEND
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 2),
+  ADELTA(-6,0),
   AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 3),
+  ADELTA(-4,0),
+  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 0),
+  AEND
+};
+
+static ANIMSCRIPT idleRightAnimation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(1, IMG_WALK_LEFT_RIGHT),
   AEND
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(0,0),
   ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT),
+  ADELTA(4,0),
   ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 1),
   AEND
 };
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(6,0),
   ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 2),
+  ADELTA(4,0),
   ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 3),
+  AEND
+};
+
+static ANIMSCRIPT idleUpAnimation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(1, IMG_WALK_UP),
   AEND
 };
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
-  ASTEP(WALKSPEED, IMG_WALK_UP),
+  ADELTA(-2, 0),
   ASTEP(WALKSPEED, IMG_WALK_UP + 1),
+  ADELTA(-7, 0),
+  ASTEP(WALKSPEED, IMG_WALK_UP + 2),
   AEND
 };
 
 static ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 2),
+  ADELTA(-1, 0),
   ASTEP(WALKSPEED, IMG_WALK_UP + 3),
+  ADELTA(0, 0),
+  ASTEP(WALKSPEED, IMG_WALK_UP + 0),
   AEND
 };
 
@@ -96,17 +144,16 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfiel
   for (TInt i = 128; i < 192; i++) {
     gDisplay.SetColor(i, pal[i]);
   }
-  mSprite = new BAnimSprite(1, PLAYER_SLOT);
+  mSprite = new GAnchorSprite(1, PLAYER_SLOT);
   mSprite->x = mSprite->y = 32;
   mGameState->AddSprite(mSprite);
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GPlayerProcess::~GPlayerProcess() {
   //
 }
-
-#define VELOCITY (4)
 
 void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
   mState = aState;
@@ -118,7 +165,20 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      mSprite->StartAnimation(idleAnimation);
+      switch (mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(idleUpAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(idleDownAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(idleLeftAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(idleRightAnimation);
+          break;
+      }
       break;
     case WALK_STATE:
       mSprite->vx = 0;
@@ -137,7 +197,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-          mSprite->mDx = -36;
+//          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
@@ -151,7 +211,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
 
 TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(JOYLEFT)) {
-    if (mPlayfield->IsWall(mSprite->x - VELOCITY, mSprite->y)) {
+    if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x  + 32 - VELOCITY, mSprite->y)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_LEFT) {
@@ -161,7 +221,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYRIGHT)) {
-    if (mPlayfield->IsWall(mSprite->x + 28 + VELOCITY, mSprite->y)) {
+    if (mPlayfield->IsWall(mSprite->x + 32 + VELOCITY, mSprite->y)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_RIGHT) {
@@ -171,7 +231,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYUP)) {
-    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y - VELOCITY)) {
+    if (mSprite->y - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x + 32, mSprite->y - VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_UP) {
@@ -181,7 +241,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x + 2, mSprite->y + 28 + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x + 32 , mSprite->y + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
@@ -200,34 +260,33 @@ TBool GPlayerProcess::IdleState() {
 
 TBool GPlayerProcess::WalkState() {
   if (!MaybeWalk()) {
-    NewState(IDLE_STATE, DIRECTION_DOWN);
+    NewState(IDLE_STATE, mDirection);
     return ETrue;
   }
 
   // can player keep walking?
   switch (mDirection) {
     case DIRECTION_LEFT:
-      if (mPlayfield->IsWall(mSprite->x + mSprite->vx, mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, DIRECTION_DOWN);
+      if (mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx, mSprite->y + mSprite->vy)) {
+        NewState(IDLE_STATE, mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (mPlayfield->IsWall(mSprite->x + mSprite->vx + 30, mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, DIRECTION_DOWN);
+      if (mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx , mSprite->y + mSprite->vy)) {
+        NewState(IDLE_STATE, mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_UP:
-      if (mPlayfield->IsWall(mSprite->x + 2 + mSprite->vx, mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, DIRECTION_DOWN);
+      if (mPlayfield->IsWall(mSprite->x + 32 , mSprite->y + mSprite->vy)) {
+        NewState(IDLE_STATE, mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + 2 + mSprite->vx, mSprite->y + mSprite->vy + 16)) {
-        printf("IDLE\n");
-        NewState(IDLE_STATE, DIRECTION_DOWN);
+      if (mPlayfield->IsWall(mSprite->x + 32, mSprite->y + mSprite->vy)) {
+        NewState(IDLE_STATE, mDirection);
         return ETrue;
       }
       break;
