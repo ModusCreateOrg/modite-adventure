@@ -1,6 +1,5 @@
 .PHONY: Resources.bin
-	echo "THERE"
-	cd ${CREATIVE_ENGINE_PATH}/tools && make
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp && make
 	${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
 
 COMPONENT_NAME = Evade

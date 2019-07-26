@@ -48,13 +48,17 @@ ADD_EXECUTABLE(
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
-)
+        creative-engine/tools/rcomp-src/rcomp.h creative-engine/tools/rcomp-src/utils.cpp creative-engine/tools/rcomp-src/RawFile.cpp creative-engine/tools/rcomp-src/RawFile.h creative-engine/tools/rcomp-src/RawBitmap.cpp creative-engine/tools/rcomp-src/RawBitmap.h creative-engine/tools/rcomp-src/BMPFile.cpp creative-engine/tools/rcomp-src/BMPFile.h creative-engine/tools/rcomp-src/ResourceFile.cpp creative-engine/tools/rcomp-src/ResourceFile.h)
 
 ProcessorCount(N)
 if(NOT N EQUAL 0)
     set(${PROJECT_NAME}_FLAGS -j${N})
     set(${PROJECT_NAME}_args ${${PROJECT_NAME}_args} PARALLEL_LEVEL ${N})
 endif()
+
+BUILD_COMMAND (
+    $(MAKE) --slient
+)
 
 # make genus.app
 if (APPLE)
