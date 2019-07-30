@@ -28,3 +28,12 @@ RAW jays_example.tlc
 RAW example.jays_example.layer-Layer 1.map001.stm
 
 
+########### SOUND :: MUSIC ###########
+PATH resources/music/
+RAW EmptySong.xm
+RAW EnterCredits.xm
+
+
+########### SOUND :: SFX ###########
+PATH resources/sound_effects/
+RAW SFX_option_select.wav
