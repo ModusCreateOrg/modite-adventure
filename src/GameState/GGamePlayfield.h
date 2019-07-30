@@ -19,7 +19,7 @@ const TUint32 ATTR_LEDGE = (ATTR_LEDGE_BIT << 16);
 
 class GGamePlayfield : public BMapPlayfield {
 public:
-  GGamePlayfield(BViewPort *aViewPort, TUint16 aTilesSlot, TUint16 aMapSlot, TUint16 aCodesSlot);
+  GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId);
 
   ~GGamePlayfield();
 public:

@@ -1,8 +1,7 @@
 #include "GGamePlayfield.h"
 
-GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTilesSlot, TUint16 aMapSlot, TUint16 aCodesSlot)
-  : BMapPlayfield(aViewPort, aTilesSlot, aMapSlot, aCodesSlot) {
-
+GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId) : BMapPlayfield(aViewPort, aTileMapId) {
+  gDisplay.SetPalette(this->mTileset);
 }
 
 GGamePlayfield::~GGamePlayfield() {
