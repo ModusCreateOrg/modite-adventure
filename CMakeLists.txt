@@ -47,6 +47,7 @@ ADD_EXECUTABLE(
     ${PROJECT_NAME}
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
+    ${CREATIVE_ENGINE_RCOMP_SOURCE_FILES}
     ${MODITE_SRC}
 )
 
@@ -55,6 +56,10 @@ if(NOT N EQUAL 0)
     set(${PROJECT_NAME}_FLAGS -j${N})
     set(${PROJECT_NAME}_args ${${PROJECT_NAME}_args} PARALLEL_LEVEL ${N})
 endif()
+
+BUILD_COMMAND (
+    $(MAKE) --slient
+)
 
 # make genus.app
 if (APPLE)

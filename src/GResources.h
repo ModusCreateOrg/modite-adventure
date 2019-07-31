@@ -6,8 +6,6 @@
 
 enum {
     BKG_SLOT,
-    MAP_SLOT,
-    CODES_SLOT,
     PLAYER_SLOT,
     FONT_8x8_SLOT,
     FONT_16x16_SLOT,
@@ -31,6 +29,6 @@ static const TUint16 IMG_WALK_UP = 16;
 
 const TUint8 COLOR_TEXT = 8;
 
-#define MAX_BBITMAP 4
+#define MAX_BBITMAP 6
 
 #endif //MODITE_GRESOURCES_H

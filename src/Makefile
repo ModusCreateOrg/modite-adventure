@@ -35,11 +35,11 @@ release: FORCE
 
 rcomp: FORCE
 	echo "Building rcomp"
-	cd ${CREATIVE_ENGINE_PATH}/tools && make
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp && make
 
 resources: rcomp FORCE
 	echo "Compiling resources"
-	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
+	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp/rcomp Resources.r
 
 reset: FORCE
 	echo "Resetting high score table (and options)"

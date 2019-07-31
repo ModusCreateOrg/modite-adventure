@@ -32,7 +32,8 @@ release: FORCE
 
 rcomp: FORCE
 	echo "Building rcomp"
-	cd ${CREATIVE_ENGINE_PATH}/tools && make
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make
+	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
 
 resources: rcomp FORCE
 	echo "Compiling resources"
