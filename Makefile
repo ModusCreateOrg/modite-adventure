@@ -31,8 +31,9 @@ release: FORCE
 	./scripts/build.sh docker-build && cp ./build/ModiteAdventure.tgz ~/Downloads/
 
 rcomp: FORCE
-	echo "Building tools"
-	cd ${CREATIVE_ENGINE_PATH}/tools/ && make
+	echo "Building rcomp"
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make
+	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
 
 resources: rcomp FORCE
 	echo "Compiling resources"
