@@ -115,8 +115,8 @@ TBool GPlayerProcess::MaybeSword() {
   return ETrue;
 }
 
-//
 TBool GPlayerProcess::MaybeWalk() {
+  // instead of walking, we might have to attack if A is pressed
   if (MaybeSword()) {
     return ETrue;
   }
