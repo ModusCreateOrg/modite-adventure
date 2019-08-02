@@ -116,6 +116,9 @@ TBool GPlayerProcess::MaybeSword() {
 }
 
 TBool GPlayerProcess::MaybeWalk() {
+  if (MaybeSword()) {
+    return ETrue;
+  }
   if (gControls.IsPressed(JOYLEFT)) {
     if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x  + 32 - VELOCITY, mSprite->y)) {
       return EFalse;
