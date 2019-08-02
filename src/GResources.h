@@ -55,6 +55,9 @@ static const TUint16 IMG_SELECTED = 4;
 static const TUint16 IMG_WALK_DOWN = 8;
 static const TUint16 IMG_WALK_LEFT_RIGHT = 12;
 static const TUint16 IMG_WALK_UP = 16;
+static const TUint16 IMG_SWORD_DOWN = 20;
+static const TUint16 IMG_SWORD_LEFT_RIGHT = 24;
+static const TUint16 IMG_SWORD_UP = 28;
 
 const TUint8 COLOR_TEXT = 8;
 

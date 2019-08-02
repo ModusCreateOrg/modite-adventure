@@ -1,139 +1,17 @@
 #include "GPlayerProcess.h"
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
+#include "GPlayerAnimations.h"
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
+const TUint16 SWORD_STATE = 2;
 
 enum {
   DIRECTION_UP,
   DIRECTION_DOWN,
   DIRECTION_LEFT,
   DIRECTION_RIGHT
-};
-
-static ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ALABEL,
-  ASTEP(40, IMG_IDLE),
-  ASTEP(4, IMG_IDLE + 1),
-  ASTEP(40, IMG_IDLE + 2),
-  ASTEP(4, IMG_IDLE + 1),
-  ALOOP
-};
-
-static ANIMSCRIPT selectedAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ALABEL,
-  ASTEP(40, IMG_SELECTED),
-  ASTEP(4, IMG_SELECTED + 1),
-  ASTEP(40, IMG_SELECTED + 2),
-  ASTEP(4, IMG_SELECTED + 1),
-  ALOOP
-};
-
-#define WALKSPEED 5
-//#define WALKSPEED 15
-#define VELOCITY (4)
-//#define VELOCITY (0)
-
-
-static ANIMSCRIPT idleDownAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ASTEP(1, IMG_WALK_DOWN),
-  AEND
-};
-
-// left foot
-static ANIMSCRIPT walkDownAnimation1[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(1,0),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
-  ADELTA(-3, 0),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 2),
-  AEND
-};
-
-// right foot
-static ANIMSCRIPT walkDownAnimation2[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(-2, 0),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 3),
-  ADELTA(0, 0),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 0),
-  AEND
-};
-
-static ANIMSCRIPT idleLeftAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  AFLIP(1, IMG_WALK_LEFT_RIGHT),
-  AEND
-};
-
-static ANIMSCRIPT walkLeftAnimation1[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(0,0),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 1),
-  ADELTA(-4,0),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 2),
-  AEND
-};
-
-static ANIMSCRIPT walkLeftAnimation2[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(-6,0),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 3),
-  ADELTA(-4,0),
-  AFLIP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 0),
-  AEND
-};
-
-static ANIMSCRIPT idleRightAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ASTEP(1, IMG_WALK_LEFT_RIGHT),
-  AEND
-};
-
-static ANIMSCRIPT walkRightAnimation1[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(0,0),
-  ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT),
-  ADELTA(4,0),
-  ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 1),
-  AEND
-};
-
-static ANIMSCRIPT walkRightAnimation2[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(6,0),
-  ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 2),
-  ADELTA(4,0),
-  ASTEP(WALKSPEED, IMG_WALK_LEFT_RIGHT + 3),
-  AEND
-};
-
-static ANIMSCRIPT idleUpAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ASTEP(1, IMG_WALK_UP),
-  AEND
-};
-
-static ANIMSCRIPT walkUpAnimation1[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(-2, 0),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 1),
-  ADELTA(-7, 0),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 2),
-  AEND
-};
-
-static ANIMSCRIPT walkUpAnimation2[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(-1, 0),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 3),
-  ADELTA(0, 0),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 0),
-  AEND
 };
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfield) {
@@ -206,10 +84,42 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
+      break;
+    case SWORD_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      switch (mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(swordUpAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(swordDownAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(swordLeftAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(swordRightAnimation);
+          break;
+      }
+      break;
   }
 }
 
+TBool GPlayerProcess::MaybeSword() {
+  if (!gControls.WasPressed(BUTTONA)) {
+    return EFalse;
+  }
+  NewState(SWORD_STATE, mDirection);
+  return ETrue;
+}
+
 TBool GPlayerProcess::MaybeWalk() {
+  // instead of walking, we might have to attack if A is pressed
+  if (MaybeSword()) {
+    return ETrue;
+  }
   if (gControls.IsPressed(JOYLEFT)) {
     if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x  + 32 - VELOCITY, mSprite->y)) {
       return EFalse;
@@ -254,11 +164,19 @@ TBool GPlayerProcess::MaybeWalk() {
 }
 
 TBool GPlayerProcess::IdleState() {
+  if (MaybeSword()) {
+    return ETrue;
+  }
   MaybeWalk();
   return ETrue;
 }
 
 TBool GPlayerProcess::WalkState() {
+  if (MaybeSword()) {
+    return ETrue;
+  }
+
+  // maybe change direction!
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mDirection);
     return ETrue;
@@ -291,10 +209,15 @@ TBool GPlayerProcess::WalkState() {
       }
       break;
   }
-
-  // if animation is done, start the other foot animation
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mDirection);
+  }
+  return ETrue;
+}
+
+TBool GPlayerProcess::SwordState() {
+  if (mSprite->AnimDone()) {
+    NewState(IDLE_STATE, mDirection);
   }
   return ETrue;
 }
@@ -305,6 +228,8 @@ TBool GPlayerProcess::RunBefore() {
       return IdleState();
     case WALK_STATE:
       return WalkState();
+    case SWORD_STATE:
+      return SwordState();
     default:
       return ETrue;
   }
