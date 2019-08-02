@@ -115,6 +115,7 @@ TBool GPlayerProcess::MaybeSword() {
   return ETrue;
 }
 
+//
 TBool GPlayerProcess::MaybeWalk() {
   if (MaybeSword()) {
     return ETrue;
