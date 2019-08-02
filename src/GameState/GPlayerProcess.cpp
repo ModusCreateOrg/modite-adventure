@@ -116,9 +116,6 @@ TBool GPlayerProcess::MaybeSword() {
 }
 
 TBool GPlayerProcess::MaybeWalk() {
-  if (MaybeSword()) {
-    return ETrue;
-  }
   if (gControls.IsPressed(JOYLEFT)) {
     if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x  + 32 - VELOCITY, mSprite->y)) {
       return EFalse;
@@ -174,6 +171,8 @@ TBool GPlayerProcess::WalkState() {
   if (MaybeSword()) {
     return ETrue;
   }
+
+  // maybe change direction!
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mDirection);
     return ETrue;
@@ -205,6 +204,9 @@ TBool GPlayerProcess::WalkState() {
         return ETrue;
       }
       break;
+  }
+  if (mSprite->AnimDone()) {
+    NewState(WALK_STATE, mDirection);
   }
   return ETrue;
 }

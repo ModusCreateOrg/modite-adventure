@@ -1,13 +1,9 @@
-//
-// Created by mschwartz on 8/1/19.
-//
-
 #ifndef MODITE_GPLAYERANIMATIONS_H
 #define MODITE_GPLAYERANIMATIONS_H
 
 const TUint16 WALKSPEED = 5;
 const TUint16 SWORDSPEED = 3;
-const TFloat VELOCITY = 4;
+const TFloat VELOCITY = 3;
 
 extern ANIMSCRIPT idleAnimation[];
 
