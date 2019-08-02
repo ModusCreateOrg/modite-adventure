@@ -14,8 +14,10 @@ public:
 protected:
   void NewState(TUint16 aState, TUint16 aDirection);
   TBool MaybeWalk();
+  TBool MaybeSword();
   TBool IdleState();
   TBool WalkState();
+  TBool SwordState();
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
