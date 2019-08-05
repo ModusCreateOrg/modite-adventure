@@ -9,6 +9,7 @@ public:
   virtual ~GAnchorSprite();
 public:
   TBool Render(BViewPort *aViewPort);
+  void Collide(BSprite *aOther);
 };
 
 

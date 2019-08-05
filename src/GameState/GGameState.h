@@ -6,6 +6,13 @@
 class GGamePlayfield;
 class GPlayerProcess;
 
+enum {
+  DIRECTION_UP,
+  DIRECTION_DOWN,
+  DIRECTION_LEFT,
+  DIRECTION_RIGHT,
+} DIRECTION;
+
 class GGameState : public BGameEngine {
 public:
   GGameState();

@@ -25,9 +25,9 @@ GGame::GGame() {
 #endif
 
   // preload bitmaps
-  for (TInt16 slot=0; slot<MAX_BBITMAP; slot++) {  // 26 is the last BMP in Resources.h (plus one)
-    gResourceManager.PreloadBitmap(slot);
-  }
+//  for (TInt16 slot=0; slot<MAX_BBITMAP; slot++) {  // 26 is the last BMP in Resources.h (plus one)
+//    gResourceManager.PreloadBitmap(slot);
+//  }
 
   gResourceManager.LoadBitmap(CHARSET_8X8_BMP, FONT_8x8_SLOT, IMAGE_8x8);
   gResourceManager.CacheBitmapSlot(FONT_8x8_SLOT);

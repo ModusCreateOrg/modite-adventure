@@ -7,25 +7,23 @@ const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
 const TUint16 SWORD_STATE = 2;
 
-enum {
-  DIRECTION_UP,
-  DIRECTION_DOWN,
-  DIRECTION_LEFT,
-  DIRECTION_RIGHT
-};
-
 GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfield) {
   mGameState = aGameState;
   mPlayfield = aPlayfield;
   BBitmap *bm = gResourceManager.GetBitmap(PLAYER_SLOT);
+  bm->Remap(PLAYER_PALETTE, PLAYER_COLORS);
   TRGB *pal = bm->GetPalette();
-  for (TInt i = 128; i < 192; i++) {
+  for (TInt i = PLAYER_PALETTE; i < PLAYER_PALETTE+PLAYER_COLORS-1; i++) {
     gDisplay.SetColor(i, pal[i]);
   }
   mSprite = new GAnchorSprite(1, PLAYER_SLOT);
+  mSprite->type = STYPE_PLAYER;
+  mSprite->cMask = STYPE_ENEMY;
   mSprite->x = mSprite->y = 32;
+  mSprite->w = 32;
+  mSprite->h = 32;
   mGameState->AddSprite(mSprite);
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY;
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -107,6 +105,14 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
   }
 }
 
+TBool GPlayerProcess::MaybeHit() {
+  if (mSprite->cType) {
+    mSprite->cType = 0;
+    return ETrue;
+  }
+  return EFalse;
+}
+
 TBool GPlayerProcess::MaybeSword() {
   if (!gControls.WasPressed(BUTTONA)) {
     return EFalse;
@@ -179,6 +185,12 @@ TBool GPlayerProcess::WalkState() {
   // maybe change direction!
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mDirection);
+    return ETrue;
+  }
+
+  // collision?
+  if (MaybeHit()) {
+    printf("COLLIDE\n");
     return ETrue;
   }
 

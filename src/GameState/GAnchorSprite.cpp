@@ -18,3 +18,9 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
   return ETrue;
 }
+
+void GAnchorSprite::Collide(BSprite *aOther) {
+  if (abs(aOther->y - y) < 6) {
+    cType |= aOther->type;
+  }
+}

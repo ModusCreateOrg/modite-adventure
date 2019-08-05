@@ -3,6 +3,7 @@
 
 #include "Game.h"
 class GGamePlayfield;
+class GAnchorSprite;
 
 class GPlayerProcess : public BProcess {
 public:
@@ -13,6 +14,7 @@ public:
   TBool RunAfter();
 protected:
   void NewState(TUint16 aState, TUint16 aDirection);
+  TBool MaybeHit();
   TBool MaybeWalk();
   TBool MaybeSword();
   TBool IdleState();
@@ -21,7 +23,7 @@ protected:
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
-  BAnimSprite *mSprite;
+  GAnchorSprite *mSprite;
   TUint16 mState;
   TUint16 mDirection;
   TUint16 mStep;

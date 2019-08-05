@@ -5,11 +5,54 @@
 #include "Resources.h"
 
 enum {
-    BKG_SLOT,
-    PLAYER_SLOT,
-    FONT_8x8_SLOT,
-    FONT_16x16_SLOT,
+  FONT_8x8_SLOT,
+  FONT_16x16_SLOT,
+  BKG_SLOT,
+  PLAYER_SLOT,
+  // enemies
+  BAT_SLOT,
+  GOBLIN_SLOT,
+  GOBLIN_SNIPER_SLOT,
+  ORC_SLOT,
+  RAT_SLOT,
+  SLIME_SLOT,
+  SPIDER_SLOT,
+  TROLL_SLOT,
+  PROJECTILE_ARROW_SLOT
 };
+
+// Palette Remapping
+const TUint16 TILEMAP_COLORS = 64;              // number of colors in tilemap/tileset BMP
+
+const TUint16 PLAYER_COLORS = 32;               // number of colors reserved for player
+const TUint16 PLAYER_PALETTE = TILEMAP_COLORS;  // starting color in palette
+
+const TUint16 BAT_COLORS = 16;
+const TUint16 BAT_PALETTE = (PLAYER_PALETTE + PLAYER_COLORS);
+
+const TUint16 GOBLIN_COLORS = 16;
+const TUint16 GOBLIN_PALETTE = (BAT_PALETTE + BAT_COLORS);
+
+const TUint16 GOBLIN_SNIPER_COLORS = 16;
+const TUint16 GOBLIN_SNIPER_PALETTE = (GOBLIN_PALETTE + GOBLIN_COLORS);
+
+const TUint16 ORC_COLORS = 16;
+const TUint16 ORC_PALETTE = (GOBLIN_SNIPER_PALETTE + GOBLIN_SNIPER_COLORS);
+
+const TUint16 RAT_COLORS = 16;
+const TUint16 RAT_PALETTE = (ORC_PALETTE + ORC_COLORS);
+
+const TUint16 SLIME_COLORS = 16;
+const TUint16 SLIME_PALETTE = (RAT_PALETTE + RAT_COLORS);
+
+const TUint16 SPIDER_COLORS = 16;
+const TUint16 SPIDER_PALETTE = (SLIME_PALETTE + SLIME_COLORS);
+
+const TUint16 TROLL_COLORS = 16;
+const TUint16 TROLL_PALETTE = (SPIDER_PALETTE + SPIDER_COLORS);
+
+const TUint16 PROJECTILE_ARROW_COLORS = 16;
+const TUint16 PROJECTILE_ARROW_PALETTE = (TROLL_PALETTE + TROLL_COLORS);
 
 // BRaw slots
 enum {
@@ -53,11 +96,24 @@ static const TUint16 IMG_DROP6 = 32;
 static const TUint16 IMG_IDLE = 0;
 static const TUint16 IMG_SELECTED = 4;
 static const TUint16 IMG_WALK_DOWN = 8;
-static const TUint16 IMG_WALK_LEFT_RIGHT = 12;
+static const TUint16 IMG_WALK_RIGHT = 12;
 static const TUint16 IMG_WALK_UP = 16;
 static const TUint16 IMG_SWORD_DOWN = 20;
-static const TUint16 IMG_SWORD_LEFT_RIGHT = 24;
+static const TUint16 IMG_SWORD_RIGHT = 24;
 static const TUint16 IMG_SWORD_UP = 28;
+
+// CHARA_SPIDER_BMP
+static const TUint16 IMG_SPIDER_IDLE = 0;
+static const TUint16 IMG_SPIDER_SELECTED = 4;
+static const TUint16 IMG_SPIDER_WALK_DOWN= 8;
+static const TUint16 IMG_SPIDER_WALK_RIGHT= 12;
+static const TUint16 IMG_SPIDER_WALK_UP= 16;
+static const TUint16 IMG_SPIDER_ATTACK_DOWN = 20;
+static const TUint16 IMG_SPIDER_ATTACK_RIGHT = 24;
+static const TUint16 IMG_SPIDER_ATTACK_UP = 28;
+static const TUint16 IMG_SPIDER_DAMAGE_DOWN = 32;
+static const TUint16 IMG_SPIDER_DAMAGE_RIGHT = 32;
+static const TUint16 IMG_SPIDER_DAMAGE_DAMAGE_UP = 32;
 
 const TUint8 COLOR_TEXT = 8;
 
