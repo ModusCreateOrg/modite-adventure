@@ -26,7 +26,7 @@ protected:
 
   TInt RenderString(const char *aString, TInt aY) {
     TInt width = TInt(strlen(aString) * 12);
-    TInt x     = (320 - width) / 2;
+    TInt x     = (SCREEN_WIDTH - width) / 2;
     gDisplay.renderBitmap->DrawString(ENull, aString, mFont, x, aY, COLOR_TEXT, -1, -4);
     return 18;
   }
