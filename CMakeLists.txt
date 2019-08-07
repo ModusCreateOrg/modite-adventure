@@ -30,7 +30,6 @@ SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/MainMenuState
     ${CMAKE_SOURCE_DIR}/src/MainOptionsState
     ${CMAKE_SOURCE_DIR}/src/SplashState
-    ${CMAKE_SOURCE_DIR}/src/TitleState
     ${CMAKE_SOURCE_DIR}/src/RulesState
     ${CMAKE_BINARY_DIR}/usr/local/include
 )

@@ -2,11 +2,6 @@
 
 static TUint32 start;
 
-#ifdef __XTENSA__
-static const TInt MAX_BRIGHTNESS = 0x1fff;
-static const TInt MIN_BRIGHTNESS = 0x50;
-#endif
-
 GGame::GGame() {
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -71,9 +66,9 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GSplashState();
           break;
-        case GAME_STATE_TITLE:
+        case GAME_STATE_MAIN_MENU:
           delete gGameEngine;
-          gGameEngine = new GTitleState();
+          gGameEngine = new GMainMenuState();
           break;
         case GAME_STATE_GAME:
           delete gGameEngine;
