@@ -158,7 +158,7 @@ TBool GDropProcess::FormState() {
 }
 
 TBool GDropProcess::FallState() {
-  if (mSprite->y > 240) {
+  if (mSprite->y > SCREEN_HEIGHT) {
     mState = STATE_WAIT;
     SetTimer();
   } else {

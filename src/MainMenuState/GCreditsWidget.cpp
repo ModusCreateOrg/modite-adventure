@@ -31,8 +31,8 @@ TInt GCreditsWidget::Render(TInt aX, TInt aY) {
 }
 
 void GCreditsWidget::Select() {
-  // TODO: @michaeltintiuc
-  // gGame->SetState(GAME_STATE_CREDITS);
+  gGame->SetState(GAME_STATE_CREDITS);
+
 // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();
