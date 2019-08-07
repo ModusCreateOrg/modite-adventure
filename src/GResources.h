@@ -115,8 +115,10 @@ static const TUint16 IMG_SPIDER_DAMAGE_DOWN = 32;
 static const TUint16 IMG_SPIDER_DAMAGE_RIGHT = 36;
 static const TUint16 IMG_SPIDER_DAMAGE_UP = 40;
 
-const TUint8 COLOR_TEXT = 8;
+static const TUint8 COLOR_TEXT_SHADOW = 253;
+static const TUint8 COLOR_TEXT_BG = 254;
+static const TUint8 COLOR_TEXT = 255;
 
-#define MAX_BBITMAP 6
+#define MAX_BBITMAP 5
 
 #endif //MODITE_GRESOURCES_H

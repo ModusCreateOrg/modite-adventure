@@ -59,13 +59,13 @@ void GSplashProcess::RenderText() {
 //    return;
 //  }
 //  TInt width = TInt(strlen(mCurrentText) * 12);
-//  TInt x     = (320 - width) / 2;
+//  TInt x     = (SCREEN_WIDTH - width) / 2;
 //  gDisplay.renderBitmap->DrawString(ENull, mCurrentText, mFont, x, 200, COLOR_TEXT, -1, -4);
 }
 
 TBool GSplashProcess::RunAfter() {
   if (gControls.WasPressed(BUTTON_ANY)) { // } || --mTimer <= 0) {
-    gGame->SetState(GAME_STATE_TITLE);
+    gGame->SetState(GAME_STATE_MAIN_MENU);
 #ifdef ENABLE_AUDIO
     gSoundPlayer.SfxStartGame();
 #endif

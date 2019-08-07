@@ -2,11 +2,6 @@
 
 static TUint32 start;
 
-#ifdef __XTENSA__
-static const TInt MAX_BRIGHTNESS = 0x1fff;
-static const TInt MIN_BRIGHTNESS = 0x50;
-#endif
-
 GGame::GGame() {
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -25,9 +20,10 @@ GGame::GGame() {
 #endif
 
   // preload bitmaps
-//  for (TInt16 slot=0; slot<MAX_BBITMAP; slot++) {  // 26 is the last BMP in Resources.h (plus one)
-//    gResourceManager.PreloadBitmap(slot);
-//  }
+  // MAX_BITMAP is defined in GResource.h.
+  for (TInt16 slot=0; slot<=MAX_BBITMAP; slot++) {
+    gResourceManager.PreloadBitmap(slot);
+  }
 
   gResourceManager.LoadBitmap(CHARSET_8X8_BMP, FONT_8x8_SLOT, IMAGE_8x8);
   gResourceManager.CacheBitmapSlot(FONT_8x8_SLOT);
@@ -71,13 +67,17 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GSplashState();
           break;
-        case GAME_STATE_TITLE:
+        case GAME_STATE_MAIN_MENU:
           delete gGameEngine;
-          gGameEngine = new GTitleState();
+          gGameEngine = new GMainMenuState();
           break;
         case GAME_STATE_GAME:
           delete gGameEngine;
           gGameEngine = new GGameState();
+          break;
+        case GAME_STATE_CREDITS:
+          delete gGameEngine;
+          gGameEngine = new GCreditsState();
           break;
         default:
           continue;
