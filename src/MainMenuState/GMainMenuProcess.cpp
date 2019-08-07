@@ -21,18 +21,10 @@ TBool GMainMenuProcess::RunBefore() {
 }
 
 TBool GMainMenuProcess::RunAfter() {
-//  if (gControls.WasPressed(BUTTON_START)) {
-//
-//    if (gOptions->gameProgress.savedState) {
-//      SwitchContainer();
-//      return EFalse;
-//    }
-//    else {
-//      gGame->SetState(GAME_STATE_GAME);
-//    }
-//
-//    return EFalse;
-//  }
+  if (gControls.WasPressed(BUTTON_START)) {
+    gGame->SetState(GAME_STATE_GAME);
+    return EFalse;
+  }
 
   if (gControls.WasPressed(BUTTON_MENU)) {
     gGame->SetState(GAME_STATE_MAIN_OPTIONS);

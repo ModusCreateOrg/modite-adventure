@@ -5,10 +5,10 @@
 #include "Resources.h"
 
 enum {
-    BKG_SLOT,
-    PLAYER_SLOT,
-    FONT_8x8_SLOT,
-    FONT_16x16_SLOT,
+  BKG_SLOT,
+  PLAYER_SLOT,
+  FONT_8x8_SLOT,
+  FONT_16x16_SLOT,
 };
 
 // BRaw slots
