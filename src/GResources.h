@@ -59,7 +59,9 @@ static const TUint16 IMG_SWORD_DOWN = 20;
 static const TUint16 IMG_SWORD_LEFT_RIGHT = 24;
 static const TUint16 IMG_SWORD_UP = 28;
 
-const TUint8 COLOR_TEXT = 8;
+static const TUint8 COLOR_TEXT = 8;
+static const TUint8 COLOR_TEXT_SHADOW = 253;
+static const TUint8 COLOR_TEXT_BG = 254;
 
 #define MAX_BBITMAP 6
 
