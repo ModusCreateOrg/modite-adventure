@@ -2,8 +2,8 @@
 #define MODITE_GPLAYERPROCESS_H
 
 #include "Game.h"
+#include "GAnchorSprite.h"
 class GGamePlayfield;
-class GAnchorSprite;
 
 class GPlayerProcess : public BProcess {
 public:
@@ -13,7 +13,7 @@ public:
   TBool RunBefore();
   TBool RunAfter();
 protected:
-  void NewState(TUint16 aState, TUint16 aDirection);
+  void NewState(TUint16 aState, DIRECTION aDirection);
   TBool MaybeHit();
   TBool MaybeWalk();
   TBool MaybeSword();
@@ -25,7 +25,6 @@ protected:
   GGamePlayfield *mPlayfield;
   GAnchorSprite *mSprite;
   TUint16 mState;
-  TUint16 mDirection;
   TUint16 mStep;
 };
 

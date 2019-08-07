@@ -13,20 +13,24 @@ public:
   ~GSpiderProcess();
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() override;
 
-  TBool RunAfter();
+  TBool RunAfter() override;
 
 protected:
-  void NewState(TUint16 aState, TUint16 aDirection);
+  void NewState(TUint16 aState, DIRECTION aDirection) override;
 
-  TBool IdleState();
+  TBool MaybeHit();
 
-  TBool WalkState();
+  TBool IdleState() override;
 
-  TBool AttackState();
+  TBool WalkState() override;
 
-  TBool HitState();
+  TBool AttackState() override;
+
+  TBool HitState() override;
+
+  TBool DeathState() override;
 };
 
 #endif //MODITE_GSPIDERPROCESS_H

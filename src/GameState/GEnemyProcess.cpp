@@ -12,7 +12,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
   mState = IDLE_STATE;
   mSprite = new GAnchorSprite(0, aSlot);
   mSprite->type = STYPE_ENEMY;
-  mSprite->cMask = STYPE_PLAYER;
+  mSprite->cMask = STYPE_PLAYER|STYPE_PBULLET;
   mSprite->flags |= SFLAG_CHECK;
   mSprite->w = 32;
   mSprite->h = 32;

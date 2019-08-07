@@ -112,8 +112,8 @@ static const TUint16 IMG_SPIDER_ATTACK_DOWN = 20;
 static const TUint16 IMG_SPIDER_ATTACK_RIGHT = 24;
 static const TUint16 IMG_SPIDER_ATTACK_UP = 28;
 static const TUint16 IMG_SPIDER_DAMAGE_DOWN = 32;
-static const TUint16 IMG_SPIDER_DAMAGE_RIGHT = 32;
-static const TUint16 IMG_SPIDER_DAMAGE_DAMAGE_UP = 32;
+static const TUint16 IMG_SPIDER_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_SPIDER_DAMAGE_UP = 40;
 
 const TUint8 COLOR_TEXT = 8;
 

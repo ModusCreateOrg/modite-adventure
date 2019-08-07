@@ -10,7 +10,8 @@ enum {
   IDLE_STATE,
   WALK_STATE,
   ATTACK_STATE,
-  HIT_STATE
+  HIT_STATE,
+  DEATH_STATE,
 };
 
 class GEnemyProcess : public BProcess {
@@ -28,7 +29,7 @@ protected:
   TUint16 mStep;
 
 protected:
-  virtual void NewState(TUint16 aState, TUint16 aDirection) = 0;
+  virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
 
   virtual TBool IdleState() = 0;
 
@@ -37,6 +38,8 @@ protected:
   virtual TBool AttackState() = 0;
 
   virtual TBool HitState() = 0;
+
+  virtual TBool DeathState() = 0;
 };
 
 
