@@ -1,11 +1,17 @@
-#include "GOptionsWidget.h"
+#include "GExitWidget.h"
 #include "Game.h"
 
-GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GExitWidget::GExitWidget() : BButtonWidget("EXIT", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GOptionsWidget::~GOptionsWidget() {}
+GExitWidget::~GExitWidget() {}
 
-TInt GOptionsWidget::Render(TInt aX, TInt aY) {
+TInt GExitWidget::Render(TInt aX, TInt aY) {
+#ifdef __XTENSA__
+  aY += 16;
+#else
+  aY += 20;
+#endif
+
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
@@ -27,13 +33,13 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
       gWidgetTheme.GetInt(WIDGET_TITLE_BG),
       -6);
 
-  return f->mHeight + 10;
+  return f->mHeight - 4;
 }
 
-void GOptionsWidget::Select() {
-  gGame->SetState(GAME_STATE_MAIN_OPTIONS);
+void GExitWidget::Select() {
+  gGame->SetState(GAME_STATE_MAIN_MENU);
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuCancel();
 #endif
 }

@@ -70,6 +70,14 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GMainMenuState();
           break;
+        case GAME_STATE_MAIN_OPTIONS:
+          delete gGameEngine;
+          gGameEngine = new GMainOptionsState();
+          break;
+        case GAME_STATE_RESET_OPTIONS:
+          delete gGameEngine;
+          gGameEngine = new GResetOptionsState();
+          break;
         case GAME_STATE_GAME:
           delete gGameEngine;
           gGameEngine = new GGameState();
