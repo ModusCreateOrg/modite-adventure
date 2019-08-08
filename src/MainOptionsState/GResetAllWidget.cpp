@@ -1,11 +1,11 @@
-#include "GOptionsWidget.h"
+#include "GResetAllWidget.h"
 #include "Game.h"
 
-GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetAllWidget::GResetAllWidget() : BButtonWidget("EVERYTHING", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GOptionsWidget::~GOptionsWidget() {}
+GResetAllWidget::~GResetAllWidget() {}
 
-TInt GOptionsWidget::Render(TInt aX, TInt aY) {
+TInt GResetAllWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
@@ -27,13 +27,21 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
       gWidgetTheme.GetInt(WIDGET_TITLE_BG),
       -6);
 
-  return f->mHeight + 10;
+  return f->mHeight << 1;
 }
 
-void GOptionsWidget::Select() {
+void GResetAllWidget::Select() {
+  gOptions->Reset();
+
+  // Go Back
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
+
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
+  // Play notification sound
   gSoundPlayer.SfxMenuAccept();
+
+  // Make sure we hear the reset in music volume immediately
+  gSoundPlayer.SetMusicVolume(gOptions->music);
 #endif
 }

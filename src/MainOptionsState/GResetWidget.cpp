@@ -1,11 +1,11 @@
-#include "GOptionsWidget.h"
+#include "GResetWidget.h"
 #include "Game.h"
 
-GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetWidget::GResetWidget() : BButtonWidget("RESET GAME", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GOptionsWidget::~GOptionsWidget() {}
+GResetWidget::~GResetWidget() {}
 
-TInt GOptionsWidget::Render(TInt aX, TInt aY) {
+TInt GResetWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
@@ -27,11 +27,12 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
       gWidgetTheme.GetInt(WIDGET_TITLE_BG),
       -6);
 
-  return f->mHeight + 10;
+  return f->mHeight - 4;
 }
 
-void GOptionsWidget::Select() {
-  gGame->SetState(GAME_STATE_MAIN_OPTIONS);
+void GResetWidget::Select() {
+  // Trigger popup - confirmation game state
+  gGame->SetState(GAME_STATE_RESET_OPTIONS);
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();
