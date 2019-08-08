@@ -20,7 +20,8 @@ GGame::GGame() {
 #endif
 
   // preload bitmaps
-  for (TInt16 slot=0; slot<MAX_BBITMAP; slot++) {  // 26 is the last BMP in Resources.h (plus one)
+  // MAX_BITMAP is defined in GResource.h.
+  for (TInt16 slot=0; slot<=MAX_BBITMAP; slot++) {
     gResourceManager.PreloadBitmap(slot);
   }
 

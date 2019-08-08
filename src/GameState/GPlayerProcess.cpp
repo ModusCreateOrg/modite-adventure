@@ -7,25 +7,23 @@ const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
 const TUint16 SWORD_STATE = 2;
 
-enum {
-  DIRECTION_UP,
-  DIRECTION_DOWN,
-  DIRECTION_LEFT,
-  DIRECTION_RIGHT
-};
-
 GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfield) {
   mGameState = aGameState;
   mPlayfield = aPlayfield;
   BBitmap *bm = gResourceManager.GetBitmap(PLAYER_SLOT);
+  bm->Remap(PLAYER_PALETTE, PLAYER_COLORS);
   TRGB *pal = bm->GetPalette();
-  for (TInt i = 128; i < 192; i++) {
+  for (TInt i = PLAYER_PALETTE; i < PLAYER_PALETTE+PLAYER_COLORS-1; i++) {
     gDisplay.SetColor(i, pal[i]);
   }
   mSprite = new GAnchorSprite(1, PLAYER_SLOT);
+  mSprite->type = STYPE_PLAYER;
+  mSprite->cMask = STYPE_ENEMY;
   mSprite->x = mSprite->y = 32;
+  mSprite->w = 32;
+  mSprite->h = 32;
   mGameState->AddSprite(mSprite);
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY;
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -33,9 +31,9 @@ GPlayerProcess::~GPlayerProcess() {
   //
 }
 
-void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
+void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
-  mDirection = aDirection;
+  mSprite->mDirection = aDirection;
   mSprite->mDx = 0;
   mSprite->mDy = 0;
   switch (mState) {
@@ -43,7 +41,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      switch (mDirection) {
+      switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(idleUpAnimation);
           break;
@@ -61,7 +59,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
     case WALK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
-      switch (mDirection) {
+      switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
@@ -89,7 +87,7 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      switch (mDirection) {
+      switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(swordUpAnimation);
           break;
@@ -107,11 +105,19 @@ void GPlayerProcess::NewState(TUint16 aState, TUint16 aDirection) {
   }
 }
 
+TBool GPlayerProcess::MaybeHit() {
+  if (mSprite->cType) {
+    mSprite->cType = 0;
+    return ETrue;
+  }
+  return EFalse;
+}
+
 TBool GPlayerProcess::MaybeSword() {
   if (!gControls.WasPressed(BUTTONA)) {
     return EFalse;
   }
-  NewState(SWORD_STATE, mDirection);
+  NewState(SWORD_STATE, mSprite->mDirection);
   return ETrue;
 }
 
@@ -124,7 +130,7 @@ TBool GPlayerProcess::MaybeWalk() {
     if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x  + 32 - VELOCITY, mSprite->y)) {
       return EFalse;
     }
-    if (mState != WALK_STATE || mDirection != DIRECTION_LEFT) {
+    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
       NewState(WALK_STATE, DIRECTION_LEFT);
     }
     return ETrue;
@@ -134,7 +140,7 @@ TBool GPlayerProcess::MaybeWalk() {
     if (mPlayfield->IsWall(mSprite->x + 32 + VELOCITY, mSprite->y)) {
       return EFalse;
     }
-    if (mState != WALK_STATE || mDirection != DIRECTION_RIGHT) {
+    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
       NewState(WALK_STATE, DIRECTION_RIGHT);
     }
     return ETrue;
@@ -144,7 +150,7 @@ TBool GPlayerProcess::MaybeWalk() {
     if (mSprite->y - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x + 32, mSprite->y - VELOCITY)) {
       return EFalse;
     }
-    if (mState != WALK_STATE || mDirection != DIRECTION_UP) {
+    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
       NewState(WALK_STATE, DIRECTION_UP);
     }
     return ETrue;
@@ -154,7 +160,7 @@ TBool GPlayerProcess::MaybeWalk() {
     if (mPlayfield->IsWall(mSprite->x + 32 , mSprite->y + VELOCITY)) {
       return EFalse;
     }
-    if (mState != WALK_STATE || mDirection != DIRECTION_DOWN) {
+    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
       NewState(WALK_STATE, DIRECTION_DOWN);
     }
     return ETrue;
@@ -178,46 +184,55 @@ TBool GPlayerProcess::WalkState() {
 
   // maybe change direction!
   if (!MaybeWalk()) {
-    NewState(IDLE_STATE, mDirection);
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  // collision?
+  if (MaybeHit()) {
+    // bounce player off enemy
+    mSprite->x -= mSprite->vx*2;
+    mSprite->y -= mSprite->vy*2;
+    NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
   // can player keep walking?
-  switch (mDirection) {
+  switch (mSprite->mDirection) {
     case DIRECTION_LEFT:
       if (mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx, mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, mDirection);
+        NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
       if (mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx , mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, mDirection);
+        NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_UP:
       if (mPlayfield->IsWall(mSprite->x + 32 , mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, mDirection);
+        NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
       if (mPlayfield->IsWall(mSprite->x + 32, mSprite->y + mSprite->vy)) {
-        NewState(IDLE_STATE, mDirection);
+        NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
   }
   if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mDirection);
+    NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;
 }
 
 TBool GPlayerProcess::SwordState() {
   if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mDirection);
+    NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
 }

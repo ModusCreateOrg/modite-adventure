@@ -1,0 +1,36 @@
+#ifndef MODITE_GSPIDERPROCESS_H
+#define MODITE_GSPIDERPROCESS_H
+
+#include <GEnemyProcess.h>
+#include "GGameState.h"
+#include "GGamePlayfield.h"
+#include "GAnchorSprite.h"
+
+class GSpiderProcess : public GEnemyProcess {
+public:
+  GSpiderProcess(GGameState *aGameState, GGamePlayfield *aPlayfield);
+
+  ~GSpiderProcess();
+
+public:
+  TBool RunBefore() override;
+
+  TBool RunAfter() override;
+
+protected:
+  void NewState(TUint16 aState, DIRECTION aDirection) override;
+
+  TBool MaybeHit();
+
+  TBool IdleState() override;
+
+  TBool WalkState() override;
+
+  TBool AttackState() override;
+
+  TBool HitState() override;
+
+  TBool DeathState() override;
+};
+
+#endif //MODITE_GSPIDERPROCESS_H
