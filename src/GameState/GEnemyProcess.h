@@ -22,7 +22,7 @@ public:
 
 protected:
   GGameState *mGameState;
-  GGamePlayfield *mGamePlayfield;
+  GGamePlayfield *mPlayfield;
   GAnchorSprite *mSprite;
   TUint16 mState;
   TUint16 mDirection;

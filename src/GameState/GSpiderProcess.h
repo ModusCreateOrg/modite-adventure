@@ -31,6 +31,8 @@ protected:
   TBool HitState() override;
 
   TBool DeathState() override;
+protected:
+  TInt16 mStateTimer;
 };
 
 #endif //MODITE_GSPIDERPROCESS_H
