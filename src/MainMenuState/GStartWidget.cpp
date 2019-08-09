@@ -3,10 +3,9 @@
 #include "GMainMenuProcess.h"
 
 GStartWidget::GStartWidget() : BButtonWidget("START", COLOR_TEXT, COLOR_TEXT_BG) {
-  // TODO: @michaeltintiuc
-  // if (gOptions->gameProgress.savedState) {
-    // mText = "CONTINUE";
-  // }
+  if (gOptions->gameProgress.savedState) {
+    mText = (char*)"CONTINUE";
+  }
 }
 
 GStartWidget::~GStartWidget() {}

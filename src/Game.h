@@ -12,7 +12,7 @@
 #undef ENABLE_AUDIO
 
 #define ENABLE_OPTIONS
-#undef ENABLE_OPTIONS
+// #undef ENABLE_OPTIONS
 
 // special characters
 #define STR_LEFT_ARROW "\xf"
@@ -27,16 +27,20 @@
 #include "GResources.h"
 #include "GGame.h"
 #include "GDialogWidget.h"
+#include "TOptions.h"
 //#include "GSoundPlayer.h"
 
 // GGameEngine states
 #include "GSplashState.h"
 #include "GMainMenuState.h"
+#include "GMainOptionsState.h"
+#include "GResetOptionsState.h"
 #include "GCreditsState.h"
 #include "GGameState.h"
 
-extern BViewPort *gViewPort;
+extern BViewPort   *gViewPort;
 extern BGameEngine *gGameEngine;
+extern TOptions    *gOptions;
 
 #ifdef __XTENSA__
 static const TInt MAX_BRIGHTNESS = 0x1fff;

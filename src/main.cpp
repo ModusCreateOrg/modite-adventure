@@ -6,6 +6,7 @@
 
 BViewPort *gViewPort;
 BGameEngine *gGameEngine;
+TOptions *gOptions;
 GGame *gGame;
 
 // app_main
