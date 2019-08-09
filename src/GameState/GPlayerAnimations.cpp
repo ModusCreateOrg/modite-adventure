@@ -62,7 +62,7 @@ ANIMSCRIPT walkDownAnimation2[] = {
 
 ANIMSCRIPT swordDownAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(0,0),
+  ADELTA(-2,0),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN),
 
   // this is the frame to collide with enemy to hit it
@@ -75,7 +75,7 @@ ANIMSCRIPT swordDownAnimation[] = {
   ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
-  ADELTA(-1,7),
+  ADELTA(-2,7),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 3),
   AEND
 };
@@ -215,19 +215,19 @@ ANIMSCRIPT walkUpAnimation2[] = {
 
 ANIMSCRIPT swordUpAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(2,0),
+  ADELTA(4,-2),
   ASTEP(SWORDSPEED, IMG_SWORD_UP),
 
-  ADELTA(0,0),
+  ADELTA(2,-2),
   ATYPE(STYPE_PBULLET),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 1),
 
-  ADELTA(2,0),
+  ADELTA(4,-2),
   ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 2),
 
-  ADELTA(-1,0),
-  ASTEP(SWORDSPEED, IMG_WALK_UP + 3),
+  ADELTA(-2,-2),
+  ASTEP(SWORDSPEED, IMG_SWORD_UP + 3),
   AEND
 };
 
