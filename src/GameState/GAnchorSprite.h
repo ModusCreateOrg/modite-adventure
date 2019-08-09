@@ -13,10 +13,10 @@ enum DIRECTION {
 class GAnchorSprite : public BAnimSprite {
 public:
   GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
-  virtual ~GAnchorSprite();
+  ~GAnchorSprite() OVERRIDE;
 public:
-  TBool Render(BViewPort *aViewPort);
-  void Collide(BSprite *aOther);
+  TBool Render(BViewPort *aViewPort) OVERRIDE;
+  void Collide(BSprite *aOther) OVERRIDE;
 public:
   DIRECTION mDirection;
   GAnchorSprite *mCollided;

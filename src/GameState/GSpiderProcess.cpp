@@ -397,7 +397,6 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
 TBool GSpiderProcess::MaybeHit() {
   if (mSprite->cType & STYPE_PBULLET) {
-    printf("BULLET\n");
     if (--mSprite->mHitPoints <= 0) {
       mSprite->StartAnimation(deathAnimation);
       mState = DEATH_STATE;
@@ -409,19 +408,15 @@ TBool GSpiderProcess::MaybeHit() {
     GAnchorSprite *other = mSprite->mCollided;
     switch (other->mDirection) {
       case DIRECTION_RIGHT:
-        printf("RIGHT animation\n");
         mSprite->StartAnimation(hitLeftAnimation);
         break;
       case DIRECTION_LEFT:
-        printf("LEFT animation\n");
         mSprite->StartAnimation(hitRightAnimation);
         break;
       case DIRECTION_UP:
-        printf("UP animation\n");
         mSprite->StartAnimation(hitDownAnimation);
         break;
       case DIRECTION_DOWN:
-        printf("DOWN animation\n");
         mSprite->StartAnimation(hitUpAnimation);
         break;
     }
