@@ -36,6 +36,7 @@
 #include "GMainOptionsState.h"
 #include "GResetOptionsState.h"
 #include "GCreditsState.h"
+#include "GGameMenuState.h"
 #include "GGameState.h"
 
 extern BViewPort   *gViewPort;
