@@ -20,9 +20,12 @@ public:
   void Run();
 public:
   void SetState(TInt aNewState);
+  TInt GetState();
+  void ToggleInGameMenu();
 protected:
-  TInt mState;
-  TInt mNextState;
+  TInt         mState;
+  TInt         mNextState;
+  BGameEngine *mGameMenu;
 };
 
 extern GGame *gGame;

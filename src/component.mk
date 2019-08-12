@@ -8,7 +8,10 @@ COMPONENT_EMBED_FILES := Resources.bin
 
 COMPONENT_ADD_INCLUDEDIRS = . \
   SplashState \
-  TitleState \
   GameState \
+  GameMenuState \
+  MainMenuState \
+  MainOptionsState \
+  CreditsState \
 
 COMPONENT_SRCDIRS = ${COMPONENT_ADD_INCLUDEDIRS}

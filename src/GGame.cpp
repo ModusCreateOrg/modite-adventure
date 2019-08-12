@@ -36,6 +36,7 @@ GGame::GGame() {
 
   mState = mNextState = -1;
   gGameEngine = ENull;
+  mGameMenu = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
 }
@@ -46,10 +47,28 @@ GGame::~GGame() {
 #endif
   delete gGameEngine;
   delete gViewPort;
+  delete mGameMenu;
+}
+
+void GGame::ToggleInGameMenu() {
+  // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if need be)
+  if (mGameMenu) {
+    delete mGameMenu;
+    mGameMenu = ENull;
+    gGameEngine->Resume();
+  } else {
+    mGameMenu = new GGameMenuState();
+    gGameEngine->Pause();
+  }
+  gControls.dKeys = 0;
 }
 
 void GGame::SetState(TInt aNewState) {
   mNextState = aNewState;
+}
+
+TInt GGame::GetState() {
+  return mState;
 }
 
 void GGame::Run() {
@@ -94,7 +113,13 @@ void GGame::Run() {
       gControls.dKeys = 0;
       mState = mNextState;
     }
+
     gGameEngine->GameLoop();
+
+    if (mGameMenu) {
+      mGameMenu->GameLoop();
+    }
+
     gDisplay.Update();
     TUint32 now = Milliseconds();
     start = now;
@@ -103,6 +128,10 @@ void GGame::Run() {
     TUint32 elapsed = now - start;
     printf("elapsed %4d\r", elapsed);
 #endif
+
+    if (gControls.WasPressed(BUTTON_START) && mState == GAME_STATE_GAME) {
+      ToggleInGameMenu();
+    }
 
     if (gControls.WasPressed(BUTTONQ)) {
       done = true;
