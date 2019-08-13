@@ -291,7 +291,6 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlay
   mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
-  printf("SPIDER SPRITE %f,%f\n", mSprite->x, mSprite->y);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
