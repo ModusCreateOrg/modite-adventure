@@ -281,15 +281,17 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield)
+GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState,
                   aGamePlayfield,
                   SPIDER_SLOT,
                   SPIDER_PALETTE,
                   SPIDER_COLORS) {
-  mSprite->x = 150.0;
-  mSprite->y = 150.0;
+  mSprite->x = aX;
+  mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
+
+  printf("SPIDER SPRITE %f,%f\n", mSprite->x, mSprite->y);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -331,7 +333,9 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case WALK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
-      mStateTimer = TInt16(TFloat(Random(3, 5)) * 32 / VELOCITY);
+      if (mStateTimer <= 0) {
+        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+      }
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:

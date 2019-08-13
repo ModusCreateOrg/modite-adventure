@@ -4,18 +4,11 @@
 #include "Game.h"
 
 // these match the codes set for tiles in Pro Motion:
-const TUint16 ATTR_FLOOR_BIT = 0;
-const TUint16 ATTR_WALL_BIT = 1;
-const TUint16 ATTR_LEDGE_BIT = 3;
-const TUint16 ATTR_FALSE_WALL_BIT = 2;
+const TUint16 ATTR_FLOOR = 0;
+const TUint16 ATTR_WALL = 1;
 
-
-const TUint32 ATTR_FLOOR = (ATTR_FLOOR_BIT << 16);
-const TUint32 ATTR_WALL = (ATTR_WALL_BIT << 16);
-const TUint32 ATTR_FALSE_WALL = (ATTR_FALSE_WALL_BIT << 16);
-const TUint32 ATTR_LEDGE = (ATTR_LEDGE_BIT << 16);
-
-
+const TUint16 ATTR_PLAYER = 16;
+const TUint16 ATTR_SPIDER = 17;
 
 class GGamePlayfield : public BMapPlayfield {
 public:
@@ -24,7 +17,7 @@ public:
   ~GGamePlayfield();
 public:
   TBool IsWall(TFloat aWorldX, TFloat aWorldY) {
-    return GetCell(aWorldX, aWorldY) & ATTR_WALL;
+    return TUint16(GetCell(aWorldX, aWorldY)>>16) == ATTR_WALL;
   }
 };
 
