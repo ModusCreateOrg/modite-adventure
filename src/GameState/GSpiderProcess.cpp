@@ -435,33 +435,40 @@ TBool GSpiderProcess::IdleState() {
       sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
-      switch (Random() & TUint8(3)) {
+      // Don't go the same direction
+      TInt direction = Random() & TUint8(3);
+      while (direction == mSprite->mDirection) {
+        direction = Random() & TUint8(3);
+      }
+
+      switch (direction) {
         case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 32, y - VELOCITY)) {
+          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) && !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_UP);
             return ETrue;
           }
           break;
         case 1: // down
-          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 32, y + VELOCITY)) {
+          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) && !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_DOWN);
             return ETrue;
           }
           break;
         case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 32 - VELOCITY, y)) {
+          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_LEFT);
             return ETrue;
           }
           break;
         case 3: // right
-          if (sx < (SCREEN_WIDTH-16)  && !mPlayfield->IsWall(x + 32 + VELOCITY, y)) {
+          if (sx < (SCREEN_WIDTH-16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) && !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_RIGHT);
             return ETrue;
           }
           break;
       }
     }
+
     // after 8 tries, we couldn't find a direction to walk.
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -478,7 +485,10 @@ TBool GSpiderProcess::WalkState() {
     screenY = mSprite->y - mGameState->mWorldYY;
 
   if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx, mSprite->y + mSprite->vy) ||
+      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
+      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
+      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
+      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
       screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
     ) {
     NewState(IDLE_STATE, mSprite->mDirection);
