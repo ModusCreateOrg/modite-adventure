@@ -312,20 +312,6 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStateTimer = IDLE_TIMEOUT;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(idleUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(idleDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(idleLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(idleRightAnimation);
-          break;
-      }
       break;
 
     case WALK_STATE:
