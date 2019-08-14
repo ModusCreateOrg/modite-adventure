@@ -4,7 +4,7 @@
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TUint16 aSlot, TUint16 aPalette,
                              TUint16 aColors) : mGameState(aGameState), mPlayfield(aGamePlayfield) {
   BBitmap *bm = gResourceManager.GetBitmap(aSlot);
-  bm->Remap(aPalette, aColors);
+//  bm->Remap(aPalette, aColors);
   TRGB *pal = bm->GetPalette();
   for (TInt i = aPalette; i < aPalette + aColors - 1; i++) {
     gDisplay.SetColor(i, pal[i]);

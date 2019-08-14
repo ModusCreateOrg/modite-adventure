@@ -7,15 +7,9 @@ const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
 const TUint16 SWORD_STATE = 2;
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfield) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
-  mPlayfield = aPlayfield;
-  BBitmap *bm = gResourceManager.GetBitmap(PLAYER_SLOT);
-  bm->Remap(PLAYER_PALETTE, PLAYER_COLORS);
-  TRGB *pal = bm->GetPalette();
-  for (TInt i = PLAYER_PALETTE; i < PLAYER_PALETTE+PLAYER_COLORS-1; i++) {
-    gDisplay.SetColor(i, pal[i]);
-  }
+  mPlayfield = ENull;
   mSprite = new GAnchorSprite(1, PLAYER_SLOT);
   mSprite->type = STYPE_PLAYER;
   mSprite->cMask = STYPE_ENEMY;
@@ -29,6 +23,18 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfiel
 
 GPlayerProcess::~GPlayerProcess() {
   //
+}
+
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
+  mPlayfield = aPlayfield;
+  mSprite->x = aX;
+  mSprite->y = aY;
+//  BBitmap *bm = gResourceManager.GetBitmap(PLAYER_SLOT);
+////  bm->Remap(PLAYER_PALETTE, PLAYER_COLORS);
+//  TRGB *pal = bm->GetPalette();
+//  for (TInt i = PLAYER_PALETTE; i < PLAYER_PALETTE+PLAYER_COLORS-1; i++) {
+//    gDisplay.SetColor(i, pal[i]);
+//  }
 }
 
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {

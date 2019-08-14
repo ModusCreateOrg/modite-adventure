@@ -7,8 +7,10 @@ class GGamePlayfield;
 
 class GPlayerProcess : public BProcess {
 public:
-  GPlayerProcess(GGameState *aGameState, GGamePlayfield *aPlayfield);
+  GPlayerProcess(GGameState *aGameState);
   ~GPlayerProcess();
+public:
+  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 public:
   TBool RunBefore();
   TBool RunAfter();

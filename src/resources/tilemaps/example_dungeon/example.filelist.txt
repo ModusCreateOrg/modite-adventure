@@ -1,4 +1,4 @@
 example.tiles.bmp
 jays_example.tlc
 Y:\modite-adventure\src\resources\tilemaps\example_dungeon\example.jays_example.layer-DATA_LAYER.map001.stm
-Y:\modite-adventure\src\resources\tilemaps\example_dungeon\example.jays_example.layer-TILE_LAYER.map001.stm
+Y:\modite-adventure\src\resources\tilemaps\example_dungeon\example.jays_example.layer-MAP_LAYER.map001.stm

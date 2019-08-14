@@ -13,6 +13,9 @@ public:
   ~GGameState();
 
   void PreRender();
+
+  void LoadLevel(TUint16 aTileMapId);
+
 protected:
   GGamePlayfield *mGamePlayfield;
   GPlayerProcess *mPlayerProcess;
