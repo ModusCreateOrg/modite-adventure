@@ -48,7 +48,6 @@ ADD_EXECUTABLE(
     ${PROJECT_NAME}
     Resources.bin
     ${CREATIVE_ENGINE_SOURCE_FILES}
-    ${CREATIVE_ENGINE_RCOMP_SOURCE_FILES}
     ${MODITE_SRC}
         src/GameState/GSpiderProcess.cpp src/GameState/GSpiderProcess.h src/GameState/GEnemyProcess.cpp src/GameState/GEnemyProcess.h)
 
