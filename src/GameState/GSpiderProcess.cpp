@@ -331,7 +331,6 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case WALK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
-      mStateTimer = TInt16(TFloat(Random(3, 5)) * 32 / VELOCITY);
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -441,6 +440,9 @@ TBool GSpiderProcess::IdleState() {
     return ETrue;
   }
   if (--mStateTimer < 0) {
+    // Set distance to walk for WALK_STATE
+    mStateTimer = TInt16(TFloat(Random(1,3)) * 32 / VELOCITY);
+
     TFloat x = mSprite->x,
       y = mSprite->y,
       sx = x - mGameState->mWorldXX,
@@ -455,7 +457,7 @@ TBool GSpiderProcess::IdleState() {
           }
           break;
         case 1: // down
-          if (sy < (240-16) && !mPlayfield->IsWall(x + 32, y + VELOCITY)) {
+          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 32, y + VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_DOWN);
             return ETrue;
           }
@@ -467,7 +469,7 @@ TBool GSpiderProcess::IdleState() {
           }
           break;
         case 3: // right
-          if (sx < (320-16)  && !mPlayfield->IsWall(x + 32 + VELOCITY, y)) {
+          if (sx < (SCREEN_WIDTH-16)  && !mPlayfield->IsWall(x + 32 + VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_RIGHT);
             return ETrue;
           }
@@ -491,7 +493,7 @@ TBool GSpiderProcess::WalkState() {
 
   if (--mStateTimer < 0 ||
       mPlayfield->IsWall(mSprite->x + 32 + mSprite->vx, mSprite->y + mSprite->vy) ||
-      screenX < 16 || screenX > (320 - 16) || screenY < 16 || screenY > (240 - 16)
+      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
     ) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
