@@ -115,6 +115,97 @@ static const TUint16 IMG_SPIDER_DAMAGE_DOWN = 32;
 static const TUint16 IMG_SPIDER_DAMAGE_RIGHT = 36;
 static const TUint16 IMG_SPIDER_DAMAGE_UP = 40;
 
+// CHARA_BAT_BMP
+static const TUint16 IMG_BAT_IDLE = 0;
+static const TUint16 IMG_BAT_SELECTED = 4;
+static const TUint16 IMG_BAT_WALK_DOWN= 8;
+static const TUint16 IMG_BAT_WALK_RIGHT= 12;
+static const TUint16 IMG_BAT_WALK_UP= 16;
+static const TUint16 IMG_BAT_ATTACK_DOWN = 20;
+static const TUint16 IMG_BAT_ATTACK_RIGHT = 24;
+static const TUint16 IMG_BAT_ATTACK_UP = 28;
+static const TUint16 IMG_BAT_DAMAGE_DOWN = 32;
+static const TUint16 IMG_BAT_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_BAT_DAMAGE_UP = 40;
+
+// CHARA_GOBLIN_BMP
+static const TUint16 IMG_GOBLIN_IDLE = 0;
+static const TUint16 IMG_GOBLIN_SELECTED = 4;
+static const TUint16 IMG_GOBLIN_WALK_DOWN= 8;
+static const TUint16 IMG_GOBLIN_WALK_RIGHT= 12;
+static const TUint16 IMG_GOBLIN_WALK_UP= 16;
+static const TUint16 IMG_GOBLIN_ATTACK_DOWN = 20;
+static const TUint16 IMG_GOBLIN_ATTACK_RIGHT = 24;
+static const TUint16 IMG_GOBLIN_ATTACK_UP = 28;
+static const TUint16 IMG_GOBLIN_DAMAGE_DOWN = 32;
+static const TUint16 IMG_GOBLIN_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_GOBLIN_DAMAGE_UP = 40;
+
+// CHARA_GOBLIN_SNIPER_BMP
+static const TUint16 IMG_GOBLIN_SNIPER_IDLE = 0;
+static const TUint16 IMG_GOBLIN_SNIPER_SELECTED = 4;
+static const TUint16 IMG_GOBLIN_SNIPER_WALK_DOWN= 8;
+static const TUint16 IMG_GOBLIN_SNIPER_WALK_RIGHT= 12;
+static const TUint16 IMG_GOBLIN_SNIPER_WALK_UP= 16;
+static const TUint16 IMG_GOBLIN_SNIPER_ATTACK_DOWN = 20;
+static const TUint16 IMG_GOBLIN_SNIPER_ATTACK_RIGHT = 24;
+static const TUint16 IMG_GOBLIN_SNIPER_ATTACK_UP = 28;
+static const TUint16 IMG_GOBLIN_SNIPER_DAMAGE_DOWN = 32;
+static const TUint16 IMG_GOBLIN_SNIPER_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_GOBLIN_SNIPER_DAMAGE_UP = 40;
+
+// CHARA_ORC_BMP
+static const TUint16 IMG_ORC_IDLE = 0;
+static const TUint16 IMG_ORC_SELECTED = 4;
+static const TUint16 IMG_ORC_WALK_DOWN= 8;
+static const TUint16 IMG_ORC_WALK_RIGHT= 12;
+static const TUint16 IMG_ORC_WALK_UP= 16;
+static const TUint16 IMG_ORC_ATTACK_DOWN = 20;
+static const TUint16 IMG_ORC_ATTACK_RIGHT = 24;
+static const TUint16 IMG_ORC_ATTACK_UP = 28;
+static const TUint16 IMG_ORC_DAMAGE_DOWN = 32;
+static const TUint16 IMG_ORC_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_ORC_DAMAGE_UP = 40;
+
+// CHARA_RAT_BMP
+static const TUint16 IMG_RAT_IDLE = 0;
+static const TUint16 IMG_RAT_SELECTED = 4;
+static const TUint16 IMG_RAT_WALK_DOWN= 8;
+static const TUint16 IMG_RAT_WALK_RIGHT= 12;
+static const TUint16 IMG_RAT_WALK_UP= 16;
+static const TUint16 IMG_RAT_ATTACK_DOWN = 20;
+static const TUint16 IMG_RAT_ATTACK_RIGHT = 24;
+static const TUint16 IMG_RAT_ATTACK_UP = 28;
+static const TUint16 IMG_RAT_DAMAGE_DOWN = 32;
+static const TUint16 IMG_RAT_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_RAT_DAMAGE_UP = 40;
+
+// CHARA_SLIME_BMP
+static const TUint16 IMG_SLIME_IDLE = 0;
+static const TUint16 IMG_SLIME_SELECTED = 4;
+static const TUint16 IMG_SLIME_WALK_DOWN= 8;
+static const TUint16 IMG_SLIME_WALK_RIGHT= 12;
+static const TUint16 IMG_SLIME_WALK_UP= 16;
+static const TUint16 IMG_SLIME_ATTACK_DOWN = 20;
+static const TUint16 IMG_SLIME_ATTACK_RIGHT = 24;
+static const TUint16 IMG_SLIME_ATTACK_UP = 28;
+static const TUint16 IMG_SLIME_DAMAGE_DOWN = 32;
+static const TUint16 IMG_SLIME_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_SLIME_DAMAGE_UP = 40;
+
+// CHARA_TROLL_BMP
+static const TUint16 IMG_TROLL_IDLE = 0;
+static const TUint16 IMG_TROLL_SELECTED = 4;
+static const TUint16 IMG_TROLL_WALK_DOWN= 8;
+static const TUint16 IMG_TROLL_WALK_RIGHT= 12;
+static const TUint16 IMG_TROLL_WALK_UP= 16;
+static const TUint16 IMG_TROLL_ATTACK_DOWN = 20;
+static const TUint16 IMG_TROLL_ATTACK_RIGHT = 24;
+static const TUint16 IMG_TROLL_ATTACK_UP = 28;
+static const TUint16 IMG_TROLL_DAMAGE_DOWN = 32;
+static const TUint16 IMG_TROLL_DAMAGE_RIGHT = 36;
+static const TUint16 IMG_TROLL_DAMAGE_UP = 40;
+
 static const TUint8 COLOR_TEXT_SHADOW = 253;
 static const TUint8 COLOR_TEXT_BG = 254;
 static const TUint8 COLOR_TEXT = 255;

@@ -16,7 +16,7 @@ enum {
 
 class GEnemyProcess : public BProcess {
 public:
-  GEnemyProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TUint16 aSlot, TUint16 aPalette, TUint16 aColors);
+  GEnemyProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TUint16 aSlot);
 
   virtual ~GEnemyProcess();
 
