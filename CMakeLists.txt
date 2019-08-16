@@ -5,7 +5,8 @@ ADD_COMPILE_DEFINITIONS(CE_SDL2_WINDOW_TITLE="Modite Adventure :: by Modus Creat
 
 
 SET(CMAKE_CXX_STANDARD 14)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-exception-spec-mismatch")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wno-implicit-exception-spec-mismatch")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -Wno-implicit-exception-spec-mismatch")
 include(ProcessorCount)
 
 
