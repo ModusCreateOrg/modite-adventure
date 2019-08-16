@@ -17,7 +17,7 @@ GAnchorSprite::~GAnchorSprite() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  BAnimSprite::Render(aViewPort);
+  TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUGME
   gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
@@ -28,7 +28,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
 #endif
 
-  return ETrue;
+  return ret;
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {

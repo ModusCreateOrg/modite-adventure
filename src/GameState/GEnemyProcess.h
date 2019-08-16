@@ -14,6 +14,13 @@ enum {
   DEATH_STATE,
 };
 
+static const char  *stateMessages[] = {
+  "IDLE STATE",
+  "WALK STATE",
+  "ATTACK STATE",
+  "HIT STATE",
+  "DEATH STATE",
+};
 class GEnemyProcess : public BProcess {
 public:
   GEnemyProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TUint16 aSlot);
