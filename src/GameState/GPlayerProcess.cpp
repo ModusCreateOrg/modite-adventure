@@ -266,11 +266,11 @@ TBool GPlayerProcess::RunAfter() {
   if (xx > dx) {
     gViewPort->mWorldX += dx;
   } else if (xx < 0) {
-    gViewPort->mWorldX -= dx;
+    gViewPort->mWorldX = MAX(0, gViewPort->mWorldX - dx);
   } else if (yy > dy) {
     gViewPort->mWorldY += dy;
   } else if (yy < 0) {
-    gViewPort->mWorldY -= dy;
+    gViewPort->mWorldY = MAX(0, gViewPort->mWorldY - dy);
   }
   return ETrue;
 }
