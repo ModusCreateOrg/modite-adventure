@@ -23,7 +23,7 @@ public:
   TInt GetState();
   void ToggleInGameMenu();
 #ifdef DEBUG_MODE
-  TBool mDebug;
+  static TBool mDebug;
 #endif
 
 protected:

@@ -2,6 +2,10 @@
 
 static TUint32 start;
 
+#ifdef DEBUG_MODE
+  TBool GGame::mDebug = ETrue;
+#endif
+
 GGame::GGame() {
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -39,10 +43,6 @@ GGame::GGame() {
   mGameMenu = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
-
-#ifdef DEBUG_MODE
-  mDebug = ETrue;
-#endif
 }
 
 GGame::~GGame() {
@@ -135,7 +135,7 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      mDebug = !mDebug;
+      GGame::mDebug = !mDebug;
       printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
     }
 #endif
