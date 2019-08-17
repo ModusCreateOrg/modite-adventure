@@ -39,6 +39,10 @@ GGame::GGame() {
   mGameMenu = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
+
+#ifdef DEBUG_MODE
+  mDebug = ETrue;
+#endif
 }
 
 GGame::~GGame() {
@@ -127,6 +131,13 @@ void GGame::Run() {
 #ifdef FRAME_RATE_INFO
     TUint32 elapsed = now - start;
     printf("elapsed %4d\r", elapsed);
+#endif
+
+#ifdef DEBUG_MODE
+    if (gControls.WasPressed(BUTTON_MENU)) {
+      mDebug = !mDebug;
+      printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
+    }
 #endif
 
     if (gControls.WasPressed(BUTTON_START) && mState == GAME_STATE_GAME) {

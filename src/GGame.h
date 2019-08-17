@@ -22,6 +22,10 @@ public:
   void SetState(TInt aNewState);
   TInt GetState();
   void ToggleInGameMenu();
+#ifdef DEBUG_MODE
+  TBool mDebug;
+#endif
+
 protected:
   TInt         mState;
   TInt         mNextState;
