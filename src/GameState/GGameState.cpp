@@ -4,7 +4,7 @@
 #include "GSpiderProcess.h"
 
 GGameState::GGameState() : BGameEngine(gViewPort) {
-  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, 10 * 32) - 1, MIN(SCREEN_HEIGHT, 7 * 32) - 1));
+  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1, MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   // load and remap player
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
@@ -27,6 +27,14 @@ GGameState::~GGameState() {
 
 void GGameState::PreRender() {
   gDisplay.renderBitmap->Clear();
+}
+
+TUint16 GGameState::MapWidth() {
+  return (mGamePlayfield->MapWidthTiles() - TILES_WIDE) * 32;
+}
+
+TUint16 GGameState::MapHeight() {
+  return (mGamePlayfield->MapHeightTiles() - TILES_HIGH) * 32;
 }
 
 void GGameState::LoadLevel(TUint16 aTileMapId) {

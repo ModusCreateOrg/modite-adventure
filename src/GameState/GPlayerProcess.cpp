@@ -263,14 +263,16 @@ TBool GPlayerProcess::RunAfter() {
     dx = gViewPort->mRect.Width(),
     dy = gViewPort->mRect.Height();
 
+  // Don't go less than 0 or more than map width/height
   if (xx > dx) {
-    gViewPort->mWorldX += dx;
+    gViewPort->mWorldX = MIN(mGameState->MapWidth(), gViewPort->mWorldX + dx);
   } else if (xx < 0) {
     gViewPort->mWorldX = MAX(0, gViewPort->mWorldX - dx);
   } else if (yy > dy) {
-    gViewPort->mWorldY += dy;
+    gViewPort->mWorldY = MIN(mGameState->MapHeight(), gViewPort->mWorldY + dy);
   } else if (yy < 0) {
     gViewPort->mWorldY = MAX(0, gViewPort->mWorldY - dy);
   }
+
   return ETrue;
 }
