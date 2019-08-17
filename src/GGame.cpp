@@ -135,7 +135,7 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      GGame::mDebug = !mDebug;
+      mDebug = !mDebug;
       printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
     }
 #endif
