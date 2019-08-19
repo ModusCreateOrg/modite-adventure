@@ -23,37 +23,39 @@ enum {
 };
 
 // Palette Remapping
-const TUint16 TILEMAP_COLORS = 64;              // number of colors in tilemap/tileset BMP
+const TUint16 TILEMAP_COLORS = 48;              // number of colors in tilemap/tileset BMP
 
-const TUint16 PLAYER_COLORS  = 32;               // number of colors reserved for player
 const TUint16 PLAYER_PALETTE = TILEMAP_COLORS;  // starting color in palette
+const TUint16 PLAYER_COLORS  = 32;               // number of colors reserved for player
 
-const TUint16 BAT_COLORS  = 16;
 const TUint16 BAT_PALETTE = (PLAYER_PALETTE + PLAYER_COLORS);
+const TUint16 BAT_COLORS  = 16;
 
-const TUint16 GOBLIN_COLORS  = 16;
 const TUint16 GOBLIN_PALETTE = (BAT_PALETTE + BAT_COLORS);
+const TUint16 GOBLIN_COLORS  = 32;
 
-const TUint16 GOBLIN_SNIPER_COLORS  = 16;
 const TUint16 GOBLIN_SNIPER_PALETTE = (GOBLIN_PALETTE + GOBLIN_COLORS);
+const TUint16 GOBLIN_SNIPER_COLORS  = 16;
 
-const TUint16 ORC_COLORS  = 16;
 const TUint16 ORC_PALETTE = (GOBLIN_SNIPER_PALETTE + GOBLIN_SNIPER_COLORS);
+const TUint16 ORC_COLORS  = 16;
 
-const TUint16 RAT_COLORS  = 16;
 const TUint16 RAT_PALETTE = (ORC_PALETTE + ORC_COLORS);
+const TUint16 RAT_COLORS  = 16;
 
-const TUint16 SLIME_COLORS  = 16;
 const TUint16 SLIME_PALETTE = (RAT_PALETTE + RAT_COLORS);
+const TUint16 SLIME_COLORS  = 16;
 
-const TUint16 SPIDER_COLORS  = 16;
 const TUint16 SPIDER_PALETTE = (SLIME_PALETTE + SLIME_COLORS);
+const TUint16 SPIDER_COLORS  = 16;
 
-const TUint16 TROLL_COLORS  = 16;
 const TUint16 TROLL_PALETTE = (SPIDER_PALETTE + SPIDER_COLORS);
+const TUint16 TROLL_COLORS  = 16;
 
-const TUint16 PROJECTILE_ARROW_COLORS  = 16;
 const TUint16 PROJECTILE_ARROW_PALETTE = (TROLL_PALETTE + TROLL_COLORS);
+const TUint16 PROJECTILE_ARROW_COLORS  = 16;
+
+const TUint16 AVAILABLE_COLOR = PROJECTILE_ARROW_PALETTE + PROJECTILE_ARROW_COLORS;
 
 // BRaw slots
 enum {

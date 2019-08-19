@@ -40,6 +40,7 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
   mPlayerProcess = new GPlayerProcess(this);
   AddProcess(mPlayerProcess);
   LoadLevel(EXAMPLE_FILELIST_TXT_MAP);
+  printf("AVAILABLE COLOR %d\n", AVAILABLE_COLOR);
 }
 
 GGameState::~GGameState() {
