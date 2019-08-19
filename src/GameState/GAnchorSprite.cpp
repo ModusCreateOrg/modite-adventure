@@ -1,8 +1,5 @@
+#include "Game.h"
 #include "GAnchorSprite.h"
-#include <Display.h>
-
-#define DEBUGME
-//#undef DEBUGME
 
 GAnchorSprite::GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) :
   BAnimSprite(aPri, aBM, aImg, aType) {
@@ -19,13 +16,15 @@ GAnchorSprite::~GAnchorSprite() {
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret = BAnimSprite::Render(aViewPort);
 
-#ifdef DEBUGME
-  gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
-  gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
-  // render collision rect
-  TRect r(mRect.x1 + 16, mRect.y1 + 32, mRect.x2 - 16, mRect.y2);
-  gDisplay.renderBitmap->SetColor(254, 255, 0, 0);
-  gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
+#ifdef DEBUG_MODE
+  if (GGame::mDebug) {
+    gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
+    gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
+    // render collision rect
+    TRect r(mRect.x1 + 16, mRect.y1 + 32, mRect.x2 - 16, mRect.y2);
+    gDisplay.renderBitmap->SetColor(254, 255, 0, 0);
+    gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
+  }
 #endif
 
   return ret;

@@ -10,37 +10,43 @@
 #include "GSlimeProcess.h"
 #include "GTrollProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 // scope local to this file.  If the value for the slot is ETrue, then the slot has already been remapped.
 // We don't want to remap twice or the color range ends up in the wrong place.
 static TBool slotRemapState[SLOT_MAX];
 
-void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TUint aPalette, TUint16 aColors) {
+// Load aBMP, and remap it to playfield's tilemap palette
+void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
   if (!slotRemapState[aSlot]) {
     gResourceManager.LoadBitmap(aBMP, aSlot, IMAGE_64x64);
   }
+  BBitmap *screen = mGamePlayfield->GetTilesBitmap();
   BBitmap *bm = gResourceManager.GetBitmap(aSlot);
   if (!slotRemapState[aSlot]) {
 #ifdef DEBUGME
     printf("ReamapSlot(%d,%d,%d,%d)\n", aBMP, aSlot, aPalette, aColors);
 #endif
-    bm->Remap(aPalette, aColors);
+    bm->Remap(screen);
     slotRemapState[aSlot] = ETrue;
+#ifdef DEBUGME
+    printf("Remapped bitmap, screen colors used %d\n", screen->CountUsedColors());
+#endif
   }
-  gDisplay.SetPalette(bm->GetPalette(), aPalette, aColors);
+  gDisplay.SetPalette(screen->GetPalette());
 }
 
 GGameState::GGameState() : BGameEngine(gViewPort) {
-  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, 10 * 32) - 1, MIN(SCREEN_HEIGHT, 7 * 32) - 1));
+  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1, MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
-  for (TInt i = 0; i < SLOT_MAX; i++) {
-    slotRemapState[i] = EFalse;
+  for (TBool & i : slotRemapState) {
+    i = EFalse;
   }
 
-  RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT, PLAYER_PALETTE, PLAYER_COLORS);
-  mPlayerProcess = new GPlayerProcess(this);
-  AddProcess(mPlayerProcess);
+  mPlayerProcess = ENull;
+  mGamePlayfield = ENull;
   LoadLevel(EXAMPLE_FILELIST_TXT_MAP);
-  printf("AVAILABLE COLOR %d\n", AVAILABLE_COLOR);
 }
 
 GGameState::~GGameState() {
@@ -51,11 +57,36 @@ void GGameState::PreRender() {
   gDisplay.renderBitmap->Clear();
 }
 
+TUint16 GGameState::MapWidth() {
+  return (mGamePlayfield->MapWidthTiles() - TILES_WIDE) * 32;
+}
+
+TUint16 GGameState::MapHeight() {
+  return (mGamePlayfield->MapHeightTiles() - TILES_HIGH) * 32;
+}
+
 void GGameState::LoadLevel(TUint16 aTileMapId) {
+  Reset();  // remove sprites and processes
+
   if (mPlayfield) {
     delete mPlayfield;
   }
   mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, EXAMPLE_FILELIST_TXT_MAP);
+
+  RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
+  RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
+  RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
+  RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
+  RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
+  RemapSlot(CHARA_ORC_BMP, ORC_SLOT);
+  RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
+  RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
+  RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
+
+  printf("Level loaded, colors used %d\n", mGamePlayfield->GetTilesBitmap()->CountUsedColors());
+
+  mPlayerProcess = new GPlayerProcess(this);
+  AddProcess(mPlayerProcess);
 
   TInt    objectCount = mGamePlayfield->mObjectCount;
   TUint16 *program    = mGamePlayfield->mObjectProgram;
@@ -72,46 +103,38 @@ void GGameState::LoadLevel(TUint16 aTileMapId) {
       case ATTR_PLAYER:
         printf("PLAYER at %f,%f\n", xx, yy);
         mPlayerProcess->StartLevel(mGamePlayfield, xx - 16, yy);
-        RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT, PLAYER_PALETTE, PLAYER_COLORS);
+        RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
         break;
       case ATTR_SPIDER:
         printf("SPIDER at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT, SPIDER_PALETTE, SPIDER_COLORS);
         AddProcess(new GSpiderProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_BAT:
         printf("BAT at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_BAT_BMP, BAT_SLOT, BAT_PALETTE, BAT_COLORS);
         AddProcess(new GBatProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_GOBLIN:
         printf("GOBLIN at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT, GOBLIN_PALETTE, GOBLIN_COLORS);
         AddProcess(new GGoblinProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT, GOBLIN_SNIPER_PALETTE, GOBLIN_SNIPER_COLORS);
-        AddProcess(new GGoblinSniperProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GGoblinSniperProcess(this, mGamePlayfield, xx-32, yy + 63));
         break;
       case ATTR_ORC:
         printf("ORC at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_ORC_BMP, ORC_SLOT, ORC_PALETTE, ORC_COLORS);
         AddProcess(new GOrcProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_RAT:
         printf("RAT at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_RAT_BMP, RAT_SLOT, RAT_PALETTE, RAT_COLORS);
         AddProcess(new GRatProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_SLIME:
         printf("SLIME at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT, SLIME_PALETTE, SLIME_COLORS);
         AddProcess(new GSlimeProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       case ATTR_TROLL:
         printf("TROLL at %f,%f %d %d\n", xx, yy, op1, op2);
-        RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT, TROLL_PALETTE, TROLL_COLORS);
         AddProcess(new GTrollProcess(this, mGamePlayfield, xx, yy + 63));
         break;
       default:

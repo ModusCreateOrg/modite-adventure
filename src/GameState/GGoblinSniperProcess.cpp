@@ -1,18 +1,21 @@
 #include "GGoblinSniperProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
+const TInt   HIT_POINTS   = 5;
 const TInt16 IDLE_TIMEOUT = 30;
 
-const TInt IDLE_SPEED = 5;
+const TInt IDLE_SPEED   = 5;
 const TInt SELECT_SPEED = 5;
 const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 5;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt HIT_SPEED    = 5;
+const TInt WALK_SPEED   = 5;
+const TInt DEATH_SPEED  = 5;
 
 const TFloat VELOCITY = 1.5;
 
@@ -282,9 +285,9 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SNIPER_SLOT ) {
-  mSprite->x = aX;
-  mSprite->y = aY;
+  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SNIPER_SLOT) {
+  mSprite->x          = aX;
+  mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -299,43 +302,65 @@ GGoblinSniperProcess::~GGoblinSniperProcess() {
  *********************************************************************************/
 
 void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+#ifdef DEBUGME
+  printf("GOBLIN_SNIPER NewState(%d,%d) %s[mState]\n", aState, aDirection, stateMessages[aState]);
+#endif
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDx        = 0;
+  mSprite->mDy        = 0;
   switch (aState) {
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStateTimer = IDLE_TIMEOUT;
+      mSprite->StartAnimation(selectAnimation);
       break;
 
     case WALK_STATE:
+#ifdef DEBUGME
+      printf("GOBLIN_SNIPER WALK_STATE %d\n", mSprite->mDirection);
+#endif
       mSprite->vx = 0;
       mSprite->vy = 0;
       if (mStateTimer <= 0) {
+#ifdef DEBUGME
+        printf("here\n");
+#endif
         mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
       }
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
+#ifdef DEBUGME
+          printf("Start Walk Up %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
           mSprite->vy = -VELOCITY;
           break;
         case DIRECTION_DOWN:
+#ifdef DEBUGME
+          printf("Start Walk Down %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
           mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
+#ifdef DEBUGME
+          printf("Start Walk Left %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
 //          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
+#ifdef DEBUGME
+          printf("Start Walk Right %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
@@ -425,14 +450,17 @@ TBool GGoblinSniperProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
   }
+  if (mSprite->flags & SFLAG_CLIPPED) {
+    return ETrue;
+  }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1,3)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->mWorldXX,
-      sy = y - mGameState->mWorldYY;
+    TFloat x  = mSprite->x,
+           y  = mSprite->y,
+           sx = x - mGameState->GetViewPort()->mWorldX,
+           sy = y - mGameState->GetViewPort()->mWorldY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -443,33 +471,44 @@ TBool GGoblinSniperProcess::IdleState() {
 
       switch (direction) {
         case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) && !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
+          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_UP);
             return ETrue;
           }
           break;
         case 1: // down
-          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) && !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
+          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_DOWN);
             return ETrue;
           }
           break;
         case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
+          if (sx > 16) {
+            if (!mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
+              NewState(WALK_STATE, DIRECTION_LEFT);
+              return ETrue;
+            }
           }
           break;
         case 3: // right
-          if (sx < (SCREEN_WIDTH-16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) && !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
+          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
+              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_RIGHT);
             return ETrue;
           }
+          break;
+        default:
+          Panic("GGoblinSniperProcess: Invalid direction %d\n", mDirection);
           break;
       }
     }
 
     // after 8 tries, we couldn't find a direction to walk.
+#ifdef DEBUGME
+    printf("Goblin Sniper Can't walk\n");
+#endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
 
@@ -481,8 +520,13 @@ TBool GGoblinSniperProcess::WalkState() {
     return ETrue;
   }
 
-  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-    screenY = mSprite->y - mGameState->mWorldYY;
+  BViewPort *vp     = mGameState->GetViewPort();
+  TFloat    screenX = mSprite->x - vp->mWorldX,
+            screenY = mSprite->y - vp->mWorldY;
+
+#ifdef DEBUGME
+  printf("GOBLIN_SNIPER screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY, mSprite->x, mSprite->y);
+#endif
 
   if (--mStateTimer < 0 ||
       mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall

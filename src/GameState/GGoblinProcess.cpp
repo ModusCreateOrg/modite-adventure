@@ -3,7 +3,6 @@
 #define DEBUGME
 #undef DEBUGME
 
-
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -495,11 +494,16 @@ TBool GGoblinProcess::IdleState() {
             return ETrue;
           }
           break;
+        default:
+          Panic("GoblinProcess: Invalid mDirection %d\n", mDirection);
+          break;
       }
     }
 
     // after 8 tries, we couldn't find a direction to walk.
-    printf("Can't walk\n");
+#ifdef DEBUGME
+    printf("Goblin Can't walk\n");
+#endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
 

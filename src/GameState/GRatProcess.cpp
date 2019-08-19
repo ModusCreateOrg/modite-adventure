@@ -1,5 +1,8 @@
 #include "GRatProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -299,6 +302,9 @@ GRatProcess::~GRatProcess() {
  *********************************************************************************/
 
 void GRatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+#ifdef DEBUGME
+  printf("RAT NewState(%d,%d) %s[mState]\n", aState, aDirection, stateMessages[aState]);
+#endif
   mState = aState;
   mSprite->mDirection = aDirection;
   mSprite->mDx = 0;
@@ -309,33 +315,52 @@ void GRatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStateTimer = IDLE_TIMEOUT;
+      mSprite->StartAnimation(selectAnimation);
       break;
 
     case WALK_STATE:
+#ifdef DEBUGME
+      printf("RAT WALK_STATE %d\n", mSprite->mDirection);
+#endif
       mSprite->vx = 0;
       mSprite->vy = 0;
       if (mStateTimer <= 0) {
+#ifdef DEBUGME
+        printf("here\n");
+#endif
         mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
       }
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
+#ifdef DEBUGME
+          printf("Start Walk Up %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
           mSprite->vy = -VELOCITY;
           break;
         case DIRECTION_DOWN:
+#ifdef DEBUGME
+          printf("Start Walk Down %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
           mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
+#ifdef DEBUGME
+          printf("Start Walk Left %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
 //          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
+#ifdef DEBUGME
+          printf("Start Walk Right %d\n", mStep);
+#endif
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
@@ -425,14 +450,17 @@ TBool GRatProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
   }
+  if (mSprite->flags & SFLAG_CLIPPED) {
+    return ETrue;
+  }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1,3)) * 32 / VELOCITY);
 
     TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->mWorldXX,
-      sy = y - mGameState->mWorldYY;
+           y = mSprite->y,
+           sx = x - mGameState->GetViewPort()->mWorldX,
+           sy = y - mGameState->GetViewPort()->mWorldY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -466,10 +494,16 @@ TBool GRatProcess::IdleState() {
             return ETrue;
           }
           break;
+        default:
+          Panic("GoblinProcess: Invalid mDirection %d\n", mDirection);
+          break;
       }
     }
 
     // after 8 tries, we couldn't find a direction to walk.
+#ifdef DEBUGME
+    printf("Goblin Can't walk\n");
+#endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
 
@@ -481,15 +515,20 @@ TBool GRatProcess::WalkState() {
     return ETrue;
   }
 
-  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-    screenY = mSprite->y - mGameState->mWorldYY;
+  BViewPort *vp = mGameState->GetViewPort();
+  TFloat screenX = mSprite->x - vp->mWorldX,
+            screenY = mSprite->y - vp->mWorldY;
+
+#ifdef DEBUGME
+  printf("RAT screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY, mSprite->x, mSprite->y);
+#endif
 
   if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
+                      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
+                      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
+                      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
+                      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
+                      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
     ) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
