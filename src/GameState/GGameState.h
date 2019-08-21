@@ -23,6 +23,17 @@ public:
   TUint16 MapHeight();
 
 protected:
+  /**
+   * Load bmp and remap it to the specified color range, and set the palette colors in gDisplay
+   *
+   * @param aBMP
+   * @param aSlot
+   * @param aPalette
+   * @param aColors
+   */
+  void RemapSlot(TUint16 aBMP, TUint16 aSlot);
+
+protected:
   GGamePlayfield *mGamePlayfield;
   GPlayerProcess *mPlayerProcess;
 };

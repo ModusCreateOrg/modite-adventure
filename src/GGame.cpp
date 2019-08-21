@@ -3,7 +3,7 @@
 static TUint32 start;
 
 #ifdef DEBUG_MODE
-  TBool GGame::mDebug = ETrue;
+TBool GGame::mDebug = ETrue;
 #endif
 
 GGame::GGame() {
@@ -14,7 +14,8 @@ GGame::GGame() {
 
 #ifdef __XTENSA__
 #ifdef ENABLE_OPTIONS
-  gDisplay.SetBrightness(MAX(MIN_BRIGHTNESS, MAX_BRIGHTNESS * gOptions->brightness));
+  gDisplay.SetBrightness(
+      MAX(MIN_BRIGHTNESS, MAX_BRIGHTNESS * gOptions->brightness));
 #endif
 #endif
 
@@ -25,7 +26,7 @@ GGame::GGame() {
 
   // preload bitmaps
   // MAX_BITMAP is defined in GResource.h.
-  for (TInt16 slot=0; slot<=MAX_BBITMAP; slot++) {
+  for (TInt16 slot = 0; slot <= MAX_BBITMAP; slot++) {
     gResourceManager.PreloadBitmap(slot);
   }
 
@@ -55,25 +56,23 @@ GGame::~GGame() {
 }
 
 void GGame::ToggleInGameMenu() {
-  // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if need be)
+  // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
+  // need be)
   if (mGameMenu) {
     delete mGameMenu;
     mGameMenu = ENull;
     gGameEngine->Resume();
-  } else {
+  }
+  else {
     mGameMenu = new GGameMenuState();
     gGameEngine->Pause();
   }
   gControls.dKeys = 0;
 }
 
-void GGame::SetState(TInt aNewState) {
-  mNextState = aNewState;
-}
+void GGame::SetState(TInt aNewState) { mNextState = aNewState; }
 
-TInt GGame::GetState() {
-  return mState;
-}
+TInt GGame::GetState() { return mState; }
 
 void GGame::Run() {
 #ifdef ENABLE_OPTIONS

@@ -14,7 +14,7 @@ GAnchorSprite::~GAnchorSprite() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  BAnimSprite::Render(aViewPort);
+  TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
   if (GGame::mDebug) {
@@ -27,7 +27,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   }
 #endif
 
-  return ETrue;
+  return ret;
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {
