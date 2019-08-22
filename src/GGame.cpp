@@ -117,9 +117,13 @@ void GGame::Run() {
       mState = mNextState;
     }
 
+    // Cache keys for 2nd game engine loop
+    // TODO Fix controls polling for multi engine setups
+    const TUint16 cKeys = gControls.cKeys;
     gGameEngine->GameLoop();
 
     if (mGameMenu) {
+      gControls.cKeys = cKeys;
       mGameMenu->GameLoop();
     }
 
