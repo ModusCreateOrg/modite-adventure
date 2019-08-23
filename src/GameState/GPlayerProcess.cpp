@@ -3,21 +3,28 @@
 #include "GGamePlayfield.h"
 #include "GPlayerAnimations.h"
 
-const TUint16 IDLE_STATE = 0;
-const TUint16 WALK_STATE = 1;
-const TUint16 SWORD_STATE = 2;
+enum {
+  IDLE_STATE,
+  WALK_STATE,
+  ATTACK_STATE,
+  HIT_STATE,
+  DEATH_STATE,
+};
+
+const TInt16 PLAYER_HITPOINTS = 10;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
   mSprite = new GAnchorSprite(1, PLAYER_SLOT);
   mSprite->type = STYPE_PLAYER;
-  mSprite->cMask = STYPE_ENEMY;
+  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET;
   mSprite->x = mSprite->y = 32;
   mSprite->w = 32;
   mSprite->h = 32;
   mGameState->AddSprite(mSprite);
   mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
+  mSprite->mHitPoints = PLAYER_HITPOINTS;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -89,7 +96,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
-    case SWORD_STATE:
+    case ATTACK_STATE:
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -113,6 +120,30 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
 TBool GPlayerProcess::MaybeHit() {
   if (mSprite->cType) {
+    printf("Player collide cType: %x STYPE_ENEMY: %x STYPE_EBULLET: %x\n", mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
+    if (mSprite->cType & STYPE_EBULLET) {
+      printf("Player attacked\n");
+      mSprite->mHitPoints--;
+      if (mSprite->mHitPoints <= 0) {
+        // GAME OVER!
+        printf("Player dead\n");
+        mSprite->mHitPoints = PLAYER_HITPOINTS;
+      }
+      switch (mSprite->mDirection) {
+        case DIRECTION_UP:
+          NewState(HIT_STATE, DIRECTION_DOWN);
+          break;
+        case DIRECTION_DOWN:
+          NewState(HIT_STATE, DIRECTION_UP);
+          break;
+        case DIRECTION_LEFT:
+          NewState(HIT_STATE, DIRECTION_RIGHT);
+          break;
+        case DIRECTION_RIGHT:
+          NewState(HIT_STATE, DIRECTION_LEFT);
+          break;
+      }
+    }
     mSprite->cType = 0;
     return ETrue;
   }
@@ -123,7 +154,7 @@ TBool GPlayerProcess::MaybeSword() {
   if (!gControls.WasPressed(BUTTONA)) {
     return EFalse;
   }
-  NewState(SWORD_STATE, mSprite->mDirection);
+  NewState(ATTACK_STATE, mSprite->mDirection);
   return ETrue;
 }
 
@@ -176,6 +207,9 @@ TBool GPlayerProcess::MaybeWalk() {
 }
 
 TBool GPlayerProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
   if (MaybeSword()) {
     return ETrue;
   }
@@ -197,8 +231,23 @@ TBool GPlayerProcess::WalkState() {
   // collision?
   if (MaybeHit()) {
     // bounce player off enemy
-    mSprite->x -= mSprite->vx*2;
-    mSprite->y -= mSprite->vy*2;
+    if (mSprite->vx) {
+      if (mSprite->x < mSprite->mCollided->x) {
+        mSprite->x = mSprite->mCollided->x  - 32;
+      }
+      else {
+        mSprite->x = mSprite->mCollided->x  + 32;
+      }
+    }
+    if (mSprite->vy) {
+      if (mSprite->y < mSprite->mCollided->y) {
+        mSprite->y = mSprite->mCollided->y  - 6;
+      }
+      else {
+        mSprite->y = mSprite->mCollided->y  + 6;
+      }
+    }
+
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -243,14 +292,25 @@ TBool GPlayerProcess::SwordState() {
   return ETrue;
 }
 
+TBool GPlayerProcess::HitState() {
+  if (mSprite->AnimDone()) {
+    mSprite->cType = 0;
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+  return ETrue;
+}
+
+
 TBool GPlayerProcess::RunBefore() {
   switch (mState) {
     case IDLE_STATE:
       return IdleState();
     case WALK_STATE:
       return WalkState();
-    case SWORD_STATE:
+    case ATTACK_STATE:
       return SwordState();
+    case HIT_STATE:
+      return HitState();
     default:
       return ETrue;
   }

@@ -174,6 +174,7 @@ static const TUint16 IMG_TROLL_DAMAGE_DOWN  = 32;
 static const TUint16 IMG_TROLL_DAMAGE_RIGHT = 36;
 static const TUint16 IMG_TROLL_DAMAGE_UP    = 40;
 
+static const TUint8 COLOR_SHMOO       = 252;
 static const TUint8 COLOR_TEXT_SHADOW = 253;
 static const TUint8 COLOR_TEXT_BG     = 254;
 static const TUint8 COLOR_TEXT        = 255;

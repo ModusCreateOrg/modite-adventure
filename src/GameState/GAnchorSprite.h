@@ -20,7 +20,12 @@ public:
 public:
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
-  TInt mHitPoints;
+  TInt16 mLevel;
+  TInt16 mExperience;
+  TInt16 mHitPoints;
+  TInt16 mStrength;
+  TInt16 mDexterity;
+  TInt mGold;
 };
 
 #endif //MODITE_GANCHORSPRITE_H

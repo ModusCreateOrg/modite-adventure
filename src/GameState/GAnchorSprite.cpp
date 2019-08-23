@@ -6,7 +6,12 @@ GAnchorSprite::GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType
   flags |= SFLAG_ANCHOR | SFLAG_SORTY;
   w = 64;
   h = 64;
+  mLevel = 1;
+  mExperience = 0;
   mHitPoints = 5;
+  mStrength = 10;
+  mDexterity = 10;
+  mGold = 0;
 }
 
 GAnchorSprite::~GAnchorSprite() {

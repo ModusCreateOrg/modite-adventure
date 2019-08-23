@@ -8,6 +8,7 @@
 
 class GGamePlayfield;
 class GPlayerProcess;
+class GAnchorSprite;
 
 class GGameState : public BGameEngine {
 public:
@@ -16,6 +17,7 @@ public:
   ~GGameState();
 
   void PreRender();
+  void PostRender();
 
   void LoadLevel(TUint16 aTileMapId);
 
@@ -36,11 +38,11 @@ protected:
 protected:
   GGamePlayfield *mGamePlayfield;
   GPlayerProcess *mPlayerProcess;
+  TInt mTimer;
+  TBool mStats;
 
 public:
-  GAnchorSprite *PlayerSprite() {
-    return mPlayerProcess->mSprite;
-  }
+  GAnchorSprite *PlayerSprite() ;
 };
 
 

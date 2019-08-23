@@ -15,6 +15,8 @@ const TInt WALK_SPEED   = 5;
 const TInt DEATH_SPEED  = 5;
 
 const TFloat VELOCITY = 1.5;
+const TFloat SEEK_Y   = 6;  // seek to player Y within this many pixels
+const TFloat SEEK_X   = 32;  // seek to player X within this many pixels
 
 /*********************************************************************************
  *********************************************************************************
@@ -97,12 +99,12 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(SPIDER_SLOT),
+  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 0),
-  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 2),
+  ATYPE(STYPE_ENEMY),
   AEND
 };
 
@@ -150,12 +152,12 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(SPIDER_SLOT),
+  ATYPE(STYPE_EBULLET),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
-  ATYPE(STYPE_EBULLET),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
   AEND
 };
 
@@ -203,12 +205,12 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(SPIDER_SLOT),
+  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
-  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
   AEND
 };
 
@@ -257,12 +259,12 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(SPIDER_SLOT),
+  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 0),
-  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 2),
+  ATYPE(STYPE_ENEMY),
   AEND
 };
 
@@ -343,6 +345,7 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       }
       break;
     case ATTACK_STATE:
+      mAttackTimer = Random(30, 60);
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -389,18 +392,51 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GSpiderProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
+TBool GSpiderProcess::MaybeAttack() {
+  if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
+    if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
+      if (--mAttackTimer <= 0) {
+        mAttackTimer = Random(30, 60);
+        NewState(ATTACK_STATE, mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+        return ETrue;
+      }
     }
   }
 
+  return EFalse;
+}
+
+/*********************************************************************************
+ *********************************************************************************
+ *********************************************************************************/
+
+TBool GSpiderProcess::MaybeHit() {
   if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    if (mSprite->cType & STYPE_PBULLET) {
+      printf("Spider ATTACKED\n");
+      if (--mSprite->mHitPoints <= 0) {
+        printf("Spider DEAD\n");
+        mSprite->StartAnimation(deathAnimation);
+        mState = DEATH_STATE;
+        return ETrue;
+      }
+    }
+    GAnchorSprite *other = mPlayerSprite;
+    if ((mSprite->cType & STYPE_PBULLET) == 0) {
+      mSprite->cType &= ~STYPE_PLAYER;
+      if (mSprite->vx) {
+        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
+        return EFalse;
+      }
+      if (mSprite->vy) {
+        mSprite->y = other->y > mSprite->y ? other->y - 6 : other->y + 6;
+        return EFalse;
+      } else {
+        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
+      }
+    }
+
+    mSprite->cType &= ~STYPE_PBULLET;
     switch (other->mDirection) {
       case DIRECTION_RIGHT:
         NewState(HIT_STATE, DIRECTION_LEFT);
@@ -421,7 +457,11 @@ TBool GSpiderProcess::MaybeHit() {
   return EFalse;
 }
 
+
 TBool GSpiderProcess::IdleState() {
+  if (MaybeAttack()) {
+    return ETrue;
+  }
   if (MaybeHit()) {
     return ETrue;
   }
@@ -430,59 +470,15 @@ TBool GSpiderProcess::IdleState() {
       NewState(IDLE_STATE, mSprite->mDirection);
       return ETrue;
     }
-    if (mGameState->PlayerSprite()) {
-
+    if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
+      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
+      return ETrue;
+    } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X) {
+      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
+      return ETrue;
     }
-    // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    TFloat x  = mSprite->x,
-           y  = mSprite->y,
-           sx = x - mGameState->mWorldXX,
-           sy = y - mGameState->mWorldYY;
-
-    for (TInt retries = 0; retries < 8; retries++) {
-      // Don't go the same direction
-      TInt direction = Random() & TUint8(3);
-      while (direction == mSprite->mDirection) {
-        direction = Random() & TUint8(3);
-      }
-
-      switch (direction) {
-        case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_UP);
-            return ETrue;
-          }
-          break;
-        case 1: // down
-          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_DOWN);
-            return ETrue;
-          }
-          break;
-        case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
-          }
-          break;
-        case 3: // right
-          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
-              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_RIGHT);
-            return ETrue;
-          }
-          break;
-      }
-    }
-
-    // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
   }
-
   return ETrue;
 }
 
@@ -490,31 +486,49 @@ TBool GSpiderProcess::WalkState() {
   if (MaybeHit()) {
     return ETrue;
   }
-
+  if (mSprite->Clipped()) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
          screenY = mSprite->y - mGameState->mWorldYY;
 
-  if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
+  if (mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
       mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
       mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
       mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
       screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
     ) {
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
+    return ETrue;
+  }
+  if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
+    // keep walking
+    if (mSprite->AnimDone()) {
+      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
+    }
+    return ETrue;
+  } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X + 2) {
+    // keep walking
+    if (mSprite->AnimDone()) {
+      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
+    }
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
-  }
+  // next to player
+  NewState(IDLE_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
+
+//  if (mSprite->AnimDone()) {
+//    NewState(WALK_STATE, mSprite->mDirection);
+//  }
 
   return ETrue;
 }
 
 TBool GSpiderProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
+  if (mSprite->AnimDone()) {
+    NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
 }

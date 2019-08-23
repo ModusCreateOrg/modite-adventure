@@ -16,6 +16,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
   mStep      = 0;
 
   mPlayerSprite = mGameState->PlayerSprite();
+  mAttackTimer = Random(30, 60);
 }
 
 GEnemyProcess::~GEnemyProcess() {

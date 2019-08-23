@@ -21,6 +21,7 @@ protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
   TBool MaybeHit();
+  TBool MaybeAttack();
 
   TBool IdleState() override;
 
