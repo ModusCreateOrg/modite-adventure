@@ -17,6 +17,12 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/cmake.files)
 # ${CREATIVE_ENGINE_LINK_LIBRARIES} - used in TARGET_LINK_LIBRARIES(...)
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/CreativeEngine.cmake)
 
+### LDK START #####
+FILE(GLOB_RECURSE LDK_SRC RELATIVE ${CMAKE_SOURCE_DIR} "src/LDK/*.cpp")
+
+
+### LDK END   ####
+
 SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/resources
