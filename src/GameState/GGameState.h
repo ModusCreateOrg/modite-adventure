@@ -36,6 +36,11 @@ protected:
 protected:
   GGamePlayfield *mGamePlayfield;
   GPlayerProcess *mPlayerProcess;
+
+public:
+  GAnchorSprite *PlayerSprite() {
+    return mPlayerProcess->mSprite;
+  }
 };
 
 

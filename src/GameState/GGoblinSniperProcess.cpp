@@ -13,7 +13,7 @@ const TInt16 IDLE_TIMEOUT = 30;
 const TInt IDLE_SPEED   = 5;
 const TInt SELECT_SPEED = 5;
 const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED    = 5;
+const TInt HIT_SPEED    = 1;
 const TInt WALK_SPEED   = 5;
 const TInt DEATH_SPEED  = 5;
 

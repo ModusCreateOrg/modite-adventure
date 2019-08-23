@@ -35,6 +35,8 @@ protected:
   TUint16 mDirection;
   TUint16 mStep;
 
+  GAnchorSprite *mPlayerSprite;
+
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
 

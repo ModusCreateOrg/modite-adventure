@@ -426,6 +426,13 @@ TBool GSpiderProcess::IdleState() {
     return ETrue;
   }
   if (--mStateTimer < 0) {
+    if (mSprite->Clipped()) {
+      NewState(IDLE_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+    if (mGameState->PlayerSprite()) {
+
+    }
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
