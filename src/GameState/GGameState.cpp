@@ -1,14 +1,14 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
-#include "GPlayerProcess.h"
-#include "GSpiderProcess.h"
-#include "GBatProcess.h"
-#include "GGoblinProcess.h"
-#include "GGoblinSniperProcess.h"
-#include "GOrcProcess.h"
-#include "GRatProcess.h"
-#include "GSlimeProcess.h"
-#include "GTrollProcess.h"
+#include "GameState/player/GPlayerProcess.h"
+#include "GameState/enemies/GSpiderProcess.h"
+#include "GameState/enemies/GBatProcess.h"
+#include "GameState/enemies/GGoblinProcess.h"
+#include "GameState/enemies/GGoblinSniperProcess.h"
+#include "GameState/enemies/GOrcProcess.h"
+#include "GameState/enemies/GRatProcess.h"
+#include "GameState/enemies/GSlimeProcess.h"
+#include "GameState/enemies/GTrollProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -52,7 +52,6 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
   mGamePlayfield = ENull;
   LoadLevel(EXAMPLE_FILELIST_TXT_MAP);
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
-  gViewPort->Dump();
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
 }

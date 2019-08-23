@@ -1,16 +1,16 @@
-#ifndef MODITE_GRATPROCESS_H
-#define MODITE_GRATPROCESS_H
+#ifndef MODITE_GTROLLPROCESS_H
+#define MODITE_GTROLLPROCESS_H
 
-#include <GEnemyProcess.h>
+#include <GameState/enemies/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GRatProcess : public GEnemyProcess {
+class GTrollProcess : public GEnemyProcess {
 public:
-  GRatProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GTrollProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 
-  ~GRatProcess();
+  ~GTrollProcess();
 
 public:
   TBool RunBefore() override;
@@ -31,8 +31,9 @@ protected:
   TBool HitState() override;
 
   TBool DeathState() override;
+
 protected:
   TInt16 mStateTimer;
 };
 
-#endif //MODITE_GRATPROCESS_H
+#endif //MODITE_GTROLLPROCESS_H
