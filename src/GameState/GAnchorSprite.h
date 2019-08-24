@@ -10,6 +10,12 @@ enum DIRECTION {
   DIRECTION_RIGHT,
 };
 
+enum HIT_STRENGTH {
+    HIT_LIGHT,
+    HIT_MEDIUM,
+    HIT_HARD
+};
+
 class GAnchorSprite : public BAnimSprite {
 public:
   GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
@@ -26,6 +32,8 @@ public:
   TInt16 mStrength;
   TInt16 mDexterity;
   TInt mGold;
+  HIT_STRENGTH mHitStrength;
+  char mName[64];
 };
 
 #endif //MODITE_GANCHORSPRITE_H

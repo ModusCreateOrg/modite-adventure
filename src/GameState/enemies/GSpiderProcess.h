@@ -1,7 +1,7 @@
 #ifndef MODITE_GSPIDERPROCESS_H
 #define MODITE_GSPIDERPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include "GameState/enemies/GEnemyProcess.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"

@@ -16,7 +16,7 @@ const TInt DEATH_SPEED  = 5;
 
 const TFloat VELOCITY = 1.5;
 const TFloat SEEK_Y   = 6;  // seek to player Y within this many pixels
-const TFloat SEEK_X   = 32;  // seek to player X within this many pixels
+const TFloat SEEK_X   = 32; // seek to player X within this many pixels
 
 /*********************************************************************************
  *********************************************************************************
@@ -41,7 +41,7 @@ ANIMSCRIPT idleAnimation[] = {
   ASTEP(4, IMG_SPIDER_IDLE + 1),
   ASTEP(40, IMG_SPIDER_IDLE + 2),
   ASTEP(4, IMG_SPIDER_IDLE + 1),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT selectAnimation[] = {
@@ -50,7 +50,7 @@ static ANIMSCRIPT selectAnimation[] = {
   ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 1),
   ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 2),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT deathAnimation[] = {
@@ -63,7 +63,7 @@ static ANIMSCRIPT deathAnimation[] = {
   ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_UP + 0),
   AFLIP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
   ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_DOWN + 0),
-  AEND
+  AEND,
 };
 
 /*
@@ -80,21 +80,21 @@ static ANIMSCRIPT idleDownAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 2),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_DOWN + 0),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_DOWN + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_DOWN + 2),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_DOWN + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackDownAnimation[] = {
@@ -105,7 +105,7 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 1),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 2),
   ATYPE(STYPE_ENEMY),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitDownAnimation[] = {
@@ -115,7 +115,7 @@ static ANIMSCRIPT hitDownAnimation[] = {
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
-  AEND
+  AEND,
 };
 
 /*
@@ -133,32 +133,33 @@ static ANIMSCRIPT idleLeftAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 2),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(SPIDER_SLOT),
   AFLIP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
   AFLIP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(SPIDER_SLOT),
   AFLIP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 2),
   AFLIP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(SPIDER_SLOT),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0, 0, 64, 64),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitLeftAnimation[] = {
@@ -168,7 +169,7 @@ static ANIMSCRIPT hitLeftAnimation[] = {
   AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 1),
   AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 2),
   AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 /*
@@ -186,32 +187,33 @@ static ANIMSCRIPT idleRightAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 2),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 2),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(SPIDER_SLOT),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0, 0, 64, 64),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitRightAnimation[] = {
@@ -221,7 +223,7 @@ static ANIMSCRIPT hitRightAnimation[] = {
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 /*
@@ -239,22 +241,21 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 2),
-  ALOOP
+  ALOOP,
 };
-
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_UP + 0),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_UP + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_SPIDER_WALK_UP + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackUpAnimation[] = {
@@ -265,7 +266,7 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 1),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_UP + 2),
   ATYPE(STYPE_ENEMY),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitUpAnimation[] = {
@@ -275,7 +276,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 3),
-  AEND
+  AEND,
 };
 
 /*********************************************************************************
@@ -283,7 +284,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
+GSpiderProcess::GSpiderProcess(GGameState *aGameState,
+                               GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, SPIDER_SLOT) {
   mSprite->x          = aX;
   mSprite->y          = aY;
@@ -302,6 +304,7 @@ GSpiderProcess::~GSpiderProcess() {
 
 void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
+  strcpy(mSprite->mName, "SPIDER");
   mSprite->mDirection = aDirection;
   mSprite->mDx        = 0;
   mSprite->mDy        = 0;
@@ -329,18 +332,21 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_DOWN:
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+          mSprite->StartAnimation(
+            mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-//          mSprite->mDx = -36;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+          //          mSprite->mDx = -36;
+          mSprite->StartAnimation(
+            mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+          mSprite->StartAnimation(
+            mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
@@ -368,6 +374,7 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
+      mSprite->cMask &= STYPE_EBULLET;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitUpAnimation);
@@ -397,7 +404,19 @@ TBool GSpiderProcess::MaybeAttack() {
     if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
       if (--mAttackTimer <= 0) {
         mAttackTimer = Random(30, 60);
-        NewState(ATTACK_STATE, mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+        switch (Random(0, 2)) {
+          case 0:
+            mSprite->mHitStrength = HIT_HARD;
+            break;
+          case 1:
+            mSprite->mHitStrength = HIT_MEDIUM;
+            break;
+          default:
+            mSprite->mHitStrength = HIT_LIGHT;
+            break;
+        }
+        NewState(ATTACK_STATE,
+                 mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
         return ETrue;
       }
     }
@@ -412,6 +431,7 @@ TBool GSpiderProcess::MaybeAttack() {
 
 TBool GSpiderProcess::MaybeHit() {
   if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
+    mSprite->cMask &= ~STYPE_EBULLET;
     if (mSprite->cType & STYPE_PBULLET) {
       printf("Spider ATTACKED\n");
       if (--mSprite->mHitPoints <= 0) {
@@ -421,18 +441,20 @@ TBool GSpiderProcess::MaybeHit() {
         return ETrue;
       }
     }
+
     GAnchorSprite *other = mPlayerSprite;
     if ((mSprite->cType & STYPE_PBULLET) == 0) {
       mSprite->cType &= ~STYPE_PLAYER;
+      mSprite->cMask &= ~STYPE_EBULLET;
       if (mSprite->vx) {
-        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
+//        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
         return EFalse;
       }
       if (mSprite->vy) {
-        mSprite->y = other->y > mSprite->y ? other->y - 6 : other->y + 6;
+//        mSprite->y = other->y > mSprite->y ? other->y - 6 : other->y + 6;
         return EFalse;
       } else {
-        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
+//        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
       }
     }
 
@@ -451,12 +473,12 @@ TBool GSpiderProcess::MaybeHit() {
         NewState(HIT_STATE, DIRECTION_UP);
         break;
     }
+
     return ETrue;
   }
 
   return EFalse;
 }
-
 
 TBool GSpiderProcess::IdleState() {
   if (MaybeAttack()) {
@@ -471,13 +493,16 @@ TBool GSpiderProcess::IdleState() {
       return ETrue;
     }
     if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
-      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
+      NewState(WALK_STATE,
+               mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
       return ETrue;
     } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X) {
-      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
+      NewState(WALK_STATE,
+               mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
       return ETrue;
     }
-    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
+    NewState(IDLE_STATE,
+             mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
   }
   return ETrue;
 }
@@ -493,35 +518,40 @@ TBool GSpiderProcess::WalkState() {
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
          screenY = mSprite->y - mGameState->mWorldYY;
 
-  if (mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
-    ) {
-    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
+  if (mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
+                         mSprite->y + mSprite->vy) || // Left/Bottom Wall
+      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
+                         mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
+      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
+                         mSprite->y + mSprite->vy) || // Right/Bottom Wall
+      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
+                         mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
+      screenX < 16 ||
+      screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
+      screenY > (SCREEN_HEIGHT - 16)) {
+    NewState(IDLE_STATE,
+             mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
     return ETrue;
   }
   if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
     // keep walking
     if (mSprite->AnimDone()) {
-      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
+      NewState(WALK_STATE,
+               mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
     }
     return ETrue;
   } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X + 2) {
     // keep walking
     if (mSprite->AnimDone()) {
-      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
+      NewState(WALK_STATE,
+               mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
     }
     return ETrue;
   }
 
   // next to player
-  NewState(IDLE_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
-
-//  if (mSprite->AnimDone()) {
-//    NewState(WALK_STATE, mSprite->mDirection);
-//  }
+  NewState(IDLE_STATE,
+           mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
 
   return ETrue;
 }
@@ -574,6 +604,6 @@ TBool GSpiderProcess::RunBefore() {
 }
 
 TBool GSpiderProcess::RunAfter() {
+//  printf("Spider %f,%f\n", mSprite->x, mSprite->y);
   return ETrue;
 }
-

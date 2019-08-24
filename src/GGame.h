@@ -40,6 +40,7 @@ protected:
 };
 
 extern GGame *gGame;
+extern BGameEngine *gGameEngine;
 extern BFont *gFont8x8, *gFont16x16;
 
 #endif //BRICKOUT_GGAME_H
