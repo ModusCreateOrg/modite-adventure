@@ -1,4 +1,4 @@
 title=Modus Test
 description=Modus Creates
-exec=/home/retrofw/games/_modus_test/modus_test.elf
+exec=/home/retrofw/test/modus.dge
 clock=600
