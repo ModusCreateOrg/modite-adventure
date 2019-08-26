@@ -4,6 +4,9 @@
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 enum {
   IDLE_STATE,
   WALK_STATE,
@@ -126,6 +129,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->mInvulnerable = ETrue;
+#ifdef DEBUGME
+      printf("PLAYER invulnerable\n");
+#endif
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -149,6 +155,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->mInvulnerable = ETrue;
+#ifdef DEBUGME
+      printf("PLAYER invulnerable\n");
+#endif
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -172,6 +181,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->mInvulnerable = ETrue;
+#ifdef DEBUGME
+      printf("PLAYER invulnerable\n");
+#endif
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -193,11 +205,15 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
 TBool GPlayerProcess::MaybeHit() {
   if (mSprite->cType) {
-//    printf("Player collide cType: %x STYPE_ENEMY: %x STYPE_EBULLET: %x\n",
-//           mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
+#ifdef DEBUGME
+    printf("Player collide cType: %x STYPE_ENEMY: %x STYPE_EBULLET: %x\n",
+           mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
+#endif
     TInt state = HIT_LIGHT_STATE;
     if (!mSprite->mInvulnerable && mSprite->cType & STYPE_EBULLET) {
+#ifdef DEBUGME
       printf("Player attacked\n");
+#endif
       const GAnchorSprite *other = mSprite->mCollided;
       switch (other->mHitStrength) {
         case HIT_LIGHT:
@@ -224,10 +240,13 @@ TBool GPlayerProcess::MaybeHit() {
 
       if (mSprite->mHitPoints <= 0) {
         // GAME OVER!
+#ifdef DEBUGME
         printf("Player dead\n");
+#endif
         mSprite->mHitPoints = PLAYER_HITPOINTS;
       }
     }
+    mSprite->cType = 0;
 
     // bounce player off enemy
     const GAnchorSprite *enemy = mSprite->mCollided;
@@ -257,8 +276,9 @@ TBool GPlayerProcess::MaybeHit() {
       mSprite->y = enemy->y;
     }
 
-    NewState(state, mSprite->mDirection);
+    mSprite->mInvulnerable = ETrue;
     mSprite->cType = 0;
+    NewState(state, mSprite->mDirection);
     return ETrue;
   }
   mSprite->cType = 0;
@@ -408,7 +428,9 @@ TBool GPlayerProcess::SwordState() {
 TBool GPlayerProcess::HitState() {
   if (mSprite->AnimDone()) {
     mSprite->cType = 0;
-//    printf("VULNERABLE\n");
+#ifdef DEBUGME
+    printf("VULNERABLE\n");
+#endif
     mSprite->mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
   }
