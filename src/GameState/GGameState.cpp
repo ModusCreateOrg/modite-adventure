@@ -56,6 +56,7 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
   mGamePlayfield = ENull;
   LoadLevel(EXAMPLE_FILELIST_TXT_MAP);
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
+  gViewPort->Offset(0, 16);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
 }
@@ -97,7 +98,9 @@ TUint16 GGameState::MapHeight() {
   return (mGamePlayfield->MapHeightTiles() - TILES_HIGH) * 32;
 }
 
-GAnchorSprite *GGameState::PlayerSprite() { return mPlayerProcess->Sprite(); }
+GAnchorSprite *GGameState::PlayerSprite() {
+  return mPlayerProcess->Sprite();
+}
 
 void GGameState::LoadLevel(TUint16 aTileMapId) {
   Reset(); // remove sprites and processes

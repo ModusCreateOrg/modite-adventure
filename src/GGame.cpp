@@ -40,9 +40,9 @@ GGame::GGame() {
   gFont16x16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
   gViewPort = new BViewPort();
+// TODO @michaeltintiuc - the sprites are clipped at the bottom SCREEN_HEIGHT-16  (BUG)
+  gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT  - 1));
   gViewPort->Offset(0, 0);
-//  gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
-  gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
 
   mState      = mNextState = -1;
   gGameEngine = ENull;

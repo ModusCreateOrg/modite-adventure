@@ -1,4 +1,5 @@
 #include "GSpiderProcess.h"
+#include "GStatProcess.h"
 
 /*********************************************************************************
  *********************************************************************************
@@ -15,7 +16,7 @@ const TInt WALK_SPEED   = 5;
 const TInt DEATH_SPEED  = 5;
 
 const TFloat VELOCITY = 1.5;
-const TFloat SEEK_Y   = 6;  // seek to player Y within this many pixels
+const TFloat SEEK_Y   = COLLISION_DELTA_Y;  // seek to player Y within this many pixels
 const TFloat SEEK_X   = 32; // seek to player X within this many pixels
 
 /*********************************************************************************
@@ -99,12 +100,13 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(SPIDER_SLOT),
-  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 0),
+  ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 1),
-  ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 2),
   ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_DOWN + 2),
+  ASTEP(IDLE_SPEED, IMG_SPIDER_IDLE + 0),
   AEND,
 };
 
@@ -152,13 +154,14 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(SPIDER_SLOT),
-  ATYPE(STYPE_EBULLET),
-  ASIZE(0, 0, 64, 64),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
+  ATYPE(STYPE_EBULLET),
+  ASIZE(-32, 0, 64, 64),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
-  AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
+  ASIZE(0, 0, 32, 32),
   ATYPE(STYPE_ENEMY),
+  AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
   AEND,
 };
 
@@ -374,7 +377,7 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
-      mSprite->cMask &= STYPE_EBULLET;
+      mSprite->cMask &= ~STYPE_EBULLET;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitUpAnimation);
@@ -400,24 +403,25 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************/
 
 TBool GSpiderProcess::MaybeAttack() {
-  if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
-    if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
-      if (--mAttackTimer <= 0) {
-        mAttackTimer = Random(30, 60);
-        switch (Random(0, 2)) {
-          case 0:
-            mSprite->mHitStrength = HIT_HARD;
-            break;
-          case 1:
-            mSprite->mHitStrength = HIT_MEDIUM;
-            break;
-          default:
-            mSprite->mHitStrength = HIT_LIGHT;
-            break;
+  if (!mPlayerSprite->mInvulnerable) {
+    if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
+      if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
+        if (--mAttackTimer <= 0) {
+          switch (Random(0, 2)) {
+            case 0:
+              mSprite->mHitStrength = HIT_HARD;
+              break;
+            case 1:
+              mSprite->mHitStrength = HIT_MEDIUM;
+              break;
+            default:
+              mSprite->mHitStrength = HIT_LIGHT;
+              break;
+          }
+          NewState(ATTACK_STATE,
+                   mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+          return ETrue;
         }
-        NewState(ATTACK_STATE,
-                 mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
-        return ETrue;
       }
     }
   }
@@ -433,6 +437,8 @@ TBool GSpiderProcess::MaybeHit() {
   if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
     mSprite->cMask &= ~STYPE_EBULLET;
     if (mSprite->cType & STYPE_PBULLET) {
+      mGameState->AddProcess(
+        new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
       printf("Spider ATTACKED\n");
       if (--mSprite->mHitPoints <= 0) {
         printf("Spider DEAD\n");
@@ -444,17 +450,13 @@ TBool GSpiderProcess::MaybeHit() {
 
     GAnchorSprite *other = mPlayerSprite;
     if ((mSprite->cType & STYPE_PBULLET) == 0) {
+      // collide with player
       mSprite->cType &= ~STYPE_PLAYER;
       mSprite->cMask &= ~STYPE_EBULLET;
-      if (mSprite->vx) {
-//        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
-        return EFalse;
-      }
-      if (mSprite->vy) {
-//        mSprite->y = other->y > mSprite->y ? other->y - 6 : other->y + 6;
-        return EFalse;
+      if (other->x > mSprite->x) {
+        mSprite->x = other->x - 34;
       } else {
-//        mSprite->x = other->x > mSprite->x ? other->x - 32 : other->x + 32;
+        mSprite->x = other->x + 34;
       }
     }
 
@@ -481,10 +483,10 @@ TBool GSpiderProcess::MaybeHit() {
 }
 
 TBool GSpiderProcess::IdleState() {
-  if (MaybeAttack()) {
+  if (MaybeHit()) {
     return ETrue;
   }
-  if (MaybeHit()) {
+  if (MaybeAttack()) {
     return ETrue;
   }
   if (--mStateTimer < 0) {
@@ -529,9 +531,11 @@ TBool GSpiderProcess::WalkState() {
       screenX < 16 ||
       screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
       screenY > (SCREEN_HEIGHT - 16)) {
+
     NewState(IDLE_STATE,
              mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
     return ETrue;
+
   }
   if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
     // keep walking
@@ -605,5 +609,8 @@ TBool GSpiderProcess::RunBefore() {
 
 TBool GSpiderProcess::RunAfter() {
 //  printf("Spider %f,%f\n", mSprite->x, mSprite->y);
+//  if (mSprite->w != 32) {
+//    printf("SPIDER %d,%d,%d,%d\n", mSprite->cx, mSprite->cy, mSprite->w, mSprite->h);
+//  }
   return ETrue;
 }

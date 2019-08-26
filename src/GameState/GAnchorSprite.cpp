@@ -13,6 +13,7 @@ GAnchorSprite::GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType
   mDexterity = 10;
   mGold = 0;
   strcpy(mName, "unnamed");
+  mInvulnerable = EFalse;
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -38,8 +39,9 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
 
 void GAnchorSprite::Collide(BSprite *aOther) {
   GAnchorSprite *s = (GAnchorSprite *)aOther;
-  if (abs(TInt(aOther->y - y)) < 6) {
-//    printf("%s collides with %s %x %x\n", mName, s->mName, type, s->type);
+//  printf("%s collides with %s %x %x\n", mName, s->mName, type, s->type);
+  if (abs(TInt(aOther->y - y)) < COLLISION_DELTA_Y) {
+//    printf("abs() %d\n", TInt(abs(aOther->y - y)));
     mCollided = s;
     s->mCollided = this;
     cType |= aOther->type;

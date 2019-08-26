@@ -6,7 +6,7 @@ const TInt TIMEOUT = 200;
 
 GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aMessage)
     : BProcess() {
-  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
+//  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
   mSprite = new GStatSprite(STAT_SIZE_16x16, aMessage);
   mSprite->x = aX;
   mSprite->y = aY;
@@ -20,7 +20,6 @@ GStatProcess::~GStatProcess() {
   mSprite->Remove();
   delete mSprite;
   mSprite = ENull;
-  //
 }
 
 TBool GStatProcess::RunBefore() { return ETrue; }
