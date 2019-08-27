@@ -1,16 +1,16 @@
-#ifndef MODITE_GSLIMEPROCESS_H
-#define MODITE_GSLIMEPROCESS_H
+#ifndef MODITE_GSPIDERPROCESS_H
+#define MODITE_GSPIDERPROCESS_H
 
-#include <GEnemyProcess.h>
+#include "GameState/enemies/GEnemyProcess.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GSlimeProcess : public GEnemyProcess {
+class GSpiderProcess : public GEnemyProcess {
 public:
-  GSlimeProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GSpiderProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 
-  ~GSlimeProcess();
+  ~GSpiderProcess();
 
 public:
   TBool RunBefore() override;
@@ -21,6 +21,7 @@ protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
   TBool MaybeHit();
+  TBool MaybeAttack();
 
   TBool IdleState() override;
 
@@ -35,4 +36,4 @@ protected:
   TInt16 mStateTimer;
 };
 
-#endif //MODITE_GSLIMEPROCESS_H
+#endif //MODITE_GSPIDERPROCESS_H

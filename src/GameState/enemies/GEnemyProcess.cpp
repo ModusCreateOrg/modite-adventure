@@ -3,7 +3,6 @@
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TUint16 aSlot) :
   mGameState(aGameState), mPlayfield(aGamePlayfield) {
-  BBitmap *bm = gResourceManager.GetBitmap(aSlot);
   mState  = IDLE_STATE;
   mSprite = new GAnchorSprite(0, aSlot);
   mSprite->type  = STYPE_ENEMY;
@@ -15,6 +14,9 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
   mDirection = DIRECTION_DOWN;
   mState     = IDLE_STATE;
   mStep      = 0;
+
+  mPlayerSprite = mGameState->PlayerSprite();
+  mAttackTimer = Random(30, 60);
 }
 
 GEnemyProcess::~GEnemyProcess() {
