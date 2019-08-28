@@ -15,7 +15,6 @@ CREATIVE_ENGINE_PATH = $(ROOT_DIR)/creative-engine
 CREATIVE_ENGINE_SOURCE_DIR = $(CREATIVE_ENGINE_PATH)/src
 
 
-
 TARGET = $(BUILD_DIR)/modus.dge
 
 SOURCES = $(shell find ${GAME_SOURCE_DIR} -type f -name '*.cpp')
@@ -112,3 +111,18 @@ clean:
 cleanall:	
 	rm -f $(TARGET); find -L . -name "*.o" -exec rm {} \;
 .PHONY: cleanall
+
+rcomp: FORCE
+	echo "Building rcomp"
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make
+	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
+
+resources: rcomp FORCE
+	echo "Compiling resources"
+	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
+
+reset: FORCE
+	echo "Resetting high score table (and options)"
+	rm -f cmake-build-debug/ModiteAdventure.app/Contents/MacOS/*.store
+
+FORCE:
