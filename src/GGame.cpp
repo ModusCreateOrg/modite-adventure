@@ -2,6 +2,8 @@
 
 static TUint32 start;
 
+BFont *gFont8x8, *gFont16x16;
+
 #ifdef DEBUG_MODE
 TBool GGame::mDebug = ETrue;
 #endif
@@ -21,7 +23,7 @@ GGame::GGame() {
 
   // TODO: Jay - this needs to be in BApplication constructor (I think)
 #ifdef ENABLE_AUDIO
-//  gSoundPlayer.Init(2 /*channels*/, 5 /*numSamples*/);
+  //  gSoundPlayer.Init(2 /*channels*/, 5 /*numSamples*/);
 #endif
 
   // preload bitmaps
@@ -32,18 +34,22 @@ GGame::GGame() {
 
   gResourceManager.LoadBitmap(CHARSET_8X8_BMP, FONT_8x8_SLOT, IMAGE_8x8);
   gResourceManager.CacheBitmapSlot(FONT_8x8_SLOT);
+  gFont8x8 = new BFont(gResourceManager.GetBitmap(FONT_8x8_SLOT), FONT_8x8);
   gResourceManager.LoadBitmap(CHARSET_16X16_BMP, FONT_16x16_SLOT, IMAGE_16x16);
   gResourceManager.CacheBitmapSlot(FONT_16x16_SLOT);
+  gFont16x16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
   gViewPort = new BViewPort();
+// TODO @michaeltintiuc - the sprites are clipped at the bottom SCREEN_HEIGHT-16  (BUG)
+  gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT  - 1));
   gViewPort->Offset(0, 0);
-  gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
 
-  mState = mNextState = -1;
+  mState      = mNextState = -1;
   gGameEngine = ENull;
-  mGameMenu = ENull;
+  mGameMenu   = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
+  mShmoo.Set(0, 0, 0);
 }
 
 GGame::~GGame() {
@@ -62,8 +68,7 @@ void GGame::ToggleInGameMenu() {
     delete mGameMenu;
     mGameMenu = ENull;
     gGameEngine->Resume();
-  }
-  else {
+  } else {
     mGameMenu = new GGameMenuState();
     gGameEngine->Pause();
   }
@@ -82,6 +87,8 @@ void GGame::Run() {
   TBool done = EFalse;
   while (!done) {
     Random(); // randomize
+    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
+    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
 
     if (mNextState != mState) {
       switch (mNextState) {
@@ -156,7 +163,7 @@ void GGame::Run() {
       gOptions->muted = muted;
       gOptions->Save();
 #ifdef ENABLE_AUDIO
-//      gSoundPlayer.MuteMusic(muted);
+      //      gSoundPlayer.MuteMusic(muted);
 #endif
     }
 #endif

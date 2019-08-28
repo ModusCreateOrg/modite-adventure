@@ -30,11 +30,11 @@ SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/resources
     ${CMAKE_SOURCE_DIR}/src/GameState
     ${CMAKE_SOURCE_DIR}/src/GameState/Playfields
-    ${CMAKE_SOURCE_DIR}/src/GameState/Powerups
-    ${CMAKE_SOURCE_DIR}/src/GameState/PauseModal
+    ${CMAKE_SOURCE_DIR}/src/GameState/player
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies
+    ${CMAKE_SOURCE_DIR}/src/GameState/status
     ${CMAKE_SOURCE_DIR}/src/GameMenuState
     ${CMAKE_SOURCE_DIR}/src/GameOverState
-    ${CMAKE_SOURCE_DIR}/src/HighScoresState
     ${CMAKE_SOURCE_DIR}/src/MainMenuState
     ${CMAKE_SOURCE_DIR}/src/MainOptionsState
     ${CMAKE_SOURCE_DIR}/src/SplashState

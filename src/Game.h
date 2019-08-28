@@ -1,7 +1,3 @@
-//
-// Created by mschwartz on 7/3/19.
-//
-
 #ifndef MODITE_GAME_H
 #define MODITE_GAME_H
 
@@ -46,6 +42,7 @@
 extern BViewPort   *gViewPort;
 extern BGameEngine *gGameEngine;
 extern TOptions    *gOptions;
+extern BFont *gFont8x8, *gFont16x16;
 
 #ifdef __XTENSA__
 static const TInt MAX_BRIGHTNESS = 0x1fff;

@@ -21,6 +21,7 @@ static const char  *stateMessages[] = {
   "HIT STATE",
   "DEATH STATE",
 };
+
 class GEnemyProcess : public BProcess {
 public:
   GEnemyProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TUint16 aSlot);
@@ -34,6 +35,9 @@ protected:
   TUint16 mState;
   TUint16 mDirection;
   TUint16 mStep;
+  TInt16 mAttackTimer;
+
+  GAnchorSprite *mPlayerSprite;
 
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;

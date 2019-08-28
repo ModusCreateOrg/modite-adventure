@@ -69,6 +69,9 @@ static const TUint16 IMG_WALK_UP     = 16;
 static const TUint16 IMG_SWORD_DOWN  = 20;
 static const TUint16 IMG_SWORD_RIGHT = 24;
 static const TUint16 IMG_SWORD_UP    = 28;
+static const TUint16 IMG_DAMAGE_DOWN    = 32;
+static const TUint16 IMG_DAMAGE_RIGHT    = 36;
+static const TUint16 IMG_DAMAGE_UP    = 40;
 
 // CHARA_SPIDER_BMP
 static const TUint16 IMG_SPIDER_IDLE         = 0;
@@ -174,6 +177,7 @@ static const TUint16 IMG_TROLL_DAMAGE_DOWN  = 32;
 static const TUint16 IMG_TROLL_DAMAGE_RIGHT = 36;
 static const TUint16 IMG_TROLL_DAMAGE_UP    = 40;
 
+static const TUint8 COLOR_SHMOO       = 252;
 static const TUint8 COLOR_TEXT_SHADOW = 253;
 static const TUint8 COLOR_TEXT_BG     = 254;
 static const TUint8 COLOR_TEXT        = 255;
