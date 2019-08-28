@@ -15,12 +15,20 @@ if [[ ! -d /media/${me}/RETROFW/test ]]; then
 	exit 1
 fi
 
+echo "Compiling"
+
 mkdir -p build.ldk/
 
 rm -rf /media/${me}/RETROFW/test/*
-make -f Makefile-ldk.mk -j 12 
+make -f Makefile-ldk.mk -j 12  >/dev/null && \
 cp build.ldk/modus* /media/${me}/RETROFW/test/  
+
+md5=`md5sum build.ldk/modus.dge | awk '{print $1}'`
 make -f Makefile-ldk.mk clean >/dev/null 2>&1
 
 
+touch /media/${me}/RETROFW/test/${md5}
+
+echo 
 echo "done"
+echo "${md5}"
