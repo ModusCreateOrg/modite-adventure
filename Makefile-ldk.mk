@@ -45,6 +45,7 @@ INCLUDE = -I $(CREATIVE_ENGINE_SOURCE_DIR) \
           -I $(GAME_SOURCE_DIR)/SplashState \
           -I $(GAME_SOURCE_DIR)/MainMenuState \
           -I $(GAME_SOURCE_DIR)/CreditsState \
+          -I $(GAME_SOURCE_DIR)/GameState/status \
           -I $(GAME_SOURCE_DIR)/GameState \
           -I $(GAME_SOURCE_DIR)/MainOptionsState \
           -I $(GAME_SOURCE_DIR)/GameMenuState \
