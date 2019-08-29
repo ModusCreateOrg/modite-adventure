@@ -40,6 +40,10 @@ protected:
   GAnchorSprite *mPlayerSprite;
 
 protected:
+  // test if a wall in the specified direction from sprite's current location
+  TBool IsWall(TInt aDirection);
+
+protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
 
   virtual TBool IdleState() = 0;

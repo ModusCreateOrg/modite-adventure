@@ -8,7 +8,8 @@
 
 class GBatProcess : public GEnemyProcess {
 public:
-  GBatProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GBatProcess(
+      GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 
   ~GBatProcess();
 
@@ -24,6 +25,8 @@ protected:
 
   TBool IdleState() override;
 
+  TBool CanWalk(TInt aDirection);
+
   TBool WalkState() override;
 
   TBool AttackState() override;
@@ -31,8 +34,9 @@ protected:
   TBool HitState() override;
 
   TBool DeathState() override;
+
 protected:
   TInt16 mStateTimer;
 };
 
-#endif //MODITE_GBATPROCESS_H
+#endif // MODITE_GBATPROCESS_H

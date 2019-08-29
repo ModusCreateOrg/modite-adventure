@@ -25,7 +25,9 @@ public:
   ~GGamePlayfield();
 public:
   TBool IsWall(TFloat aWorldX, TFloat aWorldY) {
-    return TUint16(GetCell(aWorldX, aWorldY)>>16) == ATTR_WALL;
+    const TUint32 cell = GetCell(aWorldX, aWorldY);
+    const TUint16 shifted = cell >> TUint8(16);
+    return shifted == ATTR_WALL;
   }
 };
 
