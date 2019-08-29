@@ -69,7 +69,7 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 
   SetMusicVolume(.5);
   SetEffectsVolume(.5);
-  MuteMusic(gOptions->muted);
+  MuteMusic(false);
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
@@ -79,6 +79,8 @@ TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
   // We have to re-mute it in case of mute == true
 //TODO: @mtintiuc
   MuteMusic(false);
+  SetMusicVolume(.5);
+  SetEffectsVolume(.5);
 
   return music;
 }
@@ -105,6 +107,8 @@ TBool GSoundPlayer::LoadEffects() {
 // TODO: @mtintiuc
 //  SetMusicVolume(gOptions->music);
 //  SetEffectsVolume(gOptions->sfx);
+  SetMusicVolume(.5);
+  SetEffectsVolume(.5);
   return ETrue;
 }
 
