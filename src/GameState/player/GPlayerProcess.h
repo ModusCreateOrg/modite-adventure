@@ -11,6 +11,9 @@ public:
   ~GPlayerProcess();
 public:
   void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GAnchorSprite *Sprite() { return mSprite; }
+  TFloat PlayerX() { return mSprite->x; }
+  TFloat PlayerY() { return mSprite->y; }
 public:
   TBool RunBefore();
   TBool RunAfter();
@@ -34,6 +37,7 @@ protected:
   TBool WalkState();
   TBool SwordState();
   TBool FallState();
+  TBool HitState();
   
 protected:
   GGameState *mGameState;

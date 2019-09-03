@@ -1,16 +1,16 @@
-#ifndef MODITE_GGOBLINSNIPERPROCESS_H
-#define MODITE_GGOBLINSNIPERPROCESS_H
+#ifndef MODITE_GGOBLINPROCESS_H
+#define MODITE_GGOBLINPROCESS_H
 
-#include <GEnemyProcess.h>
+#include <GameState/enemies/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GGoblinSniperProcess : public GEnemyProcess {
+class GGoblinProcess : public GEnemyProcess {
 public:
-  GGoblinSniperProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GGoblinProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 
-  ~GGoblinSniperProcess();
+  ~GGoblinProcess();
 
 public:
   TBool RunBefore() override;
@@ -35,4 +35,4 @@ protected:
   TInt16 mStateTimer;
 };
 
-#endif //MODITE_GGOBLINSNIPERPROCESS_H
+#endif //MODITE_GGOBLINPROCESS_H

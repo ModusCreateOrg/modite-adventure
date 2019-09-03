@@ -1,4 +1,4 @@
-#include "GGoblinProcess.h"
+#include "GGoblinSniperProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -7,15 +7,15 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
+const TInt   HIT_POINTS   = 5;
 const TInt16 IDLE_TIMEOUT = 30;
 
-const TInt IDLE_SPEED = 5;
+const TInt IDLE_SPEED   = 5;
 const TInt SELECT_SPEED = 5;
 const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 5;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt HIT_SPEED    = 1;
+const TInt WALK_SPEED   = 5;
+const TInt DEATH_SPEED  = 5;
 
 const TFloat VELOCITY = 1.5;
 
@@ -36,34 +36,34 @@ const TFloat VELOCITY = 1.5;
  */
 
 ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(40, IMG_GOBLIN_IDLE),
-  ASTEP(4, IMG_GOBLIN_IDLE + 1),
-  ASTEP(40, IMG_GOBLIN_IDLE + 2),
-  ASTEP(4, IMG_GOBLIN_IDLE + 1),
+  ASTEP(40, IMG_GOBLIN_SNIPER_IDLE),
+  ASTEP(4, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ASTEP(40, IMG_GOBLIN_SNIPER_IDLE + 2),
+  ASTEP(4, IMG_GOBLIN_SNIPER_IDLE + 1),
   ALOOP
 };
 
 static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 2),
+  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 0),
+  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 1),
+  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 2),
   ALOOP
 };
 
 static ANIMSCRIPT deathAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
+  AFLIP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
+  AFLIP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
   AEND
 };
 
@@ -76,46 +76,46 @@ static ANIMSCRIPT deathAnimation[] = {
 */
 
 static ANIMSCRIPT idleDownAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
   ALOOP
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 1),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 1),
   AEND
 };
 
 static ANIMSCRIPT walkDownAnimation2[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 2),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 3),
   AEND
 };
 
 static ANIMSCRIPT attackDownAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 3),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 0),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 3),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 1),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 1),
   ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 2),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 2),
   AEND
 };
 
 static ANIMSCRIPT hitDownAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
   AEND
 };
 
@@ -129,46 +129,46 @@ static ANIMSCRIPT hitDownAnimation[] = {
  */
 
 static ANIMSCRIPT idleLeftAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
   ALOOP
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
-  ABITMAP(GOBLIN_SLOT),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 1),
   AEND
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
-  ABITMAP(GOBLIN_SLOT),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 2),
+  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 3),
   AEND
 };
 
 static ANIMSCRIPT attackLeftAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 3),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 1),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
   AEND
 };
 
 static ANIMSCRIPT hitLeftAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 1),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 2),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
+  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 0),
+  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 1),
+  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 2),
+  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
   AEND
 };
 
@@ -182,46 +182,46 @@ static ANIMSCRIPT hitLeftAnimation[] = {
  */
 
 static ANIMSCRIPT idleRightAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
   ALOOP
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 1),
   AEND
 };
 
 static ANIMSCRIPT walkRightAnimation2[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 2),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 3),
   AEND
 };
 
 static ANIMSCRIPT attackRightAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 3),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 1),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
   AEND
 };
 
 static ANIMSCRIPT hitRightAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 0),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
   AEND
 };
 
@@ -235,47 +235,47 @@ static ANIMSCRIPT hitRightAnimation[] = {
  */
 
 static ANIMSCRIPT idleUpAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
   ALOOP
 };
 
 
 static ANIMSCRIPT walkUpAnimation1[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 1),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 1),
   AEND
 };
 
 static ANIMSCRIPT walkUpAnimation2[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 2),
+  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 3),
   AEND
 };
 
 static ANIMSCRIPT attackUpAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 0),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 3),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 2),
   AEND
 };
 
 static ANIMSCRIPT hitUpAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 3),
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 0),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 3),
   AEND
 };
 
@@ -284,16 +284,16 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GGoblinProcess::GGoblinProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SLOT ) {
-  mSprite->x = aX;
-  mSprite->y = aY;
+GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
+  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SNIPER_SLOT) {
+  mSprite->x          = aX;
+  mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GGoblinProcess::~GGoblinProcess() {
+GGoblinSniperProcess::~GGoblinSniperProcess() {
   //
 }
 
@@ -301,14 +301,14 @@ GGoblinProcess::~GGoblinProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 #ifdef DEBUGME
-  printf("GOBLIN NewState(%d,%d) %s[mState]\n", aState, aDirection, stateMessages[aState]);
+  printf("GOBLIN_SNIPER NewState(%d,%d) %s[mState]\n", aState, aDirection, stateMessages[aState]);
 #endif
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDx        = 0;
+  mSprite->mDy        = 0;
   switch (aState) {
     case IDLE_STATE:
       mStep = 0;
@@ -320,7 +320,7 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case WALK_STATE:
 #ifdef DEBUGME
-      printf("GOBLIN WALK_STATE %d\n", mSprite->mDirection);
+      printf("GOBLIN_SNIPER WALK_STATE %d\n", mSprite->mDirection);
 #endif
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -414,7 +414,7 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GGoblinProcess::MaybeHit() {
+TBool GGoblinSniperProcess::MaybeHit() {
   if (mSprite->cType & STYPE_PBULLET) {
     if (--mSprite->mHitPoints <= 0) {
       mSprite->StartAnimation(deathAnimation);
@@ -446,7 +446,7 @@ TBool GGoblinProcess::MaybeHit() {
   return EFalse;
 }
 
-TBool GGoblinProcess::IdleState() {
+TBool GGoblinSniperProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
   }
@@ -455,12 +455,12 @@ TBool GGoblinProcess::IdleState() {
   }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1,3)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->GetViewPort()->mWorldX,
-      sy = y - mGameState->GetViewPort()->mWorldY;
+    TFloat x  = mSprite->x,
+           y  = mSprite->y,
+           sx = x - mGameState->GetViewPort()->mWorldX,
+           sy = y - mGameState->GetViewPort()->mWorldY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -471,38 +471,43 @@ TBool GGoblinProcess::IdleState() {
 
       switch (direction) {
         case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) && !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
+          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_UP);
             return ETrue;
           }
           break;
         case 1: // down
-          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) && !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
+          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_DOWN);
             return ETrue;
           }
           break;
         case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
+          if (sx > 16) {
+            if (!mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
+              NewState(WALK_STATE, DIRECTION_LEFT);
+              return ETrue;
+            }
           }
           break;
         case 3: // right
-          if (sx < (SCREEN_WIDTH-16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) && !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
+          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
+              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_RIGHT);
             return ETrue;
           }
           break;
         default:
-          Panic("GoblinProcess: Invalid mDirection %d\n", mDirection);
+          Panic("GGoblinSniperProcess: Invalid direction %d\n", mDirection);
           break;
       }
     }
 
     // after 8 tries, we couldn't find a direction to walk.
 #ifdef DEBUGME
-    printf("Goblin Can't walk\n");
+    printf("Goblin Sniper Can't walk\n");
 #endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -510,17 +515,17 @@ TBool GGoblinProcess::IdleState() {
   return ETrue;
 }
 
-TBool GGoblinProcess::WalkState() {
+TBool GGoblinSniperProcess::WalkState() {
   if (MaybeHit()) {
     return ETrue;
   }
 
-  BViewPort *vp = mGameState->GetViewPort();
-  TFloat screenX = mSprite->x - vp->mWorldX,
-    screenY = mSprite->y - vp->mWorldY;
+  BViewPort *vp     = mGameState->GetViewPort();
+  TFloat    screenX = mSprite->x - vp->mWorldX,
+            screenY = mSprite->y - vp->mWorldY;
 
 #ifdef DEBUGME
-  printf("GOBLIN screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY, mSprite->x, mSprite->y);
+  printf("GOBLIN_SNIPER screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY, mSprite->x, mSprite->y);
 #endif
 
   if (--mStateTimer < 0 ||
@@ -541,14 +546,14 @@ TBool GGoblinProcess::WalkState() {
   return ETrue;
 }
 
-TBool GGoblinProcess::AttackState() {
+TBool GGoblinSniperProcess::AttackState() {
   if (MaybeHit()) {
     return ETrue;
   }
   return ETrue;
 }
 
-TBool GGoblinProcess::HitState() {
+TBool GGoblinSniperProcess::HitState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     mSprite->cType &= STYPE_PLAYER;
@@ -557,7 +562,7 @@ TBool GGoblinProcess::HitState() {
   return ETrue;
 }
 
-TBool GGoblinProcess::DeathState() {
+TBool GGoblinSniperProcess::DeathState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
@@ -571,7 +576,7 @@ TBool GGoblinProcess::DeathState() {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GGoblinProcess::RunBefore() {
+TBool GGoblinSniperProcess::RunBefore() {
   switch (mState) {
     case IDLE_STATE:
       return IdleState();
@@ -588,7 +593,7 @@ TBool GGoblinProcess::RunBefore() {
   }
 }
 
-TBool GGoblinProcess::RunAfter() {
+TBool GGoblinSniperProcess::RunAfter() {
   return ETrue;
 }
 
