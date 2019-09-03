@@ -8,6 +8,7 @@ const TFloat VELOCITY = 3;
 extern ANIMSCRIPT idleAnimation[];
 
 extern ANIMSCRIPT selectedAnimation[];
+extern ANIMSCRIPT fallAnimation[];
 
 // DOWN
 extern ANIMSCRIPT idleDownAnimation[];

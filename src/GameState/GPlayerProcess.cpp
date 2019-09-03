@@ -6,6 +6,7 @@
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
 const TUint16 SWORD_STATE = 2;
+const TUint16 FALL_STATE = 3;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
@@ -17,24 +18,41 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->w = 32;
   mSprite->h = 32;
   mGameState->AddSprite(mSprite);
+  mState = IDLE_STATE;
+  mStep = 0;
   mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  //
+  mSprite->Remove();
+  delete mSprite;
 }
 
 void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
   mPlayfield = aPlayfield;
   mSprite->x = aX;
   mSprite->y = aY;
-//  BBitmap *bm = gResourceManager.GetBitmap(PLAYER_SLOT);
-////  bm->Remap(PLAYER_PALETTE, PLAYER_COLORS);
-//  TRGB *pal = bm->GetPalette();
-//  for (TInt i = PLAYER_PALETTE; i < PLAYER_PALETTE+PLAYER_COLORS-1; i++) {
-//    gDisplay.SetColor(i, pal[i]);
-//  }
+}
+
+TBool GPlayerProcess::IsWall(TFloat aX, TFloat aY) {
+  return mPlayfield->GetAttribute(aX, aY) == ATTR_WALL;
+}
+
+TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
+  return mPlayfield->GetAttribute(aX, aY) == ATTR_FLOOR;
+}
+
+TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
+  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE;
+}
+
+TBool GPlayerProcess::CanWalk(TRect &aRect) {
+  if (aRect.x1 < 0 || aRect.y1 < 0) {
+    return EFalse;
+  }
+  return IsFloor(aRect.x1, aRect.y2) || IsLedge(aRect.x1, aRect.y2) ||
+         IsFloor(aRect.x2, aRect.y2) || IsLedge(aRect.x2, aRect.y2);
 }
 
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
@@ -108,9 +126,23 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+    case FALL_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mSprite->StartAnimation(fallAnimation);
+      mSprite->mDirection = DIRECTION_DOWN;
+      break;
   }
 }
 
+/*
+  ____ _   _    _    _   _  ____ _____   ____ _____  _  _____ _____
+ / ___| | | |  / \  | \ | |/ ___| ____| / ___|_   _|/ \|_   _| ____|
+| |   | |_| | / _ \ |  \| | |  _|  _|   \___ \ | | / _ \ | | |  _|
+| |___|  _  |/ ___ \| |\  | |_| | |___   ___) || |/ ___ \| | | |___
+ \____|_| |_/_/   \_\_| \_|\____|_____| |____/ |_/_/   \_\_| |_____|
+ */
 TBool GPlayerProcess::MaybeHit() {
   if (mSprite->cType) {
     mSprite->cType = 0;
@@ -127,23 +159,42 @@ TBool GPlayerProcess::MaybeSword() {
   return ETrue;
 }
 
+TBool GPlayerProcess::MaybeFall() {
+  if (IsLedge(mSprite->x+mSprite->cx+mSprite->w/2, mSprite->y)) {
+    NewState(FALL_STATE, DIRECTION_DOWN);
+    return ETrue;
+  }
+  return EFalse;
+}
+
 TBool GPlayerProcess::MaybeWalk() {
   // instead of walking, we might have to attack if A is pressed
   if (MaybeSword()) {
     return ETrue;
   }
+  
+  const TFloat x = mSprite->x,
+      y = mSprite->y;
+  TRect r;
+  
   if (gControls.IsPressed(JOYLEFT)) {
-    if (mSprite->x - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y) || mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y - 18)) {
+    r.Set(x - VELOCITY, y - 18, x + 22 - VELOCITY, y);
+    if (!CanWalk(r)) {
+//      mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y) ||
+//          mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y - 18)) {
       return EFalse;
     }
+    
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
       NewState(WALK_STATE, DIRECTION_LEFT);
     }
     return ETrue;
   }
-
+  
   if (gControls.IsPressed(JOYRIGHT)) {
-    if (mPlayfield->IsWall(mSprite->x + 42 + VELOCITY, mSprite->y) || mPlayfield->IsWall(mSprite->x + 42 + VELOCITY, mSprite->y - 18)) {
+    r.Set(x + 42 + VELOCITY, y, x + 42 + VELOCITY, y - 18);
+    
+    if (!CanWalk(r)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -151,30 +202,49 @@ TBool GPlayerProcess::MaybeWalk() {
     }
     return ETrue;
   }
-
+  
   if (gControls.IsPressed(JOYUP)) {
-    if (mSprite->y - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 - VELOCITY) || mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 - VELOCITY)) {
+    r.Set(x + 22, y-VELOCITY, x+42,  y-18-VELOCITY);
+    if (!CanWalk(r)) {
       return EFalse;
     }
+//    if (mSprite->y - VELOCITY < 0 || mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 - VELOCITY) ||
+//        mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 - VELOCITY)) {
+//      return EFalse;
+//    }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
       NewState(WALK_STATE, DIRECTION_UP);
     }
     return ETrue;
   }
-
+  
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x + 22 , mSprite->y + VELOCITY) || mPlayfield->IsWall(mSprite->x + 42 , mSprite->y + VELOCITY)) {
+    if (MaybeFall()) {
       return EFalse;
     }
+    r.Set(x+22, y+VELOCITY, x+42, y+VELOCITY);
+    if (!CanWalk(r)) {
+      return EFalse;
+    }
+//    if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + VELOCITY) ||
+//        mPlayfield->IsWall(mSprite->x + 42, mSprite->y + VELOCITY)) {
+//      return EFalse;
+//    }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
       NewState(WALK_STATE, DIRECTION_DOWN);
     }
     return ETrue;
   }
-
+  
   return EFalse;
 }
 
+/*____ _____  _  _____ _____ ____
+/ ___|_   _|/ \|_   _| ____/ ___|
+\___ \ | | / _ \ | | |  _| \___ \
+ ___) || |/ ___ \| | | |___ ___) |
+|____/ |_/_/   \_\_| |_____|____/
+*/
 TBool GPlayerProcess::IdleState() {
   if (MaybeSword()) {
     return ETrue;
@@ -187,44 +257,52 @@ TBool GPlayerProcess::WalkState() {
   if (MaybeSword()) {
     return ETrue;
   }
-
+  
   // maybe change direction!
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
-
+  
   // collision?
   if (MaybeHit()) {
     // bounce player off enemy
-    mSprite->x -= mSprite->vx*2;
-    mSprite->y -= mSprite->vy*2;
+    mSprite->x -= mSprite->vx * 2;
+    mSprite->y -= mSprite->vy * 2;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
-
+  
+  if (MaybeFall()) {
+    NewState(FALL_STATE, DIRECTION_DOWN);
+    return ETrue;
+  }
   // can player keep walking?
   switch (mSprite->mDirection) {
     case DIRECTION_LEFT:
-      if (mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y + mSprite->vy) || mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx , mSprite->y + mSprite->vy) || mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx , mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_UP:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 + mSprite->vy) || mPlayfield->IsWall(mSprite->x + 42 , mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + mSprite->vy) || mPlayfield->IsWall(mSprite->x + 42, mSprite->y + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 42, mSprite->y + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
@@ -243,6 +321,16 @@ TBool GPlayerProcess::SwordState() {
   return ETrue;
 }
 
+TBool GPlayerProcess::FallState() {
+  if (mPlayfield->IsFloor(mSprite->x, mSprite->y)) {
+    // land
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+  mSprite->vy += GRAVITY;
+  return ETrue;
+}
+
 TBool GPlayerProcess::RunBefore() {
   switch (mState) {
     case IDLE_STATE:
@@ -251,6 +339,8 @@ TBool GPlayerProcess::RunBefore() {
       return WalkState();
     case SWORD_STATE:
       return SwordState();
+    case FALL_STATE:
+      return FallState();
     default:
       return ETrue;
   }
@@ -259,10 +349,10 @@ TBool GPlayerProcess::RunBefore() {
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
   const TFloat xx = mSprite->x - gViewPort->mWorldX,
-    yy = mSprite->y - gViewPort->mWorldY,
-    dx = gViewPort->mRect.Width(),
-    dy = gViewPort->mRect.Height();
-
+      yy = mSprite->y - gViewPort->mWorldY,
+      dx = gViewPort->mRect.Width(),
+      dy = gViewPort->mRect.Height();
+  
   // Don't go less than 0 or more than map width/height
   if (xx > dx) {
     gViewPort->mWorldX = MIN(mGameState->MapWidth(), gViewPort->mWorldX + dx);
@@ -273,6 +363,6 @@ TBool GPlayerProcess::RunAfter() {
   } else if (yy < 0) {
     gViewPort->mWorldY = MAX(0, gViewPort->mWorldY - dy);
   }
-
+  
   return ETrue;
 }
