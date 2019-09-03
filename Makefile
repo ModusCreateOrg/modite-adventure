@@ -1,46 +1,46 @@
-BUILD_DIR = build.ldk
-SOURCE_DIR = src/LDK
+# ESP-IDF Makefile for game project
+PROJECT_NAME = ModiteAdventure
 
-IPK_DEST_DIR = _modus_test
+SRC_PATH = $(abspath ${PROJECT_PATH}/src)
+
+ifndef CREATIVE_ENGINE_PATH
+CREATIVE_ENGINE_PATH=$(abspath ${PROJECT_PATH}/../creative-engine)
+export CREATIVE_ENGINE_PATH
+endif
+
+EXTRA_COMPONENT_DIRS = \
+  ${CREATIVE_ENGINE_PATH} \
+  ${SRC_PATH}
+
+COMPONENT_ADD_INCLUDEDIRS = ${EXTRA_COMPONENT_DIRS}
+
+# Speed up compilation by removing components we don't use.
+# It shaved about 20 seconds from fresh builds (6 core i7 8700k)
+#EXCLUDE_COMPONENTS := asio fatfs json libsodium secure_boot idf_test bt mqtt   \
+#	esp_http_server  esp_https_ota esp_https_server sdmmc protocomm \
+#	wear_leveling
+
+# Let's keep this ABOVE the COMPONENT_DIRS var modification.
+include $(IDF_PATH)/make/project.mk
+
+# We're not supposed to write to this variable, but for now, let's keep this as/is.
+COMPONENT_DIRS := ${EXTRA_COMPONENT_DIRS}
 
 
-PROG = $(BUILD_DIR)/modus_test.elf
-SRCS = $(wildcard src/LDK/*.cpp)
-OBJS = $(SRCS:.cpp=.o)
+release: FORCE
+	./scripts/build.sh docker-build && cp ./build/ModiteAdventure.tgz ~/Downloads/
 
-CHAINPREFIX := /opt/mipsel-linux-uclibc
-CROSS_COMPILE := $(CHAINPREFIX)/usr/bin/mipsel-linux-
+rcomp: FORCE
+	echo "Building rcomp"
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make
+	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
 
-CXX := $(CROSS_COMPILE)g++
-CC  := $(CROSS_COMPILE)cc
-STRIP := $(CROSS_COMPILE)strip
-RC  := $(CROSS_COMPILE)windres
+resources: rcomp FORCE
+	echo "Compiling resources"
+	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
 
-SYSROOT := $(shell $(CC) --print-sysroot)
-SDL_CFLAGS := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-SDL_LIBS := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
+reset: FORCE
+	echo "Resetting high score table (and options)"
+	rm -f cmake-build-debug/ModiteAdventure.app/Contents/MacOS/*.store
 
-# CXXFLAGS = -Wall -Ofast -mno-abicalls -mplt $(SDL_CFLAGS) -DDINGUX
-CXXFLAGS = -Wall -Ofast -mplt $(SDL_CFLAGS) -DDINGUX
-LDFLAGS = $(SDL_LIBS) -lSDL_mixer -lSDL_image -lSDL_gfx -flto -s
-
-
-$(PROG): $(OBJS)
-	$(CXX) $(OBJS) $(LDFLAGS) -o $(PROG)
-
-ipk: $(PROG)
-	@rm -rf /tmp/.modus_test-ipk/
-	@mkdir -p /tmp/.modus_test-ipk/root/home/retrofw/games/$(IPK_DEST_DIR) /tmp/.modus_test-ipk/root/home/retrofw/apps/gmenu2x/sections/games
-	@cp -r $(BUILD_DIR)/modus_test.elf $(SOURCE_DIR)/modus_test.png /tmp/.modus_test-ipk/root/home/retrofw/games/$(IPK_DEST_DIR)
-	@cp $(SOURCE_DIR)/modus_test.lnk /tmp/.modus_test-ipk/root/home/retrofw/apps/gmenu2x/sections/games
-	@sed "s/^Version:.*/Version: $$(date +%Y%m%d)/" $(SOURCE_DIR)/control > /tmp/.modus_test-ipk/control
-	@cp $(SOURCE_DIR)/conffiles /tmp/.modus_test-ipk/
-	@tar --owner=0 --group=0 -czvf /tmp/.modus_test-ipk/control.tar.gz -C /tmp/.modus_test-ipk/ control conffiles
-	@tar --owner=0 --group=0 -czvf /tmp/.modus_test-ipk/data.tar.gz -C /tmp/.modus_test-ipk/root/ .
-	@echo 2.0 > /tmp/.modus_test-ipk/debian-binary
-	@ar r build.ldk/modus_test.ipk /tmp/.modus_test-ipk/control.tar.gz /tmp/.modus_test-ipk/data.tar.gz /tmp/.modus_test-ipk/debian-binary
-
-clean:
-	rm -f $(PROG) src/LDK/*.o
-
-.PHONY: clean
+FORCE:
