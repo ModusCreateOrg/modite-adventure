@@ -72,7 +72,7 @@ CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32 -march=mips32 -mno-mip
 CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DMIPS_XBURST -DFAST_LSB_WORD_ACCESS
-CFLAGS += -fprofile-use -fprofile-dir=./profile -DNO_ROM_BROWSER -Wno-implicit-exception-spec-mismatch
+CFLAGS += -fprofile-use -fprofile-dir=./profile -DNO_ROM_BROWSER
 
 CXXFLAGS = $(CFLAGS) -std=gnu++14 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
 LDFLAGS = $(SDL_LIBS) -lSDL_mixer -lSDL_image -lSDL_gfx -flto  -s
@@ -109,9 +109,15 @@ clean:
 .PHONY: clean
 
 
-cleanall:	
-	rm -f $(TARGET); find -L . -name "*.o" -exec rm {} \;
+cleanall: cleanobjects
+	rm -f $(TARGET);
 .PHONY: cleanall
+
+
+cleanobjects:
+	find -L . -name "*.o" -exec rm {} \;
+.PHONY: cleanobjects
+
 
 rcomp: FORCE
 	echo "Building rcomp"

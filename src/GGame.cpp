@@ -8,6 +8,8 @@ BFont *gFont8x8, *gFont16x16;
 TBool GGame::mDebug = ETrue;
 #endif
 
+uint32_t frames = 0;
+
 GGame::GGame() {
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -79,6 +81,8 @@ void GGame::SetState(TInt aNewState) { mNextState = aNewState; }
 
 TInt GGame::GetState() { return mState; }
 
+uint16_t my_frame = 0;
+
 void GGame::Run() {
 #ifdef ENABLE_OPTIONS
   TBool muted = gOptions->muted;
@@ -87,8 +91,8 @@ void GGame::Run() {
   TBool done = EFalse;
   while (!done) {
     Random(); // randomize
-    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
-    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
+//    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
+//    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
 
     if (mNextState != mState) {
       switch (mNextState) {
@@ -128,6 +132,14 @@ void GGame::Run() {
     // TODO Fix controls polling for multi engine setups
     const TUint16 cKeys = gControls.cKeys;
     gGameEngine->GameLoop();
+
+#ifdef __DINGUX__
+    my_frame++;
+    if (my_frame > 200) {
+      printf("Force exiting!");
+      done = true;
+    }
+#endif
 
     if (mGameMenu) {
       gControls.cKeys = cKeys;
