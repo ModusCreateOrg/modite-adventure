@@ -70,7 +70,7 @@ ANIMSCRIPT swordDownAnimation[] = {
   // this is the frame to collide with enemy to hit it
   ADELTA(-2,22),
   ATYPE(STYPE_PLAYER|STYPE_PBULLET),
-  ASIZE(0,23, 32,55),
+  ASIZE(0,32, 32,55),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER

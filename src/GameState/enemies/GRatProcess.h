@@ -22,7 +22,9 @@ protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
   TBool MaybeHit();
+  TBool MaybeAttack();
 
+protected:
   TBool CanWalk(TInt aDirection);
 
   TBool IdleState() override;
@@ -36,6 +38,7 @@ protected:
   TBool DeathState() override;
 
 protected:
+  TFloat mStartX, mStartY;
   TInt16 mStateTimer;
 };
 
