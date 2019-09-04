@@ -300,8 +300,8 @@ TBool GPlayerProcess::MaybeWalk() {
   }
   if (gControls.IsPressed(JOYLEFT)) {
     if (mSprite->x - VELOCITY < 0 ||
-        mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y) ||
-        mPlayfield->IsWall(mSprite->x + 22 - VELOCITY, mSprite->y - 18)) {
+        mPlayfield->IsWall(mSprite->x + 26 - VELOCITY, mSprite->y - 2) ||
+        mPlayfield->IsWall(mSprite->x + 26 - VELOCITY, mSprite->y - 8)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -311,8 +311,8 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYRIGHT)) {
-    if (mPlayfield->IsWall(mSprite->x + 42 + VELOCITY, mSprite->y) ||
-        mPlayfield->IsWall(mSprite->x + 42 + VELOCITY, mSprite->y - 18)) {
+    if (mPlayfield->IsWall(mSprite->x + 38 + VELOCITY, mSprite->y - 2) ||
+        mPlayfield->IsWall(mSprite->x + 38 + VELOCITY, mSprite->y - 8)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -323,8 +323,8 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(JOYUP)) {
     if (mSprite->y - VELOCITY < 0 ||
-        mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 - VELOCITY) ||
-        mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 - VELOCITY)) {
+        mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 8 - VELOCITY) ||
+        mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 8 - VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -334,8 +334,8 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(JOYDOWN)) {
-    if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + VELOCITY) ||
-        mPlayfield->IsWall(mSprite->x + 42, mSprite->y + VELOCITY)) {
+    if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 2 + VELOCITY) ||
+        mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 2 + VELOCITY)) {
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
@@ -379,32 +379,32 @@ TBool GPlayerProcess::WalkState() {
   switch (mSprite->mDirection) {
     case DIRECTION_LEFT:
       if (mPlayfield->IsWall(
-        mSprite->x + 22 + mSprite->vx, mSprite->y + mSprite->vy) ||
+        mSprite->x + 26 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
           mPlayfield->IsWall(
-            mSprite->x + 22 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+            mSprite->x + 26 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
       if (mPlayfield->IsWall(
-        mSprite->x + 42 + mSprite->vx, mSprite->y + mSprite->vy) ||
+        mSprite->x + 38 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
           mPlayfield->IsWall(
-            mSprite->x + 42 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+            mSprite->x + 38 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_UP:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 8 + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 42, mSprite->y + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 2 + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 2 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
