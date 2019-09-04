@@ -1,0 +1,5 @@
+title=ModiteAdventure
+description=Test Description 1234
+icon=/home/retrofw/games/modus/modus.png
+exec=/home/retrofw/games/modus/modus.dge
+clock=600

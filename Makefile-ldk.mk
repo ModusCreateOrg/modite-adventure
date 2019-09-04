@@ -8,7 +8,7 @@ LD_COMMAND = $(CHAINPREFIX)/mipsel-buildroot-linux-uclibc/bin/ld
 # ----------- SETUP VARS FOR SOURCES --------------
 
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-BUILD_DIR = $(ROOT_DIR)/build.ldk
+BUILD_DIR = $(ROOT_DIR)/build/ldk
 GAME_SOURCE_DIR = $(ROOT_DIR)/src
 LDK_SOURCE_DIR = $(ROOT_DIR)/src/LDK
 CREATIVE_ENGINE_PATH = $(ROOT_DIR)/creative-engine
@@ -22,6 +22,8 @@ SOURCES += $(shell find $(CREATIVE_ENGINE_SOURCE_DIR) -type f -name '*.c*')
 
 RESOURCES_BIN = $(GAME_SOURCE_DIR)/Resources.bin
 RESOURCES_BIN_O = $(BUILD_DIR)/Resources.bin
+
+$(shell mkdir -p $(BUILD_DIR))
 
 $(shell ${LD_COMMAND} -r -b binary -o $(RESOURCES_BIN_O) $(RESOURCES_BIN))
 
@@ -56,7 +58,6 @@ CPP_OBJS = $(SOURCES:.cpp=.o)
 OBJS += $(CPP_OBJS:.c=.o)
 
 
-
 CXX = $(CROSS_COMPILE)-g++
 CC  = $(CROSS_COMPILE)-cc
 STRIP =  $(CROSS_COMPILE)-strip
@@ -77,40 +78,31 @@ CFLAGS += -fprofile-use -fprofile-dir=./profile -DNO_ROM_BROWSER
 CXXFLAGS = $(CFLAGS) -std=gnu++14 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
 LDFLAGS = $(SDL_LIBS) -lSDL_mixer -lSDL_image -lSDL_gfx -flto  -s
 
-
-
-## TODO: Turn into legit shell script
+#test 123
 
 DEPLOY_TMP = /tmp/.modus-ipk/root/home/retrofw/test
 
-all : $(TARGET)
+all: $(TARGET)
 
 $(TARGET) : $(OBJS)
 	$(CMD)$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 
 ipk: $(TARGET)
-	@rm -rf $(DEPLOY_TMP)
-	@mkdir -p $(DEPLOY_TMP)
-	@mkdir -p $(DEPLOY_TMP)/games
-	@cp -r build.ldk/modus.dge src/LDK/modus.png $(DEPLOY_TMP)
-	@cp $(SOURCE_DIR)/modus.lnk $(DEPLOY_TMP)
-	@sed "s/^Version:.*/Version: $$(date +%Y%m%d)/" $(SOURCE_DIR)/control > /tmp/.modus-ipk/control
-	@cp $(SOURCE_DIR)/conffiles /tmp/.modus-ipk/
-	@tar --owner=0 --group=0 -czvf /tmp/.modus-ipk/control.tar.gz -C /tmp/.modus-ipk/ control conffiles
-	@tar --owner=0 --group=0 -czvf /tmp/.modus-ipk/data.tar.gz -C /tmp/.modus-ipk/root/ .
-	@echo 2.0 > /tmp/.modus-ipk/debian-binary
-	@ar r ${BUILD_DIR}/modus.ipk /tmp/.modus-ipk/control.tar.gz /tmp/.modus-ipk/data.tar.gz /tmp/.modus-ipk/debian-binary
+	@echo "Packaging..."
+	./package.sh
+.PHONY: ipk
+
 
 clean:
 	#rm -f $(TARGET); find -L . -name "*.o" -exec rm {} \;
-	rm -f $(TARGET); find . -name "*.o" -exec rm {} \;
+	@rm -f $(TARGET); find . -name "*.o" -exec rm {} \;
 
 .PHONY: clean
 
 
 cleanall: cleanobjects
-	rm -f $(TARGET);
+	@rm -f $(TARGET);
 .PHONY: cleanall
 
 
