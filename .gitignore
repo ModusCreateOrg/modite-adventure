@@ -99,4 +99,4 @@ sdkconfig.old
 *.tmp
 Resources.bin
 Resources.h
-
+.built

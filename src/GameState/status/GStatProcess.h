@@ -2,11 +2,12 @@
 #define GSTAT_PROCESS
 
 #include "BProcess.h"
+
 class GStatSprite;
 
 class GStatProcess : public BProcess {
   public:
-    GStatProcess(TFloat aX, TFloat aY, const char *message);
+    GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...);
     ~GStatProcess();
   public:
     TBool RunBefore();

@@ -6,6 +6,9 @@
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
+const TFloat SEEK_Y = COLLISION_DELTA_Y;  // seek to player Y within this many pixels
+const TFloat SEEK_X = 32; // seek to player X within this many pixels
+
 enum {
   IDLE_STATE,
   WALK_STATE,
@@ -38,6 +41,10 @@ protected:
   TInt16 mAttackTimer;
 
   GAnchorSprite *mPlayerSprite;
+
+protected:
+  // test if a wall in the specified direction from sprite's current location
+  TBool IsWall(TInt aDirection);
 
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
