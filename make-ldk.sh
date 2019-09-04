@@ -53,33 +53,33 @@ fi
 me=`whoami`
 
 if [[ ! -d ${LDK_DEVICE_DIR} ]]; then
-	echo ""
-	PRINT_YELLOW "WARNING: LDK not mounted!"
-	echo "Plug in LDK & enable 'Storage' mode. Standing by..."
+    echo ""
+    PRINT_YELLOW "WARNING: LDK not mounted!"
+    echo "Plug in LDK & enable 'Storage' mode. Standing by..."
 
-	#loop to wait
-	X=0;
-	Y=0;
+    #loop to wait
+    X=0;
+    Y=0;
 
-	while [[ ! -d ${LDK_DEVICE_DIR} ]] || [[ ! -w ${LDK_DEVICE_DIR} ]]; do
-		sleep .2
+    while [[ ! -d ${LDK_DEVICE_DIR} ]] || [[ ! -w ${LDK_DEVICE_DIR} ]]; do
+        sleep .2
 
-		X=$((X + 1));
-	
-		if [[ ${Y} -gt 4 ]]; then
-			Y=0
-			echo " "
-		fi
-		
-		if [[ ${X} -eq 5 ]]; then
-			printf "."
-			X=0
-			Y=$((Y + 1));
-		fi
-	done
+        X=$((X + 1));
 
-	echo ""
-	PRINT_GREEN "Found ${DEPLOY_MOUNT}"
+        if [[ ${Y} -gt 4 ]]; then
+            Y=0
+            echo " "
+        fi
+
+        if [[ ${X} -eq 5 ]]; then
+            printf "."
+            X=0
+            Y=$((Y + 1));
+        fi
+    done
+
+    echo ""
+    PRINT_GREEN "Found ${DEPLOY_MOUNT}"
 fi
 
 
@@ -89,10 +89,28 @@ md5=`md5sum build/ldk/modus.dge | awk '{print $1}'`
 md5=${md5: -6}
 
 
-cp build/ldk/modus.ipk ${LDK_DEVICE_DIR}
-touch ${LDK_DEVICE_DIR}/_${md5}
-#chmod +x ${LDK_DEVICE_DIR}/start-modus.sh
+
+ALREADY_DEPLOYED_DIR=${DEPLOY_MOUNT}/games/modus
+
+if [[ -f ${ALREADY_DEPLOYED_DIR}/modus.dge ]]; then
+    # Auto-deploy the latest binary
+    cp -f build/ldk/modus.dge ${ALREADY_DEPLOYED_DIR}
+    rm -f ${ALREADY_DEPLOYED_DIR}/*.md5
+    touch ${ALREADY_DEPLOYED_DIR}/${md5}.md5
+    echo "Deployed latest binary ${md5} to ${ALREADY_DEPLOYED_DIR}"
+
+else
+    # Deploy IPK
+
+    cp build/ldk/modus.ipk ${LDK_DEVICE_DIR}
+    touch ${LDK_DEVICE_DIR}/${md5}.md5
+    echo "Deployed latest IPK to ${LDK_DEVICE_DIR}"
+
+fi
+
 make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
+
+
 
 echo " "
 umount ${DEPLOY_MOUNT}
