@@ -280,29 +280,37 @@ TBool GPlayerProcess::WalkState() {
   // can player keep walking?
   switch (mSprite->mDirection) {
     case DIRECTION_LEFT:
-      if (mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+//      if (mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y + mSprite->vy) ||
+//          mPlayfield->IsWall(mSprite->x + 22 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(
+        mSprite->x + 26 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
+          mPlayfield->IsWall(
+            mSprite->x + 26 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+//      if (mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y + mSprite->vy) ||
+//          mPlayfield->IsWall(mSprite->x + 42 + mSprite->vx, mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(
+        mSprite->x + 38 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
+          mPlayfield->IsWall(
+            mSprite->x + 38 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_UP:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y - 18 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 42, mSprite->y - 18 + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 8 + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 8 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + 22, mSprite->y + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 42, mSprite->y + mSprite->vy)) {
+      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 2 + mSprite->vy) ||
+          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 2 + mSprite->vy)) {
         NewState(IDLE_STATE, mSprite->mDirection);
         return ETrue;
       }
