@@ -1,8 +1,9 @@
 #include "Game.h"
 #include "GStatSprite.h"
+#include <stdarg.h>
 
 GStatSprite::GStatSprite(STAT_SIZE aSize, const char *aMessage)
-    : mMessage(strdup(aMessage)), BSprite(0, ENull, 0, STYPE_DEFAULT) {
+    : mMessage(strdup(aMessage)), BSprite(0, 0, 0, STYPE_DEFAULT) {
 
   switch (aSize) {
     case STAT_SIZE_8x8:

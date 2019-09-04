@@ -107,6 +107,8 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
+      // TODO: calculate hit strengh based upon leven and strength
+      mSprite->mHitStrength = 1;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(swordUpAnimation);
@@ -250,6 +252,7 @@ TBool GPlayerProcess::MaybeHit() {
 
     // bounce player off enemy
     const GAnchorSprite *enemy = mSprite->mCollided;
+    printf("bounce\n");
     if (mSprite->vx) {
       if (mSprite->x < enemy->x) {
         mSprite->x = enemy->x - 34;
@@ -264,16 +267,21 @@ TBool GPlayerProcess::MaybeHit() {
         mSprite->y = enemy->y + 6;
       }
     }
-    else if (abs(enemy->y - mSprite->y) > COLLISION_DELTA_Y) {
-      if (enemy->x > mSprite->x) {
-        mSprite->x = enemy->x - 36;
-      }
-      else {
-        mSprite->x = enemy->x + 36;
-      }
-    }
     else {
-      mSprite->y = enemy->y;
+      switch (mSprite->mDirection) {
+        case DIRECTION_RIGHT:
+          mSprite->x = enemy->x - 33;
+          break;
+        case DIRECTION_LEFT:
+          mSprite->x = enemy->x + 33;
+          break;
+        case DIRECTION_UP:
+          mSprite->y = enemy->y + 6;
+          break;
+        case DIRECTION_DOWN:
+          mSprite->y = enemy->y - 6;
+          break;
+      }
     }
 
     mSprite->mInvulnerable = ETrue;

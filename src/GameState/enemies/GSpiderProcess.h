@@ -9,30 +9,35 @@
 class GSpiderProcess : public GEnemyProcess {
 public:
   GSpiderProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
-
+  
   ~GSpiderProcess();
 
 public:
   TBool RunBefore() override;
-
+  
   TBool RunAfter() override;
 
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
-
+  
   TBool MaybeHit();
+  
   TBool MaybeAttack();
-
+  
+  TBool CanWalk();
+  
   TBool IdleState() override;
-
+  
   TBool WalkState() override;
-
+  
   TBool AttackState() override;
-
+  
   TBool HitState() override;
-
+  
   TBool DeathState() override;
+
 protected:
+  TFloat mStartX, mStartY;
   TInt16 mStateTimer;
 };
 
