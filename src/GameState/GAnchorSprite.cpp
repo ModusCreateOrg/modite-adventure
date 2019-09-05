@@ -30,6 +30,10 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     // render collision rect
     TRect r;
     GetRect(r);
+    r.x1 -= aViewPort->mWorldX;
+    r.x2 -= aViewPort->mWorldX;
+    r.y1 -= aViewPort->mWorldY;
+    r.y2 -= aViewPort->mWorldY;
     gDisplay.renderBitmap->SetColor(254, 255, 0, 0);
     gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
     
