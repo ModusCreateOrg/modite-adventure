@@ -4,17 +4,17 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
-const TInt16 IDLE_TIMEOUT = 30;
+const TInt   HIT_POINTS   = 5;
+const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5;
-const TInt SELECT_SPEED = 5;
-const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 5;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt SELECT_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt HIT_SPEED    = 5 * FACTOR;
+const TInt WALK_SPEED   = 5 * FACTOR;
+const TInt DEATH_SPEED  = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5;
+const TFloat VELOCITY = 1.5 / FACTOR;
 
 /*********************************************************************************
  *********************************************************************************
@@ -282,9 +282,9 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GSlimeProcess::GSlimeProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, SLIME_SLOT ) {
-  mSprite->x = aX;
-  mSprite->y = aY;
+  : GEnemyProcess(aGameState, aGamePlayfield, SLIME_SLOT) {
+  mSprite->x          = aX;
+  mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -301,8 +301,8 @@ GSlimeProcess::~GSlimeProcess() {
 void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDx        = 0;
+  mSprite->mDy        = 0;
   switch (aState) {
     case IDLE_STATE:
       mStep = 0;
@@ -427,12 +427,12 @@ TBool GSlimeProcess::IdleState() {
   }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1,3)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->mWorldXX,
-      sy = y - mGameState->mWorldYY;
+    TFloat x  = mSprite->x,
+           y  = mSprite->y,
+           sx = x - mGameState->mWorldXX,
+           sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -443,13 +443,15 @@ TBool GSlimeProcess::IdleState() {
 
       switch (direction) {
         case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) && !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
+          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_UP);
             return ETrue;
           }
           break;
         case 1: // down
-          if (sy < (SCREEN_HEIGHT-16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) && !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
+          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
+              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
             NewState(WALK_STATE, DIRECTION_DOWN);
             return ETrue;
           }
@@ -461,7 +463,8 @@ TBool GSlimeProcess::IdleState() {
           }
           break;
         case 3: // right
-          if (sx < (SCREEN_WIDTH-16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) && !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
+          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
+              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
             NewState(WALK_STATE, DIRECTION_RIGHT);
             return ETrue;
           }
@@ -482,7 +485,7 @@ TBool GSlimeProcess::WalkState() {
   }
 
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-    screenY = mSprite->y - mGameState->mWorldYY;
+         screenY = mSprite->y - mGameState->mWorldYY;
 
   if (--mStateTimer < 0 ||
       mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall

@@ -9,16 +9,16 @@
  *********************************************************************************/
 
 const TInt HIT_POINTS = 5;
-const TInt16 IDLE_TIMEOUT = 30;
+const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5;
-const TInt SELECT_SPEED = 5;
-const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 1;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt IDLE_SPEED = 5 * FACTOR;
+const TInt SELECT_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt HIT_SPEED = 1 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5;
+const TFloat VELOCITY = 1.5 / FACTOR;
 
 // region  ANIMATIONS {{{
 /*********************************************************************************
