@@ -41,82 +41,98 @@ DEPLOY_MOUNT=/media/${me}/RETROFW
 LDK_DEVICE_DIR=${DEPLOY_MOUNT}/test 
 
 echo "Compiling"
-make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
 mkdir -p build/ldk/
-rm -rf build/ldk/*
 
 MAKE_RESULT=`make -f Makefile-ldk.mk -j 12 ipk >/dev/null`
-if [[ ${MAKE_RESULT} -eq 0 ]]; then
-	make -f Makefile-ldk.mk cleanobjects >/dev/null 2>&1
-fi
+# if [[ ${MAKE_RESULT} -eq 0 ]]; then
+# 	make -f Makefile-ldk.mk cleanobjects >/dev/null 2>&1
+# fi
 
 me=`whoami`
 
-if [[ ! -d ${LDK_DEVICE_DIR} ]]; then
-    echo ""
-    PRINT_YELLOW "WARNING: LDK not mounted!"
-    echo "Plug in LDK & enable 'Storage' mode. Standing by..."
 
-    #loop to wait
-    X=0;
-    Y=0;
+ping 169.254.1.1 -c 1 -W 0 -i 200
+# RC=$?
 
-    while [[ ! -d ${LDK_DEVICE_DIR} ]] || [[ ! -w ${LDK_DEVICE_DIR} ]]; do
-        sleep .2
+# if [[ $RC -gt 0 ]]; then
+#   PRINT_YELLOW "WARNING: LDK not connected!"
+#   echo "Connect LDK and "
 
-        X=$((X + 1));
+#   while true; do 
+#     echo "Checking for ${LDK} `date`"
 
-        if [[ ${Y} -gt 4 ]]; then
-            Y=0
-            echo " "
-        fi
+#     ping 169.254.1.1  -c 1 -W 0 -i 200 >/dev/null 2>&1
+#     RC=$?
 
-        if [[ ${X} -eq 5 ]]; then
-            printf "."
-            X=0
-            Y=$((Y + 1));
-        fi
-    done
+#     if [[ $RC -eq 0 ]]; then
+#       break;
+#     fi
+#   done
 
-    echo ""
-    PRINT_GREEN "Found ${DEPLOY_MOUNT}"
-fi
+#   PRINT_GREEN "Found LDK. Deploying..."
+# fi
 
-
-rm -rf ${LDK_DEVICE_DIR}/*
 
 md5=`md5sum build/ldk/modus.dge | awk '{print $1}'`
 md5=${md5: -6}
 
 
+ALREADY_DEPLOYED_DIR=/home/retrofw/games/modus
 
-ALREADY_DEPLOYED_DIR=${DEPLOY_MOUNT}/games/modus
+function deploy_binary_via_ftp {
 
-if [[ -f ${ALREADY_DEPLOYED_DIR}/modus.dge ]]; then
-    # Auto-deploy the latest binary
-    cp -f build/ldk/modus.dge ${ALREADY_DEPLOYED_DIR}
-    rm -f ${ALREADY_DEPLOYED_DIR}/*.md5
-    touch ${ALREADY_DEPLOYED_DIR}/${md5}.md5
-    echo "Deployed latest binary ${md5} to ${ALREADY_DEPLOYED_DIR}"
+ftp -n -v $LDK << EOT
+user $USER
+prompt
+lcd build/ldk
+cd /home/retrofw/games/modus
+bin
+put modus.dge
+quit
+EOT
 
+  echo "Deployed latest binary ${md5} to ${ALREADY_DEPLOYED_DIR}"
+}
+
+
+function deploy_ipk_via_ftp {
+ftp -n -v $LDK << EOT
+user $USER
+prompt
+lcd build/ldk
+cd /home/retrofw/
+mkdir tmp
+cd tmp/
+bin
+put modus.ipk
+quit
+EOT
+
+  echo ""
+  echo "Deployed latest IPK to ${LDK_DEVICE_DIR}"
+  echo ""
+  PRINT_GREEN "Next Steps:"
+  echo " - Launch Explorer on device"
+  echo " - Navigate to /home/retrofw/tmp"
+  echo " - Install 'modus.ipk'"
+  echo "Further invocations of this script should not require \"ipk\" argument."
+
+}
+
+
+if [[ $# -gt 0 ]] && [[ "${1}" == "ipk" ]]; then
+  deploy_ipk_via_ftp
 else
-    # Deploy IPK
-
-    cp build/ldk/modus.ipk ${LDK_DEVICE_DIR}
-    touch ${LDK_DEVICE_DIR}/${md5}.md5
-    echo "Deployed latest IPK to ${LDK_DEVICE_DIR}"
-
+  deploy_binary_via_ftp
 fi
 
-make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
+# make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
 
 
 
 echo " "
-umount ${DEPLOY_MOUNT}
-echo unmounted ${DEPLOY_MOUNT}
 
 echo -e "Ready to test build" "${GREEN}${md5}${COLOR_RESET}"
-echo "Reboot LDK Game and enable CHARGER mode"
+# echo "Reboot LDK Game and enable CHARGER mode"
 
 echo " "
