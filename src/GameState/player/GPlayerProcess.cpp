@@ -109,6 +109,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       // TODO: calculate hit strengh based upon leven and strength
       mSprite->mHitStrength = 1;
+      gSoundPlayer.SfxBadDrop();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(swordUpAnimation);
