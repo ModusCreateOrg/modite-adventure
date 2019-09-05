@@ -24,7 +24,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
-  if (GGame::mDebug) {
+  if (GGame::mDebug && !Clipped()) {
     gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
     gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
     // render collision rect
