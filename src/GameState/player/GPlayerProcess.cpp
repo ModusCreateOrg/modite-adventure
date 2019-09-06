@@ -50,7 +50,7 @@ TBool GPlayerProcess::IsWall(TFloat aX, TFloat aY) {
 
 TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
   TUint16 attr = mPlayfield->GetAttribute(aX, aY);
-  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && mSprite->mDirection != DIRECTION_UP);
+  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE  && mSprite->mDirection != DIRECTION_UP);
 }
 
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
