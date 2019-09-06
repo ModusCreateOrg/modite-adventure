@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
+
 enum {
   GAME_STATE_SPLASH,
   GAME_STATE_MAIN_MENU,

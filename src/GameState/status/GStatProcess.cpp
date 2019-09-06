@@ -2,12 +2,17 @@
 #include "GStatProcess.h"
 #include "GStatSprite.h"
 
-const TInt TIMEOUT = 200;
+const TInt TIMEOUT = 30 * 2;
 
-GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aMessage)
+GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...)
     : BProcess() {
+  char msg[4096];
+  va_list args;
+  va_start(args, aFmt);
+  vsprintf(msg, aFmt, args);
+  
 //  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
-  mSprite = new GStatSprite(STAT_SIZE_16x16, aMessage);
+  mSprite = new GStatSprite(STAT_SIZE_16x16, msg);
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->vy = -.6;

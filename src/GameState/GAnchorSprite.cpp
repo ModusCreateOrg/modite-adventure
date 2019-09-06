@@ -2,7 +2,7 @@
 #include "GAnchorSprite.h"
 
 GAnchorSprite::GAnchorSprite(TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) :
-  BAnimSprite(aPri, aBM, aImg, aType) {
+    BAnimSprite(aPri, aBM, aImg, aType) {
   flags |= SFLAG_ANCHOR | SFLAG_SORTY;
   w = 64;
   h = 64;
@@ -24,24 +24,31 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
-  if (GGame::mDebug) {
+  if (GGame::mDebug && !Clipped()) {
     gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
     gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
     // render collision rect
-    TRect r(mRect.x1 + 16, mRect.y1 + 32, mRect.x2 - 16, mRect.y2);
+    TRect r;
+    GetRect(r);
+    r.x1 -= aViewPort->mWorldX;
+    r.x2 -= aViewPort->mWorldX;
+    r.y1 -= aViewPort->mWorldY;
+    r.y2 -= aViewPort->mWorldY;
     gDisplay.renderBitmap->SetColor(254, 255, 0, 0);
     gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
+    
+    gDisplay.SetColor(253, 255, 0, 0);
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, x - 5, y, 10, 253);
+    gDisplay.renderBitmap->DrawFastVLine(aViewPort, x, y - 5, 10, 253);
   }
 #endif
-
+  
   return ret;
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {
-  GAnchorSprite *s = (GAnchorSprite *)aOther;
-//  printf("%s collides with %s %x %x\n", mName, s->mName, type, s->type);
+  auto *s = (GAnchorSprite *) aOther;
   if (abs(TInt(aOther->y - y)) < COLLISION_DELTA_Y) {
-//    printf("abs() %d\n", TInt(abs(aOther->y - y)));
     mCollided = s;
     s->mCollided = this;
     cType |= aOther->type;

@@ -98,9 +98,7 @@ TUint16 GGameState::MapHeight() {
   return (mGamePlayfield->MapHeightTiles() - TILES_HIGH) * 32;
 }
 
-GAnchorSprite *GGameState::PlayerSprite() {
-  return mPlayerProcess->Sprite();
-}
+GAnchorSprite *GGameState::PlayerSprite() { return mPlayerProcess->Sprite(); }
 
 void GGameState::LoadLevel(TUint16 aTileMapId) {
   Reset(); // remove sprites and processes
@@ -166,7 +164,7 @@ void GGameState::LoadLevel(TUint16 aTileMapId) {
         break;
       case ATTR_RAT:
         printf("RAT at %f,%f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GRatProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GRatProcess(this, mGamePlayfield, xx - 18, yy + 63));
         break;
       case ATTR_SLIME:
         printf("SLIME at %f,%f %d %d\n", xx, yy, op1, op2);

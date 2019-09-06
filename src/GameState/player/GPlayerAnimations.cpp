@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "GPlayerAnimations.h"
 
-const TInt HITSPEED_FIRST = TInt(1.5 * HITSPEED);
+const TInt16 HITSPEED_FIRST = TInt(1.5 * HITSPEED);
 
 /*
  ___    _ _         ______       _           _           _
@@ -90,7 +90,6 @@ ANIMSCRIPT swordDownAnimation[] = {
     ADELTA(-2, 7),
     ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 3),
     AEND,
-
 };
 
 ANIMSCRIPT hitLightDownAnimation[] = {
