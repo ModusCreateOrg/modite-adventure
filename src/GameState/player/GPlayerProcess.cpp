@@ -13,6 +13,7 @@ const TUint16 FALL_STATE       = 3;
 const TUint16 HIT_LIGHT_STATE  = 4;
 const TUint16 HIT_MEDIUM_STATE = 5;
 const TUint16 HIT_HARD_STATE   = 6;
+const TUint16 WALK_LEDGE_STATE = 7;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
@@ -458,6 +459,7 @@ TBool GPlayerProcess::RunBefore() {
     case IDLE_STATE:
       return IdleState();
     case WALK_STATE:
+    case WALK_LEDGE_STATE:
       return WalkState();
     case SWORD_STATE:
       return SwordState();
