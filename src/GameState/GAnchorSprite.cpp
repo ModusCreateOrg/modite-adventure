@@ -24,18 +24,22 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
-  if (GGame::mDebug) {
+  if (GGame::mDebug && !Clipped()) {
     gDisplay.renderBitmap->SetColor(255, 255, 0, 255);
     gDisplay.renderBitmap->DrawRect(aViewPort, mRect, 255);
     // render collision rect
     TRect r;
     GetRect(r);
+    r.x1 -= aViewPort->mWorldX;
+    r.x2 -= aViewPort->mWorldX;
+    r.y1 -= aViewPort->mWorldY;
+    r.y2 -= aViewPort->mWorldY;
     gDisplay.renderBitmap->SetColor(254, 255, 0, 0);
     gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
     
     gDisplay.SetColor(253, 255, 0, 0);
-    gDisplay.renderBitmap->DrawFastHLine(aViewPort, x - 5, y, 10, 253);
-    gDisplay.renderBitmap->DrawFastVLine(aViewPort, x, y - 5, 10, 253);
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, 253);
+    gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, 253);
   }
 #endif
   

@@ -9,18 +9,19 @@
  *********************************************************************************/
 
 const TInt HIT_POINTS = 5;
-const TInt16 IDLE_TIMEOUT = 30;
+const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5;
-const TInt SELECT_SPEED = 5;
-const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 1;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt16 IDLE_SPEED = 5 * FACTOR;
+const TInt16 SELECT_SPEED = 5 * FACTOR;
+const TInt16 ATTACK_SPEED = 5 * FACTOR;
+const TInt16 HIT_SPEED = 1 * FACTOR;
+const TInt16 WALK_SPEED = 5 * FACTOR;
+const TInt16 DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5;
+const TFloat VELOCITY = 1.5 / FACTOR;
 
 // region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -610,7 +611,7 @@ TBool GRatProcess::IdleState() {
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-    
+
     //    TFloat x = mSprite->x, y = mSprite->y,
     //           sx = x - mGameState->GetViewPort()->mWorldX,
     //           sy = y - mGameState->GetViewPort()->mWorldY;

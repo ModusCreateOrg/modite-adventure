@@ -3,9 +3,12 @@
 
 #include "Game.h"
 
+const TFloat GRAVITY = 0.25;  // for falling, arrow dropping, etc.
+
 // these match the codes set for tiles in Pro Motion:
 const TUint16 ATTR_FLOOR = 0;
 const TUint16 ATTR_WALL = 1;
+const TUint16 ATTR_LEDGE = 2;
 
 const TUint16 ATTR_PLAYER = 16;
 const TUint16 ATTR_SPIDER = 17;
@@ -24,10 +27,14 @@ public:
 
   ~GGamePlayfield();
 public:
+  TUint16 GetAttribute(TFloat aWorldX, TFloat aWorldY) {
+    return TUint16(GetCell(aWorldX, aWorldY) >> 16);
+  }
   TBool IsWall(TFloat aWorldX, TFloat aWorldY) {
-    const TUint32 cell = GetCell(aWorldX, aWorldY);
-    const TUint16 shifted = cell >> TUint8(16);
-    return shifted == ATTR_WALL;
+    return GetAttribute(aWorldX, aWorldY) == ATTR_WALL;
+  }
+  TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
+    return GetAttribute(aWorldX, aWorldY) == ATTR_FLOOR;
   }
 };
 
