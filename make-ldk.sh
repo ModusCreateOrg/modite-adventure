@@ -73,11 +73,11 @@ ping 169.254.1.1 -c 1 -W 0 -i 200
 # fi
 
 
-md5=`md5sum build/ldk/modus.dge | awk '{print $1}'`
+md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
 md5=${md5: -6}
 
 
-ALREADY_DEPLOYED_DIR=/home/retrofw/games/modus
+ALREADY_DEPLOYED_DIR=/home/retrofw/games/modite-adventure
 
 function deploy_binary_via_ftp {
 
@@ -85,9 +85,9 @@ ftp -n -v $LDK << EOT
 user $USER
 prompt
 lcd build/ldk
-cd /home/retrofw/games/modus
+cd /home/retrofw/games/modite-adventure
 bin
-put modus.dge
+put modite-adventure.dge
 quit
 EOT
 
@@ -104,7 +104,7 @@ cd /home/retrofw/
 mkdir tmp
 cd tmp/
 bin
-put modus.ipk
+put modite-adventure.ipk
 quit
 EOT
 
@@ -114,7 +114,7 @@ EOT
   PRINT_GREEN "Next Steps:"
   echo " - Launch Explorer on device"
   echo " - Navigate to /home/retrofw/tmp"
-  echo " - Install 'modus.ipk'"
+  echo " - Install 'modite-adventure.ipk'"
   echo "Further invocations of this script should not require \"ipk\" argument."
 
 }

@@ -39,7 +39,7 @@ rcomp: FORCE
 
 resources: rcomp FORCE
 	echo "Compiling resources"
-	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp/rcomp Resources.r
+	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp Resources.r
 
 reset: FORCE
 	echo "Resetting high score table (and options)"

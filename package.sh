@@ -48,10 +48,10 @@ BUILD_DIR=${ROOT_DIR}/build/ldk
 CREATIVE_ENGINE_PATH=${ROOT_DIR}/creative-engine
 CREATIVE_ENGINE_SOURCE_DIR=${CREATIVE_ENGINE_PATH}/src
 
-TARGET=${BUILD_DIR}/modus.dge
+TARGET=${BUILD_DIR}/modite-adventure.dge
 
 IPK_ROOT_DIR=${BUILD_DIR}/ipk
-IPK_EXEC_DIR=${IPK_ROOT_DIR}/home/retrofw/games/modus
+IPK_EXEC_DIR=${IPK_ROOT_DIR}/home/retrofw/games/modite-adventure
 LDK_FILES_DIR=${ROOT_DIR}/src/resources/ldk-files
 LNK_DESTINATION_DIR=${IPK_ROOT_DIR}/home/retrofw/apps/gmenu2x/sections/games/
 
@@ -74,10 +74,10 @@ mkdir -p ${LNK_DESTINATION_DIR}
 
 
 # Copy binary and launcher image to the execution directory
-cp -r ${TARGET} ${LDK_FILES_DIR}/modus.png ${IPK_EXEC_DIR}
+cp -r ${TARGET} ${LDK_FILES_DIR}/modite-adventure.png ${IPK_EXEC_DIR}
 #rm ${TARGET}
 
-cp ${LDK_FILES_DIR}/modus.lnk ${LNK_DESTINATION_DIR}
+cp ${LDK_FILES_DIR}/modite-adventure.lnk ${LNK_DESTINATION_DIR}
 
 NOW=`date +%s`
 
@@ -89,5 +89,5 @@ tar --owner=0 --group=0 -czvf ${IPK_ROOT_DIR}/data.tar.gz -C ${IPK_ROOT_DIR} hom
 
 
 echo 2.0 > ${IPK_ROOT_DIR}/debian-binary
-ar r ${BUILD_DIR}/modus.ipk ${IPK_ROOT_DIR}/control.tar.gz ${IPK_ROOT_DIR}/data.tar.gz ${IPK_ROOT_DIR}/debian-binary
+ar r ${BUILD_DIR}/modite-adventure.ipk ${IPK_ROOT_DIR}/control.tar.gz ${IPK_ROOT_DIR}/data.tar.gz ${IPK_ROOT_DIR}/debian-binary
 
