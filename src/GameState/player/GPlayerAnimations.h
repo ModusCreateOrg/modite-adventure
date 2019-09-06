@@ -1,11 +1,11 @@
 #ifndef MODITE_GPLAYERANIMATIONS_H
 #define MODITE_GPLAYERANIMATIONS_H
 
-const TUint16 WALKSPEED = 5;
-const TUint16 SWORDSPEED = 3;
-const TUint16 HITSPEED = 2;
+const TUint16 WALKSPEED = 5 * FACTOR;
+const TUint16 SWORDSPEED = 3 * FACTOR;
+const TUint16 HITSPEED = 2 * FACTOR;
 
-const TFloat VELOCITY = 3;
+const TFloat VELOCITY = 3 / TFloat(FACTOR);
 
 extern ANIMSCRIPT idleAnimation[];
 

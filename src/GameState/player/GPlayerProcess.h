@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "GAnchorSprite.h"
+
 class GGamePlayfield;
 
 class GPlayerProcess : public BProcess {

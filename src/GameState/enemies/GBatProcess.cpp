@@ -4,17 +4,17 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
-const TInt16 IDLE_TIMEOUT = 30;
+const TInt   HIT_POINTS   = 5;
+const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5;
-const TInt SELECT_SPEED = 5;
-const TInt ATTACK_SPEED = 5;
-const TInt HIT_SPEED = 1;
-const TInt WALK_SPEED = 5;
-const TInt DEATH_SPEED = 5;
+const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt SELECT_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt HIT_SPEED    = 1 * FACTOR;
+const TInt WALK_SPEED   = 5 * FACTOR;
+const TInt DEATH_SPEED  = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5;
+const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 
 /* {{{  */
 /*********************************************************************************
@@ -33,16 +33,25 @@ const TFloat VELOCITY = 1.5;
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
 
-ANIMSCRIPT idleAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
-  ASTEP(40, IMG_BAT_IDLE), ASTEP(4, IMG_BAT_IDLE + 1),
-  ASTEP(40, IMG_BAT_IDLE + 2), ASTEP(4, IMG_BAT_IDLE + 1), ALOOP };
+ANIMSCRIPT idleAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
+  ASTEP(40, IMG_BAT_IDLE),
+  ASTEP(4, IMG_BAT_IDLE + 1),
+  ASTEP(40, IMG_BAT_IDLE + 2),
+  ASTEP(4, IMG_BAT_IDLE + 1),
+  ALOOP,
+};
 
-static ANIMSCRIPT selectAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
+static ANIMSCRIPT selectAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 2), ALOOP };
+  ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 2),
+  ALOOP,
+};
 
-static ANIMSCRIPT deathAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT deathAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(DEATH_SPEED, IMG_BAT_WALK_RIGHT + 0),
   ASTEP(DEATH_SPEED, IMG_BAT_WALK_UP + 0),
   AFLIP(DEATH_SPEED, IMG_BAT_WALK_RIGHT + 0),
@@ -50,7 +59,9 @@ static ANIMSCRIPT deathAnimation[] = { ABITMAP(BAT_SLOT),
   ASTEP(DEATH_SPEED, IMG_BAT_WALK_RIGHT + 0),
   ASTEP(DEATH_SPEED, IMG_BAT_WALK_UP + 0),
   AFLIP(DEATH_SPEED, IMG_BAT_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_BAT_WALK_DOWN + 0), AEND };
+  ASTEP(DEATH_SPEED, IMG_BAT_WALK_DOWN + 0),
+  AEND,
+};
 
 /*
  ____
@@ -60,30 +71,48 @@ static ANIMSCRIPT deathAnimation[] = { ABITMAP(BAT_SLOT),
 |____/ \___/ \_/\_/ |_| |_|
 */
 
-static ANIMSCRIPT idleDownAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0), ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP };
+static ANIMSCRIPT idleDownAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ALOOP,
+};
 
-static ANIMSCRIPT walkDownAnimation1[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkDownAnimation1[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 0),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 1), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 1),
+  AEND,
+};
 
-static ANIMSCRIPT walkDownAnimation2[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkDownAnimation2[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 2),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 3), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_DOWN + 3),
+  AEND,
+};
 
-static ANIMSCRIPT attackDownAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT attackDownAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 3),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 0), ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 1), ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 2), AEND };
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 2),
+  AEND,
+};
 
-static ANIMSCRIPT hitDownAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT hitDownAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 3),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 0),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 3), AEND };
+  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 3),
+  AEND,
+};
 
 /*
  _          __ _
@@ -94,30 +123,46 @@ static ANIMSCRIPT hitDownAnimation[] = { ABITMAP(BAT_SLOT),
 
  */
 
-static ANIMSCRIPT idleLeftAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0), ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP };
+static ANIMSCRIPT idleLeftAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
-static ANIMSCRIPT walkLeftAnimation1[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkLeftAnimation1[] = {
+  ABITMAP(BAT_SLOT),
   AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 0),
-  AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 1), AEND };
+  AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 1),
+  AEND,
+};
 
-static ANIMSCRIPT walkLeftAnimation2[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkLeftAnimation2[] = {
+  ABITMAP(BAT_SLOT),
   AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 2),
-  AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 3), AEND };
+  AFLIP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 3),
+  AEND,
+};
 
-static ANIMSCRIPT attackLeftAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT attackLeftAnimation[] = {
+  ABITMAP(BAT_SLOT),
   AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 3),
-  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 0), ATYPE(STYPE_EBULLET),
-  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 2), AEND };
+  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 0),
+  ATYPE(STYPE_EBULLET),
+  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 1),
+  ATYPE(STYPE_ENEMY),
+  AFLIP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 2),
+  AEND,
+};
 
-static ANIMSCRIPT hitLeftAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT hitLeftAnimation[] = {
+  ABITMAP(BAT_SLOT),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 0),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 1),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 2),
-  AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3), AEND };
+  AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AEND,
+};
 
 /*
  ____  _       _     _
@@ -128,30 +173,46 @@ static ANIMSCRIPT hitLeftAnimation[] = { ABITMAP(BAT_SLOT),
          |___/
  */
 
-static ANIMSCRIPT idleRightAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0), ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP };
+static ANIMSCRIPT idleRightAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
-static ANIMSCRIPT walkRightAnimation1[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkRightAnimation1[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 0),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 1), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 1),
+  AEND,
+};
 
-static ANIMSCRIPT walkRightAnimation2[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkRightAnimation2[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 2),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 3), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_RIGHT + 3),
+  AEND,
+};
 
-static ANIMSCRIPT attackRightAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT attackRightAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 3),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 0), ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 2), AEND };
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_RIGHT + 2),
+  AEND,
+};
 
-static ANIMSCRIPT hitRightAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT hitRightAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 0),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 2),
-  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3), AEND };
+  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AEND,
+};
 
 /*
  _   _
@@ -162,30 +223,46 @@ static ANIMSCRIPT hitRightAnimation[] = { ABITMAP(BAT_SLOT),
       |_|
  */
 
-static ANIMSCRIPT idleUpAnimation[] = { ABITMAP(BAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0), ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP };
+static ANIMSCRIPT idleUpAnimation[] = {
+  ABITMAP(BAT_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
-static ANIMSCRIPT walkUpAnimation1[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkUpAnimation1[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 0),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 1), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 1),
+  AEND,
+};
 
-static ANIMSCRIPT walkUpAnimation2[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT walkUpAnimation2[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 2),
-  ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 3), AEND };
+  ASTEP(WALK_SPEED, IMG_BAT_WALK_UP + 3),
+  AEND,
+};
 
-static ANIMSCRIPT attackUpAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT attackUpAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 3),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 0), ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 1), ATYPE(STYPE_ENEMY),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 2), AEND };
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_UP + 2),
+  AEND,
+};
 
-static ANIMSCRIPT hitUpAnimation[] = { ABITMAP(BAT_SLOT),
+static ANIMSCRIPT hitUpAnimation[] = {
+  ABITMAP(BAT_SLOT),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 3),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 0),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 2),
-  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 3), AEND };
+  ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 3),
+  AEND,
+};
 
 /* }}} */
 
@@ -195,10 +272,10 @@ static ANIMSCRIPT hitUpAnimation[] = { ABITMAP(BAT_SLOT),
 
 // constructor
 GBatProcess::GBatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
-    TFloat aX, TFloat aY)
-    : GEnemyProcess(aGameState, aGamePlayfield, BAT_SLOT) {
-  mSprite->x = aX;
-  mSprite->y = aY;
+                         TFloat aX, TFloat aY)
+  : GEnemyProcess(aGameState, aGamePlayfield, BAT_SLOT) {
+  mSprite->x          = aX;
+  mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -215,8 +292,8 @@ GBatProcess::~GBatProcess() {
 void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDx        = 0;
+  mSprite->mDy        = 0;
   switch (aState) {
     case IDLE_STATE:
       mStep = 0;
@@ -242,20 +319,20 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
           mSprite->StartAnimation(
-              mStep ? walkDownAnimation1 : walkDownAnimation2);
+            mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
           //          mSprite->mDx = -36;
           mSprite->StartAnimation(
-              mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+            mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
           mSprite->StartAnimation(
-              mStep ? walkRightAnimation1 : walkRightAnimation2);
+            mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
@@ -347,11 +424,11 @@ TBool GBatProcess::CanWalk(TInt aDirection) {
   // test for wall in the way
   if (mPlayfield->IsWall(testx + 16, testy) || // Left/Bottom Wall
       mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-          mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
+                         mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
       mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-          mSprite->y + mSprite->vy) || // Right/Bottom Wall
+                         mSprite->y + mSprite->vy) || // Right/Bottom Wall
       mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-          mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
+                         mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
       screenX < 16 ||
       screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
       screenY > (SCREEN_HEIGHT - 16)) {
@@ -391,7 +468,7 @@ TBool GBatProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
+    TFloat x  = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
            sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
