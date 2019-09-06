@@ -6,13 +6,13 @@
 
 const TInt PLAYER_HITPOINTS = 10;
 
-const TUint16 IDLE_STATE  = 0;
-const TUint16 WALK_STATE  = 1;
-const TUint16 SWORD_STATE = 2;
-const TUint16 FALL_STATE  = 3;
-const TUint16 HIT_LIGHT_STATE = 4;
+const TUint16 IDLE_STATE       = 0;
+const TUint16 WALK_STATE       = 1;
+const TUint16 SWORD_STATE      = 2;
+const TUint16 FALL_STATE       = 3;
+const TUint16 HIT_LIGHT_STATE  = 4;
 const TUint16 HIT_MEDIUM_STATE = 5;
-const TUint16 HIT_HARD_STATE = 6;
+const TUint16 HIT_HARD_STATE   = 6;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
@@ -43,15 +43,17 @@ void GPlayerProcess::StartLevel(
 }
 
 TBool GPlayerProcess::IsWall(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_WALL;
+  TUint16 attr = mPlayfield->GetAttribute(aX, aY);
+  return attr == ATTR_WALL || (attr == ATTR_LEDGE && mSprite->mDirection == DIRECTION_UP);
 }
 
 TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_FLOOR;
+  TUint16 attr = mPlayfield->GetAttribute(aX, aY);
+  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && mSprite->mDirection != DIRECTION_UP);
 }
 
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE;
+  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE && (TInt(aY) % 32 > 8);
 }
 
 TBool GPlayerProcess::IsLedge(TRect &aRect) {
@@ -66,15 +68,17 @@ TBool GPlayerProcess::CanWalk(TRect &aRect) {
   if (aRect.x1 < 0 || aRect.y1 < 0) {
     return EFalse;
   }
-  if(IsFloor(aRect.x1, aRect.y2) || IsFloor(aRect.x2, aRect.y2)) {
+
+  if (IsFloor(aRect.x1, aRect.y2) || IsFloor(aRect.x2, aRect.y2)) {
     return ETrue;
   }
-  if ( IsLedge(aRect)) {
+
+  if (IsLedge(aRect)) {
     const TInt y = mSprite->y;
     mSprite->y = y | 3;
     return ETrue;
   }
-  return ETrue;
+  return EFalse;
 }
 
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
@@ -134,8 +138,8 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
     case SWORD_STATE:
       mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
+      mSprite->vx           = 0;
+      mSprite->vy           = 0;
       // TODO: calculate hit strengh based upon leven and strength
       mSprite->mHitStrength = 1;
       switch (mSprite->mDirection) {
@@ -156,7 +160,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case FALL_STATE:
       mStep = 0;
       mSprite->vx = 0;
-      mSprite->vy = 0;
+      mSprite->vy = GRAVITY;
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -176,7 +180,7 @@ TBool GPlayerProcess::MaybeHit() {
     printf("Player collide cType: %x STYPE_ENEMY: %x STYPE_EBULLET: %x\n",
            mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
 #endif
-    TInt state = HIT_LIGHT_STATE;
+    TInt state     = HIT_LIGHT_STATE;
     if (!mSprite->mInvulnerable && mSprite->cType & STYPE_EBULLET) {
 #ifdef DEBUGME
       printf("Player attacked\n");
@@ -192,7 +196,7 @@ TBool GPlayerProcess::MaybeHit() {
         case HIT_MEDIUM:
           mSprite->mHitPoints -= 2;
           mSprite->mInvulnerable = ETrue;
-          state = HIT_MEDIUM_STATE;
+          state                  = HIT_MEDIUM_STATE;
           mGameState->AddProcess(
             new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +2"));
           break;
@@ -224,15 +228,13 @@ TBool GPlayerProcess::MaybeHit() {
       } else {
         mSprite->x = enemy->x + 34;
       }
-    }
-    else if (mSprite->vy) {
+    } else if (mSprite->vy) {
       if (mSprite->y < enemy->y) {
         mSprite->y = enemy->y - 6;
       } else {
         mSprite->y = enemy->y + 6;
       }
-    }
-    else {
+    } else {
       switch (mSprite->mDirection) {
         case DIRECTION_RIGHT:
           mSprite->x = enemy->x - 33;
@@ -250,7 +252,7 @@ TBool GPlayerProcess::MaybeHit() {
     }
 
     mSprite->mInvulnerable = ETrue;
-    mSprite->cType = 0;
+    mSprite->cType         = 0;
     return ETrue;
   }
   return EFalse;
@@ -266,7 +268,7 @@ TBool GPlayerProcess::MaybeSword() {
 
 TBool GPlayerProcess::MaybeFall() {
   if (IsLedge()) {
-    printf("IsLedge");
+    printf("IsLedge\n");
 //  if (IsLedge(mSprite->mRect)) {
     NewState(FALL_STATE, DIRECTION_DOWN);
     return ETrue;
@@ -381,10 +383,10 @@ TBool GPlayerProcess::WalkState() {
     return ETrue;
   }
 
-  if (MaybeFall()) {
-    NewState(FALL_STATE, DIRECTION_DOWN);
-    return ETrue;
-  }
+//  if (MaybeFall()) {
+//    NewState(FALL_STATE, DIRECTION_DOWN);
+//    return ETrue;
+//  }
   // can player keep walking?
   switch (mSprite->mDirection) {
     case DIRECTION_LEFT:
@@ -442,7 +444,7 @@ TBool GPlayerProcess::SwordState() {
 }
 
 TBool GPlayerProcess::FallState() {
-  if (mPlayfield->IsFloor(mSprite->x, mSprite->y)) {
+  if (mPlayfield->IsFloor(mSprite->x + 32, mSprite->y + mSprite->vy)) {
     // land
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
