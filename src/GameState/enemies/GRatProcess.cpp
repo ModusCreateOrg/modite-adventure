@@ -304,8 +304,11 @@ GRatProcess::GRatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
 }
 
 GRatProcess::~GRatProcess() {
-  mSprite->Remove();
-  delete mSprite;
+  if (mSprite) {
+    mGameState->RemoveSprite(mSprite);
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************

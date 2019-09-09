@@ -53,7 +53,7 @@ TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
 }
 
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE; //  && (TInt(aY) % 32 > 8);
+  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE  && (TInt(aY) % 32 > 12);
 }
 
 TBool GPlayerProcess::IsLedge(TRect &aRect) {
