@@ -20,8 +20,11 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
 }
 
 GEnemyProcess::~GEnemyProcess() {
-  mGameState->RemoveSprite(mSprite);
-  delete mSprite;
+  if (mSprite) {
+    mGameState->RemoveSprite(mSprite);
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 TBool GEnemyProcess::IsWall(TInt aDirection) {

@@ -38,8 +38,8 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     gDisplay.renderBitmap->DrawRect(aViewPort, r, 254);
     
     gDisplay.SetColor(253, 255, 0, 0);
-    gDisplay.renderBitmap->DrawFastHLine(aViewPort, x - 5, y, 10, 253);
-    gDisplay.renderBitmap->DrawFastVLine(aViewPort, x, y - 5, 10, 253);
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, 253);
+    gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, 253);
   }
 #endif
   
