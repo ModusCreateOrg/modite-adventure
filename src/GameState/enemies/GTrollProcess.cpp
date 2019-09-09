@@ -283,6 +283,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 // constructor
 GTrollProcess::GTrollProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, TROLL_SLOT) {
+  mSprite->Name("TROLL SPRITE");
   mSprite->x          = aX;
   mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;

@@ -295,6 +295,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 GRatProcess::GRatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
                          TFloat aX, TFloat aY)
     : GEnemyProcess(aGameState, aGamePlayfield, RAT_SLOT) {
+  mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;

@@ -24,15 +24,15 @@ const TInt16 PLAYER_HITPOINTS = 10;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : mState(0), mStep(0) {
   mGameState = aGameState;
   mPlayfield = ENull;
-  mSprite    = new GAnchorSprite(1, PLAYER_SLOT);
-  strcpy(mSprite->mName, "PLAYER");
+  mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
+  mSprite->Name("PLAYER SPRITE");
   mSprite->type       = STYPE_PLAYER;
   mSprite->cMask      = STYPE_ENEMY | STYPE_EBULLET;
   mSprite->x          = mSprite->y = 32;
   mSprite->w          = 32;
   mSprite->h          = 32;
   mGameState->AddSprite(mSprite);
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
   mSprite->mHitPoints = PLAYER_HITPOINTS;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

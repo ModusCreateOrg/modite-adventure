@@ -10,6 +10,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
   mSprite->flags |= SFLAG_CHECK;
   mSprite->w     = 32;
   mSprite->h     = 32;
+  mSprite->Name("ENEMY SPRITE");
   mGameState->AddSprite(mSprite);
   mDirection = DIRECTION_DOWN;
   mState     = IDLE_STATE;
@@ -20,12 +21,15 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
 }
 
 GEnemyProcess::~GEnemyProcess() {
-  mGameState->RemoveSprite(mSprite);
-  delete mSprite;
+//  if (mSprite) {
+//    mGameState->RemoveSprite(mSprite);
+//    delete mSprite;
+//    mSprite = ENull;
+//  }
 }
 
 TBool GEnemyProcess::IsWall(TInt aDirection) {
-  const TInt leftX  = mSprite->x + mSprite->w/2,
+  const TInt leftX  = mSprite->x + mSprite->w / 2,
              rightX = mSprite->mRect.x2 - mSprite->w / 2, //  - leftX + mSprite->w - 1,
              top    = mSprite->y - mSprite->h,
              bottom = mSprite->y;

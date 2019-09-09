@@ -283,6 +283,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 // constructor
 GSlimeProcess::GSlimeProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, SLIME_SLOT) {
+  mSprite->Name("SLIME SPRITE");
   mSprite->x          = aX;
   mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
