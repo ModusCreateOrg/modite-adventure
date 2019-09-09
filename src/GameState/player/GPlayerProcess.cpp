@@ -221,7 +221,7 @@ TBool GPlayerProcess::MaybeHit() {
 
     // bounce player off enemy
     const GAnchorSprite *enemy = mSprite->mCollided;
-    printf("bounce\n");
+//    printf("bounce\n");
     if (mSprite->vx) {
       if (mSprite->x < enemy->x) {
         mSprite->x = enemy->x - 34;
