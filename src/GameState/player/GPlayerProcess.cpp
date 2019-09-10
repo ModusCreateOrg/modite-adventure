@@ -17,16 +17,16 @@ const TUint16 HIT_HARD_STATE   = 6;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
-  mSprite    = new GAnchorSprite(1, PLAYER_SLOT);
-  mSprite->type  = STYPE_PLAYER;
-  mSprite->cMask = STYPE_ENEMY;
-  mSprite->x     = mSprite->y = 32;
-  mSprite->w     = 32;
-  mSprite->h     = 32;
+  mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
+  mSprite->Name("PLAYER SPRITE");
+  mSprite->type       = STYPE_PLAYER;
+  mSprite->cMask      = STYPE_ENEMY | STYPE_EBULLET;
+  mSprite->x          = mSprite->y = 32;
+  mSprite->w          = 32;
+  mSprite->h          = 32;
   mGameState->AddSprite(mSprite);
-  mState = IDLE_STATE;
-  mStep  = 0;
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_SORTY | SFLAG_CHECK;
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
+  mSprite->mHitPoints = PLAYER_HITPOINTS;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
