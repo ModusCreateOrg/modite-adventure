@@ -286,6 +286,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 // constructor
 GGoblinProcess::GGoblinProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SLOT) {
+  mSprite->Name("GOBLIN SPRITE");
   mSprite->x          = aX;
   mSprite->y          = aY;
   mSprite->mHitPoints = HIT_POINTS;
