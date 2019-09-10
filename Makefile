@@ -1,6 +1,8 @@
-SRC_PATH = $(abspath ${PROJECT_PATH}/src)
+## Generic makefile for simple utilities
 
-CREATIVE_ENGINE_PATH=$(SRC_PATH)/creative-engine
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+CREATIVE_ENGINE_PATH=$(ROOT_DIR)/creative-engine
+
 
 release: FORCE
 	./scripts/build.sh docker-build && cp ./build/ModiteAdventure.tgz ~/Downloads/
