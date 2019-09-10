@@ -1,10 +1,10 @@
-Package: ModiteAdventure
+Package: Modite Adventure
 Version:
-Description: ModiteAdventure Description
+Description: Modite Adventure Description
 Section: games
 Priority: optional
-Maintainer: ModusCreateOrg
+Maintainer: Modus Create Inc.
 Architecture: mipsel
-Homepage:
+Homepage: https://moduscreate.com
 Depends:
 Source:
