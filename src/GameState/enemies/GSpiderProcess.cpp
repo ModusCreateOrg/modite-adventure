@@ -300,6 +300,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 GSpiderProcess::GSpiderProcess(GGameState *aGameState,
                                GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, SPIDER_SLOT) {
+  mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
