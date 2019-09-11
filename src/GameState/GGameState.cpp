@@ -172,7 +172,7 @@ void GGameState::LoadLevel(TUint16 aTileMapId) {
         break;
       case ATTR_TROLL:
         printf("TROLL at %f,%f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GTrollProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GTrollProcess(this, mGamePlayfield, xx - 20, yy + 63));
         break;
       default:
         printf("Invalid op code in Object Program: %x\n", program[ip]);

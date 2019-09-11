@@ -18,6 +18,7 @@ const TInt DEATH_SPEED  = 5 * FACTOR;
 const TFloat VELOCITY = 1.5 / FACTOR;
 
 // region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -297,8 +298,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState,
-                               GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
+GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, SPIDER_SLOT) {
   mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;

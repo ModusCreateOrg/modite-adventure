@@ -20,8 +20,12 @@ public:
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
+protected:
   TBool MaybeHit();
 
+  TBool MaybeAttack();
+
+protected:
   TBool IdleState() override;
 
   TBool WalkState() override;
