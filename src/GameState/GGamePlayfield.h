@@ -17,7 +17,7 @@ const TUint16 ATTR_ORC = 21;
 const TUint16 ATTR_RAT = 22;
 const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
-const TUint16 ATTR_PROJECTIL_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
+const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
 const TUint16 ATTR_SPIKES = 200;
 
@@ -41,8 +41,26 @@ const TUint16 ATTR_DOOR_FRONT_OPEN = 313;
 
 
 
-const TUint16 ATTR_STAIRS_DOWN = 500;
-const TUint16 ATTR_STAIRS_UP = 600;
+const TUint16 ATTR_STAIRS_DOWN_EXIT = 500;
+const TUint16 ATTR_STAIRS_DOWN_LEVEL_1 = 501;
+
+
+
+const TUint16 ATTR_STAIRS_UP_EXIT = 600;
+const TUint16 ATTR_STAIRS_UP_LEVEL_1 = 601;
+const TUint16 ATTR_STAIRS_UP_LEVEL_2 = 602;
+
+
+
+const TUint16 ATTR_LEVEL_0 = 501;
+const TUint16 ATTR_LEVEL_1 = 510;
+const TUint16 ATTR_LEVEL_2 = 510;
+const TUint16 ATTR_LEVEL_3 = 510;
+const TUint16 ATTR_LEVEL_4 = 510;
+const TUint16 ATTR_LEVEL_5 = 510;
+const TUint16 ATTR_LEVEL_6 = 516;
+const TUint16 ATTR_LEVEL_7 = 517;
+
 
 
 
