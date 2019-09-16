@@ -24,6 +24,8 @@ public:
   ~GAnchorSprite() OVERRIDE;
 
 public:
+  void Move() OVERRIDE;
+
   TBool Render(BViewPort *aViewPort) OVERRIDE;
 
   void Collide(BSprite *aOther) OVERRIDE;
@@ -42,6 +44,7 @@ public:
   TInt mGold;
   char mName[64];
   TBool mInvulnerable; // cannot be attacked
+  TFloat mLastX, mLastY;  // coordinates from last frame
 };
 
 #endif // MODITE_GANCHORSPRITE_H
