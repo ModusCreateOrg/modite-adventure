@@ -551,6 +551,7 @@ TBool GRatProcess::MaybeHit() {
   if (mSprite->cType & STYPE_PLAYER) {
     GAnchorSprite *other = mSprite->mCollided;
     mSprite->cType &= ~STYPE_PLAYER;
+    mSprite->Nudge();
     switch (other->mDirection) {
       case DIRECTION_RIGHT:
         NewState(HIT_STATE, DIRECTION_LEFT);

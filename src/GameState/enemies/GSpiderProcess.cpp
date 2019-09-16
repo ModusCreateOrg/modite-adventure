@@ -467,6 +467,7 @@ TBool GSpiderProcess::MaybeHit() {
       // collide with player
       mSprite->cType &= ~STYPE_PLAYER;
       mSprite->cMask &= ~STYPE_EBULLET;
+      mSprite->Nudge();
       if (other->x > mSprite->x) {
         mSprite->x = other->x - 34;
       } else {

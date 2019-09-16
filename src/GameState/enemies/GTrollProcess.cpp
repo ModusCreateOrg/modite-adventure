@@ -338,7 +338,6 @@ TBool GTrollProcess::MaybeHit() {
   if (mSprite->cType & STYPE_PLAYER) {
     mSprite->cType &= ~STYPE_PLAYER;
     mSprite->Nudge();
-    mSprite->vx = mSprite->vy = 0;
     return ETrue;
   }
 

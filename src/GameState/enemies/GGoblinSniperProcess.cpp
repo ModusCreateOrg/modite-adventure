@@ -426,6 +426,7 @@ TBool GGoblinSniperProcess::MaybeHit() {
   if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
     GAnchorSprite *other = mSprite->mCollided;
     mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->Nudge();
     switch (other->mDirection) {
       case DIRECTION_RIGHT:
         NewState(HIT_STATE, DIRECTION_LEFT);
