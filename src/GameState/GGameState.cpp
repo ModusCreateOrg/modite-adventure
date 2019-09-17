@@ -27,7 +27,7 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
     gResourceManager.LoadBitmap(aBMP, aSlot, IMAGE_64x64);
   }
   BBitmap *screen = mGamePlayfield->GetTilesBitmap();
-  BBitmap *bm = gResourceManager.GetBitmap(aSlot);
+  BBitmap *bm     = gResourceManager.GetBitmap(aSlot);
   if (!slotRemapState[aSlot]) {
 #ifdef DEBUGME
     printf("ReamapSlot(%d,%d,%d,%d)\n", aBMP, aSlot, aPalette, aColors);
@@ -44,17 +44,17 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
 
 GGameState::GGameState() : BGameEngine(gViewPort) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
-      MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
+                           MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   for (TBool &i : slotRemapState) {
     i = EFalse;
   }
 
-  mTimer = STATS_TIMER;
-  mStats = EFalse;
+  mTimer         = STATS_TIMER;
+  mStats         = EFalse;
   mPlayerProcess = ENull;
   mGamePlayfield = ENull;
-  LoadLevel(EXAMPLE_FILELIST_TXT_MAP);
+  LoadLevel(DEVDUNGEON_0__LEVEL1_MAP);
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
@@ -67,27 +67,26 @@ void GGameState::PreRender() { gDisplay.renderBitmap->Clear(COLOR_TEXT_BG); }
 
 void GGameState::PostRender() {
   BViewPort vp;
-  TRect rect(0, 0, SCREEN_WIDTH - 1, 15);
+  TRect     rect(0, 0, SCREEN_WIDTH - 1, 15);
   vp.SetRect(rect);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
 
   const GAnchorSprite *player = PlayerSprite();
-  char output[160];
+  char                output[160];
   if (--mTimer <= 0) {
     mStats = !mStats;
     mTimer = STATS_TIMER;
   }
   if (!mStats) {
     sprintf(output, "LVL: %2d HP: %3d GOLD: %4d", player->mLevel,
-        player->mHitPoints, player->mGold);
-  }
-  else {
+            player->mHitPoints, player->mGold);
+  } else {
     sprintf(output, "EXP: %3d STR: %2d DEX: %2d", player->mExperience,
-        player->mStrength, player->mDexterity);
+            player->mStrength, player->mDexterity);
   }
   gDisplay.renderBitmap->DrawString(
-      &vp, output, gFont16x16, 0, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+    &vp, output, gFont16x16, 0, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
 }
 
 TUint16 GGameState::MapWidth() {
@@ -103,11 +102,9 @@ GAnchorSprite *GGameState::PlayerSprite() { return mPlayerProcess->Sprite(); }
 void GGameState::LoadLevel(TUint16 aTileMapId) {
   Reset(); // remove sprites and processes
 
-  if (mPlayfield) {
-    delete mPlayfield;
-  }
-  mPlayfield = mGamePlayfield =
-      new GGamePlayfield(gViewPort, EXAMPLE_FILELIST_TXT_MAP);
+  delete mPlayfield;
+
+  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, aTileMapId);
 
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
@@ -120,18 +117,18 @@ void GGameState::LoadLevel(TUint16 aTileMapId) {
   RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
 
   printf("Level loaded, colors used %d\n",
-      mGamePlayfield->GetTilesBitmap()->CountUsedColors());
+         mGamePlayfield->GetTilesBitmap()->CountUsedColors());
 
   mPlayerProcess = new GPlayerProcess(this);
   AddProcess(mPlayerProcess);
 
-  TInt objectCount = mGamePlayfield->mObjectCount;
-  TUint16 *program = mGamePlayfield->mObjectProgram;
+  TInt    objectCount = mGamePlayfield->mObjectCount;
+  TUint16 *program    = mGamePlayfield->mObjectProgram;
 
   for (TInt ip = 0; ip < objectCount * 3; ip += 3) {
-    TUint16 op = program[ip],
+    TUint16 op  = program[ip],
             op1 = program[ip + 1], // row
-        op2 = program[ip + 2];     // col
+            op2 = program[ip + 2];     // col
 
     auto xx = TFloat(op2 * 32), yy = TFloat(op1 * 32);
 
@@ -156,7 +153,7 @@ void GGameState::LoadLevel(TUint16 aTileMapId) {
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %f,%f %d %d\n", xx, yy, op1, op2);
         AddProcess(
-            new GGoblinSniperProcess(this, mGamePlayfield, xx - 32, yy + 63));
+          new GGoblinSniperProcess(this, mGamePlayfield, xx - 32, yy + 63));
         break;
       case ATTR_ORC:
         printf("ORC at %f,%f %d %d\n", xx, yy, op1, op2);

@@ -12,6 +12,7 @@ PATH resources/
 BITMAP splash.bmp
 BITMAP splash_sprites.bmp
 BITMAP title.bmp
+PALETTE test.pal
 
 #
 ### HERO
@@ -36,8 +37,8 @@ BITMAP projectile_arrow.bmp
 #
 ### TILEMAPS
 #
-PATH resources/tilemaps/example_dungeon
-TILEMAP example.filelist.txt
+PATH resources/tilemaps/DevDungeon_0
+TILEMAP DevDungeon_0.filelist.txt
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
