@@ -1,7 +1,7 @@
 #ifndef MODITE_GRATPROCESS_H
 #define MODITE_GRATPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
@@ -38,7 +38,6 @@ protected:
   TBool DeathState() override;
 
 protected:
-  TFloat mStartX, mStartY;
   TInt16 mStateTimer;
 };
 

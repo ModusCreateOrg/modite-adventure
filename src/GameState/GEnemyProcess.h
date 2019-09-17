@@ -7,7 +7,7 @@
 #include "GAnchorSprite.h"
 
 const TFloat SEEK_Y = COLLISION_DELTA_Y;  // seek to player Y within this many pixels
-const TFloat SEEK_X = 32; // seek to player X within this many pixels
+const TFloat SEEK_X = 40; // seek to player X within this many pixels
 
 enum {
   IDLE_STATE,
@@ -35,6 +35,7 @@ protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   GAnchorSprite *mSprite;
+  TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;
   TUint16 mStep;

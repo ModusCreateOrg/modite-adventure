@@ -275,8 +275,10 @@ GBatProcess::GBatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
                          TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, BAT_SLOT) {
   mSprite->Name("BAT SPRITE");
-  mSprite->x          = aX;
-  mSprite->y          = aY;
+  mSprite->x = aX;
+  mSprite->y = aY;
+  mStartX = mSprite->x = aX;
+  mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

@@ -1,5 +1,6 @@
 #include "GTrollProcess.h"
 #include "GPlayerProcess.h"
+#include "GStatProcess.h"
 
 /*********************************************************************************
  *********************************************************************************
@@ -10,7 +11,7 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED   = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED    = 5 * FACTOR;
 const TInt WALK_SPEED   = 5 * FACTOR;
 const TInt DEATH_SPEED  = 5 * FACTOR;
@@ -34,24 +35,35 @@ const TFloat VELOCITY = (PLAYER_VELOCITY / 4) / FACTOR;
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
 
-ANIMSCRIPT idleAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                              ASTEP(40, IMG_TROLL_IDLE), ASTEP(4, IMG_TROLL_IDLE + 1),
-                              ASTEP(40, IMG_TROLL_IDLE + 2), ASTEP(4, IMG_TROLL_IDLE + 1), ALOOP};
+ANIMSCRIPT idleAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(40, IMG_TROLL_IDLE),
+  ASTEP(4, IMG_TROLL_IDLE + 1),
+  ASTEP(40, IMG_TROLL_IDLE + 2),
+  ASTEP(4, IMG_TROLL_IDLE + 1),
+  ALOOP
+};
 
-static ANIMSCRIPT selectAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                       ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 0),
-                                       ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 1),
-                                       ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 2), ALOOP};
+static ANIMSCRIPT selectAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 0),
+  ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 1),
+  ASTEP(SELECT_SPEED, IMG_TROLL_SELECTED + 2),
+  ALOOP
+};
 
-static ANIMSCRIPT deathAnimation[] = {ABITMAP(TROLL_SLOT),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_UP + 0),
-                                      AFLIP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_DOWN + 0),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_UP + 0),
-                                      AFLIP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                      ASTEP(DEATH_SPEED, IMG_TROLL_WALK_DOWN + 0), AEND};
+static ANIMSCRIPT deathAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_UP + 0),
+  AFLIP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_DOWN + 0),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_UP + 0),
+  AFLIP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_TROLL_WALK_DOWN + 0),
+  AEND
+};
 
 /*
  ____
@@ -61,30 +73,48 @@ static ANIMSCRIPT deathAnimation[] = {ABITMAP(TROLL_SLOT),
 |____/ \___/ \_/\_/ |_| |_|
 */
 
-static ANIMSCRIPT idleDownAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+static ANIMSCRIPT idleDownAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2),
+  ALOOP
+};
 
-static ANIMSCRIPT walkDownAnimation1[] = {ABITMAP(TROLL_SLOT),
-                                          ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 0),
-                                          ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 1), AEND};
+static ANIMSCRIPT walkDownAnimation1[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 0),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 1),
+  AEND
+};
 
-static ANIMSCRIPT walkDownAnimation2[] = {ABITMAP(TROLL_SLOT),
-                                          ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 2),
-                                          ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3), AEND};
+static ANIMSCRIPT walkDownAnimation2[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 2),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3),
+  AEND
+};
 
-static ANIMSCRIPT attackDownAnimation[] = {ABITMAP(TROLL_SLOT),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 3),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 0), ATYPE(STYPE_EBULLET),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 1), ATYPE(STYPE_ENEMY),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 2), AEND};
+static ANIMSCRIPT attackDownAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 3),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 2),
+  AEND
+};
 
-static ANIMSCRIPT hitDownAnimation[] = {ABITMAP(TROLL_SLOT),
-                                        ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
-                                        ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
-                                        ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
-                                        ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
-                                        ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3), AEND};
+static ANIMSCRIPT hitDownAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  AEND
+};
 
 /*
  _          __ _
@@ -95,30 +125,53 @@ static ANIMSCRIPT hitDownAnimation[] = {ABITMAP(TROLL_SLOT),
 
  */
 
-static ANIMSCRIPT idleLeftAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+static ANIMSCRIPT idleLeftAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2),
+  ALOOP
+};
 
-static ANIMSCRIPT walkLeftAnimation1[] = {ABITMAP(TROLL_SLOT),
-                                          AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                          AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1), AEND};
+static ANIMSCRIPT walkLeftAnimation1[] = {
+  ABITMAP(TROLL_SLOT),
+  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1),
+  AEND
+};
 
-static ANIMSCRIPT walkLeftAnimation2[] = {ABITMAP(TROLL_SLOT),
-                                          AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
-                                          AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3), AEND};
+static ANIMSCRIPT walkLeftAnimation2[] = {
+  ABITMAP(TROLL_SLOT),
+  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
+  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
+  AEND
+};
 
-static ANIMSCRIPT attackLeftAnimation[] = {ABITMAP(TROLL_SLOT),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0), ATYPE(STYPE_EBULLET),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2), AEND};
+static ANIMSCRIPT attackLeftAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
+  AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0),
 
-static ANIMSCRIPT hitLeftAnimation[] = {ABITMAP(TROLL_SLOT),
-                                        AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
-                                        AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
-                                        AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
-                                        AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
-                                        AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3), AEND};
+  ATYPE(STYPE_EBULLET), ADELTA(-8, 12), ASIZE(-16, 0, 40, 32),
+  AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0, 0, 32, 32), ATYPE(STYPE_ENEMY), ADELTA(-4, 4),
+  AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
+
+  ASIZE(0, 0, 32, 32), ADELTA(0, 0),
+  ATYPE(STYPE_ENEMY),
+  AEND
+};
+
+static ANIMSCRIPT hitLeftAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  AEND
+};
 
 /*
  ____  _       _     _
@@ -129,30 +182,48 @@ static ANIMSCRIPT hitLeftAnimation[] = {ABITMAP(TROLL_SLOT),
          |___/
  */
 
-static ANIMSCRIPT idleRightAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                          ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                          ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+static ANIMSCRIPT idleRightAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2),
+  ALOOP
+};
 
-static ANIMSCRIPT walkRightAnimation1[] = {ABITMAP(TROLL_SLOT),
-                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1), AEND};
+static ANIMSCRIPT walkRightAnimation1[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1),
+  AEND
+};
 
-static ANIMSCRIPT walkRightAnimation2[] = {ABITMAP(TROLL_SLOT),
-                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
-                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3), AEND};
+static ANIMSCRIPT walkRightAnimation2[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
+  AEND
+};
 
-static ANIMSCRIPT attackRightAnimation[] = {ABITMAP(TROLL_SLOT),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0), ATYPE(STYPE_EBULLET),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2), AEND};
+static ANIMSCRIPT attackRightAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
+  AEND
+};
 
-static ANIMSCRIPT hitRightAnimation[] = {ABITMAP(TROLL_SLOT),
-                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
-                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
-                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
-                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
-                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3), AEND};
+static ANIMSCRIPT hitRightAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  AEND
+};
 
 /*
  _   _
@@ -163,30 +234,48 @@ static ANIMSCRIPT hitRightAnimation[] = {ABITMAP(TROLL_SLOT),
       |_|
  */
 
-static ANIMSCRIPT idleUpAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                       ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                       ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+static ANIMSCRIPT idleUpAnimation[] = {
+  ABITMAP(TROLL_SLOT), ALABEL,
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2),
+  ALOOP
+};
 
-static ANIMSCRIPT walkUpAnimation1[] = {ABITMAP(TROLL_SLOT),
-                                        ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 0),
-                                        ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 1), AEND};
+static ANIMSCRIPT walkUpAnimation1[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 0),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 1),
+  AEND
+};
 
-static ANIMSCRIPT walkUpAnimation2[] = {ABITMAP(TROLL_SLOT),
-                                        ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 2),
-                                        ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 3), AEND};
+static ANIMSCRIPT walkUpAnimation2[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 2),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 3),
+  AEND
+};
 
-static ANIMSCRIPT attackUpAnimation[] = {ABITMAP(TROLL_SLOT),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 3),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 0), ATYPE(STYPE_EBULLET),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 1), ATYPE(STYPE_ENEMY),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 2), AEND};
+static ANIMSCRIPT attackUpAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 3),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 0),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 1),
+  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 2),
+  AEND
+};
 
-static ANIMSCRIPT hitUpAnimation[] = {ABITMAP(TROLL_SLOT),
-                                      ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
-                                      ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 0),
-                                      ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 1),
-                                      ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
-                                      ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3), AEND};
+static ANIMSCRIPT hitUpAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 0),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
+  AEND
+};
 
 // endregion }}}
 
@@ -199,27 +288,36 @@ GTrollProcess::GTrollProcess(GGameState *aGameState,
                              GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, TROLL_SLOT) {
   mSprite->Name("TROLL SPRITE");
-  mSprite->x          = aX;
-  mSprite->y          = aY;
+  mSprite->x = aX;
+  mSprite->y = aY;
+  mStartX = mSprite->x = aX;
+  mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GTrollProcess::~GTrollProcess() {
-  //
+  if (mSprite) {
+    mGameState->RemoveSprite(mSprite);
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
+// region  NewState {{{
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 void GTrollProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+  mSprite->type = STYPE_ENEMY;
   mState = aState;
   mSprite->mDirection = aDirection;
   mSprite->mDx        = 0;
   mSprite->mDy        = 0;
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -261,6 +359,7 @@ void GTrollProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -280,6 +379,7 @@ void GTrollProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -299,11 +399,15 @@ void GTrollProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     default:
       break;
   }
 }
 
+// endregion }}}
+
+// region  MaybeHit {{{
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -311,27 +415,35 @@ void GTrollProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 TBool GTrollProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->cType & STYPE_PBULLET) {
-    mSprite->Nudge();
-    mSprite->vx = mSprite->vy = 0;
-    mSprite->cType &= ~STYPE_PBULLET;
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
+    if (!mSprite->mInvulnerable) {
+      mSprite->Nudge(); // move sprite so it's not on top of player
+      mSprite->mInvulnerable = ETrue;
+      mSprite->cType &= ~STYPE_PBULLET;
+      mSprite->mHitPoints -= other->mHitStrength;
+      if (mSprite->mHitPoints <= 0) {
+        mSprite->StartAnimation(deathAnimation);
+        mState = DEATH_STATE;
+        mGameState->AddProcess(new GStatProcess(mSprite->x, mSprite->y - 32, "EXP +%d", mSprite->mLevel));
+        return ETrue;
+      } else {
+        mGameState->AddProcess(
+          new GStatProcess(mSprite->x, mSprite->y - 32, "HIT +%d", mSprite->mCollided->mHitStrength));
+      }
+      switch (other->mDirection) {
+        case DIRECTION_RIGHT:
+          NewState(HIT_STATE, DIRECTION_LEFT);
+          break;
+        case DIRECTION_LEFT:
+          NewState(HIT_STATE, DIRECTION_RIGHT);
+          break;
+        case DIRECTION_UP:
+          NewState(HIT_STATE, DIRECTION_DOWN);
+          break;
+        case DIRECTION_DOWN:
+          NewState(HIT_STATE, DIRECTION_UP);
+          break;
+      }
       return ETrue;
-    }
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
     }
   }
 
@@ -349,19 +461,10 @@ TBool GTrollProcess::MaybeAttack() {
     if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
       if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
         if (--mAttackTimer <= 0) {
-          switch (Random(0, 2)) {
-            case 0:
-              mSprite->mHitStrength = HIT_HARD;
-              break;
-            case 1:
-              mSprite->mHitStrength = HIT_MEDIUM;
-              break;
-            default:
-              mSprite->mHitStrength = HIT_LIGHT;
-              break;
-          }
+          mSprite->mHitStrength = HIT_HARD;
           NewState(ATTACK_STATE,
                    mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+          mAttackTimer = FRAMES_PER_SECOND * 3;
           return ETrue;
         }
       }
@@ -370,6 +473,9 @@ TBool GTrollProcess::MaybeAttack() {
   return EFalse;
 }
 
+// endregion }}}
+
+// region  IdleState {{{
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -426,6 +532,8 @@ TBool GTrollProcess::IdleState() {
             return ETrue;
           }
           break;
+        default:
+          Panic("GTrollProcess::IdleState Invalid Direction: %d\n", direction);
       }
     }
 
@@ -435,7 +543,9 @@ TBool GTrollProcess::IdleState() {
 
   return ETrue;
 }
+// endregion }}}
 
+// region  WalkState {{{
 TBool GTrollProcess::WalkState() {
   if (MaybeHit()) {
     return ETrue;
@@ -470,32 +580,36 @@ TBool GTrollProcess::WalkState() {
   return ETrue;
 }
 
+// endregion }}}
 TBool GTrollProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
+  if (mSprite->AnimDone()) {
+    NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
 }
 
 TBool GTrollProcess::HitState() {
   if (mSprite->AnimDone()) {
+    mSprite->mInvulnerable = EFalse;
+    mSprite->cType &= ~STYPE_PBULLET;
     NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
   }
-
   return ETrue;
 }
 
 TBool GTrollProcess::DeathState() {
   if (mSprite->AnimDone()) {
+    mSprite->x          = mStartX;
+    mSprite->y          = mStartY;
     NewState(IDLE_STATE, mSprite->mDirection);
     mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
     mSprite->mHitPoints = HIT_POINTS;
+    mSprite->mInvulnerable = EFalse;
   }
-
   return ETrue;
 }
 
+// endregion }}}
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/

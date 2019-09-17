@@ -635,9 +635,5 @@ TBool GSpiderProcess::RunBefore() {
 }
 
 TBool GSpiderProcess::RunAfter() {
-//  printf("Spider %f,%f\n", mSprite->x, mSprite->y);
-//  if (mSprite->w != 32) {
-//    printf("SPIDER %d,%d,%d,%d\n", mSprite->cx, mSprite->cy, mSprite->w, mSprite->h);
-//  }
   return ETrue;
 }

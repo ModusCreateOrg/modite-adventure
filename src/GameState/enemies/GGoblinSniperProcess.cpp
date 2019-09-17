@@ -286,8 +286,10 @@ static ANIMSCRIPT hitUpAnimation[] = {
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SNIPER_SLOT) {
-  mSprite->x          = aX;
-  mSprite->y          = aY;
+  mSprite->x = aX;
+  mSprite->y = aY;
+  mStartX = mSprite->x = aX;
+  mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

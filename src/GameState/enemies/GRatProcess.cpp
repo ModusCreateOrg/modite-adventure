@@ -704,7 +704,6 @@ TBool GRatProcess::WalkState() {
 TBool GRatProcess::AttackState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
   }
   return ETrue;
 }
