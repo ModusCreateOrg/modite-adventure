@@ -7,7 +7,7 @@ GSplashPlayfield::GSplashPlayfield() {
   mBackground = gResourceManager.GetBitmap(BKG_SLOT);
   gDisplay.SetPalette(mBackground);
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.PlayMusic(INTRO_XM);
+  gSoundPlayer.PlayMusic(MAIN_MENU_XM);
 #endif
 }
 

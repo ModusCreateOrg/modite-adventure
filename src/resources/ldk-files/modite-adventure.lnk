@@ -1,0 +1,5 @@
+title=Modite Adventure
+description=Modus Create
+icon=/home/retrofw/games/modite-adventure/modite-adventure.png
+exec=/home/retrofw/games/modite-adventure/modite-adventure.dge
+clock=600

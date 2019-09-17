@@ -8,6 +8,7 @@ BFont *gFont8x8, *gFont16x16;
 TBool GGame::mDebug = ETrue;
 #endif
 
+
 GGame::GGame() {
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -23,7 +24,7 @@ GGame::GGame() {
 
   // TODO: Jay - this needs to be in BApplication constructor (I think)
 #ifdef ENABLE_AUDIO
-  //  gSoundPlayer.Init(2 /*channels*/, 5 /*numSamples*/);
+    gSoundPlayer.Init(5 /*channels*/);
 #endif
 
   // preload bitmaps
@@ -79,6 +80,7 @@ void GGame::SetState(TInt aNewState) { mNextState = aNewState; }
 
 TInt GGame::GetState() { return mState; }
 
+
 void GGame::Run() {
 #ifdef ENABLE_OPTIONS
   TBool muted = gOptions->muted;
@@ -87,8 +89,8 @@ void GGame::Run() {
   TBool done = EFalse;
   while (!done) {
     Random(); // randomize
-    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
-    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
+//    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
+//    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
 
     if (mNextState != mState) {
       switch (mNextState) {
@@ -128,6 +130,7 @@ void GGame::Run() {
     // TODO Fix controls polling for multi engine setups
     const TUint16 cKeys = gControls.cKeys;
     gGameEngine->GameLoop();
+
 
     if (mGameMenu) {
       gControls.cKeys = cKeys;
