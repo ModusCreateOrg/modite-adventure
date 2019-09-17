@@ -89,6 +89,7 @@ cmake-build-release
 creative-engine
 clion-log.txt
 build
+build.ldk
 genus.app
 src/Resources.bin
 src/Resources.h

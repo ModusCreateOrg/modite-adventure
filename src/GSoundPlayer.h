@@ -36,6 +36,7 @@ public:
   void SfxNextLevel();
   void SfxNextStage();
   void SfxSaveGame();
+  void SfxStartGame();
 };
 
 

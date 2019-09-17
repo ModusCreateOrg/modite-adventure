@@ -40,6 +40,10 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
 #endif
   }
   gDisplay.SetPalette(screen->GetPalette());
+
+#ifdef ENABLE_AUDIO
+  gSoundPlayer.PlayMusic(UNDER_WATER_XM);
+#endif
 }
 
 GGameState::GGameState() : BGameEngine(gViewPort) {

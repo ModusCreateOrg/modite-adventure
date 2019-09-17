@@ -1,27 +1,24 @@
 # ESP-IDF Makefile for game project
-PROJECT_NAME = MODITE
+PROJECT_NAME = ModiteAdventure
 
-MODITE_SRC_PATH = $(abspath ${PROJECT_PATH}/src)
-
+SRC_PATH = $(abspath ${PROJECT_PATH}/src)
 
 ifndef CREATIVE_ENGINE_PATH
 CREATIVE_ENGINE_PATH=$(abspath ${PROJECT_PATH}/../creative-engine)
 export CREATIVE_ENGINE_PATH
 endif
 
-
 EXTRA_COMPONENT_DIRS = \
   ${CREATIVE_ENGINE_PATH} \
-  ${MODITE_SRC_PATH}
+  ${SRC_PATH}
 
 COMPONENT_ADD_INCLUDEDIRS = ${EXTRA_COMPONENT_DIRS}
 
-# Speed up compilation by removing components we don't use. 
+# Speed up compilation by removing components we don't use.
 # It shaved about 20 seconds from fresh builds (6 core i7 8700k)
 #EXCLUDE_COMPONENTS := asio fatfs json libsodium secure_boot idf_test bt mqtt   \
 #	esp_http_server  esp_https_ota esp_https_server sdmmc protocomm \
 #	wear_leveling
-
 
 # Let's keep this ABOVE the COMPONENT_DIRS var modification.
 include $(IDF_PATH)/make/project.mk
@@ -31,20 +28,20 @@ COMPONENT_DIRS := ${EXTRA_COMPONENT_DIRS}
 
 
 release: FORCE
-	./scripts/build.sh docker-build && cp ./build/MODITE.tgz ~/Downloads/
+	./scripts/build.sh docker-build && cp ./build/ModiteAdventure.tgz ~/Downloads/
 
 rcomp: FORCE
 	echo "Building rcomp"
-	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp && make
+	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make
+	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
 
 resources: rcomp FORCE
 	echo "Compiling resources"
-	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp Resources.r
+	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
 
 reset: FORCE
 	echo "Resetting high score table (and options)"
-	 rm -f cmake-build-debug/MODITE.app/Contents/MacOS/*.store
+	rm -f cmake-build-debug/ModiteAdventure.app/Contents/MacOS/*.store
 
 FORCE:
-
 

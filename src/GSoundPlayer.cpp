@@ -1,7 +1,3 @@
-//
-// Created by Jesus Garcia on 10/2/18.
-//
-
 #include "Game.h"
 #include "GSoundPlayer.h"
 #include "GResources.h"
@@ -14,12 +10,30 @@
 GSoundPlayer gSoundPlayer;
 
 static const TUint16 effectsList[] = {
+  SFX_GOOD_DROP_BLOCK_WAV,
+  SFX_BAD_DROP_BLOCK_WAV,
+  SFX_MOVE_BLOCK_WAV,
+  SFX_ROTATE_BLOCK_LEFT_WAV,
+  SFX_ROTATE_BLOCK_RIGHT_WAV,
+  SFX_SCORE_COMBO_WAV,
   SFX_OPTION_SELECT_WAV,
-
+  SFX_EXPLODE_BLOCK_WAV,
+  SFX_NEXT_LEVEL_WAV,
+  SFX_NEXT_STAGE_WAV,
+  SFX_SAVE_GAME_WAV
 };
 
 static const TUint16 allSongs[] = {
   EMPTYSONG_XM,
+  UNDER_WATER_XM,
+  CYBERPUNK_XM,
+  COUNTRYSIDE_XM,
+  MAIN_MENU_XM,
+  SPAAACE_XM,
+  GLACIAL_MOUNTAINS_XM,
+  GAMEOVER_XM,
+  UNDERWATERFANTASY_XM,
+  GAMEOVER_XM,
   ENTERCREDITS_XM
 };
 
@@ -52,6 +66,10 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 //  SetMusicVolume(gOptions->music);
 //  SetEffectsVolume(gOptions->sfx);
 //  MuteMusic(gOptions->muted);
+
+  SetMusicVolume(.5);
+  SetEffectsVolume(.5);
+  MuteMusic(false);
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
@@ -60,7 +78,9 @@ TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
   // BSoundPlayer::PlayMusic un-mutes the music
   // We have to re-mute it in case of mute == true
 //TODO: @mtintiuc
-//  MuteMusic(gOptions->muted);
+  MuteMusic(false);
+  SetMusicVolume(.5);
+  SetEffectsVolume(.5);
 
   return music;
 }
@@ -87,6 +107,8 @@ TBool GSoundPlayer::LoadEffects() {
 // TODO: @mtintiuc
 //  SetMusicVolume(gOptions->music);
 //  SetEffectsVolume(gOptions->sfx);
+  SetMusicVolume(.5);
+  SetEffectsVolume(.5);
   return ETrue;
 }
 
@@ -98,3 +120,68 @@ BRaw *GSoundPlayer::LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) 
 }
 
 
+
+
+void GSoundPlayer::SfxGoodDrop() {
+  PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/0);
+}
+
+void GSoundPlayer::SfxRotateRight() {
+  PlaySfx(/*SFX_ROTATE_BLOCK_RIGHT_WAV*/4);
+}
+
+void GSoundPlayer::SfxRotateLeft() {
+  PlaySfx(/*SFX_ROTATE_BLOCK_LEFT_WAV*/3);
+}
+
+void GSoundPlayer::SfxBadDrop() {
+  gSoundPlayer.PlaySfx(/*SFX_BAD_DROP_BLOCK_WAV*/1);
+}
+
+void GSoundPlayer::SfxCombo() {
+  PlaySfx(/*SFX_SCORE_COMBO_WAV*/5);
+}
+
+void GSoundPlayer::SfxMoveBlock() {
+  PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/2);
+}
+
+void GSoundPlayer::SfxExplodeBlock() {
+  PlaySfx(/*SFX_EXPLODE_BLOCK_WAV*/7);
+}
+
+void GSoundPlayer::SfxOptionSelect() {
+  PlaySfx(/*SFX_OPTION_SELECT_WAV*/6);
+}
+
+void GSoundPlayer::SfxMenuNavUp() {
+  PlaySfx(/*SFX_ROTATE_BLOCK_LEFT_WAV*/3);
+}
+
+void GSoundPlayer::SfxMenuNavDown() {
+  PlaySfx(/*SFX_ROTATE_BLOCK_RIGHT_WAV*/4);
+}
+
+void GSoundPlayer::SfxMenuAccept() {
+  gSoundPlayer.PlaySfx(/*SFX_BAD_DROP_BLOCK_WAV*/1);
+}
+
+void GSoundPlayer::SfxMenuCancel() {
+  gSoundPlayer.PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/0);
+}
+
+void GSoundPlayer::SfxNextLevel() {
+  gSoundPlayer.PlaySfx(/*SFX_NEXT_LEVEL*/8);
+}
+
+void GSoundPlayer::SfxNextStage() {
+  gSoundPlayer.PlaySfx(/*SFX_NEXT_LEVEL*/9);
+}
+
+void GSoundPlayer::SfxSaveGame() {
+  gSoundPlayer.PlaySfx(/*SFX_SAVE_GAME*/10);
+}
+
+void GSoundPlayer::SfxStartGame() {
+  SfxSaveGame();
+}

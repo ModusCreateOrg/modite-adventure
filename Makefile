@@ -1,30 +1,7 @@
-# ESP-IDF Makefile for game project
-PROJECT_NAME = ModiteAdventure
+## Generic makefile for simple utilities
 
-SRC_PATH = $(abspath ${PROJECT_PATH}/src)
-
-ifndef CREATIVE_ENGINE_PATH
-CREATIVE_ENGINE_PATH=$(abspath ${PROJECT_PATH}/../creative-engine)
-export CREATIVE_ENGINE_PATH
-endif
-
-EXTRA_COMPONENT_DIRS = \
-  ${CREATIVE_ENGINE_PATH} \
-  ${SRC_PATH}
-
-COMPONENT_ADD_INCLUDEDIRS = ${EXTRA_COMPONENT_DIRS}
-
-# Speed up compilation by removing components we don't use.
-# It shaved about 20 seconds from fresh builds (6 core i7 8700k)
-#EXCLUDE_COMPONENTS := asio fatfs json libsodium secure_boot idf_test bt mqtt   \
-#	esp_http_server  esp_https_ota esp_https_server sdmmc protocomm \
-#	wear_leveling
-
-# Let's keep this ABOVE the COMPONENT_DIRS var modification.
-include $(IDF_PATH)/make/project.mk
-
-# We're not supposed to write to this variable, but for now, let's keep this as/is.
-COMPONENT_DIRS := ${EXTRA_COMPONENT_DIRS}
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+CREATIVE_ENGINE_PATH=$(ROOT_DIR)/creative-engine
 
 
 release: FORCE
@@ -44,4 +21,3 @@ reset: FORCE
 	rm -f cmake-build-debug/ModiteAdventure.app/Contents/MacOS/*.store
 
 FORCE:
-
