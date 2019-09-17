@@ -18,6 +18,7 @@ const TInt DEATH_SPEED  = 5 * FACTOR;
 const TFloat VELOCITY = 1.5 / FACTOR;
 
 // region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -297,8 +298,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState,
-                               GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
+GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, SPIDER_SLOT) {
   mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;
@@ -467,6 +467,7 @@ TBool GSpiderProcess::MaybeHit() {
       // collide with player
       mSprite->cType &= ~STYPE_PLAYER;
       mSprite->cMask &= ~STYPE_EBULLET;
+      mSprite->Nudge();
       if (other->x > mSprite->x) {
         mSprite->x = other->x - 34;
       } else {
@@ -634,9 +635,5 @@ TBool GSpiderProcess::RunBefore() {
 }
 
 TBool GSpiderProcess::RunAfter() {
-//  printf("Spider %f,%f\n", mSprite->x, mSprite->y);
-//  if (mSprite->w != 32) {
-//    printf("SPIDER %d,%d,%d,%d\n", mSprite->cx, mSprite->cy, mSprite->w, mSprite->h);
-//  }
   return ETrue;
 }

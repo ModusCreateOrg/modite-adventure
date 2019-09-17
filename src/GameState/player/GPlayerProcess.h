@@ -6,6 +6,8 @@
 
 class GGamePlayfield;
 
+const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
+
 class GPlayerProcess : public BProcess {
 public:
   GPlayerProcess(GGameState *aGameState);

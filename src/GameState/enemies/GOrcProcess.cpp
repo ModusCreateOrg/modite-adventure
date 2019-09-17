@@ -284,8 +284,10 @@ static ANIMSCRIPT hitUpAnimation[] = {
 GOrcProcess::GOrcProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
   : GEnemyProcess(aGameState, aGamePlayfield, ORC_SLOT) {
   mSprite->Name("ORC SPRITE");
-  mSprite->x          = aX;
-  mSprite->y          = aY;
+  mSprite->x = aX;
+  mSprite->y = aY;
+  mStartX = mSprite->x = aX;
+  mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -424,6 +426,7 @@ TBool GOrcProcess::MaybeHit() {
   if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
     GAnchorSprite *other = mSprite->mCollided;
     mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->Nudge();
     switch (other->mDirection) {
       case DIRECTION_RIGHT:
         NewState(HIT_STATE, DIRECTION_LEFT);

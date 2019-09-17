@@ -1,7 +1,7 @@
 #ifndef MODITE_GTROLLPROCESS_H
 #define MODITE_GTROLLPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
@@ -20,8 +20,12 @@ public:
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
+protected:
   TBool MaybeHit();
 
+  TBool MaybeAttack();
+
+protected:
   TBool IdleState() override;
 
   TBool WalkState() override;

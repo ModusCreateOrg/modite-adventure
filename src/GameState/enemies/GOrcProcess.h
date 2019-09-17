@@ -1,7 +1,7 @@
 #ifndef MODITE_GORCPROCESS_H
 #define MODITE_GORCPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"

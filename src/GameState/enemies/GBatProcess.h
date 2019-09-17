@@ -1,7 +1,7 @@
 #ifndef MODITE_GBATPROCESS_H
 #define MODITE_GBATPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
