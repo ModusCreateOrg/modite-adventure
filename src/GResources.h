@@ -9,6 +9,7 @@ enum {
   FONT_16x16_SLOT,
   BKG_SLOT,
   PLAYER_SLOT,
+  TILESET_SLOT,
   // enemies
   PROJECTILE_ARROW_SLOT,
   BAT_SLOT,
