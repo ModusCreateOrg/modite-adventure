@@ -23,6 +23,7 @@ const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used 
 
 const TUint16 ATTR_STAIRS_UP = 26;
 const TUint16 ATTR_STAIRS_DOWN = 27;
+
 class GGamePlayfield : public BMapPlayfield {
 public:
   GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId);
