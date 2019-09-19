@@ -19,7 +19,10 @@ const TUint16 ATTR_ORC = 21;
 const TUint16 ATTR_RAT = 22;
 const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
-const TUint16 ATTR_PROJECTIL_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
+const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
+
+const TUint16 ATTR_STAIRS_UP = 26;
+const TUint16 ATTR_STAIRS_DOWN = 27;
 
 class GGamePlayfield : public BMapPlayfield {
 public:

@@ -19,6 +19,8 @@ const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
 const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
+const TUint16 ATTR_STAIRS_UP = 26;
+const TUint16 ATTR_STAIRS_DOWN = 27;
 
 
 const TUint16 ATTR_LEVEL_1 = 111;
