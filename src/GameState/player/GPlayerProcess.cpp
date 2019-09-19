@@ -17,16 +17,16 @@ const TUint16 HIT_HARD_STATE   = 6;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
+  mSprite    = ENull;
   mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
-  mSprite->type       = STYPE_PLAYER;
-  mSprite->cMask      = STYPE_ENEMY | STYPE_EBULLET;
-  mSprite->x          = mSprite->y = 32;
-  mSprite->w          = 32;
-  mSprite->h          = 32;
-  mGameState->AddSprite(mSprite);
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
   mSprite->mHitPoints = PLAYER_HITPOINTS;
+  mGameState->AddSprite(mSprite);
+  mSprite->type  = STYPE_PLAYER;
+  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and objects
+  mSprite->w     = 32;
+  mSprite->h     = 32;
+  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -35,8 +35,7 @@ GPlayerProcess::~GPlayerProcess() {
   delete mSprite;
 }
 
-void GPlayerProcess::StartLevel(
-  GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
   mPlayfield = aPlayfield;
   mSprite->x = aX;
   mSprite->y = aY;
@@ -80,6 +79,7 @@ TBool GPlayerProcess::CanWalk(TRect &aRect) {
     mSprite->y = y | 3;
     return ETrue;
   }
+
   return EFalse;
 }
 

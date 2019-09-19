@@ -29,9 +29,9 @@ GGame::GGame() {
 
   // preload bitmaps
   // MAX_BITMAP is defined in GResource.h.
-  for (TInt16 slot = 0; slot <= MAX_BBITMAP; slot++) {
-    gResourceManager.PreloadBitmap(slot);
-  }
+//  for (TInt16 slot = 0; slot <= MAX_BBITMAP; slot++) {
+//    gResourceManager.PreloadBitmap(slot);
+//  }
 
   gResourceManager.LoadBitmap(CHARSET_8X8_BMP, FONT_8x8_SLOT, IMAGE_8x8);
   gResourceManager.CacheBitmapSlot(FONT_8x8_SLOT);
@@ -89,8 +89,8 @@ void GGame::Run() {
   TBool done = EFalse;
   while (!done) {
     Random(); // randomize
-//    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
-//    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
+    mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
+    gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
 
     if (mNextState != mState) {
       switch (mNextState) {

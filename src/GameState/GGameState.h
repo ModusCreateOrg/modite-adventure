@@ -19,7 +19,8 @@ public:
   void PreRender();
   void PostRender();
 
-  void LoadLevel(TUint16 aTileMapId);
+  void NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
+  void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
 
   TUint16 MapWidth();
   TUint16 MapHeight();
@@ -40,10 +41,13 @@ protected:
   GPlayerProcess *mPlayerProcess;
   TInt mTimer;
   TBool mStats;
+  char mText[128];
+  char mName[128];
+  TInt16 mNextLevel, mLevel;
+  TUint16 mNextTileMapId, mTileMapId;
 
 public:
   GAnchorSprite *PlayerSprite() ;
 };
-
 
 #endif //MODITE_GGAMESTATE_H

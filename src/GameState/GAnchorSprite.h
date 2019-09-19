@@ -10,6 +10,9 @@ enum DIRECTION {
   DIRECTION_RIGHT,
 };
 
+const TUint32 STYPE_OBJECT_BIT = STYPE_USER_BIT;
+const TUint32 STYPE_OBJECT = 1<<STYPE_OBJECT_BIT;
+
 enum HIT_STRENGTH { HIT_LIGHT, HIT_MEDIUM, HIT_HARD };
 
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
