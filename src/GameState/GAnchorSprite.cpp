@@ -15,6 +15,7 @@ GAnchorSprite::GAnchorSprite(
   mGold       = 0;
   strcpy(mName, "unnamed");
   mInvulnerable = EFalse;
+  mCollided = ENull;
 }
 
 GAnchorSprite::~GAnchorSprite() {
