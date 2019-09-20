@@ -59,7 +59,7 @@ ADD_EXECUTABLE(
   Resources.bin
   ${CREATIVE_ENGINE_SOURCE_FILES}
   ${MODITE_SRC}
-        src/GameState/objects/GStairsProcess.cpp src/GameState/objects/GStairsProcess.h src/GameState/status/GStartLevelProcess.cpp src/GameState/status/GStartLevelProcess.h)
+        src/GameState/environment/GStairsProcess.cpp src/GameState/environment/GStairsProcess.h src/GameState/status/GStartLevelProcess.cpp src/GameState/status/GStartLevelProcess.h src/GameState/environment/GCrateProcess.cpp src/GameState/environment/GCrateProcess.h)
 
 ProcessorCount(N)
 if (NOT N EQUAL 0)

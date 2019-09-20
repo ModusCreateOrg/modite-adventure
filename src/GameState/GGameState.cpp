@@ -11,12 +11,15 @@
 #include "GameState/enemies/GRatProcess.h"
 #include "GameState/enemies/GSlimeProcess.h"
 #include "GameState/enemies/GTrollProcess.h"
-#include "GameState/objects/GStairsProcess.h"
+#include "GameState/environment/GStairsProcess.h"
+#include "GameState/environment/GCrateProcess.h"
+#include "GameState/environment/GChestProcess.h"
+#include "GameState/environment/GSpikesProcess.h"
 
 #define DEBUGME
-#undef DEBUGME
+//#undef DEBUGME
 
-static const TInt STATS_TIMER = 30 * 3;
+static const TInt STATS_TIMER = FRAMES_PER_SECOND * 3;
 
 // scope local to this file.  If the value for the slot is ETrue, then the slot
 // has already been remapped. We don't want to remap twice or the color range
@@ -27,13 +30,13 @@ static TBool slotRemapState[SLOT_MAX];
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
   if (!slotRemapState[aSlot]) {
     gResourceManager.ReleaseBitmapSlot(aSlot);
-    gResourceManager.LoadBitmap(aBMP, aSlot, IMAGE_64x64);
+    gResourceManager.LoadBitmap(aBMP, aSlot, aSlot == ENVIRONMENT_SLOT ? IMAGE_32x32 : IMAGE_64x64);
   }
   BBitmap *screen = mGamePlayfield->GetTilesBitmap();
   BBitmap *bm     = gResourceManager.GetBitmap(aSlot);
   if (!slotRemapState[aSlot]) {
 #ifdef DEBUGME
-    printf("ReamapSlot(%d,%d,%d,%d)\n", aBMP, aSlot, aPalette, aColors);
+    printf("ReamapSlot(%d,%d)\n", aBMP, aSlot);
 #endif
     bm->Remap(screen);
     slotRemapState[aSlot] = ETrue;
@@ -53,7 +56,7 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
                            MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
-  mTimer         = STATS_TIMER;
+  mTimer         = FRAMES_PER_SECOND * 1;
   mStats         = EFalse;
   mPlayerProcess = ENull;
 
@@ -111,11 +114,11 @@ void GGameState::PostRender() {
 }
 
 TUint16 GGameState::MapWidth() {
-  return (mGamePlayfield->MapWidthTiles() - gViewPort->mRect.Width()/32) * 32;
+  return (mGamePlayfield->MapWidthTiles() - gViewPort->mRect.Width() / 32) * 32;
 }
 
 TUint16 GGameState::MapHeight() {
-  return (mGamePlayfield->MapHeightTiles() - gViewPort->mRect.Height()/32) * 32;
+  return (mGamePlayfield->MapHeightTiles() - gViewPort->mRect.Height() / 32) * 32;
 }
 
 GAnchorSprite *GGameState::PlayerSprite() { return mPlayerProcess->Sprite(); }
@@ -125,12 +128,13 @@ void GGameState::NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mNextLevel = aLevel;
   strcpy(mName, aName);
   mNextTileMapId = aTileMapId;
-  mTimer = 3 * FRAMES_PER_SECOND;
+  mTimer         = 1 * FRAMES_PER_SECOND;
   sprintf(mText, "%s Level %d", aName, aLevel);
 }
+
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId) {
   strcpy(mName, aName);
-  mLevel = mNextLevel = aLevel;
+  mLevel     = mNextLevel = aLevel;
   mTileMapId = aTileMapId;
 
   Reset(); // remove sprites and processes
@@ -147,6 +151,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   Disable();
 
 //  AddProcess(new GStartLevelProcess(aName, aLevel));
+  RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
   RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
@@ -176,51 +181,90 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     auto xx = TFloat(op2 * 32), yy = TFloat(op1 * 32);
 
     switch (op) {
+      case ATTR_STONE_STAIRS_UP:
+        printf("STONE STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GStairsProcess(this, DIRECTION_UP, params, xx, yy, "STONE"));
+        break;
+      case ATTR_STONE_STAIRS_DOWN:
+        printf("STONE STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GStairsProcess(this, DIRECTION_DOWN, params, xx, yy, "STONE"));
+        break;
+      case ATTR_WOOD_STAIRS_UP:
+        printf("WOOD STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GStairsProcess(this, DIRECTION_UP, params, xx, yy, "WOOD"));
+        break;
+      case ATTR_WOOD_STAIRS_DOWN:
+        printf("WOOD STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GStairsProcess(this, DIRECTION_DOWN, params, xx, yy, "WOOD"));
+        break;
+      case ATTR_CRATE:
+        printf("CRATE at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GCrateProcess(this, params, xx, yy));
+        break;
+      case ATTR_CHEST:
+        printf("CHEST at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GChestProcess(this, params, xx, yy));
+        break;
+      case ATTR_SPIKES:
+        printf("SPIKES at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        AddProcess(new GSpikesProcess(this, xx, yy+30));
+        break;
+      case ATTR_METAL_DOOR_H:
+        printf("METAL DOOR H at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+      case ATTR_METAL_DOOR_V:
+        printf("METAL DOOR V at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+      case ATTR_WOOD_DOOR_H:
+        printf("WOOD DOOR H at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+      case ATTR_WOOD_DOOR_V:
+        printf("WOOD DOOR V at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+      case ATTR_LEVER:
+        printf("LEVER at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+      case ATTR_FLOOR_SWITCH:
+        printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
+        break;
+
       case ATTR_PLAYER:
         printf("PLAYER at %.2f,%.2f\n", xx, yy);
-        mPlayerProcess->StartLevel(mGamePlayfield, xx + 32, yy + 63);
+        mPlayerProcess->StartLevel(mGamePlayfield, xx -16, yy + 32);
         startedPlayer = ETrue;
         break;
       case ATTR_SPIDER:
-        printf("SPIDER at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GSpiderProcess(this, mGamePlayfield, xx, yy + 63));
+        printf("SPIDER at %.2f,%.2f %d %d\n", xx - 32, yy, op1, op2);
+        AddProcess(new GSpiderProcess(this, mGamePlayfield, xx - 32, yy + 32));
         break;
       case ATTR_BAT:
         printf("BAT at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GBatProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GBatProcess(this, mGamePlayfield, xx - 32, yy + 32));
         break;
       case ATTR_GOBLIN:
         printf("GOBLIN at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GGoblinProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GGoblinProcess(this, mGamePlayfield, xx, yy + 32));
         break;
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
         AddProcess(
-          new GGoblinSniperProcess(this, mGamePlayfield, xx - 32, yy + 63));
+          new GGoblinSniperProcess(this, mGamePlayfield, xx - 32, yy + 32));
         break;
       case ATTR_ORC:
         printf("ORC at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GOrcProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GOrcProcess(this, mGamePlayfield, xx, yy + 32));
         break;
       case ATTR_RAT:
         printf("RAT at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GRatProcess(this, mGamePlayfield, xx - 18, yy + 63));
+        AddProcess(new GRatProcess(this, mGamePlayfield, xx - 18, yy +31));
         break;
       case ATTR_SLIME:
         printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GSlimeProcess(this, mGamePlayfield, xx, yy + 63));
+        AddProcess(new GSlimeProcess(this, mGamePlayfield, xx, yy + 32));
         break;
       case ATTR_TROLL:
         printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GTrollProcess(this, mGamePlayfield, xx - 20, yy + 63));
-        break;
-      case ATTR_STAIRS_UP:
-        printf("STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GStairsProcess(this, DIRECTION_UP, params, xx, yy));
-        break;
-      case ATTR_STAIRS_DOWN:
-        printf("STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, op1, op2);
-        AddProcess(new GStairsProcess(this, DIRECTION_DOWN, params, xx, yy));
+        AddProcess(new GTrollProcess(this, mGamePlayfield, xx - 20, yy + 32));
         break;
       default:
         printf("Invalid op code in Object Program: %x at %d,%d\n", program[ip].mCode, op1, op2);

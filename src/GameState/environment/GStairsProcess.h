@@ -8,7 +8,7 @@
 
 class GStairsProcess : public BProcess {
 public:
-  GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY);
+  GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY, const char *aKind);
 
   ~GStairsProcess();
 

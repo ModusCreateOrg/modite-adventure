@@ -1,7 +1,7 @@
 #ifndef MODITE_GSLIMEPROCESS_H
 #define MODITE_GSLIMEPROCESS_H
 
-#include <GameState/GEnemyProcess.h>
+#include <GameState/enemies/GEnemyProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"

@@ -5,6 +5,10 @@ GAnchorSprite::GAnchorSprite(
   TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType)
   : BAnimSprite(aPri, aBM, aImg, aType) {
   flags |= SFLAG_ANCHOR; //  | SFLAG_SORTY;
+  if (aType) {
+    flags |= SFLAG_CHECK;
+  }
+
   w           = 64;
   h           = 64;
   mLevel      = 1;

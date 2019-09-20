@@ -23,7 +23,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
   mSprite->type  = STYPE_PLAYER;
-  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and objects
+  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and environment
   mSprite->w     = 32;
   mSprite->h     = 32;
   mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY

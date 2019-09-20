@@ -21,6 +21,12 @@ PATH resources/sprites/
 BITMAP chara_hero.bmp
 
 #
+### ENVIRONMENT/OBJECTS
+#
+PATH resources/sprites/environment
+BITMAP dungeon_tileset_objects.bmp
+
+#
 ### ENEMIES
 #
 PATH resources/sprites/enemies

@@ -604,6 +604,7 @@ TBool GRatProcess::MaybeAttack() {
  *********************************************************************************/
 
 TBool GRatProcess::IdleState() {
+  return ETrue;
   if (MaybeHit()) {
     return ETrue;
   }
