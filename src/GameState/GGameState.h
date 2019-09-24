@@ -38,7 +38,6 @@ protected:
 
 protected:
   GGamePlayfield *mGamePlayfield;
-  GPlayerProcess *mPlayerProcess;
   TInt mTimer;
   TBool mStats;
   char mText[128];

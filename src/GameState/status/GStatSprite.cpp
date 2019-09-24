@@ -1,9 +1,10 @@
 #include "Game.h"
 #include "GStatSprite.h"
-#include <stdarg.h>
 
-GStatSprite::GStatSprite(STAT_SIZE aSize, const char *aMessage)
-    : mMessage(strdup(aMessage)), BSprite(0, 0, 0, STYPE_DEFAULT) {
+GStatSprite::GStatSprite(TInt aSize, const char *aMessage, TInt aImage)
+  : mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
+
+  mImageNumber = aImage;
 
   switch (aSize) {
     case STAT_SIZE_8x8:
@@ -22,9 +23,15 @@ GStatSprite::~GStatSprite() {
 }
 
 TBool GStatSprite::Render(BViewPort *aViewPort) {
-  const TInt screenX = x - aViewPort->mWorldX, screenY = y - aViewPort->mWorldY;
+  TInt screenX = x - aViewPort->mWorldX, screenY = y - aViewPort->mWorldY;
 
-    gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-    return gDisplay.renderBitmap->DrawString(
-        aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO, -1, -6);
+  if (mImageNumber) {
+    y -= 8;
+    BSprite::Render(aViewPort);
+    screenX += gResourceManager.BitmapWidth(mBitmapSlot);
+    y += 8;
+  }
+
+  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
+  return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO, -1, -6);
 }

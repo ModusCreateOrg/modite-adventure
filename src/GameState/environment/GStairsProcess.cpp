@@ -36,15 +36,15 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TIn
 }
 
 GStairsProcess::~GStairsProcess() {
-  if (mSprite1) {
-    mSprite1->Remove();
-    delete mSprite1;
-    mSprite1 = ENull;
-  }
   if (mSprite2) {
     mSprite2->Remove();
     delete mSprite2;
     mSprite2 = ENull;
+  }
+  if (mSprite1) {
+    mSprite1->Remove();
+    delete mSprite1;
+    mSprite1 = ENull;
   }
 }
 

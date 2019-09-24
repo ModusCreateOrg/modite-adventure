@@ -5,14 +5,13 @@
 #include <BFont.h>
 #include <BBitmap.h>
 
-enum STAT_SIZE {
-  STAT_SIZE_8x8,
-  STAT_SIZE_16x16,
-};
+
+const TInt STAT_SIZE_8x8 = 0;
+const TInt STAT_SIZE_16x16 = 1;
 
 class GStatSprite : public BSprite {
 public:
-  GStatSprite(STAT_SIZE aSize, const char *aMessage);
+  GStatSprite(TInt aSize, const char *aMessage, TInt aImage = 0);
   ~GStatSprite() OVERRIDE;
 
 public:

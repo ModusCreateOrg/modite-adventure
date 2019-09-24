@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "GAnchorSprite.h"
+#include "GPlayer.h"
 
 class GGamePlayfield;
 

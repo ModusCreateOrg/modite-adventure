@@ -6,15 +6,23 @@
 class GStatSprite;
 
 class GStatProcess : public BProcess {
-  public:
-    GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...);
-    ~GStatProcess();
-  public:
-    TBool RunBefore();
-    TBool RunAfter();
-  protected:
-    GStatSprite *mSprite;
-    TInt mTimeout;
+public:
+  GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...);
+
+  ~GStatProcess();
+
+public:
+  void SetImageNumber(TInt aImageNumber);
+  void SetTimeout(TInt aTime) { mTimeout = aTime; };
+
+  TBool RunBefore();
+
+  TBool RunAfter();
+
+protected:
+  GStatSprite *mSprite;
+  TInt        mTimeout;
+  TInt        mImageNumber;
 };
 
 #endif

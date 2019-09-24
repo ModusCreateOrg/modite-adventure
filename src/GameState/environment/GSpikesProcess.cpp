@@ -1,6 +1,8 @@
 #include "GSpikesProcess.h"
 #include "GGamePlayfield.h"
 
+TInt GSpikesProcess::mNumber = 0;
+
 const TUint16 SPIKE_SPEED = 3;
 
 static const ANIMSCRIPT spikesAnimation[] = {
@@ -21,17 +23,19 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
   mGameState = aGameState;
   mSprite    = new GAnchorSprite(999, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_DEFAULT;
-  mSprite->w = mSprite->h = 32;
+  mSprite->w     = mSprite->h = 32;
+  mSprite->cx    = -16;
   mSprite->x     = aX;
   mSprite->y     = aY;
   mGameState->AddSprite(mSprite);
   mState = EFalse;
-  mTimer = Random(FRAMES_PER_SECOND, 4 * FRAMES_PER_SECOND);
+  mTime  = ++mNumber * FRAMES_PER_SECOND;
+  mTimer = mTime;
 }
 
 GSpikesProcess::~GSpikesProcess() {
-  //
   if (mSprite) {
+    mSprite->Remove();
     delete mSprite;
     mSprite = ENull;
   }
@@ -40,7 +44,7 @@ GSpikesProcess::~GSpikesProcess() {
 TBool GSpikesProcess::RunBefore() {
   if (mState) {
     if (mSprite->AnimDone()) {
-      mTimer = Random(FRAMES_PER_SECOND, 4 * FRAMES_PER_SECOND);
+      mTimer = 3 * FRAMES_PER_SECOND;
       mState = EFalse;
     }
   } else {

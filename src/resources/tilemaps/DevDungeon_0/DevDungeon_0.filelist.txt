@@ -1,5 +1,5 @@
 DevDungeon_0.tiles.bmp
-Level_3.tlc
+Level_2.tlc
 Y:\src\resources\tilemaps\DevDungeon_0\DevDungeon_0.Level_2.layer-OBJECT_ATTRIBUTE_LAYER.map001.stm
 Y:\src\resources\tilemaps\DevDungeon_0\DevDungeon_0.Level_2.layer-OBJECT_LAYER.map001.stm
 Y:\src\resources\tilemaps\DevDungeon_0\DevDungeon_0.Level_2.layer-MAP_ATTRIBUTE_LAYER.map001.stm

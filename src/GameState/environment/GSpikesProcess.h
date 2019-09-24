@@ -16,12 +16,14 @@ public:
 
   TBool RunAfter();
 
+public:
+  static TInt mNumber;
 protected:
   GGameState    *mGameState;
   TUint16       mParam;
   GAnchorSprite *mSprite;
   TBool         mState;   // true if animating
-  TInt          mTimer;
+  TInt          mTimer, mTime;
 };
 
 
