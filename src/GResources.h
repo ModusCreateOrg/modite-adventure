@@ -189,7 +189,7 @@ const TUint16 IMG_CRATE             = 24;      // through 28
 const TUint16 IMG_WOOD_DOOR_V       = 30;      // top, bottom is 30
 const TUint16 IMG_METAL_DOOR_V      = 31;      // top, bottom is 31
 const TUint16 IMG_FLOOR_SWITCH      = 32;      // grey, 33 is pressed
-const TUint16 IMG_FLOOR_SWITCH2     = 34;      // brown, 35 is pressed
+const TUint16 IMG_FLOOR_SWITCH_WOOD = 34;      // brown, 35 is pressed
 const TUint16 IMG_LEVER             = 36;      // left, center = 36, right = 37
 const TUint16 IMG_STONE_STAIRS_DOWN = 48;
 const TUint16 IMG_STONE_STAIRS_UP   = 49;      // 39 is the upper sprite image for the very top stairs

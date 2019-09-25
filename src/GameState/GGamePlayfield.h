@@ -31,6 +31,7 @@ const TUint16 ATTR_METAL_DOOR_H      = 10;  // horizontal
 const TUint16 ATTR_METAL_DOOR_V      = 11;  // vertical
 const TUint16 ATTR_LEVER             = 12;  // tri state lever
 const TUint16 ATTR_FLOOR_SWITCH      = 13;
+const TUint16 ATTR_FLOOR_SWITCH_WOOD = 14;
 const TUint16 ATTR_PLAYER            = 16;
 const TUint16 ATTR_SPIDER            = 17;
 const TUint16 ATTR_BAT               = 18;

@@ -7,7 +7,7 @@
 
 class GFloorSwitchProcess : public BProcess {
 public:
-  GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY);
+  GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden);
   ~GFloorSwitchProcess() OVERRIDE;
 public:
   TBool RunBefore() OVERRIDE;
@@ -15,6 +15,7 @@ public:
 
 protected:
   GGameState *mGameState;
+  TBool mImage;
   TUint16 mParam;
   TBool mState, mAnimating;
   GAnchorSprite *mSprite;

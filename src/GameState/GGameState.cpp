@@ -234,7 +234,11 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_FLOOR_SWITCH:
         printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GFloorSwitchProcess(this, params, xx, yy+32));
+        AddProcess(new GFloorSwitchProcess(this, params, xx, yy+32, EFalse));
+        break;
+      case ATTR_FLOOR_SWITCH_WOOD:
+        printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        AddProcess(new GFloorSwitchProcess(this, params, xx, yy+32, ETrue));
         break;
 
       case ATTR_PLAYER:
