@@ -15,7 +15,7 @@ public:
 
 protected:
   GGameState *mGameState;
-  TBool mImage;
+  TUint16 mImage;
   TUint16 mParam;
   TBool mState, mAnimating;
   GAnchorSprite *mSprite;

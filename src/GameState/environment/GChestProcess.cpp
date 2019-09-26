@@ -12,7 +12,7 @@ GChestProcess::GChestProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
   mSprite->w = mSprite->h = 32;
   mSprite->cx = -16;
   mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->y = aY + 32;
   mGameState->AddSprite(mSprite);
 }
 
