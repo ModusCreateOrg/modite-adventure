@@ -17,8 +17,8 @@ const TUint16 HIT_HARD_STATE   = 6;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
-  mSprite    = ENull;
-  mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
+  GPlayer::mSprite = mSprite    = ENull;
+  GPlayer::mSprite = mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
   GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
@@ -31,8 +31,11 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  mSprite->Remove();
-  delete mSprite;
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    GPlayer::mSprite = mSprite = ENull;
+  }
 }
 
 void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
