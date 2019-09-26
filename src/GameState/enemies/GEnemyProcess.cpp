@@ -1,4 +1,5 @@
 #include "GEnemyProcess.h"
+#include "GPlayer.h"
 #include "GGameState.h"
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TUint16 aSlot) :
@@ -16,16 +17,17 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfi
   mState     = IDLE_STATE;
   mStep      = 0;
 
-  mPlayerSprite = mGameState->PlayerSprite();
+  mStartX       = mStartY = 0;
+  mPlayerSprite = GPlayer::mSprite;
   mAttackTimer  = Random(30, 60);
 }
 
 GEnemyProcess::~GEnemyProcess() {
-//  if (mSprite) {
-//    mGameState->RemoveSprite(mSprite);
-//    delete mSprite;
-//    mSprite = ENull;
-//  }
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 TBool GEnemyProcess::IsWall(TInt aDirection) {

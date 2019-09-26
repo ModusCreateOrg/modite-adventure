@@ -17,13 +17,13 @@ const TUint16 HIT_HARD_STATE   = 6;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
-  mSprite    = ENull;
-  mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
+  GPlayer::mSprite = mSprite    = ENull;
+  GPlayer::mSprite = mSprite    = new GAnchorSprite(-100, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
-  mSprite->mHitPoints = PLAYER_HITPOINTS;
+  GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
   mSprite->type  = STYPE_PLAYER;
-  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and objects
+  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and environment
   mSprite->w     = 32;
   mSprite->h     = 32;
   mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
@@ -31,8 +31,11 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  mSprite->Remove();
-  delete mSprite;
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    GPlayer::mSprite = mSprite = ENull;
+  }
 }
 
 void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
@@ -120,21 +123,18 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_DOWN:
           mStep = 1 - mStep;
           mSprite->vy = PLAYER_VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkDownAnimation1 : walkDownAnimation2);
+          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -PLAYER_VELOCITY;
           //          mSprite->mDx = -36;
-          mSprite->StartAnimation(
-            mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
           mStep = 1 - mStep;
           mSprite->vx = PLAYER_VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkRightAnimation1 : walkRightAnimation2);
+          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
@@ -183,15 +183,16 @@ TBool GPlayerProcess::MaybeHit() {
       mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
 #endif
 
+  if (mSprite->cType & STYPE_OBJECT) {
+    mSprite->cType &= ~STYPE_OBJECT;
+  }
   if (mSprite->mInvulnerable) {
     mSprite->cType &= STYPE_EBULLET;
   }
 
   if (mSprite->cType & STYPE_EBULLET) {
     mSprite->cType &= STYPE_EBULLET;
-    printf("BULLET\n");
     mSprite->Nudge();
-//    mSprite->vx = mSprite->vy = 0;
     TInt state = HIT_LIGHT_STATE;
 #ifdef DEBUGME
     printf("Player attacked\n");
@@ -200,7 +201,7 @@ TBool GPlayerProcess::MaybeHit() {
     switch (other->mHitStrength) {
 
       case HIT_LIGHT:
-        mSprite->mHitPoints -= 1;
+        GPlayer::mHitPoints -= 1;
         mSprite->mInvulnerable = ETrue;
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
         switch (other->mDirection) {
@@ -220,9 +221,9 @@ TBool GPlayerProcess::MaybeHit() {
         break;
 
       case HIT_MEDIUM:
-        mSprite->mHitPoints -= 2;
+        GPlayer::mHitPoints -= 2;
         mSprite->mInvulnerable = ETrue;
-        state                  = HIT_MEDIUM_STATE;
+        state = HIT_MEDIUM_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +2"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -241,7 +242,7 @@ TBool GPlayerProcess::MaybeHit() {
         break;
 
       case HIT_HARD:
-        mSprite->mHitPoints -= 3;
+        GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +3"));
@@ -263,14 +264,14 @@ TBool GPlayerProcess::MaybeHit() {
     }
     mState                     = state;
 
-    if (mSprite->mHitPoints <= 0) {
+    if (GPlayer::mHitPoints <= 0) {
       // GAME OVER!
 #ifdef DEBUGME
       printf("Player dead\n");
 #endif
-      mSprite->mHitPoints = PLAYER_HITPOINTS;
+      GPlayer::mHitPoints = PLAYER_HITPOINTS;
     }
-    mSprite->cType             = 0;
+    mSprite->cType = 0;
     return ETrue;
   }
 
@@ -287,6 +288,36 @@ TBool GPlayerProcess::MaybeHit() {
 TBool GPlayerProcess::MaybeSword() {
   if (!gControls.WasPressed(BUTTONA)) {
     return EFalse;
+  }
+  TFloat x = mSprite->x, y = mSprite->y;
+  TRect  r;
+  mSprite->GetRect(r);
+
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      r.Offset(0, -18);
+      if (!IsFloor(r.x1, r.y1)) {
+        return EFalse;
+      }
+      break;
+    case DIRECTION_DOWN:
+      r.Offset(0, 24);
+      if (!IsFloor(r.x1, r.y2)) {
+        return EFalse;
+      }
+      break;
+    case DIRECTION_LEFT:
+      r.Offset(-1, 0);
+      if (!IsFloor(r.x1, r.y2)) {
+        return EFalse;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      r.Offset(24, 0);
+      if (!IsFloor(r.x2, r.y2)) {
+        return EFalse;
+      }
+      break;
   }
   NewState(SWORD_STATE, mSprite->mDirection);
   return ETrue;

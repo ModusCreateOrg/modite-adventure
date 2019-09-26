@@ -1,5 +1,6 @@
 #include "GRatProcess.h"
 #include "GStatProcess.h"
+#include "GPlayer.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -306,7 +307,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
 
 GRatProcess::~GRatProcess() {
   if (mSprite) {
-    mGameState->RemoveSprite(mSprite);
+    mSprite->Remove();
     delete mSprite;
     mSprite = ENull;
   }
@@ -573,7 +574,10 @@ TBool GRatProcess::MaybeHit() {
 }
 
 TBool GRatProcess::MaybeAttack() {
-  if (!mPlayerSprite->mInvulnerable) {
+  if (!GPlayer::mSprite) {
+    return EFalse;
+  }
+  if (!GPlayer::mSprite->mInvulnerable) {
     if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
       if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
         if (--mAttackTimer <= 0) {
