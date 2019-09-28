@@ -31,7 +31,7 @@ protected:
   TBool IsLedge(TRect &aRect);
   TBool IsLedge();
 
-  TBool CanWalk(TRect &aRect);
+  TBool CanWalk(DIRECTION aDirection);
 
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection);

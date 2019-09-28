@@ -3,6 +3,7 @@
 
 const TInt ANIM_SPEED = FRAMES_PER_SECOND;
 
+#if 0
 static ANIMSCRIPT switchOffAnimation[] = {
   ABITMAP(ENVIRONMENT_SLOT),
   ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH),
@@ -13,20 +14,21 @@ static ANIMSCRIPT switchOnAnimation[]  = {
   ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH + 1),
   AEND,
 };
+#endif
 
 GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden) {
   mGameState = aGameState;
-  mParam     = aParam;
-  mSprite    = ENull;
-  mImage = IMG_FLOOR_SWITCH + aWooden ? 2 : 0;
+  mParam = aParam;
+  mSprite = ENull;
+  mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
   mSprite = new GAnchorSprite(999, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
-  mSprite->w     = mSprite->h = 32;
-  mSprite->cx    = -16;
-  mSprite->x     = aX;
-  mSprite->y     = aY + 3;
+  mSprite->w = mSprite->h = 32;
+  mSprite->cx = -16;
+  mSprite->x = aX;
+  mSprite->y = aY + 3;
   mGameState->AddSprite(mSprite);
   mState = mAnimating = EFalse;
 }
