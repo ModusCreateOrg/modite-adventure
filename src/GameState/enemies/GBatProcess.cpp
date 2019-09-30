@@ -4,15 +4,15 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt   HIT_POINTS   = 5;
+const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED    = 1 * FACTOR;
-const TInt WALK_SPEED   = 5 * FACTOR;
-const TInt DEATH_SPEED  = 5 * FACTOR;
+const TInt HIT_SPEED = 1 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 
@@ -295,9 +295,10 @@ GBatProcess::~GBatProcess() {
 void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx        = 0;
-  mSprite->mDy        = 0;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -339,6 +340,7 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -358,6 +360,7 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -377,6 +380,11 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
+
     default:
       break;
   }
@@ -386,42 +394,9 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GBatProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->Nudge();
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-    return ETrue;
-  }
-
-  return EFalse;
-}
-
 TBool GBatProcess::CanWalk(TInt aDirection) {
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-         screenY = mSprite->y - mGameState->mWorldYY;
+    screenY = mSprite->y - mGameState->mWorldYY;
 
   const TInt testx = mSprite->x + mSprite->vx, testy = mSprite->y + mSprite->vy;
 
@@ -472,8 +447,8 @@ TBool GBatProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x  = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
-           sy = y - mGameState->mWorldYY;
+    TFloat x = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
+      sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -565,22 +540,6 @@ TBool GBatProcess::WalkState() {
   return ETrue;
 }
 
-TBool GBatProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  return ETrue;
-}
-
-TBool GBatProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
 TBool GBatProcess::DeathState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
@@ -591,25 +550,4 @@ TBool GBatProcess::DeathState() {
   return ETrue;
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
 
-TBool GBatProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GBatProcess::RunAfter() { return ETrue; }

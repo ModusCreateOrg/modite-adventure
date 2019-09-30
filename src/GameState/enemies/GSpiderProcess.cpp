@@ -5,15 +5,15 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt   HIT_POINTS   = 5;
+const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED    = 5 * FACTOR;
-const TInt WALK_SPEED   = 5 * FACTOR;
-const TInt DEATH_SPEED  = 5 * FACTOR;
+const TInt HIT_SPEED = 5 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
@@ -304,12 +304,17 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, GGamePlayfield *aGamePlay
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitPoints = HIT_POINTS;
+  mSprite->mHitStrength = HIT_MEDIUM;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GSpiderProcess::~GSpiderProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -320,9 +325,11 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   strcpy(mSprite->mName, "SPIDER");
   mSprite->mDirection = aDirection;
-  mSprite->mDx        = 0;
-  mSprite->mDy        = 0;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
+
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -364,6 +371,7 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case ATTACK_STATE:
       mAttackTimer = Random(30, 60);
       mSprite->vx = 0;
@@ -384,6 +392,7 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -404,6 +413,11 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
+
     default:
       break;
   }
@@ -412,90 +426,6 @@ void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
-
-TBool GSpiderProcess::MaybeAttack() {
-  if (!mPlayerSprite->mInvulnerable) {
-    if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
-      if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
-        if (--mAttackTimer <= 0) {
-          switch (Random(0, 2)) {
-            case 0:
-              mSprite->mHitStrength = HIT_HARD;
-              break;
-            case 1:
-              mSprite->mHitStrength = HIT_MEDIUM;
-              break;
-            default:
-              mSprite->mHitStrength = HIT_LIGHT;
-              break;
-          }
-          NewState(ATTACK_STATE,
-                   mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
-          return ETrue;
-        }
-      }
-    }
-  }
-
-  return EFalse;
-}
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GSpiderProcess::MaybeHit() {
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    mSprite->cMask &= ~STYPE_EBULLET;
-    if (mSprite->cType & STYPE_PBULLET) {
-      printf("Spider ATTACKED\n");
-      if (--mSprite->mHitPoints <= 0) {
-        printf("Spider DEAD\n");
-        mSprite->StartAnimation(deathAnimation);
-        mState = DEATH_STATE;
-        mGameState->AddProcess(
-          new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
-        return ETrue;
-      } else {
-        mGameState->AddProcess(
-          new GStatProcess(mSprite->x - 32, mSprite->y - 63, "EXP +1"));
-      }
-    }
-
-    GAnchorSprite *other = mPlayerSprite;
-    if ((mSprite->cType & STYPE_PBULLET) == 0) {
-      // collide with player
-      mSprite->cType &= ~STYPE_PLAYER;
-      mSprite->cMask &= ~STYPE_EBULLET;
-      mSprite->Nudge();
-      if (other->x > mSprite->x) {
-        mSprite->x = other->x - 34;
-      } else {
-        mSprite->x = other->x + 34;
-      }
-    }
-
-    mSprite->cType &= ~STYPE_PBULLET;
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-
-    return ETrue;
-  }
-
-  return EFalse;
-}
 
 TBool GSpiderProcess::IdleState() {
   if (MaybeHit()) {
@@ -526,7 +456,7 @@ TBool GSpiderProcess::IdleState() {
 
 TBool GSpiderProcess::CanWalk() {
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-         screenY = mSprite->y - mGameState->mWorldYY;
+    screenY = mSprite->y - mGameState->mWorldYY;
 
   if (mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
                          mSprite->y + mSprite->vy) || // Left/Bottom Wall
@@ -553,7 +483,7 @@ TBool GSpiderProcess::WalkState() {
     return ETrue;
   }
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-         screenY = mSprite->y - mGameState->mWorldYY;
+    screenY = mSprite->y - mGameState->mWorldYY;
 
   if (!CanWalk()) {
     NewState(IDLE_STATE,
@@ -585,17 +515,10 @@ TBool GSpiderProcess::WalkState() {
   return ETrue;
 }
 
-TBool GSpiderProcess::AttackState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-  }
-  return ETrue;
-}
-
 TBool GSpiderProcess::HitState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
+    mSprite->cType &= ~STYPE_PLAYER;
   }
 
   return ETrue;
@@ -603,8 +526,8 @@ TBool GSpiderProcess::HitState() {
 
 TBool GSpiderProcess::DeathState() {
   if (mSprite->AnimDone()) {
-    mSprite->x          = mStartX;
-    mSprite->y          = mStartY;
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
     NewState(IDLE_STATE, mSprite->mDirection);
     mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
     mSprite->mHitPoints = HIT_POINTS;
@@ -613,27 +536,3 @@ TBool GSpiderProcess::DeathState() {
   return ETrue;
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GSpiderProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GSpiderProcess::RunAfter() {
-  return ETrue;
-}

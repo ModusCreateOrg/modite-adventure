@@ -13,25 +13,14 @@ public:
 
   ~GBatProcess();
 
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
-
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
-
-  TBool MaybeHit();
 
   TBool IdleState() override;
 
   TBool CanWalk(TInt aDirection);
 
   TBool WalkState() override;
-
-  TBool AttackState() override;
-
-  TBool HitState() override;
 
   TBool DeathState() override;
 

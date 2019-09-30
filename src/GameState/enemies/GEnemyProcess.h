@@ -17,7 +17,7 @@ enum {
   DEATH_STATE,
 };
 
-static const char  *stateMessages[] = {
+static const char *stateMessages[] = {
   "IDLE STATE",
   "WALK STATE",
   "ATTACK STATE",
@@ -43,9 +43,17 @@ protected:
 
   GAnchorSprite *mPlayerSprite;
 
+public:
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
+
 protected:
   // test if a wall in the specified direction from sprite's current location
   TBool IsWall(TInt aDirection);
+
+protected:
+  TBool MaybeAttack();
+  TBool MaybeHit();
 
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
@@ -54,9 +62,9 @@ protected:
 
   virtual TBool WalkState() = 0;
 
-  virtual TBool AttackState() = 0;
+  TBool AttackState();
 
-  virtual TBool HitState() = 0;
+  TBool HitState();
 
   virtual TBool DeathState() = 0;
 };

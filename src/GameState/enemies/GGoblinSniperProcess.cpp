@@ -296,7 +296,11 @@ GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, GGamePlayfiel
 }
 
 GGoblinSniperProcess::~GGoblinSniperProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -304,14 +308,13 @@ GGoblinSniperProcess::~GGoblinSniperProcess() {
  *********************************************************************************/
 
 void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-#ifdef DEBUGME
-  printf("GOBLIN_SNIPER NewState(%d,%d) %s[mState]\n", aState, aDirection, stateMessages[aState]);
-#endif
   mState = aState;
   mSprite->mDirection = aDirection;
   mSprite->mDx        = 0;
   mSprite->mDy        = 0;
+
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -321,54 +324,36 @@ void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case WALK_STATE:
-#ifdef DEBUGME
-      printf("GOBLIN_SNIPER WALK_STATE %d\n", mSprite->mDirection);
-#endif
       mSprite->vx = 0;
       mSprite->vy = 0;
       if (mStateTimer <= 0) {
-#ifdef DEBUGME
-        printf("here\n");
-#endif
         mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
       }
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-#ifdef DEBUGME
-          printf("Start Walk Up %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
           mSprite->vy = -VELOCITY;
           break;
         case DIRECTION_DOWN:
-#ifdef DEBUGME
-          printf("Start Walk Down %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
           mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
-#ifdef DEBUGME
-          printf("Start Walk Left %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-//          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
-#ifdef DEBUGME
-          printf("Start Walk Right %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -388,6 +373,7 @@ void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -407,6 +393,11 @@ void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
+
     default:
       break;
   }
@@ -415,39 +406,6 @@ void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
-
-TBool GGoblinSniperProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->Nudge();
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-    return ETrue;
-  }
-
-  return EFalse;
-}
 
 TBool GGoblinSniperProcess::IdleState() {
   if (MaybeHit()) {
@@ -549,22 +507,6 @@ TBool GGoblinSniperProcess::WalkState() {
   return ETrue;
 }
 
-TBool GGoblinSniperProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  return ETrue;
-}
-
-TBool GGoblinSniperProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
 TBool GGoblinSniperProcess::DeathState() {
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
@@ -572,31 +514,6 @@ TBool GGoblinSniperProcess::DeathState() {
     mSprite->mHitPoints = HIT_POINTS;
   }
 
-  return ETrue;
-}
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GGoblinSniperProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GGoblinSniperProcess::RunAfter() {
   return ETrue;
 }
 

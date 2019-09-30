@@ -10,28 +10,18 @@ class GSlimeProcess : public GEnemyProcess {
 public:
   GSlimeProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
 
-  ~GSlimeProcess();
-
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
+  ~GSlimeProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
+  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
 
-  TBool MaybeHit();
-  TBool MaybeAttack();
+  TBool IdleState() OVERRIDE;
 
-  TBool IdleState() override;
+  TBool WalkState() OVERRIDE;
 
-  TBool WalkState() override;
+  TBool HitState() OVERRIDE;
 
-  TBool AttackState() override;
-
-  TBool HitState() override;
-
-  TBool DeathState() override;
+  TBool DeathState() OVERRIDE;
 protected:
   TInt16 mStateTimer;
 };
