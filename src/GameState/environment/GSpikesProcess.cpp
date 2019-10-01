@@ -24,8 +24,9 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mGameState = aGameState;
   mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_DEFAULT;
-  mSprite->w = mSprite->h = 32;
-  mSprite->cx = -16;
+  mSprite->w = mSprite->h = 24;
+  mSprite->cx = -8;
+  mSprite->cy = -4;
   mSprite->x = aX;
   mSprite->y = aY;
   mGameState->AddSprite(mSprite);
