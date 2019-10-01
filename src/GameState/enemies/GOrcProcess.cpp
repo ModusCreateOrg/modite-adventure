@@ -519,13 +519,11 @@ TBool GOrcProcess::WalkState() {
   }
 
   if (!mSprite->IsFloor(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
-    printf("ORC hit wall\n");
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
   if (mSprite->cType & STYPE_PLAYER) {
-    printf("ORC hit player\n");
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }

@@ -175,7 +175,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       gSoundPlayer.SfxBadDrop();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          printf("ATTACK UP %s\n", SWORD_NO_BULLET_STATE ? "NO BULLET" : "ATTACK");
           mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordUpNoBulletAnimation : swordUpAnimation);
           break;
         case DIRECTION_DOWN:
@@ -233,7 +232,6 @@ TBool GPlayerProcess::MaybeHit() {
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
         mSprite->mInvulnerable = ETrue;
-        printf("HIT LIGHT\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -255,7 +253,6 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 2;
         mSprite->mInvulnerable = ETrue;
         state = HIT_MEDIUM_STATE;
-        printf("HIT MEDIUM\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +2"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -277,7 +274,6 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
-        printf("HIT HARD\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
           case DIRECTION_UP:

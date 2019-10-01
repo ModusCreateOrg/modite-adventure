@@ -19,18 +19,19 @@ static const ANIMSCRIPT spikesAnimation[] = {
   AEND,
 };
 
-GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
+GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam) {
+  mParam = aParam;
   mGameState = aGameState;
-  mSprite    = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_SPIKES);
+  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_DEFAULT;
-  mSprite->w     = mSprite->h = 32;
-  mSprite->cx    = -16;
-  mSprite->x     = aX;
-  mSprite->y     = aY;
+  mSprite->w = mSprite->h = 32;
+  mSprite->cx = -16;
+  mSprite->x = aX;
+  mSprite->y = aY;
   mGameState->AddSprite(mSprite);
   mState = EFalse;
-  mTime  = ++mNumber * FRAMES_PER_SECOND;
-  mTimer = mTime;
+  mTime = (7 * SPIKE_SPEED);
+  mTimer = mParam * mTime;
 }
 
 GSpikesProcess::~GSpikesProcess() {
@@ -44,15 +45,14 @@ GSpikesProcess::~GSpikesProcess() {
 TBool GSpikesProcess::RunBefore() {
   if (mState) {
     if (mSprite->AnimDone()) {
-      mTimer = 3 * FRAMES_PER_SECOND;
+      mTimer = mTime * mNumber;
       mState = EFalse;
     }
   } else {
-    if (--mTimer < 0) {
+    if (--mTimer <= 0) {
       mState = ETrue;
       mSprite->StartAnimation(spikesAnimation);
     }
-
   }
   return ETrue;
 }
