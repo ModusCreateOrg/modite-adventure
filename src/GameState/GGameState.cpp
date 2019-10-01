@@ -259,14 +259,13 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         AddProcess(new GGoblinProcess(this,  xx, yy + 32, params));
         break;
       case ATTR_GOBLIN_SNIPER:
-        printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col, params);
+        printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(
           new GGoblinSniperProcess(this,  xx - 32, yy + 32, params));
         break;
       case ATTR_ORC:
         printf("ORC at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GOrcProcess(this,  xx, yy + 32, params));
-        return;// REMOVE ME
         break;
       case ATTR_RAT:
         printf("RAT at %.2f,%.2f %d %d\n", xx, yy, row, col);

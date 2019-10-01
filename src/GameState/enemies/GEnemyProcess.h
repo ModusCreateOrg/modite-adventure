@@ -52,7 +52,7 @@ public:
 
 protected:
   // test if a wall in the specified direction from sprite's current location
-  TBool IsWall(TInt aDirection);
+  TBool IsWall(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
 
 protected:
   TBool MaybeAttack();

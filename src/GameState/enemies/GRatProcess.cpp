@@ -317,22 +317,13 @@ GRatProcess::~GRatProcess() {
  *********************************************************************************/
 
 TBool GRatProcess::CanWalk(TInt aDirection) {
-  TFloat screenX = mSprite->x - mGameState->mWorldXX + mSprite->vx,
-    screenY = mSprite->y - mGameState->mWorldYY + mSprite->vy;
-
-  if (screenX < 16 || screenX > (SCREEN_WIDTH - 16)) {
-    return EFalse;
-  }
-  if (screenY < 16 || screenY > (SCREEN_HEIGHT - 16)) {
-    return EFalse;
-  }
 
   // force follow walls
   switch (aDirection) {
 
     //
     case DIRECTION_UP:
-      if (IsWall(DIRECTION_UP)) {
+      if (IsWall(DIRECTION_UP, 0, -VELOCITY)) {
         return EFalse;
       }
       // no wall above, assure there is a wall left or right
@@ -340,13 +331,18 @@ TBool GRatProcess::CanWalk(TInt aDirection) {
         return ETrue;
       }
       if (IsWall(DIRECTION_RIGHT)) {
+        return ETrue;
+      }
+      // no walls at all?  Move ot the nearest one.
+      if (!IsWall(DIRECTION_DOWN)) {
+        // no walls at all?  Move ot the nearest one.
         return ETrue;
       }
       break;
 
       //
     case DIRECTION_DOWN:
-      if (IsWall(DIRECTION_DOWN)) {
+      if (IsWall(DIRECTION_DOWN, 0, VELOCITY)) {
         return EFalse;
       }
       // no wall above, assure there is a wall left or right
@@ -356,11 +352,15 @@ TBool GRatProcess::CanWalk(TInt aDirection) {
       if (IsWall(DIRECTION_RIGHT)) {
         return ETrue;
       }
+      if (!IsWall(DIRECTION_UP)) {
+        // no walls at all?  Move ot the nearest one.
+        return ETrue;
+      }
       break;
 
       //
     case DIRECTION_LEFT:
-      if (IsWall(DIRECTION_LEFT)) {
+      if (IsWall(DIRECTION_LEFT, -VELOCITY, 0)) {
         return EFalse;
       }
       // no wall to left, assure there is a wall above or below
@@ -368,13 +368,17 @@ TBool GRatProcess::CanWalk(TInt aDirection) {
         return ETrue;
       }
       if (IsWall(DIRECTION_DOWN)) {
+        return ETrue;
+      }
+      if (!IsWall(DIRECTION_RIGHT)) {
+        // no walls at all?  Move ot the nearest one.
         return ETrue;
       }
       break;
 
       //
     case DIRECTION_RIGHT:
-      if (IsWall(DIRECTION_RIGHT)) {
+      if (IsWall(DIRECTION_RIGHT, VELOCITY, 0)) {
         return EFalse;
       }
       // no wall to left, assure there is a wall above or below
@@ -382,6 +386,10 @@ TBool GRatProcess::CanWalk(TInt aDirection) {
         return ETrue;
       }
       if (IsWall(DIRECTION_DOWN)) {
+        return ETrue;
+      }
+      if (!IsWall(DIRECTION_LEFT)) {
+        // no walls at all?  Move ot the nearest one.
         return ETrue;
       }
       break;
@@ -443,7 +451,6 @@ void GRatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           if (CanWalk(DIRECTION_LEFT)) {
             mStep = 1 - mStep;
             mSprite->vx = -VELOCITY;
-            //          mSprite->mDx = -36;
             mSprite->StartAnimation(
               mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           } else {
@@ -511,10 +518,6 @@ void GRatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
   }
 }
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
 
 /*********************************************************************************
  *********************************************************************************
