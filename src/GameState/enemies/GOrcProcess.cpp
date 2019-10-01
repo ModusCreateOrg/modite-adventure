@@ -5,12 +5,11 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
-const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 120;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
@@ -99,14 +98,22 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 3),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 0),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED*4, IMG_ORC_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
+  ADELTA(0, 20),
+  ASIZE(0,24,32,48),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 1),
+  ADELTA(0, 18),
+  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 3),
   ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ADELTA(0, 24),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 2),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_ORC_WALK_DOWN + 0),
   AEND,
-};
+}; // 20 24 18
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(ORC_SLOT),
@@ -152,12 +159,20 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(ORC_SLOT),
-  AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),//
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
+  ADELTA(-22, 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(-32, 0, 40, 32),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
+  ADELTA(-22, 0),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
+  ASIZE(0, 0, 32, 32),
+  ATYPE(STYPE_ENEMY),
+  ADELTA(-22, 0),
+  AFLIP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  AFLIP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -205,12 +220,20 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),//
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
+  ADELTA(20, 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0, 0, 64, 32),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
+  ADELTA(20, 0),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
+  ASIZE(0, 0, 32, 32),
+  ATYPE(STYPE_ENEMY),
+  ADELTA(20, 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -258,12 +281,19 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 3),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 0),
+  ADELTA(0, 6),
+  ASTEP(ATTACK_SPEED*4, IMG_ORC_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
+  ADELTA(0, 10),
+  ASIZE(0,0,32,48),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 3),
   ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 2),
+  ASTEP(ATTACK_SPEED, IMG_ORC_WALK_UP + 0),
   AEND,
 };
 
@@ -284,15 +314,14 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GOrcProcess::GOrcProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
-                         TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, ORC_SLOT) {
+GOrcProcess::GOrcProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, ORC_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("ORC SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
   mSprite->mHitStrength = HIT_HARD;
 
   mAttackTimer = 1;
@@ -300,7 +329,11 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
 }
 
 GOrcProcess::~GOrcProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -321,12 +354,12 @@ void GOrcProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStateTimer = IDLE_TIMEOUT;
-      //      mSprite->StartAnimation(selectAnimation);
       break;
 
     case WALK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
+
       if (mStateTimer <= 0) {
         mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
       }
@@ -340,21 +373,18 @@ void GOrcProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_DOWN:
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkDownAnimation1 : walkDownAnimation2);
+          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
           //          mSprite->mDx = -36;
-          mSprite->StartAnimation(
-            mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkRightAnimation1 : walkRightAnimation2);
+          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
@@ -412,6 +442,35 @@ void GOrcProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
+TBool GOrcProcess::CanWalk(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      return mSprite->IsFloor(DIRECTION_UP, 0, -VELOCITY);
+    case DIRECTION_DOWN:
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, VELOCITY);
+    case DIRECTION_LEFT:
+      return mSprite->IsFloor(DIRECTION_LEFT, -VELOCITY, 0);
+    case DIRECTION_RIGHT:
+    default:
+      return mSprite->IsFloor(DIRECTION_RIGHT, VELOCITY, 0);
+  }
+}
+
+static DIRECTION random_direction() {
+  TInt dir = Random() & TUint8(3);
+  switch (dir) {
+    case 0:
+      return DIRECTION_UP;
+    case 1:
+      return DIRECTION_DOWN;
+    case 2:
+      return DIRECTION_LEFT;
+    case 3:
+    default:
+      return DIRECTION_RIGHT;
+  }
+}
+
 TBool GOrcProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
@@ -420,65 +479,25 @@ TBool GOrcProcess::IdleState() {
   if (MaybeAttack()) {
     return ETrue;
   }
-  if (mSprite->flags & SFLAG_CLIPPED) {
-    return ETrue;
-  }
+
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    TFloat x = mSprite->x, y = mSprite->y,
-      sx = x - mGameState->GetViewPort()->mWorldX,
-      sy = y - mGameState->GetViewPort()->mWorldY;
+    mStateTimer = TInt16(TFloat(Random(1, 8)) * 32 / VELOCITY);
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
-      TInt direction = Random() & TUint8(3);
-      while (direction == mSprite->mDirection) {
-        direction = Random() & TUint8(3);
-      }
+      DIRECTION direction = random_direction();
+//      while (direction == mSprite->mDirection) {
+//        direction = random_direction();
+//      }
 
-      switch (direction) {
-        case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_UP);
-            return ETrue;
-          }
-          break;
-        case 1: // down
-          if (sy < (SCREEN_HEIGHT - 16) &&
-              !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_DOWN);
-            return ETrue;
-          }
-          break;
-        case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) &&
-              !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
-          }
-          break;
-        case 3: // right
-          if (sx < (SCREEN_WIDTH - 16) &&
-              !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
-              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_RIGHT);
-            return ETrue;
-          }
-          break;
-        default:
-          Panic("GoblinProcess: Invalid mDirection %d\n", mDirection);
-          break;
+      if (CanWalk(direction)) {
+        NewState(WALK_STATE, direction);
+        return ETrue;
       }
     }
 
     // after 8 tries, we couldn't find a direction to walk.
-#ifdef DEBUGME
-    printf("Goblin Can't walk\n");
-#endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
 
@@ -490,42 +509,27 @@ TBool GOrcProcess::WalkState() {
     return ETrue;
   }
 
-  BViewPort *vp = mGameState->GetViewPort();
-  TFloat screenX = mSprite->x - vp->mWorldX, screenY = mSprite->y - vp->mWorldY;
-
-#ifdef DEBUGME
-  printf("ORC screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY,
-      mSprite->x, mSprite->y);
-#endif
-
-  if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-                         mSprite->y + mSprite->vy) || // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-                         mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-                         mSprite->y + mSprite->vy) || // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-                         mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 ||
-      screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
-      screenY > (SCREEN_HEIGHT - 16)) {
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+  if (--mStateTimer < 0) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
+  if (!mSprite->IsFloor(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+    printf("ORC hit wall\n");
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
   }
 
-  return ETrue;
-}
-
-TBool GOrcProcess::DeathState() {
-  if (mSprite->AnimDone()) {
+  if (mSprite->cType & STYPE_PLAYER) {
+    printf("ORC hit player\n");
     NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
+    return ETrue;
+  }
+  if (mSprite->AnimDone()) {
+    NewState(WALK_STATE, mSprite->mDirection);
   }
 
   return ETrue;

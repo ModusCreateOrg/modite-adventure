@@ -8,7 +8,7 @@
 
 class GSpiderProcess : public GEnemyProcess {
 public:
-  GSpiderProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GSpiderProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GSpiderProcess() OVERRIDE;
 
@@ -20,10 +20,6 @@ protected:
   TBool IdleState() OVERRIDE;
 
   TBool WalkState() OVERRIDE;
-
-  TBool HitState() OVERRIDE;
-
-  TBool DeathState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;

@@ -8,7 +8,7 @@
 
 class GSlimeProcess : public GEnemyProcess {
 public:
-  GSlimeProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GSlimeProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GSlimeProcess() OVERRIDE;
 
@@ -19,9 +19,6 @@ protected:
 
   TBool WalkState() OVERRIDE;
 
-  TBool HitState() OVERRIDE;
-
-  TBool DeathState() OVERRIDE;
 protected:
   TInt16 mStateTimer;
 };

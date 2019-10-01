@@ -8,7 +8,7 @@
 
 class GRatProcess : public GEnemyProcess {
 public:
-  GRatProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GRatProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GRatProcess() OVERRIDE;
 
@@ -21,10 +21,6 @@ protected:
   TBool IdleState() OVERRIDE;
 
   TBool WalkState() OVERRIDE;
-
-  TBool HitState() OVERRIDE;
-
-  TBool DeathState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;

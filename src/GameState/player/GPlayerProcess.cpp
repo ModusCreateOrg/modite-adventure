@@ -19,7 +19,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;
-  GPlayer::mSprite = mSprite = new GAnchorSprite(-100, PLAYER_SLOT);
+  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, -100, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
   GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
@@ -27,7 +27,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and environment
   mSprite->w = 32;
   mSprite->h = 32;
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
+  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -233,6 +233,7 @@ TBool GPlayerProcess::MaybeHit() {
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
         mSprite->mInvulnerable = ETrue;
+        printf("HIT LIGHT\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -254,6 +255,7 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 2;
         mSprite->mInvulnerable = ETrue;
         state = HIT_MEDIUM_STATE;
+        printf("HIT MEDIUM\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +2"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -275,7 +277,8 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +3"));
+        printf("HIT HARD\n");
+        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitHardUpAnimation);

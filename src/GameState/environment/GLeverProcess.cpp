@@ -27,7 +27,7 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
   mDirection = ETrue;
   mSprite    = ENull;
 
-  mSprite = new GAnchorSprite(999, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
+  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w     = mSprite->h = 32;
@@ -55,13 +55,13 @@ TBool GLeverProcess::RunAfter() {
       mAnimating = EFalse;
       mSprite->type = STYPE_OBJECT;
       mSprite->cType = 0;
-      mSprite->flags |= SFLAG_CHECK;
+      mSprite->SetFlags(SFLAG_CHECK);
       return ETrue;
     }
   }
   if (mSprite->cType & STYPE_PBULLET) {
     mSprite->cType = 0;
-    mSprite->flags &= ~SFLAG_CHECK;
+    mSprite->ClearFlags(SFLAG_CHECK);
     printf("\n\nmState: %d %s\n", mState, mDirection ? "TRUE" : "FALSE");
     if (mDirection) {
       mState++;

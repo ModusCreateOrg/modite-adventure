@@ -9,7 +9,6 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt16 IDLE_SPEED = 5 * FACTOR;
@@ -294,12 +293,11 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GRatProcess::GRatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, RAT_SLOT) {
+GRatProcess::GRatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, RAT_SLOT, aParams) {
   mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
   mSprite->mHitStrength = HIT_LIGHT;
   mStateTimer = 0;
   mAttackTimer = 1;
@@ -526,19 +524,14 @@ TBool GRatProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
   }
+
   if (MaybeAttack()) {
     return ETrue;
   }
-  if (mSprite->flags & SFLAG_CLIPPED) {
-    return ETrue;
-  }
+
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    //    TFloat x = mSprite->x, y = mSprite->y,
-    //           sx = x - mGameState->GetViewPort()->mWorldX,
-    //           sy = y - mGameState->GetViewPort()->mWorldY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -615,27 +608,6 @@ TBool GRatProcess::WalkState() {
 
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
-}
-
-TBool GRatProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
-TBool GRatProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    mSprite->x = mStartX;
-    mSprite->y = mStartY;
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
   }
 
   return ETrue;

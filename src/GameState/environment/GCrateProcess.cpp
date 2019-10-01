@@ -13,13 +13,13 @@ static ANIMSCRIPT crateAnimation[] = {
 
 static ANIMSCRIPT hitAnimation[] = {
   ABITMAP(ENVIRONMENT_SLOT),
-  ADELTA(1,1),
+  ADELTA(1, 1),
   ASTEP(BREAK_SPEED, IMG_CRATE + 1),
-  ADELTA(0,0),
+  ADELTA(0, 0),
   ASTEP(BREAK_SPEED, IMG_CRATE + 2),
-  ADELTA(-1,-1),
+  ADELTA(-1, -1),
   ASTEP(BREAK_SPEED, IMG_CRATE + 1),
-  ADELTA(0,0),
+  ADELTA(0, 0),
   ASTEP(BREAK_SPEED, IMG_CRATE + 0),
   AEND,
 };
@@ -36,16 +36,15 @@ static ANIMSCRIPT breakAnimation[] = {
 
 GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY) {
   mGameState = aGameState;
-  mParam     = aParam;
+  mParam = aParam;
   mAnimating = EFalse;
-  mSprite    = new GAnchorSprite(999, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
-  mSprite->cMask      = STYPE_PBULLET;
+  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
+  mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
-  mSprite->flags |= SFLAG_CHECK;
-  mSprite->w          = mSprite->h = 32;
-  mSprite->cx         = -16;
-  mSprite->x          = aX;
-  mSprite->y          = aY + 32;
+  mSprite->w = mSprite->h = 32;
+  mSprite->cx = -16;
+  mSprite->x = aX;
+  mSprite->y = aY + 32;
   mSprite->mHitPoints = 3;
   mSprite->StartAnimation(crateAnimation);
   mGameState->AddSprite(mSprite);

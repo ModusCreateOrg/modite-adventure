@@ -7,7 +7,6 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
@@ -284,20 +283,24 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GGoblinProcess::GGoblinProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SLOT) {
+GGoblinProcess::GGoblinProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, GOBLIN_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("GOBLIN SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GGoblinProcess::~GGoblinProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -410,9 +413,6 @@ TBool GGoblinProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
   }
-  if (mSprite->flags & SFLAG_CLIPPED) {
-    return ETrue;
-  }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
@@ -499,16 +499,6 @@ TBool GGoblinProcess::WalkState() {
 
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
-}
-
-TBool GGoblinProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
   }
 
   return ETrue;

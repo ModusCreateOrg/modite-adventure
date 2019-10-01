@@ -8,8 +8,7 @@
 
 class GTrollProcess : public GEnemyProcess {
 public:
-  GTrollProcess(
-      GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GTrollProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GTrollProcess() OVERRIDE;
 
@@ -20,10 +19,6 @@ protected:
   TBool IdleState() OVERRIDE;
 
   TBool WalkState() OVERRIDE;
-
-  TBool HitState() OVERRIDE;
-
-  TBool DeathState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;

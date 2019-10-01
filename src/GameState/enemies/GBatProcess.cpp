@@ -4,7 +4,6 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
@@ -16,7 +15,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 
-/* {{{  */
+// region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -264,28 +264,32 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND,
 };
 
-/* }}} */
+/* endregion }}} */
 
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
-GBatProcess::GBatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
-                         TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, BAT_SLOT) {
+GBatProcess::GBatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, BAT_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("BAT SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
+  mSprite->mHitPoints = mHitPoints;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GBatProcess::~GBatProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -503,9 +507,6 @@ TBool GBatProcess::WalkState() {
     return ETrue;
   }
 
-  //  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-  //         screenY = mSprite->y - mGameState->mWorldYY;
-
   if (--mStateTimer < 0) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -516,38 +517,10 @@ TBool GBatProcess::WalkState() {
     return ETrue;
   }
 
-  //  TInt testx = mSprite->x + mSprite->vx, testy = mSprite->y + mSprite->vy;
-
-  //  if (mPlayfield->IsWall(testx + 16, testy) || // Left/Bottom Wall
-  //      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-  //          mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-  //      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-  //          mSprite->y + mSprite->vy) || // Right/Bottom Wall
-  //      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-  //          mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-  //      screenX < 16 ||
-  //      screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
-  //      screenY > (SCREEN_HEIGHT - 16)) {
-
-  //    NewState(IDLE_STATE, mSprite->mDirection);
-  //    return ETrue;
-  //  }
-
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
   }
 
   return ETrue;
 }
-
-TBool GBatProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
-  }
-
-  return ETrue;
-}
-
 

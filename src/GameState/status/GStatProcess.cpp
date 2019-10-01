@@ -4,8 +4,7 @@
 
 const TInt TIMEOUT = 30 * 2;
 
-GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...)
-    : BProcess() {
+GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : BProcess() {
   char msg[4096];
   va_list args;
   va_start(args, aFmt);
@@ -17,7 +16,7 @@ GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...)
   mSprite->x = aX - 64;
   mSprite->y = aY - 64;
   mSprite->vy = -.8;
-  mSprite->flags |= SFLAG_RENDER | SFLAG_MOVE;
+  mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
   gGameEngine->AddSprite(mSprite);
   mTimeout = TIMEOUT;
 }

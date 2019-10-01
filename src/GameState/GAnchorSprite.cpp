@@ -1,29 +1,78 @@
 #include "Game.h"
 #include "GAnchorSprite.h"
+#include "GGamePlayfield.h"
 
-GAnchorSprite::GAnchorSprite(
-  TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType)
-  : BAnimSprite(aPri, aBM, aImg, aType) {
-  flags |= SFLAG_ANCHOR; //  | SFLAG_SORTY;
+GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType)
+  : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
+
+  mGameState = aGameState;
+  SetFlags(SFLAG_ANCHOR);
   if (aType) {
-    flags |= SFLAG_CHECK;
+    SetFlags(SFLAG_CHECK);
   }
+  mDirection = DIRECTION_DOWN;
+  mHitStrength = HIT_LIGHT;
 
-  w           = 64;
-  h           = 64;
-  mLevel      = 1;
+  w = 64;
+  h = 64;
+  mLevel = 1;
+  mNextLevel = 0;
   mExperience = 0;
-  mHitPoints  = 5;
-  mStrength   = 10;
-  mDexterity  = 10;
-  mGold       = 0;
-  strcpy(mName, "unnamed");
+  mHitPoints = 5;
+  mStrength = 10;
+  mDexterity = 10;
+  mGold = 0;
+  mLastX = 0;
+  mLastY = 0;
   mInvulnerable = EFalse;
   mCollided = ENull;
 }
 
 GAnchorSprite::~GAnchorSprite() {
   //
+}
+
+TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
+  TUint16 attr = aSprite->mGameState->mGamePlayfield->GetAttribute(aX, aY);
+  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aSprite->mDirection != DIRECTION_UP);
+}
+
+TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  TRect r;
+  GetRect(r);
+
+  if (r.x1 < 0 || r.y1 < 0) {
+    return EFalse;
+  }
+
+  switch (aDirection) {
+    case DIRECTION_UP:
+      r.Offset(aVx, -aVy);
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y1)) {
+        return ETrue;
+      }
+      break;
+    case DIRECTION_DOWN:
+      r.Offset(aVx, aVy);
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y2)) {
+        return ETrue;
+      }
+      break;
+    case DIRECTION_LEFT:
+      r.Offset(-aVx, aVy);
+      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_Y)) {
+        return ETrue;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      r.Offset(aVx, aVy);
+      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_Y)) {
+        return ETrue;
+      }
+      break;
+  }
+
+  return EFalse;
 }
 
 void GAnchorSprite::Move() {
@@ -70,6 +119,6 @@ void GAnchorSprite::Collide(BSprite *aOther) {
 
 void GAnchorSprite::Nudge() {
   vx = vy = 0;
-  x  = mLastX;
-  y  = mLastY;
+  x = mLastX;
+  y = mLastY;
 }

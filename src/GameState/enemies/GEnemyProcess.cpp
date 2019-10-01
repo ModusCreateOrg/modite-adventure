@@ -3,14 +3,18 @@
 #include "GPlayer.h"
 #include "GGameState.h"
 
-GEnemyProcess::GEnemyProcess(
-    GGameState *aGameState, GGamePlayfield *aGamePlayfield, TUint16 aSlot)
-    : mGameState(aGameState), mPlayfield(aGamePlayfield) {
+const TInt HIT_POINTS = 5;  // default hit points for enemy
+
+GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams)
+  : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+  mStateTimer = 0;
+  mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
-  mSprite = new GAnchorSprite(0, aSlot);
+  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
+  mSprite->mHitPoints = mHitPoints;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
-  mSprite->flags |= SFLAG_CHECK;
+  mSprite->SetFlags(SFLAG_CHECK);
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->Name("ENEMY SPRITE");
@@ -34,9 +38,9 @@ GEnemyProcess::~GEnemyProcess() {
 
 TBool GEnemyProcess::IsWall(TInt aDirection) {
   const TInt leftX = mSprite->x + mSprite->w / 2,
-             rightX = mSprite->mRect.x2 -
-                      mSprite->w / 2, //  - leftX + mSprite->w - 1,
-      top = mSprite->y - mSprite->h, bottom = mSprite->y;
+    rightX = mSprite->mRect.x2 -
+             mSprite->w / 2, //  - leftX + mSprite->w - 1,
+    top = mSprite->y - mSprite->h, bottom = mSprite->y;
 
   switch (aDirection) {
     case DIRECTION_UP:
@@ -92,12 +96,13 @@ TBool GEnemyProcess::MaybeHit() {
       mSprite->cType &= ~STYPE_PBULLET;
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x, mSprite->y - 32, "EXP +%d", mSprite->mLevel));
+        printf("GEnemy DEATH\n");
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "EXP +%d", mSprite->mLevel));
         NewState(DEATH_STATE, mSprite->mDirection);
         return ETrue;
       } else {
-        mGameState->AddProcess(
-          new GStatProcess(mSprite->x, mSprite->y - 32, "HIT +%d", mSprite->mCollided->mHitStrength));
+        printf("GEnemy Hit\n");
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +%d", other->mHitStrength));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -127,21 +132,36 @@ TBool GEnemyProcess::MaybeHit() {
 }
 
 TBool GEnemyProcess::MaybeAttack() {
+  TRect myRect, hisRect;
+  mSprite->GetRect(myRect);
+  mPlayerSprite->GetRect(hisRect);
+
   if (!mPlayerSprite->mInvulnerable) {
-    if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
-      if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
+    if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
+      if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
         if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE,
-              mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+          NewState(ATTACK_STATE, mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
           mAttackTimer = FRAMES_PER_SECOND * 3;
-          return ETrue;
         }
+        return ETrue;
+      } else if (ABS(hisRect.y2 - myRect.y1) < COLLISION_DELTA_Y) {
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_UP);
+          mAttackTimer = FRAMES_PER_SECOND * 3;
+        }
+        return ETrue;
+      } else if (ABS(myRect.y2 - hisRect.y1) < COLLISION_DELTA_Y) {
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_DOWN);
+          mAttackTimer = FRAMES_PER_SECOND * 3;
+        }
+        return ETrue;
+      } else {
+        mAttackTimer = 1;
       }
     }
-    else {
-      mAttackTimer = 1;
-    }
   }
+
   return EFalse;
 }
 
@@ -161,7 +181,24 @@ TBool GEnemyProcess::HitState() {
   return ETrue;
 }
 
+TBool GEnemyProcess::DeathState() {
+  if (mSprite->AnimDone()) {
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
+    mSprite->mInvulnerable = EFalse;
+    NewState(IDLE_STATE, mSprite->mDirection);
+    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->mHitPoints = mHitPoints;
+  }
+
+  return ETrue;
+}
+
 TBool GEnemyProcess::RunBefore() {
+  if (mSprite->Clipped()) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
   switch (mState) {
     case IDLE_STATE:
       return IdleState();

@@ -8,21 +8,18 @@
 
 class GBatProcess : public GEnemyProcess {
 public:
-  GBatProcess(
-      GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GBatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GBatProcess();
+  ~GBatProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
+  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
 
-  TBool IdleState() override;
+  TBool IdleState() OVERRIDE;
 
   TBool CanWalk(TInt aDirection);
 
-  TBool WalkState() override;
-
-  TBool DeathState() override;
+  TBool WalkState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;

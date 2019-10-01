@@ -248,36 +248,37 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_SPIDER:
         printf("SPIDER at %.2f,%.2f %d %d\n", xx - 32, yy, row, col);
-        AddProcess(new GSpiderProcess(this, mGamePlayfield, xx - 32, yy + 32));
+        AddProcess(new GSpiderProcess(this,  xx - 32, yy + 32, params));
         break;
       case ATTR_BAT:
         printf("BAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GBatProcess(this, mGamePlayfield, xx - 32, yy + 32));
+        AddProcess(new GBatProcess(this,  xx - 32, yy + 32, params));
         break;
       case ATTR_GOBLIN:
         printf("GOBLIN at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GGoblinProcess(this, mGamePlayfield, xx, yy + 32));
+        AddProcess(new GGoblinProcess(this,  xx, yy + 32, params));
         break;
       case ATTR_GOBLIN_SNIPER:
-        printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col, params);
         AddProcess(
-          new GGoblinSniperProcess(this, mGamePlayfield, xx - 32, yy + 32));
+          new GGoblinSniperProcess(this,  xx - 32, yy + 32, params));
         break;
       case ATTR_ORC:
         printf("ORC at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GOrcProcess(this, mGamePlayfield, xx, yy + 32));
+        AddProcess(new GOrcProcess(this,  xx, yy + 32, params));
+        return;// REMOVE ME
         break;
       case ATTR_RAT:
         printf("RAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GRatProcess(this, mGamePlayfield, xx - 18, yy + 31));
+        AddProcess(new GRatProcess(this,  xx - 18, yy + 31, params));
         break;
       case ATTR_SLIME:
         printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GSlimeProcess(this, mGamePlayfield, xx, yy + 32));
+        AddProcess(new GSlimeProcess(this,  xx, yy + 32, params));
         break;
       case ATTR_TROLL:
         printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GTrollProcess(this, mGamePlayfield, xx - 20, yy + 32));
+        AddProcess(new GTrollProcess(this,  xx - 20, yy + 32, params));
         break;
       default:
         printf("Invalid op code in Object Program: %x at col,row %d,%d\n", program[ip].mCode, col, row);

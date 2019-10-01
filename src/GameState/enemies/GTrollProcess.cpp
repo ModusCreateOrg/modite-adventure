@@ -6,7 +6,6 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
@@ -201,15 +200,13 @@ static ANIMSCRIPT hitUpAnimation[] = {ABITMAP(TROLL_SLOT),
  *********************************************************************************/
 
 // constructor
-GTrollProcess::GTrollProcess(GGameState *aGameState,
-                             GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, TROLL_SLOT) {
+GTrollProcess::GTrollProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, TROLL_SLOT, aParams) {
   mSprite->Name("TROLL SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
   mSprite->mHitStrength = HIT_HARD;
   mAttackTimer = 1;
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -426,27 +423,6 @@ TBool GTrollProcess::WalkState() {
     NewState(WALK_STATE, mSprite->mDirection);
   }
 
-  return ETrue;
-}
-
-TBool GTrollProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    mSprite->mInvulnerable = EFalse;
-    mSprite->cType &= ~STYPE_PBULLET;
-    NewState(IDLE_STATE, mSprite->mDirection);
-  }
-  return ETrue;
-}
-
-TBool GTrollProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    mSprite->x = mStartX;
-    mSprite->y = mStartY;
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
-    mSprite->mInvulnerable = EFalse;
-  }
   return ETrue;
 }
 

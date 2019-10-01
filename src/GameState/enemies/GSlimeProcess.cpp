@@ -4,7 +4,6 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt HIT_POINTS = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
@@ -281,20 +280,24 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSlimeProcess::GSlimeProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, SLIME_SLOT) {
+GSlimeProcess::GSlimeProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, SLIME_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("SLIME SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GSlimeProcess::~GSlimeProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -480,25 +483,6 @@ TBool GSlimeProcess::WalkState() {
 
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
-}
-
-TBool GSlimeProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
-TBool GSlimeProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
   }
 
   return ETrue;
