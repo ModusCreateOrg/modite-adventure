@@ -8,29 +8,17 @@
 
 class GGoblinSniperProcess : public GEnemyProcess {
 public:
-  GGoblinSniperProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GGoblinSniperProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParam);
 
-  ~GGoblinSniperProcess();
-
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
+  ~GGoblinSniperProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
+  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
 
-  TBool MaybeHit();
+  TBool IdleState() OVERRIDE;
 
-  TBool IdleState() override;
+  TBool WalkState() OVERRIDE;
 
-  TBool WalkState() override;
-
-  TBool AttackState() override;
-
-  TBool HitState() override;
-
-  TBool DeathState() override;
 protected:
   TInt16 mStateTimer;
 };

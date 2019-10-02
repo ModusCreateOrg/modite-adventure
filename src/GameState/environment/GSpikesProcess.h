@@ -7,23 +7,24 @@
 
 class GSpikesProcess : public BProcess {
 public:
-  GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY);
+  GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam);
 
-  ~GSpikesProcess();
+  ~GSpikesProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 public:
   static TInt mNumber;
+
 protected:
-  GGameState    *mGameState;
-  TUint16       mParam;
+  GGameState *mGameState;
+  TUint16 mParam;
   GAnchorSprite *mSprite;
-  TBool         mState;   // true if animating
-  TInt          mTimer, mTime;
+  TBool mState;   // true if animating
+  TInt mTimer, mTime;
 };
 
 

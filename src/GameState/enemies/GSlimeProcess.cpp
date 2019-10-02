@@ -4,15 +4,14 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt   HIT_POINTS   = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED    = 5 * FACTOR;
-const TInt WALK_SPEED   = 5 * FACTOR;
-const TInt DEATH_SPEED  = 5 * FACTOR;
+const TInt HIT_SPEED = 5 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
@@ -281,20 +280,24 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSlimeProcess::GSlimeProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, SLIME_SLOT) {
+GSlimeProcess::GSlimeProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, SLIME_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("SLIME SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GSlimeProcess::~GSlimeProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -304,8 +307,9 @@ GSlimeProcess::~GSlimeProcess() {
 void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx        = 0;
-  mSprite->mDy        = 0;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
+
   switch (aState) {
     case IDLE_STATE:
       mStep = 0;
@@ -335,7 +339,6 @@ void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-//          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
@@ -345,6 +348,7 @@ void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -364,6 +368,7 @@ void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -383,6 +388,11 @@ void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
+
     default:
       break;
   }
@@ -392,39 +402,6 @@ void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GSlimeProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->Nudge();
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-    return ETrue;
-  }
-
-  return EFalse;
-}
-
 TBool GSlimeProcess::IdleState() {
   if (MaybeHit()) {
     return ETrue;
@@ -433,10 +410,10 @@ TBool GSlimeProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x  = mSprite->x,
-           y  = mSprite->y,
-           sx = x - mGameState->mWorldXX,
-           sy = y - mGameState->mWorldYY;
+    TFloat x = mSprite->x,
+      y = mSprite->y,
+      sx = x - mGameState->mWorldXX,
+      sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -473,6 +450,8 @@ TBool GSlimeProcess::IdleState() {
             return ETrue;
           }
           break;
+        default:
+          break;
       }
     }
 
@@ -489,7 +468,7 @@ TBool GSlimeProcess::WalkState() {
   }
 
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-         screenY = mSprite->y - mGameState->mWorldYY;
+    screenY = mSprite->y - mGameState->mWorldYY;
 
   if (--mStateTimer < 0 ||
       mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
@@ -506,57 +485,6 @@ TBool GSlimeProcess::WalkState() {
     NewState(WALK_STATE, mSprite->mDirection);
   }
 
-  return ETrue;
-}
-
-TBool GSlimeProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  return ETrue;
-}
-
-TBool GSlimeProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
-TBool GSlimeProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
-  }
-
-  return ETrue;
-}
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GSlimeProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GSlimeProcess::RunAfter() {
   return ETrue;
 }
 

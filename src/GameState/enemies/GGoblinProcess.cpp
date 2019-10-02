@@ -7,15 +7,14 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt   HIT_POINTS   = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED    = 1 * FACTOR;
-const TInt WALK_SPEED   = 5 * FACTOR;
-const TInt DEATH_SPEED  = 5 * FACTOR;
+const TInt HIT_SPEED = 1 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
@@ -284,20 +283,24 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GGoblinProcess::GGoblinProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield, TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, GOBLIN_SLOT) {
+GGoblinProcess::GGoblinProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, GOBLIN_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("GOBLIN SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GGoblinProcess::~GGoblinProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -310,9 +313,11 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 #endif
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx        = 0;
-  mSprite->mDy        = 0;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
+
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -322,54 +327,36 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case WALK_STATE:
-#ifdef DEBUGME
-      printf("GOBLIN WALK_STATE %d\n", mSprite->mDirection);
-#endif
       mSprite->vx = 0;
       mSprite->vy = 0;
       if (mStateTimer <= 0) {
-#ifdef DEBUGME
-        printf("here\n");
-#endif
         mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
       }
 
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-#ifdef DEBUGME
-          printf("Start Walk Up %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
           mSprite->vy = -VELOCITY;
           break;
         case DIRECTION_DOWN:
-#ifdef DEBUGME
-          printf("Start Walk Down %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vy = VELOCITY;
           mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
-#ifdef DEBUGME
-          printf("Start Walk Left %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vx = -VELOCITY;
-//          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
-#ifdef DEBUGME
-          printf("Start Walk Right %d\n", mStep);
-#endif
           mStep = 1 - mStep;
           mSprite->vx = VELOCITY;
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -389,6 +376,7 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -408,6 +396,10 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
     default:
       break;
   }
@@ -417,54 +409,18 @@ void GGoblinProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GGoblinProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->Nudge();
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-    return ETrue;
-  }
-
-  return EFalse;
-}
-
 TBool GGoblinProcess::IdleState() {
   if (MaybeHit()) {
-    return ETrue;
-  }
-  if (mSprite->flags & SFLAG_CLIPPED) {
     return ETrue;
   }
   if (--mStateTimer < 0) {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x  = mSprite->x,
-           y  = mSprite->y,
-           sx = x - mGameState->GetViewPort()->mWorldX,
-           sy = y - mGameState->GetViewPort()->mWorldY;
+    TFloat x = mSprite->x,
+      y = mSprite->y,
+      sx = x - mGameState->GetViewPort()->mWorldX,
+      sy = y - mGameState->GetViewPort()->mWorldY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -522,9 +478,9 @@ TBool GGoblinProcess::WalkState() {
     return ETrue;
   }
 
-  BViewPort *vp     = mGameState->GetViewPort();
-  TFloat    screenX = mSprite->x - vp->mWorldX,
-            screenY = mSprite->y - vp->mWorldY;
+  BViewPort *vp = mGameState->GetViewPort();
+  TFloat screenX = mSprite->x - vp->mWorldX,
+    screenY = mSprite->y - vp->mWorldY;
 
 #ifdef DEBUGME
   printf("GOBLIN screenX, screenY = %f,%f, x,y = %f,%f\n", screenX, screenY, mSprite->x, mSprite->y);
@@ -545,57 +501,6 @@ TBool GGoblinProcess::WalkState() {
     NewState(WALK_STATE, mSprite->mDirection);
   }
 
-  return ETrue;
-}
-
-TBool GGoblinProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  return ETrue;
-}
-
-TBool GGoblinProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
-TBool GGoblinProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
-  }
-
-  return ETrue;
-}
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GGoblinProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GGoblinProcess::RunAfter() {
   return ETrue;
 }
 

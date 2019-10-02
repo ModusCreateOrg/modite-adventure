@@ -62,7 +62,7 @@ GDropProcess::GDropProcess(GSplashState *aSplashState, TInt16 aDropNumber ) : BP
   mSplashState = aSplashState;
   mSprite      = new BAnimSprite(1, PLAYER_SLOT);
   mSplashState->AddSprite(mSprite);
-  mSprite->flags |= SFLAG_MOVE;
+  mSprite->SetFlags(SFLAG_MOVE);
 
   SetTimer();
   mState      = STATE_WAIT;
@@ -71,7 +71,7 @@ GDropProcess::GDropProcess(GSplashState *aSplashState, TInt16 aDropNumber ) : BP
 
 void GDropProcess::SetTimer() {
   mTimer = TInt16(Random(30, 60) + Random(10, 35));
-  mSprite->flags &= ~SFLAG_RENDER;
+  mSprite->ClearFlags(SFLAG_RENDER);
 }
 
 TBool GDropProcess::WaitState() {

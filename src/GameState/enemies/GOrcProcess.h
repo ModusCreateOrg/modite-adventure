@@ -8,29 +8,19 @@
 
 class GOrcProcess : public GEnemyProcess {
 public:
-  GOrcProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GOrcProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GOrcProcess();
-
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
+  ~GOrcProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
+  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
 
-  TBool MaybeHit();
+  TBool CanWalk(DIRECTION aDirection);
 
-  TBool IdleState() override;
+  TBool IdleState() OVERRIDE;
 
-  TBool WalkState() override;
+  TBool WalkState() OVERRIDE;
 
-  TBool AttackState() override;
-
-  TBool HitState() override;
-
-  TBool DeathState() override;
 protected:
   TInt16 mStateTimer;
 };

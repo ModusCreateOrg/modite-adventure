@@ -9,7 +9,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TIn
   mLevel     = aLevel;
   if (mDirection == DIRECTION_UP) {
     const int img = strcmp(aKind, "WOOD") ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
-    mSprite1      = new GAnchorSprite(999, ENVIRONMENT_SLOT, img);
+    mSprite1      = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, img);
     mSprite1->x     = aX;
     mSprite1->y     = aY + 64;
     mSprite1->w     = mSprite1->h = 32;
@@ -17,14 +17,14 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TIn
     mSprite1->cMask = STYPE_PLAYER;
     mGameState->AddSprite(mSprite1);
 
-    mSprite2 = new GAnchorSprite(999, ENVIRONMENT_SLOT, img - 10);
+    mSprite2 = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, img - 10);
     mSprite2->x = aX;
     mSprite2->y = aY + 32;
     mSprite2->w = mSprite2->h     = 32;
     mGameState->AddSprite(mSprite2);
   } else {
     const int img = strcmp(aKind, "WOOD") ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
-    mSprite1 = new GAnchorSprite(999, ENVIRONMENT_SLOT, img);
+    mSprite1 = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, img);
     mSprite1->cx    = -16;
     mSprite1->w     = mSprite1->h = 32;
     mSprite1->x     = aX;

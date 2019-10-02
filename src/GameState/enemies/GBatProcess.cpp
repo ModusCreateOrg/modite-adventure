@@ -4,19 +4,19 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt   HIT_POINTS   = 5;
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED   = 5 * FACTOR;
+const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED    = 1 * FACTOR;
-const TInt WALK_SPEED   = 5 * FACTOR;
-const TInt DEATH_SPEED  = 5 * FACTOR;
+const TInt HIT_SPEED = 1 * FACTOR;
+const TInt WALK_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 
-/* {{{  */
+// region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -264,28 +264,32 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND,
 };
 
-/* }}} */
+/* endregion }}} */
 
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
-GBatProcess::GBatProcess(GGameState *aGameState, GGamePlayfield *aGamePlayfield,
-                         TFloat aX, TFloat aY)
-  : GEnemyProcess(aGameState, aGamePlayfield, BAT_SLOT) {
+GBatProcess::GBatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, BAT_SLOT, aParams) {
+  mStateTimer = 0;
   mSprite->Name("BAT SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitPoints = HIT_POINTS;
+  mSprite->mHitPoints = mHitPoints;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GBatProcess::~GBatProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 /*********************************************************************************
@@ -295,9 +299,10 @@ GBatProcess::~GBatProcess() {
 void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx        = 0;
-  mSprite->mDy        = 0;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
   switch (aState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -339,6 +344,7 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -358,6 +364,7 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case HIT_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -377,6 +384,11 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
+    case DEATH_STATE:
+      mSprite->StartAnimation(deathAnimation);
+      break;
+
     default:
       break;
   }
@@ -386,42 +398,9 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GBatProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_PBULLET) {
-    if (--mSprite->mHitPoints <= 0) {
-      mSprite->StartAnimation(deathAnimation);
-      mState = DEATH_STATE;
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & (STYPE_PLAYER | STYPE_PBULLET)) {
-    GAnchorSprite *other = mSprite->mCollided;
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->Nudge();
-    switch (other->mDirection) {
-      case DIRECTION_RIGHT:
-        NewState(HIT_STATE, DIRECTION_LEFT);
-        break;
-      case DIRECTION_LEFT:
-        NewState(HIT_STATE, DIRECTION_RIGHT);
-        break;
-      case DIRECTION_UP:
-        NewState(HIT_STATE, DIRECTION_DOWN);
-        break;
-      case DIRECTION_DOWN:
-        NewState(HIT_STATE, DIRECTION_UP);
-        break;
-    }
-    return ETrue;
-  }
-
-  return EFalse;
-}
-
 TBool GBatProcess::CanWalk(TInt aDirection) {
   TFloat screenX = mSprite->x - mGameState->mWorldXX,
-         screenY = mSprite->y - mGameState->mWorldYY;
+    screenY = mSprite->y - mGameState->mWorldYY;
 
   const TInt testx = mSprite->x + mSprite->vx, testy = mSprite->y + mSprite->vy;
 
@@ -472,8 +451,8 @@ TBool GBatProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
 
-    TFloat x  = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
-           sy = y - mGameState->mWorldYY;
+    TFloat x = mSprite->x, y = mSprite->y, sx = x - mGameState->mWorldXX,
+      sy = y - mGameState->mWorldYY;
 
     for (TInt retries = 0; retries < 8; retries++) {
       // Don't go the same direction
@@ -528,9 +507,6 @@ TBool GBatProcess::WalkState() {
     return ETrue;
   }
 
-  //  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-  //         screenY = mSprite->y - mGameState->mWorldYY;
-
   if (--mStateTimer < 0) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -541,23 +517,6 @@ TBool GBatProcess::WalkState() {
     return ETrue;
   }
 
-  //  TInt testx = mSprite->x + mSprite->vx, testy = mSprite->y + mSprite->vy;
-
-  //  if (mPlayfield->IsWall(testx + 16, testy) || // Left/Bottom Wall
-  //      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-  //          mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-  //      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-  //          mSprite->y + mSprite->vy) || // Right/Bottom Wall
-  //      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-  //          mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-  //      screenX < 16 ||
-  //      screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
-  //      screenY > (SCREEN_HEIGHT - 16)) {
-
-  //    NewState(IDLE_STATE, mSprite->mDirection);
-  //    return ETrue;
-  //  }
-
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
   }
@@ -565,51 +524,3 @@ TBool GBatProcess::WalkState() {
   return ETrue;
 }
 
-TBool GBatProcess::AttackState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  return ETrue;
-}
-
-TBool GBatProcess::HitState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER;
-  }
-
-  return ETrue;
-}
-
-TBool GBatProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= STYPE_PLAYER | STYPE_PBULLET;
-    mSprite->mHitPoints = HIT_POINTS;
-  }
-
-  return ETrue;
-}
-
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GBatProcess::RunBefore() {
-  switch (mState) {
-    case IDLE_STATE:
-      return IdleState();
-    case WALK_STATE:
-      return WalkState();
-    case ATTACK_STATE:
-      return AttackState();
-    case HIT_STATE:
-      return HitState();
-    case DEATH_STATE:
-      return DeathState();
-    default:
-      return ETrue;
-  }
-}
-
-TBool GBatProcess::RunAfter() { return ETrue; }

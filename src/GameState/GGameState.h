@@ -36,8 +36,9 @@ protected:
    */
   void RemapSlot(TUint16 aBMP, TUint16 aSlot);
 
-protected:
+public:
   GGamePlayfield *mGamePlayfield;
+protected:
   TInt mTimer;
   TBool mStats;
   char mText[128];

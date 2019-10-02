@@ -8,36 +8,20 @@
 
 class GTrollProcess : public GEnemyProcess {
 public:
-  GTrollProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GTrollProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GTrollProcess();
-
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
+  ~GTrollProcess() OVERRIDE;
 
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection) override;
 
 protected:
-  TBool MaybeHit();
+  TBool IdleState() OVERRIDE;
 
-  TBool MaybeAttack();
-
-protected:
-  TBool IdleState() override;
-
-  TBool WalkState() override;
-
-  TBool AttackState() override;
-
-  TBool HitState() override;
-
-  TBool DeathState() override;
+  TBool WalkState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;
 };
 
-#endif //MODITE_GTROLLPROCESS_H
+#endif // MODITE_GTROLLPROCESS_H

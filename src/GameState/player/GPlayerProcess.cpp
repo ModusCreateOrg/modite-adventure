@@ -19,7 +19,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;
-  GPlayer::mSprite = mSprite = new GAnchorSprite(-100, PLAYER_SLOT);
+  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, -100, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
   GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
@@ -27,7 +27,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and environment
   mSprite->w = 32;
   mSprite->h = 32;
-  mSprite->flags |= SFLAG_ANCHOR | SFLAG_CHECK; // SFLAG_SORTY
+  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -45,72 +45,26 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
   mSprite->y = aY;
 }
 
-TBool GPlayerProcess::IsWall(TFloat aX, TFloat aY) {
-  TUint16 attr = mPlayfield->GetAttribute(aX, aY);
-  return attr == ATTR_WALL; // || (attr == ATTR_LEDGE && mSprite->mDirection==
-  // DIRECTION_UP);
-}
-
-TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
-  TUint16 attr = mPlayfield->GetAttribute(aX, aY);
-  return attr == ATTR_FLOOR ||
-         (attr == ATTR_LEDGE && mSprite->mDirection != DIRECTION_UP);
-}
-
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
   return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE && (TInt(aY) % 32 > 12);
 }
 
-TBool GPlayerProcess::IsLedge(TRect &aRect) {
-  return IsLedge(aRect.x1, aRect.y2) || IsLedge(aRect.x2, aRect.y2);
-}
-
 TBool GPlayerProcess::IsLedge() {
-  return (IsLedge(mSprite->x + mSprite->cx + mSprite->w / 2, mSprite->y + 4));
+  return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
-  TRect r;
-  mSprite->GetRect(r);
-
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
-
   switch (aDirection) {
     case DIRECTION_UP:
-      r.Offset(0, -PLAYER_VELOCITY);
-      if (IsFloor(r.x1 + 2, r.y1) && IsFloor(r.x2 - 2, r.y1)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_UP, 0, 0);
     case DIRECTION_DOWN:
-      r.Offset(0, PLAYER_VELOCITY);
-      if (IsFloor(r.x1 + 2, r.y2) && IsFloor(r.x2 - 2, r.y2)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, 0);
     case DIRECTION_LEFT:
-      r.Offset(-PLAYER_VELOCITY, 0);
-      if (IsFloor(r.x1, r.y1 + 2) && IsFloor(r.x1, r.y2 - 2)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_LEFT, 0, 0);
     case DIRECTION_RIGHT:
-      r.Offset(PLAYER_VELOCITY, 0);
-      if (IsFloor(r.x2, r.y1 + 2) && IsFloor(r.x2, r.y2 - 2)) {
-        return ETrue;
-      }
-      break;
+    default:
+      return mSprite->IsFloor(DIRECTION_RIGHT, 0, 0);
   }
-
-  if (IsLedge(r)) {
-    const TInt y = mSprite->y;
-    mSprite->y = y | 3;
-    return ETrue;
-  }
-
-  return EFalse;
 }
 
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
@@ -119,6 +73,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDx = 0;
   mSprite->mDy = 0;
   switch (mState) {
+
     case IDLE_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -138,6 +93,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case WALK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -155,7 +111,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
           mSprite->vx = -PLAYER_VELOCITY;
-          //          mSprite->mDx = -36;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
@@ -165,17 +120,17 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
+
     case SWORD_STATE:
     case SWORD_NO_BULLET_STATE:
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      // TODO: calculate hit strengh based upon leven and strength
+      // TODO: calculate hit strengh based upon level and strength
       mSprite->mHitStrength = 1;
       gSoundPlayer.SfxBadDrop();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          printf("ATTACK UP %s\n", SWORD_NO_BULLET_STATE ? "NO BULLET" : "ATTACK");
           mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordUpNoBulletAnimation : swordUpAnimation);
           break;
         case DIRECTION_DOWN:
@@ -190,6 +145,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       }
       mState = SWORD_STATE;
       break;
+
     case FALL_STATE:
       mStep = 0;
       mSprite->vx = 0;
@@ -208,11 +164,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  \____|_| |_/_/   \_\_| \_|\____|_____| |____/ |_/_/   \_\_| |_____|
  */
 TBool GPlayerProcess::MaybeHit() {
-#ifdef DEBUGME
-  printf("Player collide cType: %x STYPE_ENEMY: %x STYPE_EBULLET: %x\n",
-      mSprite->cType, STYPE_ENEMY, STYPE_EBULLET);
-#endif
-
   if (mSprite->cType & STYPE_OBJECT) {
     mSprite->cType &= ~STYPE_OBJECT;
   }
@@ -224,9 +175,6 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->cType &= STYPE_EBULLET;
     mSprite->Nudge();
     TInt state = HIT_LIGHT_STATE;
-#ifdef DEBUGME
-    printf("Player attacked\n");
-#endif
     const GAnchorSprite *other = mSprite->mCollided;
     switch (other->mHitStrength) {
 
@@ -275,7 +223,7 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +3"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitHardUpAnimation);
@@ -296,9 +244,7 @@ TBool GPlayerProcess::MaybeHit() {
 
     if (GPlayer::mHitPoints <= 0) {
       // GAME OVER!
-#ifdef DEBUGME
-      printf("Player dead\n");
-#endif
+    printf("Player dead\n");
       GPlayer::mHitPoints = PLAYER_HITPOINTS;
     }
     mSprite->cType = 0;
@@ -316,48 +262,40 @@ TBool GPlayerProcess::MaybeHit() {
 }
 
 TBool GPlayerProcess::MaybeSword() {
-  if (!gControls.WasPressed(BUTTONA)) {
+  if (!gControls.WasPressed(CONTROL_FIRE)) {
     return EFalse;
   }
-  TFloat x = mSprite->x, y = mSprite->y;
-  TRect r;
-  mSprite->GetRect(r);
 
   TBool is_wall = EFalse;
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
-      r.Offset(0, -18);
-      if (!IsFloor(r.x1 + r.Width() / 2, r.y1 - 8)) {
+      if (!mSprite->IsFloor(DIRECTION_UP, 0, 0)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      r.Offset(0, 24);
-      if (!IsFloor(x + 32, r.y2)) {
+      if (!mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      r.Offset(-1, 0);
-      if (!IsFloor(r.x1, r.y2)) {
+      if (!mSprite->IsFloor(DIRECTION_LEFT, 0, 0)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      r.Offset(24, 0);
-      if (!IsFloor(r.x2, r.y2)) {
+      if (!mSprite->IsFloor(DIRECTION_RIGHT, 0, 0)) {
         is_wall = ETrue;
       }
       break;
   }
+
   NewState(is_wall ? SWORD_NO_BULLET_STATE : SWORD_STATE, mSprite->mDirection);
   return ETrue;
 }
 
 TBool GPlayerProcess::MaybeFall() {
   if (IsLedge()) {
-    printf("IsLedge\n");
-    //  if (IsLedge(mSprite->mRect)) {
     NewState(FALL_STATE, DIRECTION_DOWN);
     return ETrue;
   }
@@ -365,9 +303,9 @@ TBool GPlayerProcess::MaybeFall() {
 }
 
 TBool GPlayerProcess::MaybeWalk() {
-  if (gControls.IsPressed(JOYLEFT)) {
+  if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
-//      mSprite->vx = mSprite->vy = 0;
+//      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -376,9 +314,9 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYRIGHT)) {
+  if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
-//      mSprite->vx = mSprite->vy = 0;
+//      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -387,9 +325,9 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYUP)) {
+  if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
-//      mSprite->vx = mSprite->vy = 0;
+//      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -398,12 +336,12 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYDOWN)) {
+  if (gControls.IsPressed(CONTROL_JOYDOWN)) {
     if (MaybeFall()) {
       return EFalse;
     }
     if (!CanWalk(DIRECTION_DOWN)) {
-//      mSprite->vx = mSprite->vy = 0;
+//      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
@@ -436,7 +374,6 @@ TBool GPlayerProcess::IdleState() {
 }
 
 TBool GPlayerProcess::WalkState() {
-  // collision?
   if (MaybeHit()) {
     return ETrue;
   }
@@ -445,47 +382,11 @@ TBool GPlayerProcess::WalkState() {
     return ETrue;
   }
 
-  // maybe change direction!
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
-  //  if (MaybeFall()) {
-  //    NewState(FALL_STATE, DIRECTION_DOWN);
-  //    return ETrue;
-  //  }
-  // can player keep walking?
-  switch (mSprite->mDirection) {
-    case DIRECTION_LEFT:
-      if (mPlayfield->IsWall(mSprite->x + 26 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 26 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
-        NewState(IDLE_STATE, mSprite->mDirection);
-        return ETrue;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      if (mPlayfield->IsWall(mSprite->x + 38 + mSprite->vx, mSprite->y - 2 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 38 + mSprite->vx, mSprite->y - 8 + mSprite->vy)) {
-        NewState(IDLE_STATE, mSprite->mDirection);
-        return ETrue;
-      }
-      break;
-    case DIRECTION_UP:
-      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 8 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 8 + mSprite->vy)) {
-        NewState(IDLE_STATE, mSprite->mDirection);
-        return ETrue;
-      }
-      break;
-    case DIRECTION_DOWN:
-      if (mPlayfield->IsWall(mSprite->x + 26, mSprite->y - 2 + mSprite->vy) ||
-          mPlayfield->IsWall(mSprite->x + 38, mSprite->y - 2 + mSprite->vy)) {
-        NewState(IDLE_STATE, mSprite->mDirection);
-        return ETrue;
-      }
-      break;
-  }
   if (mSprite->AnimDone()) {
     NewState(WALK_STATE, mSprite->mDirection);
   }
@@ -540,11 +441,8 @@ TBool GPlayerProcess::RunBefore() {
   }
 }
 
-#define SMOOTH_SCROLLING
-
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
-#ifdef SMOOTH_SCROLLING
   TFloat maxx = mGameState->MapWidth(),
     maxy = mGameState->MapHeight();
 
@@ -566,25 +464,6 @@ TBool GPlayerProcess::RunAfter() {
   } else if (yy > maxy) {
     gViewPort->mWorldY = maxy;
   }
-#else
-  const TFloat xx = mSprite->x - gViewPort->mWorldX,
-               yy = mSprite->y - gViewPort->mWorldY,
-               dx = gViewPort->mRect.Width(), dy = gViewPort->mRect.Height();
-
-  // Don't go less than 0 or more than map width/height
-  if (xx > dx) {
-    gViewPort->mWorldX = MIN(mGameState->MapWidth(), gViewPort->mWorldX + dx);
-  }
-  else if (xx < 0) {
-    gViewPort->mWorldX = MAX(0, gViewPort->mWorldX - dx);
-  }
-  else if (yy > dy) {
-    gViewPort->mWorldY = MIN(mGameState->MapHeight(), gViewPort->mWorldY + dy);
-  }
-  else if (yy < 0) {
-    gViewPort->mWorldY = MAX(0, gViewPort->mWorldY - dy);
-  }
-#endif
 
   return ETrue;
 }

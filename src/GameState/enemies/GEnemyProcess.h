@@ -17,7 +17,7 @@ enum {
   DEATH_STATE,
 };
 
-static const char  *stateMessages[] = {
+static const char *stateMessages[] = {
   "IDLE STATE",
   "WALK STATE",
   "ATTACK STATE",
@@ -27,25 +27,36 @@ static const char  *stateMessages[] = {
 
 class GEnemyProcess : public BProcess {
 public:
-  GEnemyProcess(GGameState *aGameState, GGamePlayfield *aPlayfield, TUint16 aSlot);
+  GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams);
 
-  virtual ~GEnemyProcess();
+  ~GEnemyProcess() OVERRIDE;
 
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
+  TUint16 mParams;
   GAnchorSprite *mSprite;
   TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;
   TUint16 mStep;
   TInt16 mAttackTimer;
+  TInt16 mStateTimer;
+  TInt16 mHitPoints;
 
   GAnchorSprite *mPlayerSprite;
 
+public:
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
+
 protected:
   // test if a wall in the specified direction from sprite's current location
-  TBool IsWall(TInt aDirection);
+  TBool IsWall(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
+
+protected:
+  TBool MaybeAttack();
+  TBool MaybeHit();
 
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
@@ -54,11 +65,11 @@ protected:
 
   virtual TBool WalkState() = 0;
 
-  virtual TBool AttackState() = 0;
+  TBool AttackState();
 
-  virtual TBool HitState() = 0;
+  TBool HitState();
 
-  virtual TBool DeathState() = 0;
+  TBool DeathState();
 };
 
 

@@ -12,39 +12,50 @@ const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 class GPlayerProcess : public BProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
+
   ~GPlayerProcess();
 
 public:
   void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+
   GAnchorSprite *Sprite() { return mSprite; }
+
   TFloat PlayerX() { return mSprite->x; }
+
   TFloat PlayerY() { return mSprite->y; }
 
 public:
   TBool RunBefore();
+
   TBool RunAfter();
 
 protected:
-  TBool IsWall(TFloat aX, TFloat aY);
-  TBool IsFloor(TFloat aX, TFloat aY);
   TBool IsLedge(TFloat aX, TFloat aY);
-  TBool IsLedge(TRect &aRect);
+
   TBool IsLedge();
 
   TBool CanWalk(DIRECTION aDirection);
 
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection);
+
   TBool MaybeHit();
+
   TBool MaybeWalk();
+
   TBool MaybeSword();
+
   TBool MaybeFall();
 
 protected:
   TBool IdleState();
+
   TBool WalkState();
+
   TBool SwordState();
+
   TBool FallState();
+
   TBool HitState();
 
 protected:

@@ -8,34 +8,19 @@
 
 class GRatProcess : public GEnemyProcess {
 public:
-  GRatProcess(
-      GGameState *aGameState, GGamePlayfield *aPlayfield, TFloat aX, TFloat aY);
+  GRatProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GRatProcess();
-
-public:
-  TBool RunBefore() override;
-
-  TBool RunAfter() override;
+  ~GRatProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
-
-  TBool MaybeHit();
-  TBool MaybeAttack();
+  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
 
 protected:
   TBool CanWalk(TInt aDirection);
 
-  TBool IdleState() override;
+  TBool IdleState() OVERRIDE;
 
-  TBool WalkState() override;
-
-  TBool AttackState() override;
-
-  TBool HitState() override;
-
-  TBool DeathState() override;
+  TBool WalkState() OVERRIDE;
 
 protected:
   TInt16 mStateTimer;
