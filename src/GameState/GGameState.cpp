@@ -41,14 +41,10 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
   BBitmap *screen = mGamePlayfield->GetTilesBitmap();
   BBitmap *bm = gResourceManager.GetBitmap(aSlot);
   if (!slotRemapState[aSlot]) {
-#ifdef DEBUGME
-    printf("ReamapSlot(%d,%d)\n", aBMP, aSlot);
-#endif
     bm->Remap(screen);
     slotRemapState[aSlot] = ETrue;
 #ifdef DEBUGME
-    printf(
-      "Remapped bitmap, screen colors used %d\n", screen->CountUsedColors());
+    printf( "Remapped bitmap %d, screen colors used %d\n", aBMP, screen->CountUsedColors());
 #endif
   }
   gDisplay.SetPalette(screen->GetPalette());

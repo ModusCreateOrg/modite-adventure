@@ -126,7 +126,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      // TODO: calculate hit strengh based upon leven and strength
+      // TODO: calculate hit strengh based upon level and strength
       mSprite->mHitStrength = 1;
       gSoundPlayer.SfxBadDrop();
       switch (mSprite->mDirection) {
@@ -440,7 +440,6 @@ TBool GPlayerProcess::RunBefore() {
       return ETrue;
   }
 }
-
 
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
