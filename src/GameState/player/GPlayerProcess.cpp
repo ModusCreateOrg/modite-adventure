@@ -69,47 +69,17 @@ TBool GPlayerProcess::IsLedge() {
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
-  TRect r;
-  mSprite->GetRect(r);
-
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
-
   switch (aDirection) {
     case DIRECTION_UP:
-      r.Offset(0, -PLAYER_VELOCITY);
-      if (IsFloor(r.x1 + 2, r.y1) && IsFloor(r.x2 - 2, r.y1)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
     case DIRECTION_DOWN:
-      r.Offset(0, PLAYER_VELOCITY);
-      if (IsFloor(r.x1 + 2, r.y2) && IsFloor(r.x2 - 2, r.y2)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
     case DIRECTION_LEFT:
-      r.Offset(-PLAYER_VELOCITY, 0);
-      if (IsFloor(r.x1, r.y1 + 2) && IsFloor(r.x1, r.y2 - 2)) {
-        return ETrue;
-      }
-      break;
+      return mSprite->IsFloor(DIRECTION_LEFT,  -PLAYER_VELOCITY, 0);
     case DIRECTION_RIGHT:
-      r.Offset(PLAYER_VELOCITY, 0);
-      if (IsFloor(r.x2, r.y1 + 2) && IsFloor(r.x2, r.y2 - 2)) {
-        return ETrue;
-      }
-      break;
+    default:
+      return mSprite->IsFloor(DIRECTION_RIGHT,  PLAYER_VELOCITY, 0);
   }
-
-  if (IsLedge(r)) {
-    const TInt y = mSprite->y;
-    mSprite->y = y | 3;
-    return ETrue;
-  }
-
-  return EFalse;
 }
 
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
