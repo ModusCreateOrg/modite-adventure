@@ -315,7 +315,7 @@ TBool GPlayerProcess::MaybeHit() {
 }
 
 TBool GPlayerProcess::MaybeSword() {
-  if (!gControls.WasPressed(BUTTONA)) {
+  if (!gControls.WasPressed(CONTROL_FIRE)) {
     return EFalse;
   }
   TFloat x = mSprite->x, y = mSprite->y;
@@ -364,7 +364,7 @@ TBool GPlayerProcess::MaybeFall() {
 }
 
 TBool GPlayerProcess::MaybeWalk() {
-  if (gControls.IsPressed(JOYLEFT)) {
+  if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
 //      mSprite->vx = mSprite->vy = 0;
       return EFalse;
@@ -375,7 +375,7 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYRIGHT)) {
+  if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
 //      mSprite->vx = mSprite->vy = 0;
       return EFalse;
@@ -386,7 +386,7 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYUP)) {
+  if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
 //      mSprite->vx = mSprite->vy = 0;
       return EFalse;
@@ -397,7 +397,7 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (gControls.IsPressed(JOYDOWN)) {
+  if (gControls.IsPressed(CONTROL_JOYDOWN)) {
     if (MaybeFall()) {
       return EFalse;
     }
