@@ -53,8 +53,7 @@ TBool GPlayerProcess::IsWall(TFloat aX, TFloat aY) {
 
 TBool GPlayerProcess::IsFloor(TFloat aX, TFloat aY) {
   TUint16 attr = mPlayfield->GetAttribute(aX, aY);
-  return attr == ATTR_FLOOR ||
-         (attr == ATTR_LEDGE && mSprite->mDirection != DIRECTION_UP);
+  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && mSprite->mDirection != DIRECTION_UP);
 }
 
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
@@ -66,7 +65,7 @@ TBool GPlayerProcess::IsLedge(TRect &aRect) {
 }
 
 TBool GPlayerProcess::IsLedge() {
-  return (IsLedge(mSprite->x + mSprite->cx + mSprite->w / 2, mSprite->y + 4));
+  return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
@@ -274,7 +273,7 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +3"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitHardUpAnimation);
@@ -366,7 +365,6 @@ TBool GPlayerProcess::MaybeFall() {
 TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
-//      mSprite->vx = mSprite->vy = 0;
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -377,7 +375,6 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
-//      mSprite->vx = mSprite->vy = 0;
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -388,7 +385,6 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
-//      mSprite->vx = mSprite->vy = 0;
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -402,7 +398,6 @@ TBool GPlayerProcess::MaybeWalk() {
       return EFalse;
     }
     if (!CanWalk(DIRECTION_DOWN)) {
-//      mSprite->vx = mSprite->vy = 0;
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
