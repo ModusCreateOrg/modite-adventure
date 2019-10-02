@@ -54,7 +54,7 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
 #endif
 }
 
-GGameState::GGameState() : BGameEngine(gViewPort) {
+GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0), mNextTileMapId(0) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
                            MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
