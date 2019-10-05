@@ -7,10 +7,15 @@ GMainMenuPlayfield::GMainMenuPlayfield() {
   mBackground = gResourceManager.GetBitmap(BKG_SLOT);
   // gResourceManager.LoadBitmap(LOGO_BMP, PLAYER_SLOT, IMAGE_ENTIRE);
   // mLogo = gResourceManager.GetBitmap(PLAYER_SLOT);
-  gDisplay.SetPalette(mBackground);
   mState = 0;
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
+  gDisplay.SetPalette(mBackground);
+
+  gDisplay.SetColor(COLOR_TEXT, WHITE);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, ROSE);
+  gDisplay.SetColor(COLOR_TEXT_BG, RED);
+  gDisplay.UseColor(COLOR_TEXT);
+  gDisplay.UseColor(COLOR_TEXT_SHADOW);
+  gDisplay.UseColor(COLOR_TEXT_BG);
 }
 
 GMainMenuPlayfield::~GMainMenuPlayfield() {

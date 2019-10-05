@@ -64,25 +64,30 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
   mGamePlayfield = ENull;
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
+
+  gDisplay.UseColor(COLOR_TEXT_BG);
+  gDisplay.UseColor(COLOR_TEXT);
+
   LoadLevel("Dungeon0", 1, DEVDUNGEON_0_LEVEL1_MAP);
 }
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
 
 void GGameState::PreRender() {
-  gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
+  gDisplay.renderBitmap->Clear(BLACK);
   if (mNextLevel != mLevel) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
   }
 }
 
 void GGameState::PostRender() {
+  gDisplay.SetColor(COLOR_TEXT_BG, BLACK);
+  gDisplay.SetColor(COLOR_TEXT, WHITE);
+
   if (mText[0]) {
     TInt len = strlen(mText);
     TInt x = gViewPort->mRect.Width() / 2 - len * 12 / 2;
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, -1, -4);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, WHITE, -4);
     if (--mTimer < 0) {
       mText[0] = '\0';
       mTimer = STATS_TIMER;
@@ -95,8 +100,6 @@ void GGameState::PostRender() {
   BViewPort vp;
   TRect rect(0, 0, SCREEN_WIDTH - 1, 15);
   vp.SetRect(rect);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
 
   if (--mTimer <= 0) {
     mStats = !mStats;
@@ -108,7 +111,7 @@ void GGameState::PostRender() {
   } else {
     sprintf(output, "EXP: %3d STR: %2d DEX: %2d", GPlayer::mExperience, GPlayer::mStrength, GPlayer::mDexterity);
   }
-  gDisplay.renderBitmap->DrawString(&vp, output, gFont16x16, 0, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  gDisplay.renderBitmap->DrawString(&vp, output, gFont16x16, 0, 0, WHITE, BLACK, -4);
 }
 
 TUint16 GGameState::MapWidth() {

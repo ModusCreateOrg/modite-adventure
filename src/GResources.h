@@ -233,6 +233,11 @@ const TUint8 COLOR_TEXT_SHADOW = 253;
 const TUint8 COLOR_TEXT_BG     = 254;
 const TUint8 COLOR_TEXT        = 255;
 
+const TRGB WHITE(255, 255, 255);
+const TRGB BLACK(0, 0, 0);
+const TRGB RED(255, 92, 93);
+const TRGB ROSE(255, 128, 149);
+
 #define MAX_BBITMAP 5
 
 #endif //MODITE_GRESOURCES_H

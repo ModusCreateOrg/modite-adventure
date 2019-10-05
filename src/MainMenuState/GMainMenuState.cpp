@@ -18,9 +18,6 @@ GMainMenuState::GMainMenuState() : BGameEngine(gViewPort) {
       WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
       WIDGET_END_TAG);
 
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
-
 // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.PlayMusic(MAIN_MENU_XM);

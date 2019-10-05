@@ -13,18 +13,17 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
         STR_RIGHT_ARROW,
         f,
         aX - 16, aY,
-        gWidgetTheme.GetInt(WIDGET_TEXT_BG),
-        COLOR_TEXT_SHADOW,
-        -1);
+        RED,
+        ROSE
+        );
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
       mText,
       f,
       aX, aY,
-      gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-      COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      WHITE,
+      ROSE,
       -6);
 
   return f->mHeight + 10;
