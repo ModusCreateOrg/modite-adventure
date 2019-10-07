@@ -9,15 +9,11 @@ public:
   virtual ~GMainMenuPlayfield();
 
 public:
-  TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
-  TInt CenterText16(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
   void Render();
 
 public:
-  BFont   *mFont8, *mFont16;
   BBitmap *mBackground;
-  BBitmap *mLogo;
-  TInt    mState;
+  // BBitmap *mLogo;
 };
 
 #endif //GENUS_GMAINMENUPLAYFIELD_H

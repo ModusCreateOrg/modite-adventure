@@ -2,7 +2,7 @@
 #include "GStartWidget.h"
 #include "GMainMenuProcess.h"
 
-GStartWidget::GStartWidget() : BButtonWidget("START", COLOR_TEXT, COLOR_TEXT_BG) {
+GStartWidget::GStartWidget() : BButtonWidget("START") {
   if (gOptions->gameProgress.savedState) {
     mText = (char*)"CONTINUE";
   }
@@ -18,28 +18,25 @@ TInt GStartWidget::Render(TInt aX, TInt aY) {
         STR_RIGHT_ARROW,
         f,
         aX - 16, aY,
-        gWidgetTheme.GetInt(WIDGET_TEXT_BG),
-        COLOR_TEXT_SHADOW,
-        -1);
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TEXT_BG)),
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)));
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
       mText,
       f,
       aX, aY,
-      gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-      COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_FG)),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
       -6);
 
   return f->mHeight + 10;
 }
 
 void GStartWidget::Select() {
+  gGame->SetState(GAME_STATE_GAME);
 // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();
 #endif
-
-  gGame->SetState(GAME_STATE_GAME);
 }

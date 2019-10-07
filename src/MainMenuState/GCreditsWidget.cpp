@@ -1,7 +1,7 @@
 #include "GCreditsWidget.h"
 #include "Game.h"
 
-GCreditsWidget::GCreditsWidget() : BButtonWidget("CREDITS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GCreditsWidget::GCreditsWidget() : BButtonWidget("CREDITS") {}
 
 GCreditsWidget::~GCreditsWidget() {}
 
@@ -13,18 +13,16 @@ TInt GCreditsWidget::Render(TInt aX, TInt aY) {
         STR_RIGHT_ARROW,
         f,
         aX - 16, aY,
-        gWidgetTheme.GetInt(WIDGET_TEXT_BG),
-        COLOR_TEXT_SHADOW,
-        -1);
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TEXT_BG)),
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)));
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
       mText,
       f,
       aX, aY,
-      gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-      COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_FG)),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
       -6);
 
   return f->mHeight + 10;
@@ -32,7 +30,6 @@ TInt GCreditsWidget::Render(TInt aX, TInt aY) {
 
 void GCreditsWidget::Select() {
   gGame->SetState(GAME_STATE_CREDITS);
-
 // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();

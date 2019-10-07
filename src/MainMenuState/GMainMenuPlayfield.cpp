@@ -1,59 +1,31 @@
 #include "GMainMenuPlayfield.h"
 
 GMainMenuPlayfield::GMainMenuPlayfield() {
-  mFont8 = new BFont(gResourceManager.GetBitmap(FONT_8x8_SLOT), FONT_8x8);
-  mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   gResourceManager.LoadBitmap(TITLE_BMP, BKG_SLOT, IMAGE_ENTIRE);
   mBackground = gResourceManager.GetBitmap(BKG_SLOT);
   // gResourceManager.LoadBitmap(LOGO_BMP, PLAYER_SLOT, IMAGE_ENTIRE);
   // mLogo = gResourceManager.GetBitmap(PLAYER_SLOT);
-  mState = 0;
-  gDisplay.SetPalette(mBackground);
 
+  gDisplay.SetPalette(mBackground);
   gDisplay.SetColor(COLOR_TEXT, WHITE);
   gDisplay.SetColor(COLOR_TEXT_SHADOW, ROSE);
   gDisplay.SetColor(COLOR_TEXT_BG, RED);
-  gDisplay.UseColor(COLOR_TEXT);
-  gDisplay.UseColor(COLOR_TEXT_SHADOW);
-  gDisplay.UseColor(COLOR_TEXT_BG);
+
+  gWidgetTheme.Configure(
+      WIDGET_TEXT_BG, COLOR_TEXT_BG,
+      WIDGET_TITLE_FONT, gFont16x16,
+      WIDGET_TITLE_FG, COLOR_TEXT,
+      WIDGET_TITLE_BG, COLOR_TEXT_SHADOW,
+      WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
+      WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
+      WIDGET_END_TAG);
 }
 
 GMainMenuPlayfield::~GMainMenuPlayfield() {
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
   // gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
-  delete mFont8;
-  delete mFont16;
-}
-
-TInt GMainMenuPlayfield::CenterText8(const char *s, TInt aY, TInt aColor, TInt aBackground) {
-  TInt x = TInt((SCREEN_WIDTH - (strlen(s) * 8)) / 2);
-  gDisplay.renderBitmap->DrawString(ENull, s, mFont8, x, aY, aColor, aBackground);
-  return 8;
-}
-
-TInt GMainMenuPlayfield::CenterText16(const char *s, TInt aY, TInt aColor, TInt aBackground) {
-  TInt width = aBackground == -1 ? 12 : 16;
-  TInt x     = TInt((SCREEN_WIDTH - (strlen(s) * width)) / 2);
-  if (aBackground != -1) {
-    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, aBackground);
-  } else {
-    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, aBackground, -4);
-  }
-  return 16;
 }
 
 void GMainMenuPlayfield::Render() {
   gDisplay.renderBitmap->CopyPixels(mBackground);
-  // TInt w = mLogo->Width(), h = mLogo->Height();
-  // TInt x = (SCREEN_WIDTH - w) / 2;
-  // TInt y = 36;
-
-  // gDisplay.renderBitmap->DrawBitmapTransparent(
-      // ENull,                      // ViewPort
-      // mLogo,                      // bitmap
-      // TRect(0, 0, w - 1, h - 1),  // src rect
-      // x, y                        // destination point
-      // );
-
-  mState++;
 }

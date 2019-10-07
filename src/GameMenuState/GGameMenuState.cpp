@@ -24,8 +24,12 @@ GGameMenuState::GGameMenuState() : BGameEngine(gViewPort) {
       WIDGET_SLIDER_BG, COLOR_TEXT,
       WIDGET_END_TAG);
 
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
+  gDisplay.SetColor(COLOR_TEXT, WHITE);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, ROSE);
+  gDisplay.SetColor(COLOR_TEXT_BG, RED);
+  gDisplay.UseColor(COLOR_TEXT);
+  gDisplay.UseColor(COLOR_TEXT_SHADOW);
+  gDisplay.UseColor(COLOR_TEXT_BG);
 }
 
 GGameMenuState::~GGameMenuState() {

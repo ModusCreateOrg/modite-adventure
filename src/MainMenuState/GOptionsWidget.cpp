@@ -1,7 +1,7 @@
 #include "GOptionsWidget.h"
 #include "Game.h"
 
-GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS") {}
 
 GOptionsWidget::~GOptionsWidget() {}
 
@@ -13,17 +13,16 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
         STR_RIGHT_ARROW,
         f,
         aX - 16, aY,
-        RED,
-        ROSE
-        );
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TEXT_BG)),
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)));
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
       mText,
       f,
       aX, aY,
-      WHITE,
-      ROSE,
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_FG)),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
       -6);
 
   return f->mHeight + 10;
