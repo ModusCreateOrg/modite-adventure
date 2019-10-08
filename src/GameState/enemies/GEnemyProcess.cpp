@@ -5,8 +5,9 @@
 
 const TInt HIT_POINTS = 5;  // default hit points for enemy
 
-GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams)
+GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
   : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+  mVelocity = aVelocity;
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
@@ -40,9 +41,57 @@ TBool GEnemyProcess::IsWall(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
   return !mSprite->IsFloor(aDirection, aDx, aDy);
 }
 
+TBool GEnemyProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  return mSprite->CanWalk(aDirection, aVx, aVy);
+}
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
+
+void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+  mState = aState;
+  mSprite->mDirection = aDirection;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
+
+  switch (aState) {
+
+    case IDLE_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      Idle(aDirection);
+      break;
+
+    case WALK_STATE:
+      mStep = 1 - mStep;
+      Walk(aDirection);
+      break;
+
+    case ATTACK_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      Attack(aDirection);
+      break;
+
+    case HIT_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      mSprite->cMask &= ~STYPE_EBULLET;
+      Hit(aDirection);
+      break;
+
+    case DEATH_STATE:
+      Death(aDirection);
+      break;
+
+    default:
+      break;
+  }
+}
 
 TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
@@ -146,6 +195,62 @@ TBool GEnemyProcess::DeathState() {
     NewState(IDLE_STATE, mSprite->mDirection);
     mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->mHitPoints = mHitPoints;
+  }
+
+  return ETrue;
+}
+
+TBool GEnemyProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  if (--mStateTimer < 0) {
+    // Set distance to walk for WALK_STATE
+    for (TInt retries = 0; retries < 8; retries++) {
+      DIRECTION direction = GAnchorSprite::RandomDirection();
+
+      if (CanWalk(direction, mVelocity, mVelocity)) {
+        NewState(WALK_STATE, direction);
+        return ETrue;
+      }
+    }
+
+    // after 8 tries, we couldn't find a direction to walk.
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+
+  return ETrue;
+}
+
+TBool GEnemyProcess::WalkState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+  if (--mStateTimer < 0) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (!CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->cType & STYPE_PLAYER) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+  if (mSprite->AnimDone()) {
+    NewState(WALK_STATE, mSprite->mDirection);
   }
 
   return ETrue;

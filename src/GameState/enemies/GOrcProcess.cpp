@@ -316,8 +316,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GOrcProcess::GOrcProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, ORC_SLOT, aParams) {
-  mStateTimer = 0;
+  : GEnemyProcess(aGameState, ORC_SLOT, aParams, VELOCITY) {
   mSprite->Name("ORC SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
@@ -341,196 +340,74 @@ GOrcProcess::~GOrcProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-void GOrcProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-  mSprite->type = STYPE_ENEMY;
-  mState = aState;
-  mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
-
-  switch (aState) {
-
-    case IDLE_STATE:
-      mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStateTimer = IDLE_TIMEOUT;
-      break;
-
-    case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-
-      if (mStateTimer <= 0) {
-        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-      }
-
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          mSprite->vy = -VELOCITY;
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->vx = -VELOCITY;
-          //          mSprite->mDx = -36;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
-      break;
-
-    case ATTACK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(attackUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(attackDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(attackLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(attackRightAnimation);
-          break;
-      }
-      break;
-
-    case HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitRightAnimation);
-          break;
-      }
-      break;
-
-    case DEATH_STATE:
-      mSprite->StartAnimation(deathAnimation);
-      break;
-
-    default:
-      break;
-  }
+void GOrcProcess::Idle(DIRECTION aDirection) {
+  mStateTimer = IDLE_TIMEOUT;
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GOrcProcess::CanWalk(DIRECTION aDirection) {
-  switch (aDirection) {
+void GOrcProcess::Walk(DIRECTION aDirection) {
+  mSprite->vx = 0;
+  mSprite->vy = 0;
+  if (mStateTimer <= 0) {
+    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+  }
+  switch (mSprite->mDirection) {
     case DIRECTION_UP:
-      return mSprite->IsFloor(DIRECTION_UP, 0, -VELOCITY);
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      mSprite->vy = -VELOCITY;
+      break;
     case DIRECTION_DOWN:
-      return mSprite->IsFloor(DIRECTION_DOWN, 0, VELOCITY);
+      mSprite->vy = VELOCITY;
+      mSprite->StartAnimation(
+        mStep ? walkDownAnimation1 : walkDownAnimation2);
+      break;
     case DIRECTION_LEFT:
-      return mSprite->IsFloor(DIRECTION_LEFT, -VELOCITY, 0);
+      mSprite->vx = -VELOCITY;
+      mSprite->StartAnimation(
+        mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+      break;
     case DIRECTION_RIGHT:
-    default:
-      return mSprite->IsFloor(DIRECTION_RIGHT, VELOCITY, 0);
+      mSprite->vx = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+      break;
   }
 }
 
-static DIRECTION random_direction() {
-  TInt dir = Random() & TUint8(3);
-  switch (dir) {
-    case 0:
-      return DIRECTION_UP;
-    case 1:
-      return DIRECTION_DOWN;
-    case 2:
-      return DIRECTION_LEFT;
-    case 3:
-    default:
-      return DIRECTION_RIGHT;
+void GOrcProcess::Attack(DIRECTION aDirection) {
+  mAttackTimer = Random(30, 60);
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(attackUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(attackDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(attackLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(attackRightAnimation);
+      break;
   }
 }
 
-TBool GOrcProcess::IdleState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GOrcProcess::Hit(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(hitUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(hitDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(hitLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(hitRightAnimation);
+      break;
   }
-
-  if (MaybeAttack()) {
-    return ETrue;
-  }
-
-  if (--mStateTimer < 0) {
-    // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1, 8)) * 32 / VELOCITY);
-
-    for (TInt retries = 0; retries < 8; retries++) {
-      // Don't go the same direction
-      DIRECTION direction = random_direction();
-//      while (direction == mSprite->mDirection) {
-//        direction = random_direction();
-//      }
-
-      if (CanWalk(direction)) {
-        NewState(WALK_STATE, direction);
-        return ETrue;
-      }
-    }
-
-    // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
 }
 
-TBool GOrcProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-
-  if (MaybeAttack()) {
-    return ETrue;
-  }
-  if (--mStateTimer < 0) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
-  if (!mSprite->IsFloor(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
-  if (mSprite->cType & STYPE_PLAYER) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
+void GOrcProcess::Death(DIRECTION aDirection) {
+  mSprite->StartAnimation(deathAnimation);
 }
 

@@ -220,6 +220,7 @@ TBool GPlayerProcess::MaybeHit() {
         break;
 
       case HIT_HARD:
+      default:
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;

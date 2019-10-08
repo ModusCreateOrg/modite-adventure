@@ -27,7 +27,7 @@ static const char *stateMessages[] = {
 
 class GEnemyProcess : public BProcess {
 public:
-  GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams);
+  GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity);
 
   ~GEnemyProcess() OVERRIDE;
 
@@ -43,33 +43,46 @@ protected:
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitPoints;
+  TFloat mVelocity;
 
   GAnchorSprite *mPlayerSprite;
 
 public:
   TBool RunBefore() OVERRIDE;
+
   TBool RunAfter() OVERRIDE;
 
 protected:
   // test if a wall in the specified direction from sprite's current location
   TBool IsWall(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
 
+  // test if enemy can walk in specified direction at the specified velocity
+  // enemy can override this for more custom kinds of logic
+  virtual TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
+
 protected:
   TBool MaybeAttack();
+
   TBool MaybeHit();
 
 protected:
-  virtual void NewState(TUint16 aState, DIRECTION aDirection) = 0;
+  virtual void NewState(TUint16 aState, DIRECTION aDirection);
 
-  virtual TBool IdleState() = 0;
+  virtual void Idle(DIRECTION aDirection) = 0;
+  TBool IdleState();
 
-  virtual TBool WalkState() = 0;
+  virtual void Walk(DIRECTION aDirection) = 0;
+  TBool WalkState();
 
+  virtual void Attack(DIRECTION aDirection) = 0;
   TBool AttackState();
 
+  virtual void Hit(DIRECTION aDirection) = 0;
   TBool HitState();
 
+  virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
+
 };
 
 
