@@ -1,5 +1,6 @@
 #include "GRatProcess.h"
 #include "GStatProcess.h"
+#include "GPlayer.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -12,12 +13,12 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt16 IDLE_SPEED = 5 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
-const TInt16 ATTACK_SPEED = 5 * FACTOR;
+const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt16 HIT_SPEED = 1 * FACTOR;
-const TInt16 WALK_SPEED = 5 * FACTOR;
+const TInt16 WALK_SPEED = 2 * FACTOR;
 const TInt16 DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
 // region  ANIMATIONS {{{
 
@@ -287,7 +288,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // endregion }}}
 
-/*********************************************************************************
+/************************************************************i*********************
  *********************************************************************************
  *********************************************************************************/
 
@@ -299,7 +300,6 @@ GRatProcess::GRatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 a
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_LIGHT;
   mStateTimer = 0;
-  mAttackTimer = 1;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -319,7 +319,6 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
   switch (aDirection) {
 
-    //
     case DIRECTION_UP:
       if (IsWall(DIRECTION_UP, 0, -aVy)) {
         return EFalse;
@@ -334,6 +333,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       // no walls at all?  Move ot the nearest one.
       if (!IsWall(DIRECTION_DOWN, 0, aVy)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
@@ -352,6 +352,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       }
       if (!IsWall(DIRECTION_UP, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
@@ -370,6 +371,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       }
       if (!IsWall(DIRECTION_RIGHT, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
@@ -388,6 +390,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       }
       if (!IsWall(DIRECTION_LEFT, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
@@ -432,7 +435,6 @@ void GRatProcess::Walk(DIRECTION aDirection) {
 }
 
 void GRatProcess::Attack(DIRECTION aDirection) {
-  mAttackTimer = Random(30, 60);
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);

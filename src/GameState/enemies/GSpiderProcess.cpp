@@ -353,7 +353,6 @@ void GSpiderProcess::Walk(DIRECTION aDirection) {
 }
 
 void GSpiderProcess::Attack(DIRECTION aDirection) {
-  mAttackTimer = Random(30, 60);
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);

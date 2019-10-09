@@ -336,7 +336,6 @@ void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
 }
 
 void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
-  mAttackTimer = Random(30, 60);
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);

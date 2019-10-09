@@ -73,6 +73,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
+      mAttackTimer = ATTACK_TIME;
       Attack(aDirection);
       break;
 
@@ -95,11 +96,12 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
 TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
-  if (mSprite->cType & STYPE_PBULLET) {
+  if (mSprite->TestCType(STYPE_PBULLET)) {
+    mSprite->ClearCType(STYPE_PBULLET);
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->cType &= ~STYPE_PBULLET;
+//      mSprite->ClearCType(STYPE_PBULLET);
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
         printf("GEnemy DEATH\n");
@@ -128,8 +130,8 @@ TBool GEnemyProcess::MaybeHit() {
     }
   }
 
-  if (mSprite->cType & STYPE_PLAYER) {
-    mSprite->cType &= ~STYPE_PLAYER;
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
     return ETrue;
   }
@@ -143,29 +145,66 @@ TBool GEnemyProcess::MaybeAttack() {
   mPlayerSprite->GetRect(hisRect);
 
   if (!mPlayerSprite->mInvulnerable) {
-    if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
-      if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else if (ABS(hisRect.y2 - myRect.y1) < COLLISION_DELTA_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, DIRECTION_UP);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else if (ABS(myRect.y2 - hisRect.y1) < COLLISION_DELTA_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, DIRECTION_DOWN);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else {
+    if (myRect.x1 >= hisRect.x2) {
+      // to right of player
+      if (ABS(hisRect.x2 - myRect.x1) > 32) {
         mAttackTimer = 1;
+        return EFalse;
       }
+      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_LEFT);
+      }
+      return ETrue;
+    } else if (myRect.x2 <= hisRect.x1) {
+      // to left of player
+      if (ABS(hisRect.x1 - myRect.x2) > 32) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_RIGHT);
+      }
+      return ETrue;
     }
+
+    // player and enemy overlap in x direction
+    if (myRect.y1 >= hisRect.y2) {
+      // enemy below player
+      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+        // too far away
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_UP);
+      }
+      return ETrue;
+    } else if (myRect.y2 <= hisRect.y1) {
+      // enemy above player
+      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+        // too far away
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_DOWN);
+      }
+      return ETrue;
+    }
+
+    // player not near us
+    mAttackTimer = 1;
+    return EFalse;
+  } else {
+//    printf("Player Invulnerable\n");
   }
 
   return EFalse;
@@ -181,7 +220,7 @@ TBool GEnemyProcess::AttackState() {
 TBool GEnemyProcess::HitState() {
   if (mSprite->AnimDone()) {
     mSprite->mInvulnerable = EFalse;
-    mSprite->cType &= ~STYPE_PBULLET;
+    mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
@@ -193,7 +232,7 @@ TBool GEnemyProcess::DeathState() {
     mSprite->y = mStartY;
     mSprite->mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->mHitPoints = mHitPoints;
   }
 
@@ -235,6 +274,9 @@ TBool GEnemyProcess::WalkState() {
   if (MaybeAttack()) {
     return ETrue;
   }
+
+  mAttackTimer = 1;
+
   if (--mStateTimer < 0) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -245,11 +287,14 @@ TBool GEnemyProcess::WalkState() {
     return ETrue;
   }
 
-  if (mSprite->cType & STYPE_PLAYER) {
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
+
   if (mSprite->AnimDone()) {
+    // done with left/right step, start animation for the other foot
     NewState(WALK_STATE, mSprite->mDirection);
   }
 

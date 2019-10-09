@@ -330,7 +330,6 @@ void GBatProcess::Walk(DIRECTION aDirection) {
 }
 
 void GBatProcess::Attack(DIRECTION aDirection) {
-  mAttackTimer = Random(30, 60);
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);

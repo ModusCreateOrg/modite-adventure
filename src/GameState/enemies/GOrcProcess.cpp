@@ -324,7 +324,6 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 a
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_HARD;
 
-  mAttackTimer = 1;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -373,7 +372,6 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
 }
 
 void GOrcProcess::Attack(DIRECTION aDirection) {
-  mAttackTimer = Random(30, 60);
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);

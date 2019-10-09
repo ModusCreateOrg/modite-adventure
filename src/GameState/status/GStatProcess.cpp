@@ -2,7 +2,7 @@
 #include "GStatProcess.h"
 #include "GStatSprite.h"
 
-const TInt TIMEOUT = 30 * 2;
+const TInt TIMEOUT = FRAMES_PER_SECOND * 2;
 
 GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : BProcess() {
   char msg[4096];
