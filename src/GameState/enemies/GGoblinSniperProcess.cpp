@@ -284,8 +284,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam)
-  : GEnemyProcess(aGameState, GOBLIN_SNIPER_SLOT, aParam) {
-  mStateTimer = 0;
+  : GEnemyProcess(aGameState, GOBLIN_SNIPER_SLOT, aParam, VELOCITY) {
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
@@ -306,193 +305,72 @@ GGoblinSniperProcess::~GGoblinSniperProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-void GGoblinSniperProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-  mState = aState;
-  mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
-
-  switch (aState) {
-
-    case IDLE_STATE:
-      mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStateTimer = IDLE_TIMEOUT;
-      mSprite->StartAnimation(selectAnimation);
-      break;
-
-    case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      if (mStateTimer <= 0) {
-        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-      }
-
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          mSprite->vy = -VELOCITY;
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->vx = -VELOCITY;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
-      break;
-
-    case ATTACK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(attackUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(attackDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(attackLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(attackRightAnimation);
-          break;
-      }
-      break;
-
-    case HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitRightAnimation);
-          break;
-      }
-      break;
-
-    case DEATH_STATE:
-      mSprite->StartAnimation(deathAnimation);
-      break;
-
-    default:
-      break;
-  }
+void GGoblinSniperProcess::Idle(DIRECTION aDirection) {
+  mStateTimer = IDLE_TIMEOUT;
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GGoblinSniperProcess::IdleState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  if (--mStateTimer < 0) {
-    // Set distance to walk for WALK_STATE
+void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
+  mSprite->vx = 0;
+  mSprite->vy = 0;
+  if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->GetViewPort()->mWorldX,
-      sy = y - mGameState->GetViewPort()->mWorldY;
-
-    for (TInt retries = 0; retries < 8; retries++) {
-      // Don't go the same direction
-      TInt direction = Random() & TUint8(3);
-      while (direction == mSprite->mDirection) {
-        direction = Random() & TUint8(3);
-      }
-
-      switch (direction) {
-        case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_UP);
-            return ETrue;
-          }
-          break;
-        case 1: // down
-          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_DOWN);
-            return ETrue;
-          }
-          break;
-        case 2: // left
-          if (sx > 16) {
-            if (!mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-              NewState(WALK_STATE, DIRECTION_LEFT);
-              return ETrue;
-            }
-          }
-          break;
-        case 3: // right
-          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
-              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_RIGHT);
-            return ETrue;
-          }
-          break;
-        default:
-          Panic("GGoblinSniperProcess: Invalid direction %d\n", mDirection);
-          break;
-      }
-    }
-
-    // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
   }
-
-  return ETrue;
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      mSprite->vy = -VELOCITY;
+      break;
+    case DIRECTION_DOWN:
+      mSprite->vy = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->vx = -VELOCITY;
+      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->vx = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+      break;
+  }
 }
 
-TBool GGoblinSniperProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(attackUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(attackDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(attackLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(attackRightAnimation);
+      break;
   }
-
-  BViewPort *vp = mGameState->GetViewPort();
-  TFloat screenX = mSprite->x - vp->mWorldX,
-    screenY = mSprite->y - vp->mWorldY;
-
-  if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
-    ) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
 }
+
+void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(hitUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(hitDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(hitLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(hitRightAnimation);
+      break;
+  }
+}
+
+void GGoblinSniperProcess::Death(DIRECTION aDirection) {
+  mSprite->StartAnimation(deathAnimation);
+}
+
 

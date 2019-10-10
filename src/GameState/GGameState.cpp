@@ -270,7 +270,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           new GGoblinSniperProcess(this, xx - 32, yy + 32, params));
         break;
       case ATTR_ORC:
+        // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
+        // to test other enemy logic, comment out spawning the Orc and instead spawn the enemy we want to see/test
         printf("ORC at %.2f,%.2f %d %d\n", xx, yy, row, col);
+//        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
         AddProcess(new GOrcProcess(this, xx, yy + 32, params));
         break;
       case ATTR_RAT:
@@ -279,7 +282,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_SLIME:
         printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GSlimeProcess(this, xx, yy + 32, params));
+        AddProcess(new GSlimeProcess(this, xx-18, yy + 31, params));
         break;
       case ATTR_TROLL:
         printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, row, col);

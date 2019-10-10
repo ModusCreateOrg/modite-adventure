@@ -16,6 +16,8 @@ const TUint16 HIT_MEDIUM_STATE = 6;
 const TUint16 HIT_HARD_STATE = 7;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
+  mState = IDLE_STATE;
+  mStep = 0;
   mGameState = aGameState;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;
@@ -24,7 +26,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
   mSprite->type = STYPE_PLAYER;
-  mSprite->cMask = STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT; // collide with enemy, enemy attacks, and environment
+  mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
@@ -56,14 +58,14 @@ TBool GPlayerProcess::IsLedge() {
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
-      return mSprite->IsFloor(DIRECTION_UP, 0, 0);
+      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
     case DIRECTION_DOWN:
-      return mSprite->IsFloor(DIRECTION_DOWN, 0, 0);
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
     case DIRECTION_LEFT:
-      return mSprite->IsFloor(DIRECTION_LEFT, 0, 0);
+      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
     case DIRECTION_RIGHT:
     default:
-      return mSprite->IsFloor(DIRECTION_RIGHT, 0, 0);
+      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
   }
 }
 
@@ -164,15 +166,14 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  \____|_| |_/_/   \_\_| \_|\____|_____| |____/ |_/_/   \_\_| |_____|
  */
 TBool GPlayerProcess::MaybeHit() {
-  if (mSprite->cType & STYPE_OBJECT) {
-    mSprite->cType &= ~STYPE_OBJECT;
-  }
+  mSprite->ClearCType(STYPE_OBJECT);
+
   if (mSprite->mInvulnerable) {
-    mSprite->cType &= STYPE_EBULLET;
+    mSprite->ClearCType(STYPE_EBULLET);
   }
 
-  if (mSprite->cType & STYPE_EBULLET) {
-    mSprite->cType &= STYPE_EBULLET;
+  if (mSprite->TestCType(STYPE_EBULLET)) {
+    mSprite->ClearCType(STYPE_EBULLET);
     mSprite->Nudge();
     TInt state = HIT_LIGHT_STATE;
     const GAnchorSprite *other = mSprite->mCollided;
@@ -181,19 +182,19 @@ TBool GPlayerProcess::MaybeHit() {
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
         mSprite->mInvulnerable = ETrue;
-        mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +1"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
-            mSprite->StartAnimation(hitLightUpAnimation);
-            break;
-          case DIRECTION_DOWN:
             mSprite->StartAnimation(hitLightDownAnimation);
             break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitLightUpAnimation);
+            break;
           case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitLightLeftAnimation);
+            mSprite->StartAnimation(hitLightRightAnimation);
             break;
           case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitLightRightAnimation);
+            mSprite->StartAnimation(hitLightLeftAnimation);
             break;
         }
         break;
@@ -202,40 +203,41 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 2;
         mSprite->mInvulnerable = ETrue;
         state = HIT_MEDIUM_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x - 32, mSprite->y - 63, "HIT +2"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +2"));
         switch (other->mDirection) {
           case DIRECTION_UP:
-            mSprite->StartAnimation(hitMediumUpAnimation);
-            break;
-          case DIRECTION_DOWN:
             mSprite->StartAnimation(hitMediumDownAnimation);
             break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitMediumUpAnimation);
+            break;
           case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitMediumLeftAnimation);
+            mSprite->StartAnimation(hitMediumRightAnimation);
             break;
           case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitMediumRightAnimation);
+            mSprite->StartAnimation(hitMediumLeftAnimation);
             break;
         }
         break;
 
       case HIT_HARD:
+      default:
         GPlayer::mHitPoints -= 3;
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
           case DIRECTION_UP:
-            mSprite->StartAnimation(hitHardUpAnimation);
-            break;
-          case DIRECTION_DOWN:
             mSprite->StartAnimation(hitHardDownAnimation);
             break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitHardUpAnimation);
+            break;
           case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitHardLeftAnimation);
+            mSprite->StartAnimation(hitHardRightAnimation);
             break;
           case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitHardRightAnimation);
+            mSprite->StartAnimation(hitHardLeftAnimation);
             break;
         }
         break;
@@ -244,15 +246,16 @@ TBool GPlayerProcess::MaybeHit() {
 
     if (GPlayer::mHitPoints <= 0) {
       // GAME OVER!
-    printf("Player dead\n");
+      printf("Player dead\n");
       GPlayer::mHitPoints = PLAYER_HITPOINTS;
     }
+
     mSprite->cType = 0;
     return ETrue;
   }
 
-  if (mSprite->cType & STYPE_ENEMY) {
-    mSprite->cType &= ~STYPE_ENEMY;
+  if (mSprite->TestCType(STYPE_ENEMY)) {
+    mSprite->ClearCType(STYPE_ENEMY);
     mSprite->Nudge();
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -412,7 +415,7 @@ TBool GPlayerProcess::FallState() {
 
 TBool GPlayerProcess::HitState() {
   if (mSprite->AnimDone()) {
-    mSprite->cType &= ~STYPE_EBULLET;
+    mSprite->ClearCType(STYPE_EBULLET);
     mSprite->mInvulnerable = EFalse;
     if (!MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);

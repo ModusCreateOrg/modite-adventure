@@ -5,8 +5,9 @@
 
 const TInt HIT_POINTS = 5;  // default hit points for enemy
 
-GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams)
+GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
   : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+  mVelocity = aVelocity;
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
@@ -40,17 +41,67 @@ TBool GEnemyProcess::IsWall(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
   return !mSprite->IsFloor(aDirection, aDx, aDy);
 }
 
+TBool GEnemyProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  return mSprite->CanWalk(aDirection, aVx, aVy);
+}
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
+void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+  mState = aState;
+  mSprite->mDirection = aDirection;
+  mSprite->mDx = 0;
+  mSprite->mDy = 0;
+
+  switch (aState) {
+
+    case IDLE_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      Idle(aDirection);
+      break;
+
+    case WALK_STATE:
+      mStep = 1 - mStep;
+      Walk(aDirection);
+      break;
+
+    case ATTACK_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      mAttackTimer = ATTACK_TIME;
+      Attack(aDirection);
+      break;
+
+    case HIT_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      mSprite->cMask &= ~STYPE_EBULLET;
+      Hit(aDirection);
+      break;
+
+    case DEATH_STATE:
+      Death(aDirection);
+      break;
+
+    default:
+      break;
+  }
+}
+
 TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
-  if (mSprite->cType & STYPE_PBULLET) {
+  if (mSprite->TestCType(STYPE_PBULLET)) {
+    mSprite->ClearCType(STYPE_PBULLET);
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->cType &= ~STYPE_PBULLET;
+//      mSprite->ClearCType(STYPE_PBULLET);
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
         printf("GEnemy DEATH\n");
@@ -79,8 +130,8 @@ TBool GEnemyProcess::MaybeHit() {
     }
   }
 
-  if (mSprite->cType & STYPE_PLAYER) {
-    mSprite->cType &= ~STYPE_PLAYER;
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
     return ETrue;
   }
@@ -88,35 +139,75 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
+static const TFloat DX = 32,
+  DY = 40;
+
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
   mPlayerSprite->GetRect(hisRect);
 
   if (!mPlayerSprite->mInvulnerable) {
-    if (abs(mPlayerSprite->x - mSprite->x) <= SEEK_X + 16) {
-      if (abs(mPlayerSprite->y - mSprite->y) < SEEK_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, mPlayerSprite->x > mSprite->x ? DIRECTION_RIGHT : DIRECTION_LEFT);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else if (ABS(hisRect.y2 - myRect.y1) < COLLISION_DELTA_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, DIRECTION_UP);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else if (ABS(myRect.y2 - hisRect.y1) < COLLISION_DELTA_Y) {
-        if (--mAttackTimer <= 0) {
-          NewState(ATTACK_STATE, DIRECTION_DOWN);
-          mAttackTimer = FRAMES_PER_SECOND * 3;
-        }
-        return ETrue;
-      } else {
+    if (myRect.x1 >= hisRect.x2) {
+      // to right of player
+      if (ABS(hisRect.x2 - myRect.x1) > DX) {
         mAttackTimer = 1;
+        return EFalse;
       }
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_LEFT);
+      }
+      return ETrue;
+    } else if (myRect.x2 <= hisRect.x1) {
+      // to left of player
+      if (ABS(hisRect.x1 - myRect.x2) > DX) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_RIGHT);
+      }
+      return ETrue;
     }
+
+    // player and enemy overlap in x direction
+    if (myRect.y1 >= hisRect.y2) {
+      // enemy below player
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
+        // too far away
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_UP);
+      }
+      return ETrue;
+    } else if (myRect.y2 <= hisRect.y1) {
+      // enemy above player
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
+        // too far away
+        mAttackTimer = 1;
+        return EFalse;
+      }
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_DOWN);
+      }
+      return ETrue;
+    }
+
+    // player not near us
+    mAttackTimer = 1;
+    return EFalse;
+  } else {
+//    printf("Player Invulnerable\n");
   }
 
   return EFalse;
@@ -132,7 +223,7 @@ TBool GEnemyProcess::AttackState() {
 TBool GEnemyProcess::HitState() {
   if (mSprite->AnimDone()) {
     mSprite->mInvulnerable = EFalse;
-    mSprite->cType &= ~STYPE_PBULLET;
+    mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
@@ -144,8 +235,72 @@ TBool GEnemyProcess::DeathState() {
     mSprite->y = mStartY;
     mSprite->mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->cType &= ~(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->mHitPoints = mHitPoints;
+  }
+
+  return ETrue;
+}
+
+TBool GEnemyProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  if (--mStateTimer < 0) {
+    // Set distance to walk for WALK_STATE
+    for (TInt retries = 0; retries < 8; retries++) {
+      DIRECTION direction = GAnchorSprite::RandomDirection();
+      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
+        vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
+
+      if (CanWalk(direction, vx, vx)) {
+        NewState(WALK_STATE, direction);
+        return ETrue;
+      }
+    }
+
+    // after 8 tries, we couldn't find a direction to walk.
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+
+  return ETrue;
+}
+
+TBool GEnemyProcess::WalkState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  mAttackTimer = 1;
+
+  if (--mStateTimer < 0) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (!CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->AnimDone()) {
+    // done with left/right step, start animation for the other foot
+    NewState(WALK_STATE, mSprite->mDirection);
   }
 
   return ETrue;

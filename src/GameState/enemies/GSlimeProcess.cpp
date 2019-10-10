@@ -1,4 +1,5 @@
 #include "GSlimeProcess.h"
+#include "GPlayer.h"
 
 /*********************************************************************************
  *********************************************************************************
@@ -8,12 +9,14 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
-const TInt HIT_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 3;
+const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = PLAYER_VELOCITY / 4;
+
+// region  ANIMATIONS {{{
 
 /*********************************************************************************
  *********************************************************************************
@@ -96,12 +99,23 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(SLIME_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 0),
+  ADELTA(0, 32),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 3),
+  ADELTA(0, 32),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 2),
   ATYPE(STYPE_EBULLET),
+  ADELTA(0, 32),
+  ASIZE(0, 32, 32, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 1),
   ATYPE(STYPE_ENEMY),
+  ASIZE(0, 0, 32, 32),
+  ADELTA(0, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 2),
+  ADELTA(0, 32),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 0),
   AEND
 };
 
@@ -149,12 +163,16 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(SLIME_SLOT),
-  AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 0),
-  ATYPE(STYPE_EBULLET),
+  AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
+  ASIZE(-32, 0, 48, 32),
+  ATYPE(STYPE_EBULLET),
   AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0, 0, 32, 32),
+  AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 2),
+  AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 0),
   AEND
 };
 
@@ -202,12 +220,16 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(SLIME_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 0),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0, 0, 48, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 2),
+  ASIZE(0, 0, 32, 32),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 0),
   AEND
 };
 
@@ -256,12 +278,17 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(SLIME_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 0),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 3),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 2),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0, -16, 32, 48),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
+  ASIZE(0, 0, 32, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 2),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 3),
+  ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 0),
   AEND
 };
 
@@ -275,17 +302,20 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+/* endregion }}} */
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
 GSlimeProcess::GSlimeProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, SLIME_SLOT, aParams) {
+  : GEnemyProcess(aGameState, SLIME_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("SLIME SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
+  mSprite->mHitStrength = HIT_HARD;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
 
@@ -304,187 +334,71 @@ GSlimeProcess::~GSlimeProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-void GSlimeProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-  mState = aState;
-  mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
-
-  switch (aState) {
-    case IDLE_STATE:
-      mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStateTimer = IDLE_TIMEOUT;
-      break;
-
-    case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      if (mStateTimer <= 0) {
-        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-      }
-
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          mSprite->vy = -VELOCITY;
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->vx = -VELOCITY;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
-      break;
-
-    case ATTACK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(attackUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(attackDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(attackLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(attackRightAnimation);
-          break;
-      }
-      break;
-
-    case HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitRightAnimation);
-          break;
-      }
-      break;
-
-    case DEATH_STATE:
-      mSprite->StartAnimation(deathAnimation);
-      break;
-
-    default:
-      break;
-  }
+void GSlimeProcess::Idle(DIRECTION aDirection) {
+  mStateTimer = IDLE_TIMEOUT;
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GSlimeProcess::IdleState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-  if (--mStateTimer < 0) {
-    // Set distance to walk for WALK_STATE
+void GSlimeProcess::Walk(DIRECTION aDirection) {
+  mSprite->vx = 0;
+  mSprite->vy = 0;
+  if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    TFloat x = mSprite->x,
-      y = mSprite->y,
-      sx = x - mGameState->mWorldXX,
-      sy = y - mGameState->mWorldYY;
-
-    for (TInt retries = 0; retries < 8; retries++) {
-      // Don't go the same direction
-      TInt direction = Random() & TUint8(3);
-      while (direction == mSprite->mDirection) {
-        direction = Random() & TUint8(3);
-      }
-
-      switch (direction) {
-        case 0: // up
-          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 - VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_UP);
-            return ETrue;
-          }
-          break;
-        case 1: // down
-          if (sy < (SCREEN_HEIGHT - 16) && !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
-              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_DOWN);
-            return ETrue;
-          }
-          break;
-        case 2: // left
-          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y + 32) && !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
-          }
-          break;
-        case 3: // right
-          if (sx < (SCREEN_WIDTH - 16) && !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
-              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_RIGHT);
-            return ETrue;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
   }
-
-  return ETrue;
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      mSprite->vy = -VELOCITY;
+      break;
+    case DIRECTION_DOWN:
+      mSprite->vy = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->vx = -VELOCITY;
+      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->vx = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+      break;
+  }
 }
 
-TBool GSlimeProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GSlimeProcess::Attack(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(attackUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(attackDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(attackLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(attackRightAnimation);
+      break;
   }
+}
 
-  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-    screenY = mSprite->y - mGameState->mWorldYY;
-
-  if (--mStateTimer < 0 ||
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y + mSprite->vy) ||      // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx, mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 || screenX > (SCREEN_WIDTH - 16) || screenY < 16 || screenY > (SCREEN_HEIGHT - 16)
-    ) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
+void GSlimeProcess::Hit(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(hitUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(hitDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(hitLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(hitRightAnimation);
+      break;
   }
+}
 
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
+void GSlimeProcess::Death(DIRECTION aDirection) {
+  mSprite->StartAnimation(deathAnimation);
 }
 
