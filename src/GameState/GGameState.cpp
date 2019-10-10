@@ -146,7 +146,7 @@ void GGameState::PostRender() {
   // display level
   char output[160];
   const TInt l_width = 48 + 2; // 2 px padding right
-  sprintf(output, "L%-3d", GPlayer::mLevel + 100);
+  sprintf(output, "L%-3d", GPlayer::mLevel);
   screen->DrawString(&vp, output, gFont16x16, 320 - l_width, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
 }
 
