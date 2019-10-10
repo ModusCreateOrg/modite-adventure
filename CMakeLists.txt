@@ -64,6 +64,7 @@ ADD_EXECUTABLE(
 ProcessorCount(N)
 if (NOT N EQUAL 0)
   set(${PROJECT_NAME}_FLAGS -j${N})
+  set(${PROJECT_NAME}_BUILD_FLAGS -j${N})
   set(${PROJECT_NAME}_args ${${PROJECT_NAME}_args} PARALLEL_LEVEL ${N})
 endif ()
 
