@@ -33,25 +33,24 @@ void GInventoryList::Dump() {
 }
 GInventoryItem::GInventoryItem(TInt aItemNumber) : BNode() {
   mItemNumber = aItemNumber;
-  mImage      = items[aItemNumber];
-  mCount      = 1;
+  mImage = items[aItemNumber];
+  mCount = 1;
 }
 
 void GInventoryItem::Render() {
   printf("GInventoryItem: item: %d image: %d count: %d\n", mItemNumber, mImage, mCount);
 }
 
-TInt16         GPlayer::mLevel;
-TInt16         GPlayer::mNextLevel;
-TInt16         GPlayer::mExperience;
-TInt16         GPlayer::mHitPoints;
-TInt16         GPlayer::mStrength;
-TInt16         GPlayer::mDexterity;
-TInt           GPlayer::mHitStrength;
-TInt           GPlayer::mGold;
+TInt16 GPlayer::mLevel;
+TInt16 GPlayer::mNextLevel;
+TInt16 GPlayer::mExperience;
+TInt16 GPlayer::mHitPoints;
+TInt16 GPlayer::mMaxHitPoints = 10;
+TInt16 GPlayer::mStrength;
+TInt16 GPlayer::mDexterity;
+TInt GPlayer::mHitStrength;
+TInt GPlayer::mGold;
 GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
-GAnchorSprite  *GPlayer::mSprite;
-GGameState     *GPlayer::mGameState;
-
-
+GAnchorSprite *GPlayer::mSprite;
+GGameState *GPlayer::mGameState;
