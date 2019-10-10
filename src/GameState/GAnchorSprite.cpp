@@ -122,3 +122,32 @@ void GAnchorSprite::Nudge() {
   x = mLastX;
   y = mLastY;
 }
+
+DIRECTION GAnchorSprite::RandomDirection() {
+  TInt dir = Random() & TUint8(3);
+  switch (dir) {
+    case 0:
+      return DIRECTION_UP;
+    case 1:
+      return DIRECTION_DOWN;
+    case 2:
+      return DIRECTION_LEFT;
+    case 3:
+    default:
+      return DIRECTION_RIGHT;
+  }
+}
+
+TBool GAnchorSprite::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      return IsFloor(DIRECTION_UP, 0, -aVy);
+    case DIRECTION_DOWN:
+      return IsFloor(DIRECTION_DOWN, 0, aVy);
+    case DIRECTION_LEFT:
+      return IsFloor(DIRECTION_LEFT, -aVx, 0);
+    case DIRECTION_RIGHT:
+    default:
+      return IsFloor(DIRECTION_RIGHT, aVx, 0);
+  }
+}

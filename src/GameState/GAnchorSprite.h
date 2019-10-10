@@ -43,6 +43,11 @@ public:
   void Name(const char *aName) { strcpy(mName, aName); }
 
 public:
+  static DIRECTION RandomDirection();
+
+  TBool CanWalk(DIRECTION aDireciton, TFloat aVx, TFloat aVy);
+
+public:
   GGameState *mGameState;
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
@@ -52,6 +57,7 @@ public:
   TInt mGold;
   TBool mInvulnerable; // cannot be attacked
   TFloat mLastX, mLastY;  // coordinates from last frame
+  TFloat mVelocity;
 protected:
   char mName[64];
 };

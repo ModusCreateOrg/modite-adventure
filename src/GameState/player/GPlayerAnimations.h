@@ -3,7 +3,7 @@
 
 const TInt16 WALKSPEED = 3 * FACTOR;
 const TInt16 SWORDSPEED = 3 * FACTOR;
-const TInt16 HITSPEED = 5 * FACTOR;
+const TInt16 HITSPEED = 2 * FACTOR;
 
 extern ANIMSCRIPT idleAnimation[];
 

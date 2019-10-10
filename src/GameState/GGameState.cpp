@@ -271,7 +271,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_ORC:
         printf("ORC at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GOrcProcess(this, xx, yy + 32, params));
+        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
+//        AddProcess(new GOrcProcess(this, xx, yy + 32, params));
         break;
       case ATTR_RAT:
         printf("RAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
@@ -279,7 +280,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_SLIME:
         printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GSlimeProcess(this, xx, yy + 32, params));
+        AddProcess(new GSlimeProcess(this, xx-18, yy + 31, params));
         break;
       case ATTR_TROLL:
         printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, row, col);
