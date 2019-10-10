@@ -26,6 +26,7 @@ struct GInventoryItem : public BNode {
   TInt mItemNumber;
   TInt mImage;
   TInt mCount;
+
   void Render();
 };
 
@@ -47,9 +48,11 @@ struct GInventoryList : public BList {
   GInventoryItem *First() {
     return (GInventoryItem *)BList::First();
   }
+
   TBool End(GInventoryItem *item) {
     return BList::End((BNode *)item);
   }
+
   GInventoryItem *Next(GInventoryItem *item) {
     return (GInventoryItem *)BList::Next((BNode *)item);
   }
@@ -57,28 +60,41 @@ struct GInventoryList : public BList {
   void Dump();
 };
 
-
 struct GPlayer {
-  GPlayer() {
+  static void Init() {
     printf("Construct GPlayer\n");
-    mLevel       = 1;
-    mNextLevel   = 100;
-    mExperience  = 0;
-    mHitPoints   = 10;
-    mStrength    = 10;
-    mDexterity   = 10;
+    mLevel = 1;
+    mNextLevel = 10;
+    mExperience = 0;
+    mMaxHitPoints = 10;
+    mHitPoints = mMaxHitPoints;
+    mStrength = 10;
+    mDexterity = 10;
     mHitStrength = 1;
-    mGold        = 0;
+    mGold = 0;
   }
 
-  static TInt16         mLevel, mNextLevel, mExperience;
-  static TInt16         mHitPoints, mStrength, mDexterity;
-  static TInt           mHitStrength;
-  static TInt           mGold;
+  static void AddExperience(TInt aExperience) {
+    mExperience += aExperience;
+    if (mExperience >= mNextLevel) {
+      mLevel++;
+      mExperience -= mNextLevel;
+      mNextLevel += mLevel * 2;
+      mMaxHitPoints += 2;
+      mHitPoints = mMaxHitPoints;
+      mHitStrength++;
+    }
+  }
+
+  static TInt16 mLevel, mNextLevel, mExperience;
+  static TInt16 mHitPoints, mMaxHitPoints;
+  static TInt16 mStrength, mDexterity;
+  static TInt mHitStrength;
+  static TInt mGold;
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
-  static GAnchorSprite  *mSprite;
-  static GGameState     *mGameState;
+  static GAnchorSprite *mSprite;
+  static GGameState *mGameState;
 };
 
 #endif //MODITE_GPLAYER_H

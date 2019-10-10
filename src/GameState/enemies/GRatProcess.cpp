@@ -113,9 +113,12 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,16,32,48),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   AEND,
 };
 
@@ -166,9 +169,12 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(-16,0,48,32),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -218,9 +224,12 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,0, 48,32),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0, 32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -270,9 +279,12 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,-16,32,48),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   AEND,
 };
 
@@ -317,14 +329,14 @@ GRatProcess::~GRatProcess() {
 
 TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
+  if (!mSprite->CanWalk(aDirection, aVx, aVy)) {
+    return EFalse;
+  }
+
   switch (aDirection) {
 
     case DIRECTION_UP:
-      if (IsWall(DIRECTION_UP, 0, -aVy)) {
-        return EFalse;
-      }
-      // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT, -aVx, 0)) {
+      if (IsWall(DIRECTION_LEFT, aVx, 0)) {
         return ETrue;
       }
       if (IsWall(DIRECTION_RIGHT, aVx, 0)) {
@@ -340,9 +352,6 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_DOWN:
-      if (IsWall(DIRECTION_DOWN, 0, VELOCITY)) {
-        return EFalse;
-      }
       // no wall above, assure there is a wall left or right
       if (IsWall(DIRECTION_LEFT, 0)) {
         return ETrue;
@@ -359,9 +368,6 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_LEFT:
-      if (IsWall(DIRECTION_LEFT, -VELOCITY, 0)) {
-        return EFalse;
-      }
       // no wall to left, assure there is a wall above or below
       if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
@@ -378,10 +384,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_RIGHT:
-      if (IsWall(DIRECTION_RIGHT, VELOCITY, 0)) {
-        return EFalse;
-      }
-      // no wall to left, assure there is a wall above or below
+      // no wall to right, assure there is a wall above or below
       if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
       }
@@ -412,7 +415,8 @@ void GRatProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
   if (mStateTimer <= 0) {
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+    // walk between 2 and 6 tiles
+    mStateTimer = TInt16(TFloat(Random(2, 6)) * 32 / VELOCITY);
   }
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
