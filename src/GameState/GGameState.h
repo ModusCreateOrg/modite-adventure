@@ -38,16 +38,16 @@ protected:
 
 public:
   GGamePlayfield *mGamePlayfield;
+
 protected:
   TInt mTimer;
-  TBool mStats;
   char mText[128];
   char mName[128];
   TInt16 mNextLevel, mLevel;
   TUint16 mNextTileMapId, mTileMapId;
 
 public:
-  GAnchorSprite *PlayerSprite() ;
+  GAnchorSprite *PlayerSprite();
 };
 
 #endif //MODITE_GGAMESTATE_H
