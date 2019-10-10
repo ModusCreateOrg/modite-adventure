@@ -3,10 +3,10 @@
 #include "GPlayer.h"
 #include "GGameState.h"
 
-const TInt HIT_POINTS = 5;  // default hit points for enemy
+const TInt HIT_POINTS = 5; // default hit points for enemy
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
-  : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+    : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
@@ -101,16 +101,16 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-//      mSprite->ClearCType(STYPE_PBULLET);
+      //      mSprite->ClearCType(STYPE_PBULLET);
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
-        printf("GEnemy DEATH\n");
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "EXP +%d", mSprite->mLevel));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+        GPlayer::AddExperience(mSprite->mLevel);
         NewState(DEATH_STATE, mSprite->mDirection);
         return ETrue;
-      } else {
-        printf("GEnemy Hit\n");
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +%d", other->mHitStrength));
+      }
+      else {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -139,8 +139,8 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TFloat DX = 32,
-  DY = 40;
+static const TFloat DX = 20,
+                    DY = 34;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
@@ -162,7 +162,8 @@ TBool GEnemyProcess::MaybeAttack() {
         NewState(ATTACK_STATE, DIRECTION_LEFT);
       }
       return ETrue;
-    } else if (myRect.x2 <= hisRect.x1) {
+    }
+    else if (myRect.x2 <= hisRect.x1) {
       // to left of player
       if (ABS(hisRect.x1 - myRect.x2) > DX) {
         mAttackTimer = 1;
@@ -190,7 +191,8 @@ TBool GEnemyProcess::MaybeAttack() {
         NewState(ATTACK_STATE, DIRECTION_UP);
       }
       return ETrue;
-    } else if (myRect.y2 <= hisRect.y1) {
+    }
+    else if (myRect.y2 <= hisRect.y1) {
       // enemy above player
       if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         // too far away
@@ -206,8 +208,9 @@ TBool GEnemyProcess::MaybeAttack() {
     // player not near us
     mAttackTimer = 1;
     return EFalse;
-  } else {
-//    printf("Player Invulnerable\n");
+  }
+  else {
+    //    printf("Player Invulnerable\n");
   }
 
   return EFalse;
@@ -256,7 +259,7 @@ TBool GEnemyProcess::IdleState() {
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = GAnchorSprite::RandomDirection();
       TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
-        vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
+             vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
 
       if (CanWalk(direction, vx, vx)) {
         NewState(WALK_STATE, direction);
