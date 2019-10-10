@@ -139,6 +139,9 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
+static const TFloat DX = 32,
+  DY = 40;
+
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
@@ -147,11 +150,11 @@ TBool GEnemyProcess::MaybeAttack() {
   if (!mPlayerSprite->mInvulnerable) {
     if (myRect.x1 >= hisRect.x2) {
       // to right of player
-      if (ABS(hisRect.x2 - myRect.x1) > 32) {
+      if (ABS(hisRect.x2 - myRect.x1) > DX) {
         mAttackTimer = 1;
         return EFalse;
       }
-      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         mAttackTimer = 1;
         return EFalse;
       }
@@ -161,11 +164,11 @@ TBool GEnemyProcess::MaybeAttack() {
       return ETrue;
     } else if (myRect.x2 <= hisRect.x1) {
       // to left of player
-      if (ABS(hisRect.x1 - myRect.x2) > 32) {
+      if (ABS(hisRect.x1 - myRect.x2) > DX) {
         mAttackTimer = 1;
         return EFalse;
       }
-      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         mAttackTimer = 1;
         return EFalse;
       }
@@ -178,7 +181,7 @@ TBool GEnemyProcess::MaybeAttack() {
     // player and enemy overlap in x direction
     if (myRect.y1 >= hisRect.y2) {
       // enemy below player
-      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         // too far away
         mAttackTimer = 1;
         return EFalse;
@@ -189,7 +192,7 @@ TBool GEnemyProcess::MaybeAttack() {
       return ETrue;
     } else if (myRect.y2 <= hisRect.y1) {
       // enemy above player
-      if (ABS(mPlayerSprite->y - mSprite->y) > 40) {
+      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         // too far away
         mAttackTimer = 1;
         return EFalse;
@@ -252,8 +255,10 @@ TBool GEnemyProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = GAnchorSprite::RandomDirection();
+      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
+        vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
 
-      if (CanWalk(direction, mVelocity, mVelocity)) {
+      if (CanWalk(direction, vx, vx)) {
         NewState(WALK_STATE, direction);
         return ETrue;
       }

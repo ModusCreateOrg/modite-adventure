@@ -57,7 +57,7 @@ TBool GStairsProcess::RunBefore() {
 }
 
 TBool GStairsProcess::RunAfter() {
-  if (mSprite1->cType) {
+  if (mSprite1->TestCType(STYPE_PLAYER)) {
     switch (mLevel) {
       case 0:
       case 1:
@@ -70,8 +70,8 @@ TBool GStairsProcess::RunAfter() {
         mGameState->NextLevel("Dungeon0", mLevel, DEVDUNGEON_0_LEVEL3_MAP);
         break;
     }
-    mSprite1->mCollided->cType &= ~STYPE_OBJECT;
-    mSprite1->cType = 0;
+    mSprite1->mCollided->ClearCType(STYPE_OBJECT);
   }
+  mSprite1->cType = 0;
   return ETrue;
 }

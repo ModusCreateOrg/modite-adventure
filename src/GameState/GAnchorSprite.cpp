@@ -40,6 +40,7 @@ TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
 TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   TRect r;
   GetRect(r);
+  r.Offset(aVx, aVy);
 
   if (r.x1 < 0 || r.y1 < 0) {
     return EFalse;
@@ -47,25 +48,21 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      r.Offset(aVx, -aVy);
       if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y1)) {
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      r.Offset(aVx, aVy);
       if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y2)) {
         return ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      r.Offset(-aVx, aVy);
       if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_Y)) {
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      r.Offset(aVx, aVy);
       if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_Y)) {
         return ETrue;
       }
@@ -139,15 +136,5 @@ DIRECTION GAnchorSprite::RandomDirection() {
 }
 
 TBool GAnchorSprite::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      return IsFloor(DIRECTION_UP, 0, -aVy);
-    case DIRECTION_DOWN:
-      return IsFloor(DIRECTION_DOWN, 0, aVy);
-    case DIRECTION_LEFT:
-      return IsFloor(DIRECTION_LEFT, -aVx, 0);
-    case DIRECTION_RIGHT:
-    default:
-      return IsFloor(DIRECTION_RIGHT, aVx, 0);
-  }
+  return IsFloor(aDirection, aVx, aVy);
 }
