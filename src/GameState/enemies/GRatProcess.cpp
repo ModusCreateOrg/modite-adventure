@@ -388,13 +388,10 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
       }
-      printf("right: NO WALL ABOVE\n");
       if (IsWall(DIRECTION_DOWN, 0, 0)) {
         return ETrue;
       }
-      printf("right: NO WALL BELOW\n");
       if (!IsWall(DIRECTION_LEFT, 0, 0)) {
-        printf("right: NO WALL TO LEFT\n");
         // no walls at all?  Move ot the nearest one.
         mStateTimer++;
         return ETrue;
