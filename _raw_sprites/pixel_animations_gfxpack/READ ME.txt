@@ -1,0 +1,40 @@
+-=-=-
+PIXEL ANIMATIONS AND EFFECTS PACK
+-=-=-
+
+This collection of animations is full of retro charm! With a clean oldschool style, these animations will find a home in any pixel art project. 
+Includes animations for sword slashes, weapon impacts, smoke and dust effects, all sorts of elemental magical spells, and more!
+
+---
+
+Thank you for downloading this graphics package.
+
+This is a stand-alone graphics pack, but designed to be compatible with any pixel art style -- including my Time Fantasy RPG asset series.
+
+The primary goal of these animations is flexibility: 
+Weapon animations are designed for use in traditional RPG battles as well as action-RPG combat. Frames can be flipped or rotated for further variety of application.
+Impact and effect animations, such as the smoke or dust clouds, should have a wide variety of uses, including as environmental detail.
+Some parts of animations can be used in combinations with other animations. Some animations can loop infinitely -- hopefully it's clear which ones are capable of this.
+
+---
+
+Included:
+ - Animation Sheets (100%)
+ - Animation Sheets for RPG Maker MV
+ - Individual Frames
+
+
+==
+
+If there's any errors with the graphics included in this download, don't hesitate to contact me.
+
+Thanks!
+
+- Jason
+
+finalbossblues.com
+timefantasy.net
+patreon.com/finalbossblues
+
+----
+v1.0 -- 8.4.2018
