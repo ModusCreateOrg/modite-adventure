@@ -1,3 +1,5 @@
+clang
+%h -x c++-header
 -I./src
 -I./src/resources
 -I./src/GameState
@@ -13,15 +15,18 @@
 -I./src/RulesState
 -I./src/CreditsState
 -I./usr/local/include
--I../creative-engine/src
--I../creative-engine/src/BStore
--I../creative-engine/src/BStore/DesktopStore
--I../creative-engine/src/Audio
--I../creative-engine/src/Audio/SDL2Audio
--I../creative-engine/src/Display
--I../creative-engine/src/Display/DesktopDisplay
--I../creative-engine/src/Controls
--I../creative-engine/src/Controls/DesktopControls
--I../creative-engine/src/Widgets
--I../creative-engine/src/libxmp
--I../creative-engine/src/libxmp/loaders
+-I./creative-engine/src
+-I./creative-engine/src/Audio
+-I./creative-engine/src/BStore
+-I./creative-engine/src/BStore/DesktopStore
+-I./creative-engine/src/BStore/OdroidStore
+-I./creative-engine/src/Audio
+-I./creative-engine/src/Audio/SDL2Audio
+-I./creative-engine/src/Display
+-I./creative-engine/src/Display/DesktopDisplay
+-I./creative-engine/src/Controls
+-I./creative-engine/src/Controls/DesktopControls
+-I./creative-engine/src/Types
+-I./creative-engine/src/Widgets
+-I./creative-engine/src/libxmp
+-I./creative-engine/src/libxmp/loaders
