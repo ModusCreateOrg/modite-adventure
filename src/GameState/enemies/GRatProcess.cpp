@@ -329,21 +329,20 @@ GRatProcess::~GRatProcess() {
 
 TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
-  if (!mSprite->CanWalk(aDirection, aVx, aVy)) {
-    return EFalse;
-  }
-
   switch (aDirection) {
 
     case DIRECTION_UP:
-      if (IsWall(DIRECTION_LEFT, aVx, 0)) {
+      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
+        return EFalse;
+      }
+      if (IsWall(DIRECTION_LEFT, 0, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_RIGHT, aVx, 0)) {
+      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
         return ETrue;
       }
       // no walls at all?  Move ot the nearest one.
-      if (!IsWall(DIRECTION_DOWN, 0, aVy)) {
+      if (!IsWall(DIRECTION_DOWN, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
         mStateTimer++;
         return ETrue;
@@ -352,14 +351,17 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_DOWN:
+      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
+        return EFalse;
+      }
       // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT, 0)) {
+      if (IsWall(DIRECTION_LEFT, 0, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_RIGHT, 0)) {
+      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
         return ETrue;
       }
-      if (!IsWall(DIRECTION_UP, 0)) {
+      if (!IsWall(DIRECTION_UP, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
         mStateTimer++;
         return ETrue;
@@ -368,6 +370,9 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_LEFT:
+      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
+        return EFalse;
+      }
       // no wall to left, assure there is a wall above or below
       if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
@@ -384,6 +389,9 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
       //
     case DIRECTION_RIGHT:
+      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
+        return EFalse;
+      }
       // no wall to right, assure there is a wall above or below
       if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;

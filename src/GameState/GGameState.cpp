@@ -24,6 +24,10 @@
 #define DEBUGME
 //#undef DEBUGME
 
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
 // scope local to this file.  If the value for the slot is ETrue, then the slot
 // has already been remapped. We don't want to remap twice or the color range
 // ends up in the wrong place.
@@ -51,10 +55,15 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
 #endif
 }
 
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
 // Constructor
-GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0), mNextTileMapId(0) {
+GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0),
+                           mNextTileMapId(0) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
-      MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
+                           MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
 
@@ -69,12 +78,20 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
 
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
 void GGameState::PreRender() {
   gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
   if (mNextLevel != mLevel) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
   }
 }
+
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
 
 static void FuelGauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {
   BBitmap *screen = gDisplay.renderBitmap;
@@ -124,7 +141,7 @@ void GGameState::PostRender() {
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
 
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
-          *screen = gDisplay.renderBitmap;
+    *screen = gDisplay.renderBitmap;
 
   // render health potion
   TRect bottle(64 * 3 + 16, 0, 64 * 3 + 28, 15);
@@ -150,6 +167,10 @@ void GGameState::PostRender() {
   screen->DrawString(&vp, output, gFont16x16, 320 - l_width, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
 }
 
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
 TUint16 GGameState::MapWidth() {
   return (mGamePlayfield->MapWidthTiles() - gViewPort->mRect.Width() / 32) * 32;
 }
@@ -159,6 +180,10 @@ TUint16 GGameState::MapHeight() {
 }
 
 GAnchorSprite *GGameState::PlayerSprite() { return GPlayer::mSprite; }
+
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
 
 void GGameState::NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId) {
   mNextLevel = aLevel;
@@ -202,7 +227,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   AddProcess(GPlayer::mProcess);
 
   printf("Level loaded, colors used %d\n",
-      mGamePlayfield->GetTilesBitmap()->CountUsedColors());
+         mGamePlayfield->GetTilesBitmap()->CountUsedColors());
 
   TInt objectCount = mGamePlayfield->mObjectCount;
   BObjectProgram *program = mGamePlayfield->mObjectProgram;
@@ -219,11 +244,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
   TBool startedPlayer = EFalse;
   TInt16 spikes_number = GSpikesProcess::mNumber;
+  TInt eCount = 0;
   for (TInt ip = 0; ip < objectCount; ip++) {
     TUint16 op = program[ip].mCode & TUint32(0xffff),
-            params = program[ip].mCode >> TUint32(16),
-            row = program[ip].mRow, // row
-        col = program[ip].mCol;     // col
+      params = program[ip].mCode >> TUint32(16),
+      row = program[ip].mRow, // row
+      col = program[ip].mCol;     // col
 
     auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
@@ -305,7 +331,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(
-            new GGoblinSniperProcess(this, xx - 32, yy + 32, params));
+          new GGoblinSniperProcess(this, xx - 32, yy + 32, params));
         break;
       case ATTR_ORC:
         // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
@@ -315,7 +341,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         AddProcess(new GOrcProcess(this, xx, yy + 32, params));
         break;
       case ATTR_RAT:
-        printf("RAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("RAT at %.2f,%.2f %d %d %d\n", xx, yy, row, col, eCount);
         AddProcess(new GRatProcess(this, xx - 18, yy + 31, params));
         break;
       case ATTR_SLIME:

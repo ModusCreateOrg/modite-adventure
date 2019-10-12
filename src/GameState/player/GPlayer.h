@@ -7,7 +7,7 @@
 #define MODITE_GPLAYER_H
 
 #include "Game.h"
-#include "GItemProcess.h"
+#include "inventory/GItemProcess.h"
 #include "GPlayerProcess.h"
 #include "GPlayer.h"
 

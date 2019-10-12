@@ -261,7 +261,7 @@ TBool GEnemyProcess::IdleState() {
       TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
              vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
 
-      if (CanWalk(direction, vx, vx)) {
+      if (CanWalk(direction, vx, vy)) {
         NewState(WALK_STATE, direction);
         return ETrue;
       }

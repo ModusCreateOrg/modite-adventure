@@ -1,5 +1,5 @@
 #include "GPlayer.h"
-#include "ITems.h"
+#include "Items.h"
 
 GInventoryList::GInventoryList() : BList() {
   //

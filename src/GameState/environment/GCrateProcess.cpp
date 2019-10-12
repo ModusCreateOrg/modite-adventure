@@ -1,5 +1,5 @@
 #include "GCrateProcess.h"
-#include "GItemProcess.h"
+#include "inventory/GItemProcess.h"
 #include "GGamePlayfield.h"
 
 static const TInt BREAK_SPEED = 5;
