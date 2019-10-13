@@ -23,7 +23,7 @@ protected:
   TInt RenderString(const char *aString, TInt aY) {
     TInt width = TInt(strlen(aString) * 12);
     TInt x     = (SCREEN_WIDTH - width) / 2;
-    gDisplay.renderBitmap->DrawString(ENull, aString, gFont16x16, x, aY, TRGB(mColor, mColor, mColor), -4);
+    gDisplay.renderBitmap->DrawString(gViewPort, aString, gFont16x16, x, aY, gDisplay.GetColor(COLOR_TEXT), -4);
     return 18;
   }
 
@@ -39,7 +39,8 @@ protected:
     if (mColor > 255) {
       mColor = 255;
     }
-    // gDisplay.SetColor(COLOR_TEXT, mColor, mColor, mColor);
+
+    gDisplay.SetColor(COLOR_TEXT, mColor, mColor, mColor);
     if (mColor == 255) {
       mState = STATE_WAIT;
       mTimer = 2 * 30;
@@ -52,7 +53,8 @@ protected:
     if (mColor < 0) {
       mColor = 0;
     }
-    // gDisplay.SetColor(COLOR_TEXT, mColor, mColor, mColor);
+
+    gDisplay.SetColor(COLOR_TEXT, mColor, mColor, mColor);
     if (mColor == 0) {
       mState = STATE_FADEIN;
     }

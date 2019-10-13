@@ -6,13 +6,10 @@ static const char *splash_message1 = "Press any button";
 GSplashProcess::GSplashProcess() : BProcess() {
   mColor       = 0;
   mState       = STATE_FADEIN;
-  mFont        = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   mCurrentText = splash_message1;
 }
 
-GSplashProcess::~GSplashProcess() {
-  delete mFont;
-}
+GSplashProcess::~GSplashProcess() {}
 
 TBool GSplashProcess::RunBefore() {
   RenderText();
@@ -60,7 +57,7 @@ void GSplashProcess::RenderText() {
 //  }
 //  TInt width = TInt(strlen(mCurrentText) * 12);
 //  TInt x     = (SCREEN_WIDTH - width) / 2;
-//  gDisplay.renderBitmap->DrawString(ENull, mCurrentText, mFont, x, 200, COLOR_TEXT, -1, -4);
+//  gDisplay.renderBitmap->DrawString(ENull, mCurrentText, gFont16x16, x, 200, COLOR_TEXT, -1, -4);
 }
 
 TBool GSplashProcess::RunAfter() {

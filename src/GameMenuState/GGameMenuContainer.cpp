@@ -20,28 +20,28 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY) : GDialogWidget("GAME P
 GGameMenuContainer::~GGameMenuContainer() {}
 
 TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
-  TInt color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);
+  TInt index = gWidgetTheme.GetInt(WIDGET_TITLE_FG);
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
   const TInt x = (SCREEN_WIDTH - (strlen(mTitle) * f->mWidth)) / 2;
 
   if (--mTimer < 0) {
     mTimer = 30;
   } else if (mTimer >= 15) {
-    color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);
+    index = gWidgetTheme.GetInt(WIDGET_TEXT_BG);
   } else if (mTimer < 15) {
-    color = gWidgetTheme.GetInt(WIDGET_TITLE_FG);
+    index = gWidgetTheme.GetInt(WIDGET_TITLE_FG);
   }
 
   gDisplay.renderBitmap->DrawStringShadow(
-      ENull,
-      mTitle,
-      f,
-      aX + x, aY + 16,
-      color,
-      COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
-      -6
-      );
+    ENull,
+    mTitle,
+    f,
+    aX + x,
+    aY + 16,
+    gDisplay.GetColor(index),
+    gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
+    -6
+  );
 
   return GDialogWidget::Render(aX, aY);
 }

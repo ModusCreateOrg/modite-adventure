@@ -12,13 +12,14 @@ GMainMenuPlayfield::GMainMenuPlayfield() {
   gDisplay.SetColor(COLOR_TEXT_BG, RED);
 
   gWidgetTheme.Configure(
-      WIDGET_TEXT_BG, COLOR_TEXT_BG,
-      WIDGET_TITLE_FONT, gFont16x16,
-      WIDGET_TITLE_FG, COLOR_TEXT,
-      WIDGET_TITLE_BG, COLOR_TEXT_SHADOW,
-      WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_END_TAG);
+    WIDGET_TEXT_BG, COLOR_TEXT_BG,
+    WIDGET_TITLE_FONT, gFont16x16,
+    WIDGET_TITLE_FG, COLOR_TEXT,
+    WIDGET_TITLE_BG, COLOR_TEXT_SHADOW,
+    WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
+    WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
+    WIDGET_END_TAG
+  );
 }
 
 GMainMenuPlayfield::~GMainMenuPlayfield() {

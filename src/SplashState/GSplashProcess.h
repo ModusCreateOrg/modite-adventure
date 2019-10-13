@@ -26,7 +26,6 @@ protected:
   } mState;
   TInt mTimer;
   TInt mColor;
-  BFont *mFont;
   const char *mCurrentText;
 };
 

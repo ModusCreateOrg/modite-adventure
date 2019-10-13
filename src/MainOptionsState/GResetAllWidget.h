@@ -1,9 +1,9 @@
 #ifndef GENUS_GRESETALLWIDGET_H
 #define GENUS_GRESETALLWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GResetAllWidget : public BButtonWidget {
+class GResetAllWidget : public GButtonWidget {
 public:
     GResetAllWidget();
     ~GResetAllWidget();

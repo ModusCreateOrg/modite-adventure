@@ -1,9 +1,9 @@
 #ifndef GENUS_GCANCELRESETWIDGET_H
 #define GENUS_GCANCELRESETWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GCancelResetWidget : public BButtonWidget {
+class GCancelResetWidget : public GButtonWidget {
 public:
     GCancelResetWidget();
     ~GCancelResetWidget();

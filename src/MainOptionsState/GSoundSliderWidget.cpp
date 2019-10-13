@@ -19,23 +19,27 @@ TInt GSoundSliderWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
-    gDisplay.renderBitmap->DrawStringShadow(ENull,
-        STR_RIGHT_ARROW,
-        f,
-        aX - 16, aY,
-        gWidgetTheme.GetInt(WIDGET_TEXT_BG),
-        COLOR_TEXT_SHADOW,
-        -1);
+    gDisplay.renderBitmap->DrawStringShadow(
+      gViewPort,
+      STR_RIGHT_ARROW,
+      f,
+      aX - 16,
+      aY,
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TEXT_BG)),
+      gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG))
+    );
   }
 
-  gDisplay.renderBitmap->DrawStringShadow(ENull,
-      mTitle,
-      f,
-      aX, aY,
-      gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-      COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
-      -6);
+  gDisplay.renderBitmap->DrawStringShadow(
+    gViewPort,
+    mTitle,
+    f,
+    aX,
+    aY,
+    gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_FG)),
+    gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
+    -6
+  );
 
 #ifdef __XTENSA__
   return f->mHeight;
@@ -53,13 +57,14 @@ TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
 #endif
 
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
-  const TInt  fg = gWidgetTheme.GetInt(WIDGET_SLIDER_FG),
-              bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
+  const TRGB  fg = gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_SLIDER_FG)),
+              bg = gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_SLIDER_BG)),
+              sh = gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG));
 
   for (TInt i = 0; i < 8; i++) {
-    gDisplay.renderBitmap->DrawFastVLine(ENull, aX + 1, aY - 1, 16, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 2, aY + 14, 7, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->FillRect(ENull, aX + 2, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
+    gDisplay.renderBitmap->DrawFastVLine(gViewPort, aX + 1, aY - 1, 16, sh);
+    gDisplay.renderBitmap->DrawFastHLine(gViewPort, aX + 2, aY + 14, 7, sh);
+    gDisplay.renderBitmap->FillRect(gViewPort, aX + 2, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
     aX += 16;
   }
 

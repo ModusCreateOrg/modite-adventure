@@ -5,7 +5,7 @@
 #undef FRAME_RATE_INFO
 
 #define ENABLE_AUDIO
-#undef ENABLE_AUDIO
+// #undef ENABLE_AUDIO
 
 #define ENABLE_OPTIONS
 // #undef ENABLE_OPTIONS
@@ -26,6 +26,7 @@
 
 #include "GResources.h"
 #include "GGame.h"
+#include "GButtonWidget.h"
 #include "GDialogWidget.h"
 #include "TOptions.h"
 #include "GSoundPlayer.h"

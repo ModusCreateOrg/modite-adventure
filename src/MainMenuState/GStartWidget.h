@@ -1,17 +1,12 @@
 #ifndef GENUS_GSTARTWIDGET_H
 #define GENUS_GSTARTWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GMainMenuProcess;
-
-class GStartWidget : public BButtonWidget {
+class GStartWidget : public GButtonWidget {
 public:
     GStartWidget();
     ~GStartWidget();
-public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
 };
 
 #endif //GENUS_GSTARTWIDGET_H

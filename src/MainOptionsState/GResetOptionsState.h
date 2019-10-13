@@ -6,10 +6,7 @@
 class GResetOptionsState : public BGameEngine {
 public:
   GResetOptionsState();
-
   virtual ~GResetOptionsState();
-private:
-    BFont *mFont16, *mFont8;
 };
 
 #endif //GENUS_GRESETOPTIONSSTATE_H

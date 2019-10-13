@@ -34,7 +34,6 @@ public:
       delete mContainer;
     }
 
-public:
     TBool RunBefore() {
       mContainer->Render(30, 20);
       mContainer->Run();
@@ -55,7 +54,6 @@ public:
 
 protected:
     OptionsContainer *mContainer;
-    BFont *mFont16;
 };
 
 class GMainOptionsPlayfield : public BPlayfield {
@@ -63,48 +61,42 @@ public:
     GMainOptionsPlayfield() {
       gResourceManager.LoadBitmap(TITLE_BMP, BKG_SLOT, IMAGE_ENTIRE);
       mBackground = gResourceManager.GetBitmap(BKG_SLOT);
+
       gDisplay.SetPalette(mBackground);
+      gDisplay.SetColor(COLOR_TEXT, WHITE);
+      gDisplay.SetColor(COLOR_TEXT_SHADOW, ROSE);
+      gDisplay.SetColor(COLOR_TEXT_BG, RED);
+
+      gWidgetTheme.Configure(
+        WIDGET_TEXT_BG, COLOR_TEXT_BG,
+        WIDGET_TITLE_FONT, gFont16x16,
+        WIDGET_TITLE_FG, COLOR_TEXT,
+        WIDGET_TITLE_BG, COLOR_TEXT_SHADOW,
+        WIDGET_SLIDER_FG, COLOR_TEXT_BG,
+        WIDGET_SLIDER_BG, COLOR_TEXT,
+        WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
+        WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
+        WIDGET_END_TAG
+      );
     }
 
     virtual ~GMainOptionsPlayfield() {
       gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
     }
 
-public:
     void Render() {
       gDisplay.renderBitmap->CopyPixels(mBackground);
     }
 
-public:
     BBitmap *mBackground;
 };
 
 
 GMainOptionsState::GMainOptionsState() : BGameEngine(gViewPort) {
-  mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   mPlayfield = new GMainOptionsPlayfield();
   AddProcess(new GMainOptionsProcess());
-
-  gWidgetTheme.Configure(
-      WIDGET_TEXT_FONT, mFont16,
-      WIDGET_TEXT_FG, COLOR_TEXT,
-      WIDGET_TEXT_BG, COLOR_TEXT_BG,
-      WIDGET_TITLE_FONT, mFont16,
-      WIDGET_TITLE_FG, COLOR_TEXT,
-      WIDGET_TITLE_BG, -1,
-      WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_SLIDER_FG, COLOR_TEXT_BG,
-      WIDGET_SLIDER_BG, COLOR_TEXT,
-      WIDGET_END_TAG);
-
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
-
 }
 
-GMainOptionsState::~GMainOptionsState() {
-  delete mFont16;
-}
+GMainOptionsState::~GMainOptionsState() {}
 
 

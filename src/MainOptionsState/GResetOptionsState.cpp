@@ -43,7 +43,6 @@ public:
 
 protected:
     ResetOptionsContainer *mContainer;
-    BFont *mFont16;
 };
 
 class GResetOptionsPlayfield : public BPlayfield {
@@ -51,7 +50,23 @@ public:
     GResetOptionsPlayfield() {
       gResourceManager.LoadBitmap(TITLE_BMP, BKG_SLOT, IMAGE_ENTIRE);
       mBackground = gResourceManager.GetBitmap(BKG_SLOT);
+
       gDisplay.SetPalette(mBackground);
+      gDisplay.SetColor(COLOR_TEXT, WHITE);
+      gDisplay.SetColor(COLOR_TEXT_SHADOW, ROSE);
+      gDisplay.SetColor(COLOR_TEXT_BG, RED);
+
+      gWidgetTheme.Configure(
+        WIDGET_TEXT_BG, COLOR_TEXT_BG,
+        WIDGET_TITLE_FONT, gFont16x16,
+        WIDGET_TITLE_FG, COLOR_TEXT,
+        WIDGET_TITLE_BG, COLOR_TEXT_SHADOW,
+        WIDGET_SLIDER_FG, COLOR_TEXT_BG,
+        WIDGET_SLIDER_BG, COLOR_TEXT,
+        WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
+        WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
+        WIDGET_END_TAG
+      );
     }
 
     virtual ~GResetOptionsPlayfield() {
@@ -66,14 +81,16 @@ public:
       const char* questionStr = "What would you like to reset?";
       const TInt charWidth = f->mWidth - 6;
 
-      gDisplay.renderBitmap->DrawStringShadow(ENull,
-          questionStr,
-          f,
-          (SCREEN_WIDTH - strlen(questionStr) * charWidth) / 2, 80,
-          gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-          COLOR_TEXT_SHADOW,
-          gWidgetTheme.GetInt(WIDGET_TITLE_BG),
-          -6);
+      gDisplay.renderBitmap->DrawStringShadow(
+        ENull,
+        questionStr,
+        f,
+        (SCREEN_WIDTH - strlen(questionStr) * charWidth) / 2,
+        80,
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_FG)),
+        gDisplay.GetColor(gWidgetTheme.GetInt(WIDGET_TITLE_BG)),
+        -6
+      );
     }
 
 public:
@@ -82,29 +99,10 @@ public:
 
 
 GResetOptionsState::GResetOptionsState() : BGameEngine(gViewPort) {
-  mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   mPlayfield = new GResetOptionsPlayfield();
   AddProcess(new GResetOptionsProcess());
-
-  gWidgetTheme.Configure(
-      WIDGET_TEXT_FONT, mFont16,
-      WIDGET_TEXT_FG, COLOR_TEXT,
-      WIDGET_TEXT_BG, COLOR_TEXT_BG,
-      WIDGET_TITLE_FONT, mFont16,
-      WIDGET_TITLE_FG, COLOR_TEXT,
-      WIDGET_TITLE_BG, -1,
-      WIDGET_WINDOW_BG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_WINDOW_FG, gDisplay.renderBitmap->TransparentColor(),
-      WIDGET_SLIDER_FG, COLOR_TEXT_BG,
-      WIDGET_SLIDER_BG, COLOR_TEXT,
-      WIDGET_END_TAG);
-
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
 }
 
-GResetOptionsState::~GResetOptionsState() {
-  delete mFont16;
-}
+GResetOptionsState::~GResetOptionsState() {}
 
 

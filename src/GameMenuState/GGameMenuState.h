@@ -13,7 +13,6 @@ public:
   void PostRender();
 
 private:
-  BFont *mFont16;
   GGameMenuContainer *mContainer;
 };
 

@@ -1,9 +1,9 @@
 #ifndef GENUS_GRESETOPTIONSWIDGET_H
 #define GENUS_GRESETOPTIONSWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GResetOptionsWidget : public BButtonWidget {
+class GResetOptionsWidget : public GButtonWidget {
 public:
     GResetOptionsWidget();
     ~GResetOptionsWidget();
