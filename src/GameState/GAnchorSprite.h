@@ -37,10 +37,15 @@ public:
 
   void Nudge();
 
-  TBool IsFloor(DIRECTION aDireciton, TFloat aX, TFloat aY);
+  TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
+
+public:
+  static DIRECTION RandomDirection();
+
+  TBool CanWalk(DIRECTION aDireciton, TFloat aVx, TFloat aVy);
 
 public:
   GGameState *mGameState;
@@ -52,6 +57,7 @@ public:
   TInt mGold;
   TBool mInvulnerable; // cannot be attacked
   TFloat mLastX, mLastY;  // coordinates from last frame
+  TFloat mVelocity;
 protected:
   char mName[64];
 };

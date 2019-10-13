@@ -297,8 +297,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState,  SPIDER_SLOT, aParams) {
+GSpiderProcess::GSpiderProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, SPIDER_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;
@@ -320,184 +320,73 @@ GSpiderProcess::~GSpiderProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-void GSpiderProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-  mState = aState;
-  mSprite->Name("SPIDER");
-  mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+void GSpiderProcess::Idle(DIRECTION aDirection) {
+  mStateTimer = IDLE_TIMEOUT;
+}
 
-  switch (aState) {
-
-    case IDLE_STATE:
-      mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStateTimer = IDLE_TIMEOUT;
+void GSpiderProcess::Walk(DIRECTION aDirection) {
+  mSprite->vx = 0;
+  mSprite->vy = 0;
+  if (mStateTimer <= 0) {
+    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+  }
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      mSprite->vy = -VELOCITY;
       break;
-
-    case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      if (mStateTimer <= 0) {
-        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-      }
-
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          mSprite->vy = -VELOCITY;
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->vy = VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->vx = -VELOCITY;
-          //          mSprite->mDx = -36;
-          mSprite->StartAnimation(
-            mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->vx = VELOCITY;
-          mSprite->StartAnimation(
-            mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
+    case DIRECTION_DOWN:
+      mSprite->vy = VELOCITY;
+      mSprite->StartAnimation(
+        mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
-
-    case ATTACK_STATE:
-      mAttackTimer = Random(30, 60);
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(attackUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(attackDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(attackLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(attackRightAnimation);
-          break;
-      }
+    case DIRECTION_LEFT:
+      mSprite->vx = -VELOCITY;
+      mSprite->StartAnimation(
+        mStep ? walkLeftAnimation1 : walkLeftAnimation2);
       break;
-
-    case HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      mSprite->cMask &= ~STYPE_EBULLET;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitRightAnimation);
-          break;
-      }
-      break;
-
-    case DEATH_STATE:
-      mSprite->StartAnimation(deathAnimation);
-      break;
-
-    default:
+    case DIRECTION_RIGHT:
+      mSprite->vx = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
   }
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GSpiderProcess::IdleState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GSpiderProcess::Attack(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(attackUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(attackDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(attackLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(attackRightAnimation);
+      break;
   }
-  if (MaybeAttack()) {
-    return ETrue;
-  }
-  if (--mStateTimer < 0) {
-    if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
-      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
-      return ETrue;
-    } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X) {
-      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
-      return ETrue;
-    }
-    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
-  }
-  return ETrue;
 }
 
-TBool GSpiderProcess::CanWalk() {
-  TFloat screenX = mSprite->x - mGameState->mWorldXX,
-    screenY = mSprite->y - mGameState->mWorldYY;
-
-  if (mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-                         mSprite->y + mSprite->vy) || // Left/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 16 + mSprite->vx,
-                         mSprite->y - 32 + mSprite->vy) || // Left/Top Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-                         mSprite->y + mSprite->vy) || // Right/Bottom Wall
-      mPlayfield->IsWall(mSprite->x + 48 + mSprite->vx,
-                         mSprite->y - 32 + mSprite->vy) || // Right/Top Wall
-      screenX < 16 ||
-      screenX > (SCREEN_WIDTH - 16) || screenY < 16 ||
-      screenY > (SCREEN_HEIGHT - 16)) {
-    return EFalse;
+void GSpiderProcess::Hit(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(hitUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(hitDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(hitLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(hitRightAnimation);
+      break;
   }
-
-  return ETrue;
 }
 
-TBool GSpiderProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-
-  if (MaybeAttack()) {
-    return ETrue;
-  }
-
-  if (!CanWalk()) {
-    NewState(IDLE_STATE, mPlayerSprite->x < mSprite->x ? DIRECTION_LEFT : DIRECTION_RIGHT);
-    return ETrue;
-  }
-
-  if (abs(mPlayerSprite->y - mSprite->y) > SEEK_Y) {
-    // keep walking
-    if (mSprite->AnimDone()) {
-      NewState(WALK_STATE, mPlayerSprite->y - mSprite->y > 0 ? DIRECTION_DOWN : DIRECTION_UP);
-    }
-    return ETrue;
-  } else if (abs(mPlayerSprite->x - mSprite->x) > SEEK_X + 2) {
-    // keep walking
-    if (mSprite->AnimDone()) {
-      NewState(WALK_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
-    }
-    return ETrue;
-  }
-
-  // next to player
-  NewState(IDLE_STATE, mPlayerSprite->x - mSprite->x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT);
-
-  return ETrue;
+void GSpiderProcess::Death(DIRECTION aDirection) {
+  mSprite->StartAnimation(deathAnimation);
 }
 

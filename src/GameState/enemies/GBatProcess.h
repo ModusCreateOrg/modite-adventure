@@ -13,16 +13,11 @@ public:
   ~GBatProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
-
-  TBool IdleState() OVERRIDE;
-
-  TBool CanWalk(TInt aDirection);
-
-  TBool WalkState() OVERRIDE;
-
-protected:
-  TInt16 mStateTimer;
+  void Idle(DIRECTION aDirection) OVERRIDE;
+  void Walk(DIRECTION aDirection) OVERRIDE;
+  void Attack(DIRECTION aDirection) OVERRIDE;
+  void Hit(DIRECTION aDirection) OVERRIDE;
+  void Death(DIRECTION aDirection) OVERRIDE;
 };
 
 #endif // MODITE_GBATPROCESS_H

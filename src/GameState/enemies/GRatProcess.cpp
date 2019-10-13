@@ -13,12 +13,12 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt16 IDLE_SPEED = 5 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
-const TInt16 ATTACK_SPEED = 5 * FACTOR;
+const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt16 HIT_SPEED = 1 * FACTOR;
-const TInt16 WALK_SPEED = 5 * FACTOR;
+const TInt16 WALK_SPEED = 2 * FACTOR;
 const TInt16 DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
 // region  ANIMATIONS {{{
 
@@ -113,9 +113,12 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,16,32,48),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   AEND,
 };
 
@@ -166,9 +169,12 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(-16,0,48,32),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -218,9 +224,12 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,0, 48,32),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0, 32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -270,9 +279,12 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
+  ASIZE(0,-16,32,48),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 1),
-  ATYPE(STYPE_ENEMY),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 2),
+  ATYPE(STYPE_ENEMY),
+  ASIZE(0,0,32,32),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   AEND,
 };
 
@@ -288,19 +300,18 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // endregion }}}
 
-/*********************************************************************************
+/************************************************************i*********************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
 GRatProcess::GRatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, RAT_SLOT, aParams) {
+  : GEnemyProcess(aGameState, RAT_SLOT, aParams, VELOCITY) {
   mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_LIGHT;
   mStateTimer = 0;
-  mAttackTimer = 1;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -316,80 +327,73 @@ GRatProcess::~GRatProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GRatProcess::CanWalk(TInt aDirection) {
-
+TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
+  if (!mSprite->CanWalk(aDirection, aVx, aVy)) {
+    return EFalse;
+  }
+
   switch (aDirection) {
 
-    //
     case DIRECTION_UP:
-      if (IsWall(DIRECTION_UP, 0, -VELOCITY)) {
-        return EFalse;
-      }
-      // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT)) {
+      if (IsWall(DIRECTION_LEFT, aVx, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_RIGHT)) {
+      if (IsWall(DIRECTION_RIGHT, aVx, 0)) {
         return ETrue;
       }
       // no walls at all?  Move ot the nearest one.
-      if (!IsWall(DIRECTION_DOWN)) {
+      if (!IsWall(DIRECTION_DOWN, 0, aVy)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
 
       //
     case DIRECTION_DOWN:
-      if (IsWall(DIRECTION_DOWN, 0, VELOCITY)) {
-        return EFalse;
-      }
       // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT)) {
+      if (IsWall(DIRECTION_LEFT, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_RIGHT)) {
+      if (IsWall(DIRECTION_RIGHT, 0)) {
         return ETrue;
       }
-      if (!IsWall(DIRECTION_UP)) {
+      if (!IsWall(DIRECTION_UP, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
 
       //
     case DIRECTION_LEFT:
-      if (IsWall(DIRECTION_LEFT, -VELOCITY, 0)) {
-        return EFalse;
-      }
       // no wall to left, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP)) {
+      if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_DOWN)) {
+      if (IsWall(DIRECTION_DOWN, 0, 0)) {
         return ETrue;
       }
-      if (!IsWall(DIRECTION_RIGHT)) {
+      if (!IsWall(DIRECTION_RIGHT, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
 
       //
     case DIRECTION_RIGHT:
-      if (IsWall(DIRECTION_RIGHT, VELOCITY, 0)) {
-        return EFalse;
-      }
-      // no wall to left, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP)) {
+      // no wall to right, assure there is a wall above or below
+      if (IsWall(DIRECTION_UP, 0, 0)) {
         return ETrue;
       }
-      if (IsWall(DIRECTION_DOWN)) {
+      if (IsWall(DIRECTION_DOWN, 0, 0)) {
         return ETrue;
       }
-      if (!IsWall(DIRECTION_LEFT)) {
+      if (!IsWall(DIRECTION_LEFT, 0, 0)) {
         // no walls at all?  Move ot the nearest one.
+        mStateTimer++;
         return ETrue;
       }
       break;
@@ -403,216 +407,72 @@ TBool GRatProcess::CanWalk(TInt aDirection) {
   return EFalse;
 }
 
-void GRatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
-  mState = aState;
-  mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
+void GRatProcess::Idle(DIRECTION aDirection) {
+  mStateTimer = IDLE_TIMEOUT;
+}
 
-  switch (aState) {
-
-    case IDLE_STATE:
-      mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStateTimer = IDLE_TIMEOUT;
-      mSprite->StartAnimation(selectAnimation);
+void GRatProcess::Walk(DIRECTION aDirection) {
+  mSprite->vx = 0;
+  mSprite->vy = 0;
+  if (mStateTimer <= 0) {
+    // walk between 2 and 6 tiles
+    mStateTimer = TInt16(TFloat(Random(2, 6)) * 32 / VELOCITY);
+  }
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      mSprite->vy = -VELOCITY;
       break;
-
-    case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      if (mStateTimer <= 0) {
-        mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-      }
-
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          if (CanWalk(DIRECTION_UP)) {
-            mStep = 1 - mStep;
-            mSprite->StartAnimation(
-              mStep ? walkUpAnimation1 : walkUpAnimation2);
-            mSprite->vy = -VELOCITY;
-          } else {
-            NewState(IDLE_STATE, mSprite->mDirection);
-          }
-          break;
-        case DIRECTION_DOWN:
-          if (CanWalk(DIRECTION_DOWN)) {
-            mStep = 1 - mStep;
-            mSprite->vy = VELOCITY;
-            mSprite->StartAnimation(
-              mStep ? walkDownAnimation1 : walkDownAnimation2);
-          } else {
-            NewState(IDLE_STATE, mSprite->mDirection);
-          }
-          break;
-        case DIRECTION_LEFT:
-          if (CanWalk(DIRECTION_LEFT)) {
-            mStep = 1 - mStep;
-            mSprite->vx = -VELOCITY;
-            mSprite->StartAnimation(
-              mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          } else {
-            NewState(IDLE_STATE, mSprite->mDirection);
-          }
-          break;
-        case DIRECTION_RIGHT:
-          if (CanWalk(DIRECTION_RIGHT)) {
-            mStep = 1 - mStep;
-            mSprite->vx = VELOCITY;
-            mSprite->StartAnimation(
-              mStep ? walkRightAnimation1 : walkRightAnimation2);
-          } else {
-            NewState(IDLE_STATE, mSprite->mDirection);
-          }
-          break;
-      }
+    case DIRECTION_DOWN:
+      mSprite->vy = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
-
-    case ATTACK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(attackUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(attackDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(attackLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(attackRightAnimation);
-          break;
-      }
+    case DIRECTION_LEFT:
+      mSprite->vx = -VELOCITY;
+      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
       break;
-
-    case HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitRightAnimation);
-          break;
-      }
-      break;
-
-    case DEATH_STATE:
-      mSprite->StartAnimation(deathAnimation);
-      break;
-
-    default:
+    case DIRECTION_RIGHT:
+      mSprite->vx = VELOCITY;
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
   }
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
-TBool GRatProcess::IdleState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GRatProcess::Attack(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(attackUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(attackDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(attackLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(attackRightAnimation);
+      break;
   }
-
-  if (MaybeAttack()) {
-    return ETrue;
-  }
-
-  if (--mStateTimer < 0) {
-    // Set distance to walk for WALK_STATE
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
-
-    for (TInt retries = 0; retries < 8; retries++) {
-      // Don't go the same direction
-      TInt direction = Random() & TUint8(3);
-      while (direction == mSprite->mDirection) {
-        direction = Random() & TUint8(3);
-      }
-
-      switch (direction) {
-        case 0: // up
-          if (CanWalk(DIRECTION_UP)) {
-            //          if (sy > 16 && !mPlayfield->IsWall(x + 16, y - 32 -
-            //          VELOCITY) &&
-            //              !mPlayfield->IsWall(x + 48, y - 32 - VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_UP);
-            return ETrue;
-          }
-          break;
-        case 1: // down
-          if (CanWalk(DIRECTION_DOWN)) {
-            //          if (sy < (SCREEN_HEIGHT - 16) &&
-            //              !mPlayfield->IsWall(x + 16, y + VELOCITY) &&
-            //              !mPlayfield->IsWall(x + 48, y + VELOCITY)) {
-            NewState(WALK_STATE, DIRECTION_DOWN);
-            return ETrue;
-          }
-          break;
-        case 2: // left
-          if (CanWalk(DIRECTION_LEFT)) {
-            //          if (sx > 16 && !mPlayfield->IsWall(x + 16 - VELOCITY, y
-            //          + 32) &&
-            //              !mPlayfield->IsWall(x + 16 - VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_LEFT);
-            return ETrue;
-          }
-          break;
-        case 3: // right
-          if (CanWalk(DIRECTION_RIGHT)) {
-            //          if (sx < (SCREEN_WIDTH - 16) &&
-            //              !mPlayfield->IsWall(x + 48 + VELOCITY, y + 32) &&
-            //              !mPlayfield->IsWall(x + 48 + VELOCITY, y)) {
-            NewState(WALK_STATE, DIRECTION_RIGHT);
-            return ETrue;
-          }
-          break;
-        default:
-          Panic("RatProcess: Invalid mDirection %d\n", mDirection);
-          break;
-      }
-    }
-
-    // after 8 tries, we couldn't find a direction to walk.
-#ifdef DEBUGME
-    printf("Rat Can't walk\n");
-#endif
-    NewState(IDLE_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
 }
 
-TBool GRatProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
+void GRatProcess::Hit(DIRECTION aDirection) {
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(hitUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(hitDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(hitLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(hitRightAnimation);
+      break;
   }
-  if (MaybeAttack()) {
-    return ETrue;
-  }
+}
 
-  if (!CanWalk(mSprite->mDirection)) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
-  if (mSprite->AnimDone()) {
-    NewState(WALK_STATE, mSprite->mDirection);
-  }
-
-  return ETrue;
+void GRatProcess::Death(DIRECTION aDirection) {
+  mSprite->StartAnimation(deathAnimation);
 }
 

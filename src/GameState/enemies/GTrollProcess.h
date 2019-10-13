@@ -13,15 +13,11 @@ public:
   ~GTrollProcess() OVERRIDE;
 
 protected:
-  void NewState(TUint16 aState, DIRECTION aDirection) override;
-
-protected:
-  TBool IdleState() OVERRIDE;
-
-  TBool WalkState() OVERRIDE;
-
-protected:
-  TInt16 mStateTimer;
+  void Idle(DIRECTION aDirection) OVERRIDE;
+  void Walk(DIRECTION aDirection) OVERRIDE;
+  void Attack(DIRECTION aDirection) OVERRIDE;
+  void Hit(DIRECTION aDirection) OVERRIDE;
+  void Death(DIRECTION aDirection) OVERRIDE;
 };
 
 #endif // MODITE_GTROLLPROCESS_H
