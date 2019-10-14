@@ -29,6 +29,7 @@ public:
   TInt GetState();
 
   void ToggleInGameMenu();
+  void ToggleInventory();
 
 #ifdef DEBUG_MODE
   static TBool mDebug;
@@ -38,6 +39,7 @@ protected:
   TInt        mState;
   TInt        mNextState;
   BGameEngine *mGameMenu;
+  BGameEngine *mInventory;
   TRGB        mShmoo;
 };
 

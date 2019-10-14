@@ -1,7 +1,3 @@
-//
-// Created by mschwartz on 7/3/19.
-//
-
 #include "Game.h"
 
 BViewPort *gViewPort;

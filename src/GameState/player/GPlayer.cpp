@@ -1,5 +1,5 @@
 #include "GPlayer.h"
-#include "ITems.h"
+#include "Items.h"
 
 GInventoryList::GInventoryList() : BList() {
   //
@@ -54,3 +54,4 @@ GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
 GAnchorSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
+GEquipped GPlayer::mEquipped;
