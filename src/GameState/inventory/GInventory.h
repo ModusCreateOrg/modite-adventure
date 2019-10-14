@@ -15,8 +15,13 @@ public:
   void PostRender() OVERRIDE;
 
 protected:
+  void RenderInventory();
+  void RenderEquipped();
+
+protected:
   GInventoryPlayfield *mPlayfield;
   TInt mTop, mCurrent;
+  TInt mMode;
 };
 
 #endif

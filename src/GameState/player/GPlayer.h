@@ -60,6 +60,15 @@ struct GInventoryList : public BList {
   void Dump();
 };
 
+struct GEquipped {
+  GInventoryItem *mAmulet,
+      *mRing,
+      *mGloves,
+      *mBoots,
+      *mWeapon,
+      *mSpellbook;
+};
+
 struct GPlayer {
   static void Init() {
     printf("Construct GPlayer\n");
@@ -72,6 +81,13 @@ struct GPlayer {
     mDexterity = 10;
     mHitStrength = 1;
     mGold = 0;
+    //
+    mEquipped.mAmulet = ENull;
+    mEquipped.mRing = ENull;
+    mEquipped.mGloves = ENull;
+    mEquipped.mBoots = ENull;
+    mEquipped.mWeapon = ENull;
+    mEquipped.mSpellbook = ENull;
   }
 
   static void AddExperience(TInt aExperience) {
@@ -95,6 +111,7 @@ struct GPlayer {
   static GPlayerProcess *mProcess;
   static GAnchorSprite *mSprite;
   static GGameState *mGameState;
+  static GEquipped mEquipped;
 };
 
 #endif //MODITE_GPLAYER_H
