@@ -1,0 +1,36 @@
+clang
+%h -x c++-header
+-D __MODUS_TARGET_DESKTOP_CONTROLS__=1
+-D __MODUS_TARGET_DESKTOP_DISPLAY__=1
+-I./src
+-I./src/resources
+-I./src/GameState
+-I./src/GameState/Playfields
+-I./src/GameState/player
+-I./src/GameState/inventory
+-I./src/GameState/enemies
+-I./src/GameState/status
+-I./src/GameMenuState
+-I./src/GameOverState
+-I./src/MainMenuState
+-I./src/MainOptionsState
+-I./src/SplashState
+-I./src/RulesState
+-I./src/CreditsState
+-I./usr/local/include
+-I./creative-engine/src
+-I./creative-engine/src/Audio
+-I./creative-engine/src/BStore
+-I./creative-engine/src/BStore/DesktopStore
+-I./creative-engine/src/BStore/OdroidStore
+-I./creative-engine/src/Audio
+-I./creative-engine/src/Audio/SDL2Audio
+-I./creative-engine/src/Display
+-I./creative-engine/src/Display/DesktopDisplay
+-I./DesktopDisplay/
+-I./creative-engine/src/Controls
+-I./creative-engine/src/Controls/DesktopControls
+-I./creative-engine/src/Types
+-I./creative-engine/src/Widgets
+-I./creative-engine/src/libxmp
+-I./creative-engine/src/libxmp/loaders

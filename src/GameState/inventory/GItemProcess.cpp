@@ -1,7 +1,7 @@
 #include "GItemProcess.h"
 #include "GResources.h"
 #include "GPlayer.h"
-#include "ITems.h"
+#include "Items.h"
 #include "GStatSprite.h"
 #include "GStatProcess.h"
 

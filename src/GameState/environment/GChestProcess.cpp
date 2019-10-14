@@ -1,6 +1,6 @@
 #include "GChestProcess.h"
 #include "GGamePlayfield.h"
-#include "GItemProcess.h"
+#include "inventory/GItemProcess.h"
 
 GChestProcess::GChestProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY) {
   mGameState = aGameState;
