@@ -39,6 +39,7 @@ BITMAP chara_slime.bmp
 BITMAP chara_spider.bmp
 BITMAP chara_troll.bmp
 BITMAP projectile_arrow.bmp
+BITMAP enemy_death.bmp
 
 #
 ### TILEMAPS

@@ -4,7 +4,7 @@
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
 
-const TInt PLAYER_HITPOINTS = 10;
+const TInt PLAYER_HITPOINTS = 25;
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;

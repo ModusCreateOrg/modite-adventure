@@ -5,6 +5,24 @@
 
 const TInt HIT_POINTS = 5; // default hit points for enemy
 
+const TInt16 DEATH_SPEED = 4;
+
+// ANIMATIONS
+
+
+static ANIMSCRIPT deathAnimation[] = {
+  ABITMAP(ENEMY_DEATH_SLOT),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 0),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 1),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 2),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 3),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 4),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 5),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 6),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 7),
+  AEND,
+};
+
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
     : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
@@ -27,9 +45,16 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aPar
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
+
+  mDeathSprite = ENull;
 }
 
 GEnemyProcess::~GEnemyProcess() {
+  if (mDeathSprite) {
+    mDeathSprite->Remove();
+    delete mDeathSprite;
+    mDeathSprite = ENull;
+  }
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -86,7 +111,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case DEATH_STATE:
-      Death(aDirection);
+//      Death(aDirection);
       break;
 
     default:
@@ -105,9 +130,8 @@ TBool GEnemyProcess::MaybeHit() {
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-        GPlayer::AddExperience(mSprite->mLevel);
-        NewState(DEATH_STATE, mSprite->mDirection);
-        return ETrue;
+//        GPlayer::AddExperience(mSprite->mLevel);
+//        return ETrue;
       }
       else {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
@@ -225,6 +249,10 @@ TBool GEnemyProcess::AttackState() {
 
 TBool GEnemyProcess::HitState() {
   if (mSprite->AnimDone()) {
+  if (mSprite->mHitPoints <= 0) {
+      NewState(DEATH_STATE, mSprite->mDirection);
+      return ETrue;
+    }
     mSprite->mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
@@ -234,12 +262,22 @@ TBool GEnemyProcess::HitState() {
 
 TBool GEnemyProcess::DeathState() {
   if (mSprite->AnimDone()) {
-    mSprite->x = mStartX;
-    mSprite->y = mStartY;
-    mSprite->mInvulnerable = EFalse;
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->mHitPoints = mHitPoints;
+    if (mDeathSprite) {
+      if (mDeathSprite->AnimDone()) {
+        GPlayer::AddExperience(mSprite->mLevel);
+        return EFalse;
+      }
+      else {
+        return ETrue;
+      }
+    }
+    mDeathSprite = new GAnchorSprite(mGameState, -10, ENEMY_DEATH_SLOT);
+    mDeathSprite->x = mSprite->x + 16;
+    mDeathSprite->y = mSprite->y;
+    mDeathSprite->Name("ENEMY DEATH SPRITE");
+    mDeathSprite->ClearFlags(SFLAG_CHECK);
+    mGameState->AddSprite(mDeathSprite);
+    mDeathSprite->StartAnimation(deathAnimation);
   }
 
   return ETrue;

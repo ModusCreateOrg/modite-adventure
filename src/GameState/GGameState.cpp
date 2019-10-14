@@ -34,10 +34,11 @@
 static TBool slotRemapState[SLOT_MAX];
 
 // Load aBMP, and remap it to playfield's tilemap palette
-void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot) {
+void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
+
   if (!slotRemapState[aSlot]) {
     gResourceManager.ReleaseBitmapSlot(aSlot);
-    gResourceManager.LoadBitmap(aBMP, aSlot, aSlot == ENVIRONMENT_SLOT ? IMAGE_32x32 : IMAGE_64x64);
+    gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
   }
   BBitmap *screen = mGamePlayfield->GetTilesBitmap();
   BBitmap *bm = gResourceManager.GetBitmap(aSlot);
@@ -212,7 +213,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   Disable();
 
   //  AddProcess(new GStartLevelProcess(aName, aLevel));
-  RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT);
+  RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
   RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
@@ -222,6 +223,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
   RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
   RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
+  RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);

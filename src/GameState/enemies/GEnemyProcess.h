@@ -36,7 +36,7 @@ protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   TUint16 mParams;
-  GAnchorSprite *mSprite;
+  GAnchorSprite *mSprite, *mDeathSprite;
   TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;
