@@ -91,7 +91,7 @@ static void FuelGauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, T
   r.Offset(x, y);
 
   // draw frame
-  screen->DrawRect(vp, r, COLOR_TEXT);
+  screen->DrawRect(vp, r, WHITE);
 
   // calculate percentage
   TInt pct = stat_max ? ((100 * stat) / stat_max) : 0;
@@ -106,7 +106,7 @@ static void FuelGauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, T
     fill.x2 = fill.x1 + 1;
   }
   fill.Offset(x, y);
-  screen->FillRect(vp, fill, color);
+  screen->FillRect(vp, fill, gDisplay.GetColor(color));
 }
 
 void GGameState::PostRender() {
@@ -146,14 +146,14 @@ void GGameState::PostRender() {
   // experience fuel gauge
   const TInt xp_x = 320 - 108 - 46 - 28;
   gDisplay.SetColor(COLOR_EXPERIENCE, 0, 255, 0);
-  screen->DrawString(&vp, "XP", gFont16x16, xp_x, 0, gDisplay.GetColor(COLOR_TEXT), gDisplay.GetColor(COLOR_TEXT_BG), -4);
+  screen->DrawString(&vp, "XP", gFont16x16, xp_x, 0, WHITE, BLACK, -4);
   FuelGauge(&vp, xp_x + 28, 4, GPlayer::mExperience, GPlayer::mNextLevel, COLOR_EXPERIENCE);
 
   // display level
   char output[160];
   const TInt l_width = 48 + 2; // 2 px padding right
   sprintf(output, "L%-3d", GPlayer::mLevel);
-  screen->DrawString(&vp, output, gFont16x16, 320 - l_width, 0, gDisplay.GetColor(COLOR_TEXT), gDisplay.GetColor(COLOR_TEXT_BG), -4);
+  screen->DrawString(&vp, output, gFont16x16, 320 - l_width, 0, WHITE, BLACK, -4);
 }
 
 TUint16 GGameState::MapWidth() {
