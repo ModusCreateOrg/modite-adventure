@@ -9,10 +9,10 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TF
   mSprite1 = mSprite2 = ENull;
 
   if (mHorizontal) {
-    mSprite1 = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
                                  STYPE_ENEMY);
   } else {
-    mSprite1 = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
                                  STYPE_ENEMY);
   }
   mSprite1->cMask = STYPE_PBULLET;
@@ -24,7 +24,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TF
   mGameState->AddSprite(mSprite1);
 
   if (!mHorizontal) {
-    mSprite2 = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10,
+    mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10,
                                  STYPE_ENEMY);
     mSprite2->cMask = STYPE_PBULLET;
     mSprite2->cMask &= ~STYPE_PLAYER;

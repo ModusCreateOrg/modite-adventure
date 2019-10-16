@@ -4,11 +4,31 @@
 #include <BTypes.h>
 #include "Resources.h"
 
+// Sprite priorities
+// higher numbers mean deeper into the screen (highest values drawn first)
+const TInt CHEST_PRIORITY = 2;
+const TInt CRATE_PRIORITY = 2;
+const TInt DOOR_PRIORITY = 2;
+const TInt FLOOR_SWITCH_PRIORITY = 2;
+const TInt LEVER_PRIORITY = 2;
+const TInt SPIKES_PRIORITY = 2;
+const TInt STAIRS_PRIORITY = 2;
+const TInt ITEM_PRIORITY = 1;
+const TInt ENEMY_PRIORITY = 0;
+const TInt ENEMY_SPELL_PRIORITY = -1;
+const TInt ENEMY_DEATH_PRIORITY = -1;
+const TInt PLAYER_PRIORITY = -10;
+const TInt PLAYER_HEAL_PRIORITY = -11;
+const TInt PLAYER_SPELL_PRIORITY = -11;
+const TInt ENEMY_BULLET_PRIORITY = -12;
+
 enum {
   FONT_8x8_SLOT,
   FONT_16x16_SLOT,
   BKG_SLOT,
   PLAYER_SLOT,
+  PLAYER_HEAL_SLOT,
+  PLAYER_SPELL_SLOT,
   TILESET_SLOT,
   ENVIRONMENT_SLOT,
   // enemies
@@ -21,6 +41,7 @@ enum {
   SLIME_SLOT,
   SPIDER_SLOT,
   TROLL_SLOT,
+  ENEMY_DEATH_SLOT,
   SLOT_MAX,
 };
 
@@ -74,6 +95,12 @@ const TUint16 IMG_SWORD_UP = 28;
 const TUint16 IMG_DAMAGE_DOWN = 32;
 const TUint16 IMG_DAMAGE_RIGHT = 36;
 const TUint16 IMG_DAMAGE_UP = 40;
+
+// PLAYER_HEAL_EFFECT.BMP
+const TUint16 IMG_HEAL = 0;
+
+// PLAYER_SPELL_EFFECT.BMP
+const TUint16 IMG_SPELL = 0;
 
 // CHARA_SPIDER_BMP
 const TUint16 IMG_SPIDER_IDLE = 0;
@@ -178,6 +205,9 @@ const TUint16 IMG_TROLL_ATTACK_UP = 28;
 const TUint16 IMG_TROLL_DAMAGE_DOWN = 32;
 const TUint16 IMG_TROLL_DAMAGE_RIGHT = 36;
 const TUint16 IMG_TROLL_DAMAGE_UP = 40;
+
+// ENEMY_DEATH_BMP
+const TUint16 IMG_ENEMY_DEATH = 0;
 
 // DUNGEON_TILESET_OBJECTS_BMP
 const TUint16 IMG_WOOD_DOOR_H = 10;

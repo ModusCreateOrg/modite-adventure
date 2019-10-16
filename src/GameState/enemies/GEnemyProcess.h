@@ -16,6 +16,7 @@ enum {
   ATTACK_STATE,
   HIT_STATE,
   DEATH_STATE,
+  SPELL_STATE,  // hit with magic spell
 };
 
 static const char *stateMessages[] = {
@@ -24,6 +25,7 @@ static const char *stateMessages[] = {
   "ATTACK STATE",
   "HIT STATE",
   "DEATH STATE",
+  "SPELL STATE",
 };
 
 class GEnemyProcess : public BProcess {
@@ -36,7 +38,7 @@ protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   TUint16 mParams;
-  GAnchorSprite *mSprite;
+  GAnchorSprite *mSprite, *mSprite2;
   TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;
@@ -84,6 +86,8 @@ protected:
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
 
+  void Spell(DIRECTION aDirection);
+  TBool SpellState();
 };
 
 

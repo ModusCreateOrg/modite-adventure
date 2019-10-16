@@ -35,13 +35,14 @@ void GInventory::RenderInventory() {
   char buf[256];
   TInt count = 0, rendered = 0;
   GInventoryItem *selected = ENull;
-  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End(i); i = GPlayer::mInventoryList.Next(i)) {
+  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End( i); i = GPlayer::mInventoryList.Next(i)) {
     if (count >= mTop && rendered < RENDER_ITEM_MAX) {
       TRect srcRect;
       srcRect.x1 = (i->mImage % pitch) * bw;
       srcRect.x2 = srcRect.x1 + bw - 1;
       srcRect.y1 = (i->mImage / pitch) * bh;
       srcRect.y2 = srcRect.y1 + bh - 1;
+
       if (i->mCount > 1) {
         sprintf(buf, "%2d %-18s", i->mCount, itemNames[i->mItemNumber]); // , i->mImage);
       }
@@ -101,6 +102,48 @@ void GInventory::RenderInventory() {
         case ITEM_SWORD:
           GPlayer::mEquipped.mWeapon = selected;
           mMode = MODE_EQUIPPED;
+          break;
+        case ITEM_BLUE_POTION1:
+          GPlayer::mManaPotion += 50;
+          if (GPlayer::mManaPotion > 100) {
+            GPlayer::mManaPotion = 100;
+          }
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_BLUE_POTION2:
+          GPlayer::mManaPotion = 100;
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_RED_POTION1:
+          GPlayer::mHealthPotion += 50;
+          if (GPlayer::mHealthPotion > 100) {
+            GPlayer::mHealthPotion = 100;
+          }
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_RED_POTION2:
+          GPlayer::mHealthPotion = 100;
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
           break;
         default:
           break;

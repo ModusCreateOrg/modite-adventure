@@ -21,8 +21,8 @@ const TUint16 ITEM_BLUE_AMULET = ATTR_BLUE_AMULET;
 const TUint16 ITEM_RED_AMULET = ATTR_RED_AMULET;
 const TUint16 ITEM_GREEN_AMULET = ATTR_GREEN_AMULET;
 const TUint16 ITEM_YELLOW_AMULET = ATTR_YELLOW_AMULET;
-const TUint16 ITEM_GREEN_POTION1 = ATTR_GREEN_POTION1;
-const TUint16 ITEM_GREEN_POTION2 = ATTR_GREEN_POTION2;
+const TUint16 ITEM_RED_POTION1 = ATTR_GREEN_POTION1;
+const TUint16 ITEM_RED_POTION2 = ATTR_GREEN_POTION2;
 const TUint16 ITEM_BLUE_POTION1 = ATTR_BLUE_POTION1;
 const TUint16 ITEM_BLUE_POTION2 = ATTR_BLUE_POTION2;
 const TUint16 ITEM_EMPTY_BOTTL = ATTR_EMPTY_BOTTLE;    // empty bottle
@@ -30,10 +30,10 @@ const TUint16 ITEM_BLUE_BOTTLE1 = ATTR_BLUE_BOTTLE1;   // 25% full
 const TUint16 ITEM_BLUE_BOTTLE2 = ATTR_BLUE_BOTTLE2;   // 50% full
 const TUint16 ITEM_BLUE_BOTTLE3 = ATTR_BLUE_BOTTLE3;   // 75% full
 const TUint16 ITEM_BLUE_BOTTLE4 = ATTR_BLUE_BOTTLE4;   // 100% full
-const TUint16 ITEM_GREEN_BOTTLE1 = ATTR_GREEN_BOTTLE1; // 25% full
-const TUint16 ITEM_GREEN_BOTTLE2 = ATTR_GREEN_BOTTLE2; // 50% full
-const TUint16 ITEM_GREEN_BOTTLE3 = ATTR_GREEN_BOTTLE3; // 75% full
-const TUint16 ITEM_GREEN_BOTTLE4 = ATTR_GREEN_BOTTLE4; // 100% full
+const TUint16 ITEM_RED_BOTTLE1 = ATTR_GREEN_BOTTLE1; // 25% full
+const TUint16 ITEM_RED_BOTTLE2 = ATTR_GREEN_BOTTLE2; // 50% full
+const TUint16 ITEM_RED_BOTTLE3 = ATTR_GREEN_BOTTLE3; // 75% full
+const TUint16 ITEM_RED_BOTTLE4 = ATTR_GREEN_BOTTLE4; // 100% full
 
 static const TInt items[] = {
   0, // 0 = no item
@@ -88,8 +88,8 @@ static const char *itemNames[] = {
   "Red Amulet",
   "Green Amulet",
   "Yellow Amulet",
-  "Small Green Potion",
-  "Big Green Potion",
+  "Small Red Potion",
+  "Big Red Potion",
   "Small Blue Potion",
   "Big Blue Potion",
   "Empty Bottle",
@@ -97,10 +97,10 @@ static const char *itemNames[] = {
   "Blue Bottle 50%",
   "Blue Bottle 75%",
   "Blue Bottle Full",
-  "Green Bottle 25%",
-  "Green Bottle 50%",
-  "Green Bottle 75%",
-  "Green Bottle Full",
+  "Red Bottle 25%",
+  "Red Bottle 50%",
+  "Red Bottle 75%",
+  "Red Bottle Full",
 };
 
 #endif //MODITE_ITEMS_H

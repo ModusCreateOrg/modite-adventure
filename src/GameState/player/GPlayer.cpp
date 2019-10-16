@@ -45,11 +45,15 @@ TInt16 GPlayer::mLevel;
 TInt16 GPlayer::mNextLevel;
 TInt16 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
-TInt16 GPlayer::mMaxHitPoints = 10;
+TInt16 GPlayer::mMaxHitPoints;
 TInt16 GPlayer::mStrength;
 TInt16 GPlayer::mDexterity;
+
 TInt GPlayer::mHitStrength;
 TInt GPlayer::mGold;
+TInt GPlayer::mHealthPotion;
+TInt GPlayer::mManaPotion;
+
 GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
 GAnchorSprite *GPlayer::mSprite;
