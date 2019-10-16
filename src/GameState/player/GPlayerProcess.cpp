@@ -3,8 +3,9 @@
 #include "GGamePlayfield.h"
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
+#include "GResources.h"
 
-const TInt PLAYER_HITPOINTS = 25;
+const TFloat SPELL_DISTANCE = 200.0;
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
@@ -15,6 +16,7 @@ const TUint16 HIT_LIGHT_STATE = 5;
 const TUint16 HIT_MEDIUM_STATE = 6;
 const TUint16 HIT_HARD_STATE = 7;
 const TUint16 QUAFF_STATE = 8;
+const TUint16 SPELL_STATE = 9;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mState = IDLE_STATE;
@@ -30,6 +32,9 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
+
+  mSprite2 = ENull;
+
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -169,6 +174,26 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->StartAnimation(quaff1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
+
+    case SPELL_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+
+      // affect nearby enemies
+      for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
+        if (!s->Clipped() && s->type == STYPE_ENEMY) {
+          TFloat dx = s->x - mSprite->x,
+                 dy = s->y - mSprite->y,
+                 distance = SQRT((dx * dx + dy * dy));
+          if (distance < SPELL_DISTANCE) {
+            s->SetCType(STYPE_SPELL);
+          }
+        }
+      }
+      mSprite->StartAnimation(spell1Animation);
+      mSprite->mDirection = DIRECTION_DOWN;
+      break;
   }
 }
 
@@ -181,10 +206,21 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  */
 
 TBool GPlayerProcess::MaybeQuaff() {
-  if (gControls.WasPressed(BUTTONL)) {
+  if (gControls.WasPressed(CONTROL_QUAFF)) {
     if (GPlayer::mHealthPotion > 0) {
       GPlayer::mHealthPotion -= 25;
       NewState(QUAFF_STATE, DIRECTION_DOWN);
+    }
+    return ETrue;
+  }
+  return EFalse;
+}
+
+TBool GPlayerProcess::MaybeSpell() {
+  if (gControls.WasPressed(CONTROL_SPELL)) {
+    if (GPlayer::mManaPotion > 0) {
+      GPlayer::mManaPotion -= 25;
+      NewState(SPELL_STATE, DIRECTION_DOWN);
     }
     return ETrue;
   }
@@ -398,6 +434,10 @@ TBool GPlayerProcess::IdleState() {
     return ETrue;
   }
 
+  if (MaybeSpell()) {
+    return ETrue;
+  }
+
   if (MaybeSword()) {
     return ETrue;
   }
@@ -412,6 +452,14 @@ TBool GPlayerProcess::WalkState() {
   }
 
   if (MaybeSword()) {
+    return ETrue;
+  }
+
+  if (MaybeSpell()) {
+    return ETrue;
+  }
+
+  if (MaybeQuaff()) {
     return ETrue;
   }
 
@@ -463,6 +511,36 @@ TBool GPlayerProcess::QuaffState() {
   return ETrue;
 }
 
+TBool GPlayerProcess::SpellState() {
+  switch (mStep) {
+    case 0:
+      if (mSprite->AnimDone()) {
+        mStep++;
+        mSprite2 = new GAnchorSprite(mGameState, PLAYER_SPELL_PRIORITY, PLAYER_SPELL_SLOT);
+        mSprite2->x = mSprite->x + 16;
+        mSprite2->y = mSprite->y;
+        mSprite2->StartAnimation(spellOverlayAnimation);
+        mGameState->AddSprite(mSprite2);
+      }
+      break;
+    case 1:
+      if (mSprite2->AnimDone()) {
+        mStep++;
+        mSprite->StartAnimation(spell2Animation);
+        mSprite2->Remove();
+        delete mSprite2;
+        mSprite2 = ENull;
+      }
+      break;
+    case 2:
+      if (mSprite->AnimDone()) {
+        NewState(IDLE_STATE, DIRECTION_DOWN);
+      }
+      break;
+  }
+  return ETrue;
+}
+
 TBool GPlayerProcess::FallState() {
   if (mPlayfield->IsFloor(mSprite->x + 32, mSprite->y + mSprite->vy)) {
     // land
@@ -500,6 +578,8 @@ TBool GPlayerProcess::RunBefore() {
       return HitState();
     case QUAFF_STATE:
       return QuaffState();
+    case SPELL_STATE:
+      return SpellState();
     default:
       return ETrue;
   }
@@ -508,24 +588,26 @@ TBool GPlayerProcess::RunBefore() {
 TBool GPlayerProcess::RunAfter() {
   // position viewport to follow player
   TFloat maxx = mGameState->MapWidth(),
-    maxy = mGameState->MapHeight();
+         maxy = mGameState->MapHeight();
 
   // half viewport size
   const TFloat ww = gViewPort->mRect.Width() / 2.0,
-    hh = gViewPort->mRect.Height() / 2.0;
+               hh = gViewPort->mRect.Height() / 2.0;
 
   // upper left corner of desired viewport position
   TFloat xx = gViewPort->mWorldX = mSprite->x - ww,
-    yy = gViewPort->mWorldY = mSprite->y - hh;
+         yy = gViewPort->mWorldY = mSprite->y - hh;
 
   if (xx < 0) {
     gViewPort->mWorldX = 0;
-  } else if (xx > maxx) {
+  }
+  else if (xx > maxx) {
     gViewPort->mWorldX = maxx;
   }
   if (yy < 0) {
     gViewPort->mWorldY = 0;
-  } else if (yy > maxy) {
+  }
+  else if (yy > maxy) {
     gViewPort->mWorldY = maxy;
   }
 

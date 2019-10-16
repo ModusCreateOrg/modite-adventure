@@ -11,15 +11,6 @@
 #include "GPlayerProcess.h"
 #include "GPlayer.h"
 
-/**
- * Control bits definitions
- */
-const TUint16 CONTROL_JOYUP = JOYUP;
-const TUint16 CONTROL_JOYDOWN = JOYDOWN;
-const TUint16 CONTROL_JOYLEFT = JOYLEFT;
-const TUint16 CONTROL_JOYRIGHT = JOYRIGHT;
-const TUint16 CONTROL_FIRE = BUTTONA;
-
 struct GInventoryItem : public BNode {
   GInventoryItem(TInt aItemNumber);
 

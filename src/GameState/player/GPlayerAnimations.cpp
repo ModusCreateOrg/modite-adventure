@@ -4,6 +4,51 @@
 const TInt16 HITSPEED_FIRST = TInt(1.5 * HITSPEED);
 
 /*
+ __  __             _        ____             _ _  
+|  \/  | __ _  __ _(_) ___  / ___| _ __   ___| | | 
+| |\/| |/ _` |/ _` | |/ __| \___ \| '_ \ / _ \ | | 
+| |  | | (_| | (_| | | (__   ___) | |_) |  __/ | | 
+|_|  |_|\__,_|\__, |_|\___| |____/| .__/ \___|_|_| 
+              |___/               |_|              
+*/
+
+const TInt16 SPELL_SPEED = 3;
+
+ANIMSCRIPT spell1Animation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 0),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 1),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 2),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 5),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 6),
+  AEND,
+};
+
+ANIMSCRIPT spell2Animation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 2),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 1),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 0),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 8),
+  ASTEP(SPELL_SPEED, IMG_IDLE + 0),
+  AEND,
+};
+
+ANIMSCRIPT spellOverlayAnimation[] = {
+  ABITMAP(PLAYER_SPELL_SLOT),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 0),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 1),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 2),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 3),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 4),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 5),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 6),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 7),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 8),
+  AEND,
+};
+
+/*
  ____       _       _      ____       _   _              
 |  _ \ _ __(_)_ __ | | __ |  _ \ ___ | |_(_) ___  _ __   
 | | | | '__| | '_ \| |/ / | |_) / _ \| __| |/ _ \| '_ \  
@@ -29,6 +74,7 @@ ANIMSCRIPT quaff2Animation[] = {
   ASTEP(QUAFF_SPEED, IMG_IDLE + 1),
   ASTEP(QUAFF_SPEED, IMG_IDLE + 0),
   ASTEP(QUAFF_SPEED, IMG_IDLE + 8),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 0),
   AEND,
 };
 

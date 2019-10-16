@@ -48,11 +48,14 @@ protected:
   TBool MaybeFall();
 
   TBool MaybeQuaff();
+  TBool MaybeSpell();
 
 protected:
   TBool IdleState();
 
   TBool QuaffState();
+
+  TBool SpellState();
 
   TBool WalkState();
 

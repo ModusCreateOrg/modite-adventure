@@ -1,6 +1,7 @@
 // Game State
 #include "GGameState.h"
 #include "GGamePlayfield.h"
+#include "GResources.h"
 #include "GameState/status/GStartLevelProcess.h"
 #include "GameState/player/GPlayerProcess.h"
 #include "GameState/enemies/GSpiderProcess.h"
@@ -267,6 +268,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
+  RemapSlot(CHARA_HERO_SPELL_EFFECT_BMP, PLAYER_SPELL_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
   RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
   RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);

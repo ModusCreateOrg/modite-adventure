@@ -15,6 +15,11 @@ extern ANIMSCRIPT quaff1Animation[];
 extern ANIMSCRIPT quaff2Animation[];
 extern ANIMSCRIPT quaffOverlayAnimation[];
 
+// SPELL
+extern ANIMSCRIPT spell1Animation[];
+extern ANIMSCRIPT spell2Animation[];
+extern ANIMSCRIPT spellOverlayAnimation[];
+
 // DOWN
 extern ANIMSCRIPT idleDownAnimation[];
 extern ANIMSCRIPT walkDownAnimation1[];
