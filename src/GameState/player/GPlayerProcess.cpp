@@ -191,6 +191,8 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           }
         }
       }
+
+      mSprite->mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -534,6 +536,7 @@ TBool GPlayerProcess::SpellState() {
       break;
     case 2:
       if (mSprite->AnimDone()) {
+        mSprite->mInvulnerable  EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
       }
       break;
