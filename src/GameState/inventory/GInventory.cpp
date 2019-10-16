@@ -20,7 +20,7 @@ GInventory::~GInventory() {
 
 void GInventory::RenderInventory() {
   TInt y = 8,
-    x = 24;
+       x = 24;
 
   BBitmap *bm = gDisplay.renderBitmap;
 
@@ -29,23 +29,24 @@ void GInventory::RenderInventory() {
 
   BBitmap *env = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
   TInt bw = gResourceManager.BitmapWidth(ENVIRONMENT_SLOT),
-    bh = gResourceManager.BitmapHeight(ENVIRONMENT_SLOT),
-    pitch = env->Width() / bw;
+       bh = gResourceManager.BitmapHeight(ENVIRONMENT_SLOT),
+       pitch = env->Width() / bw;
 
   char buf[256];
   TInt count = 0, rendered = 0;
   GInventoryItem *selected = ENull;
-  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End(
-    i); i = GPlayer::mInventoryList.Next(i)) {
+  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End( i); i = GPlayer::mInventoryList.Next(i)) {
     if (count >= mTop && rendered < RENDER_ITEM_MAX) {
       TRect srcRect;
       srcRect.x1 = (i->mImage % pitch) * bw;
       srcRect.x2 = srcRect.x1 + bw - 1;
       srcRect.y1 = (i->mImage / pitch) * bh;
       srcRect.y2 = srcRect.y1 + bh - 1;
+
       if (i->mCount > 1) {
         sprintf(buf, "%2d %-18s", i->mCount, itemNames[i->mItemNumber]); // , i->mImage);
-      } else {
+      }
+      else {
         sprintf(buf, "   %-18s", itemNames[i->mItemNumber]); // , i->mImage);
       }
       if (count == mCurrent) {
@@ -53,7 +54,8 @@ void GInventory::RenderInventory() {
         bm->FillRect(mViewPort, 0, y, SCREEN_WIDTH - 1, y + 17, COLOR_TEXT);
         bm->DrawBitmapTransparent(mViewPort, env, srcRect, 0, y - 7);
         bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT_BG, -1, -4);
-      } else {
+      }
+      else {
         bm->DrawBitmapTransparent(mViewPort, env, srcRect, 0, y - 7);
         bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT, -1, -4);
       }
@@ -192,8 +194,8 @@ static void render_equipped_item(const char *aSlot, GInventoryItem *aItem, BView
 
   BBitmap *env = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
   TInt bw = gResourceManager.BitmapWidth(ENVIRONMENT_SLOT),
-    bh = gResourceManager.BitmapHeight(ENVIRONMENT_SLOT),
-    pitch = env->Width() / bw;
+       bh = gResourceManager.BitmapHeight(ENVIRONMENT_SLOT),
+       pitch = env->Width() / bw;
 
   TRect srcRect;
   srcRect.x1 = (aItem->mImage % pitch) * bw;
@@ -209,7 +211,7 @@ static void render_equipped_item(const char *aSlot, GInventoryItem *aItem, BView
 
 void GInventory::RenderEquipped() {
   TInt y = 8,
-    x = 8;
+       x = 8;
 
   BBitmap *bm = gDisplay.renderBitmap;
 

@@ -218,7 +218,7 @@ TBool GPlayerProcess::MaybeQuaff() {
 
 TBool GPlayerProcess::MaybeSpell() {
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0) {
+    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook) {
       GPlayer::mManaPotion -= 25;
       NewState(SPELL_STATE, DIRECTION_DOWN);
     }
