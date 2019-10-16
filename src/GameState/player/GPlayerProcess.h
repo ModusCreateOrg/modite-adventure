@@ -47,8 +47,15 @@ protected:
 
   TBool MaybeFall();
 
+  TBool MaybeQuaff();
+  TBool MaybeSpell();
+
 protected:
   TBool IdleState();
+
+  TBool QuaffState();
+
+  TBool SpellState();
 
   TBool WalkState();
 
@@ -61,7 +68,7 @@ protected:
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
-  GAnchorSprite *mSprite;
+  GAnchorSprite *mSprite, *mSprite2;
   TUint16 mState;
   TUint16 mStep;
 };

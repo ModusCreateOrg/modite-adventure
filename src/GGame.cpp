@@ -196,7 +196,7 @@ void GGame::Run() {
     }
 
     // right shoulder button brings up inventory
-    if (gControls.WasPressed(BUTTONR) && mState == GAME_STATE_GAME) {
+    if (gControls.WasPressed(CONTROL_INVENTORY) && mState == GAME_STATE_GAME) {
       ToggleInventory();
     }
 

@@ -51,4 +51,16 @@ static const TInt MAX_BRIGHTNESS = 0x1fff;
 static const TInt MIN_BRIGHTNESS = 0x50;
 #endif
 
+/**
+ * Control bits definitions
+ */
+const TUint16 CONTROL_JOYUP = JOYUP;
+const TUint16 CONTROL_JOYDOWN = JOYDOWN;
+const TUint16 CONTROL_JOYLEFT = JOYLEFT;
+const TUint16 CONTROL_JOYRIGHT = JOYRIGHT;
+const TUint16 CONTROL_FIRE = BUTTONA;
+const TUint16 CONTROL_SPELL = BUTTONB;
+const TUint16 CONTROL_INVENTORY = BUTTONR;
+const TUint16 CONTROL_QUAFF = BUTTONL;
+
 #endif //MODITE_GAME_H

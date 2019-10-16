@@ -25,7 +25,7 @@ void GInventory::RenderInventory() {
 
   BBitmap *bm = gDisplay.renderBitmap;
 
-  bm->DrawString(mViewPort, "INVENTORY", gFont16x16, 160 - 9 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  bm->DrawString(mViewPort, "INVENTORY", gFont16x16, 160 - 9 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
   y += 32;
 
   BBitmap *env = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
@@ -36,13 +36,14 @@ void GInventory::RenderInventory() {
   char buf[256];
   TInt count = 0, rendered = 0;
   GInventoryItem *selected = ENull;
-  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End(i); i = GPlayer::mInventoryList.Next(i)) {
+  for (GInventoryItem *i = GPlayer::mInventoryList.First(); !GPlayer::mInventoryList.End( i); i = GPlayer::mInventoryList.Next(i)) {
     if (count >= mTop && rendered < RENDER_ITEM_MAX) {
       TRect srcRect;
       srcRect.x1 = (i->mImage % pitch) * bw;
       srcRect.x2 = srcRect.x1 + bw - 1;
       srcRect.y1 = (i->mImage / pitch) * bh;
       srcRect.y2 = srcRect.y1 + bh - 1;
+
       if (i->mCount > 1) {
         sprintf(buf, "%2d %-18s", i->mCount, itemNames[i->mItemNumber]); // , i->mImage);
       }
@@ -67,7 +68,7 @@ void GInventory::RenderInventory() {
 
   if (selected) {
     sprintf(buf, "A to use %s", itemNames[selected->mItemNumber]);
-    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_BG, -4);
+    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
     if (gControls.WasPressed(BUTTONA)) {
       switch (selected->mItemNumber) {
         case ITEM_BLUE_AMULET:
@@ -102,6 +103,48 @@ void GInventory::RenderInventory() {
         case ITEM_SWORD:
           GPlayer::mEquipped.mWeapon = selected;
           mMode = MODE_EQUIPPED;
+          break;
+        case ITEM_BLUE_POTION1:
+          GPlayer::mManaPotion += 50;
+          if (GPlayer::mManaPotion > 100) {
+            GPlayer::mManaPotion = 100;
+          }
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_BLUE_POTION2:
+          GPlayer::mManaPotion = 100;
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_RED_POTION1:
+          GPlayer::mHealthPotion += 50;
+          if (GPlayer::mHealthPotion > 100) {
+            GPlayer::mHealthPotion = 100;
+          }
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
+          break;
+        case ITEM_RED_POTION2:
+          GPlayer::mHealthPotion = 100;
+          selected->mCount--;
+          if (selected->mCount < 1) {
+            selected->Remove();
+            delete selected;
+          }
+          gGame->ToggleInventory();
           break;
         default:
           break;
@@ -146,7 +189,7 @@ static void render_equipped_item(const char *aSlot, GInventoryItem *aItem, BView
 
   if (!aItem) {
     sprintf(buf, "%8s:  None", aSlot);
-    bm->DrawString(aViewPort, buf, gFont16x16, x, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
+    bm->DrawString(aViewPort, buf, gFont16x16, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
     return;
   }
 
@@ -173,7 +216,7 @@ void GInventory::RenderEquipped() {
 
   BBitmap *bm = gDisplay.renderBitmap;
 
-  bm->DrawString(mViewPort, "EQUPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  bm->DrawString(mViewPort, "EQUPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
   y += 32;
 
   render_equipped_item("Weapon", GPlayer::mEquipped.mWeapon, mViewPort, x, y);

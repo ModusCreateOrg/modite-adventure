@@ -2,8 +2,42 @@
 #include "GStatProcess.h"
 #include "GPlayer.h"
 #include "GGameState.h"
+#include "inventory/GItemProcess.h"
+#include "Items.h"
 
 const TInt HIT_POINTS = 5; // default hit points for enemy
+
+const TInt16 DEATH_SPEED = 4,
+             SPELL_SPEED = 2;
+
+// ANIMATIONS
+
+static ANIMSCRIPT deathAnimation[] = {
+  ABITMAP(ENEMY_DEATH_SLOT),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 0),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 1),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 2),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 3),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 4),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 5),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 6),
+  ASTEP(DEATH_SPEED, IMG_ENEMY_DEATH + 7),
+  AEND,
+};
+
+ANIMSCRIPT spellOverlayAnimation[] = {
+  ABITMAP(PLAYER_SPELL_SLOT),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 0),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 1),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 2),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 3),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 4),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 5),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 6),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 7),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 8),
+  AEND,
+};
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
     : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
@@ -11,7 +45,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aPar
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
-  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
+  mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->mHitPoints = mHitPoints;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
@@ -27,9 +61,16 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aPar
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
+
+  mSprite2 = ENull;
 }
 
 GEnemyProcess::~GEnemyProcess() {
+  if (mSprite2) {
+    mSprite2->Remove();
+    delete mSprite2;
+    mSprite2 = ENull;
+  }
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -85,8 +126,16 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Hit(aDirection);
       break;
 
+    case SPELL_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      mSprite->cMask &= ~STYPE_EBULLET;
+      Spell(aDirection);
+      break;
+
     case DEATH_STATE:
-      Death(aDirection);
+      //      Death(aDirection);
       break;
 
     default:
@@ -94,20 +143,44 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   }
 }
 
+void GEnemyProcess::Spell(DIRECTION aDirection) {
+  if (!mSprite2) {
+    mSprite2 = new GAnchorSprite(mGameState, ENEMY_SPELL_PRIORITY, PLAYER_SPELL_SLOT);
+    mSprite2->x = mSprite->x + 16;
+    mSprite2->y = mSprite->y;
+    mSprite2->StartAnimation(spellOverlayAnimation);
+    mGameState->AddSprite(mSprite2);
+  }
+  Hit(mSprite->mDirection);
+}
+
 TBool GEnemyProcess::MaybeHit() {
+  if (mSprite->TestCType(STYPE_SPELL)) {
+    mSprite->ClearCType(STYPE_SPELL);
+    if (!mSprite->mInvulnerable) {
+      mSprite->mInvulnerable = ETrue;
+      // TODO take into account which spellbook is being wielded
+      mSprite->mHitPoints -= GPlayer::mHitStrength;
+      if (mSprite->mHitPoints <= 0) {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+      }
+      else {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
+      }
+      NewState(SPELL_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      //      mSprite->ClearCType(STYPE_PBULLET);
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-        GPlayer::AddExperience(mSprite->mLevel);
-        NewState(DEATH_STATE, mSprite->mDirection);
-        return ETrue;
       }
       else {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
@@ -225,6 +298,28 @@ TBool GEnemyProcess::AttackState() {
 
 TBool GEnemyProcess::HitState() {
   if (mSprite->AnimDone()) {
+    if (mSprite->mHitPoints <= 0) {
+      NewState(DEATH_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+    mSprite->mInvulnerable = EFalse;
+    mSprite->ClearCType(STYPE_PBULLET);
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+  return ETrue;
+}
+
+TBool GEnemyProcess::SpellState() {
+  if (mSprite->AnimDone() && mSprite2->AnimDone()) {
+    mSprite2->Remove();
+    delete mSprite2;
+    mSprite2 = ENull;
+
+    if (mSprite->mHitPoints <= 0) {
+      NewState(DEATH_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+
     mSprite->mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
@@ -234,12 +329,37 @@ TBool GEnemyProcess::HitState() {
 
 TBool GEnemyProcess::DeathState() {
   if (mSprite->AnimDone()) {
-    mSprite->x = mStartX;
-    mSprite->y = mStartY;
-    mSprite->mInvulnerable = EFalse;
-    NewState(IDLE_STATE, mSprite->mDirection);
-    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
-    mSprite->mHitPoints = mHitPoints;
+    if (mSprite2) {
+      if (mSprite2->AnimDone()) {
+        GPlayer::AddExperience(mSprite->mLevel);
+        // drop a potion
+        switch (Random(0, 3)) {
+          case 0:
+            GItemProcess::SpawnItem(mGameState, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
+            break;
+          case 1:
+            GItemProcess::SpawnItem(mGameState, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
+            break;
+          case 2:
+            GItemProcess::SpawnItem(mGameState, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
+            break;
+          case 3:
+            GItemProcess::SpawnItem(mGameState, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
+            break;
+        }
+        return EFalse;
+      }
+      else {
+        return ETrue;
+      }
+    }
+    mSprite2 = new GAnchorSprite(mGameState, ENEMY_DEATH_PRIORITY, ENEMY_DEATH_SLOT);
+    mSprite2->x = mSprite->x + 16;
+    mSprite2->y = mSprite->y;
+    mSprite2->Name("ENEMY DEATH SPRITE");
+    mSprite2->ClearFlags(SFLAG_CHECK);
+    mGameState->AddSprite(mSprite2);
+    mSprite2->StartAnimation(deathAnimation);
   }
 
   return ETrue;
@@ -325,6 +445,8 @@ TBool GEnemyProcess::RunBefore() {
       return HitState();
     case DEATH_STATE:
       return DeathState();
+    case SPELL_STATE:
+      return SpellState();
     default:
       return ETrue;
   }

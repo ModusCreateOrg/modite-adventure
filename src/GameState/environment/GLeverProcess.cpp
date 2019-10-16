@@ -27,7 +27,7 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
   mDirection = ETrue;
   mSprite    = ENull;
 
-  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
+  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w     = mSprite->h = 32;
