@@ -536,7 +536,7 @@ TBool GPlayerProcess::SpellState() {
       break;
     case 2:
       if (mSprite->AnimDone()) {
-        mSprite->mInvulnerable  EFalse;
+        mSprite->mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
       }
       break;
