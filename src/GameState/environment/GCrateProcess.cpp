@@ -38,7 +38,7 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
   mGameState = aGameState;
   mParam = aParam;
   mAnimating = EFalse;
-  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
+  mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w = mSprite->h = 32;

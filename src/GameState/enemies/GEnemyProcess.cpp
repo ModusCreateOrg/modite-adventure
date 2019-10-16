@@ -29,7 +29,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aPar
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
-  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
+  mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->mHitPoints = mHitPoints;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
@@ -271,7 +271,7 @@ TBool GEnemyProcess::DeathState() {
         return ETrue;
       }
     }
-    mDeathSprite = new GAnchorSprite(mGameState, -10, ENEMY_DEATH_SLOT);
+    mDeathSprite = new GAnchorSprite(mGameState, ENEMY_DEATH_PRIORITY, ENEMY_DEATH_SLOT);
     mDeathSprite->x = mSprite->x + 16;
     mDeathSprite->y = mSprite->y;
     mDeathSprite->Name("ENEMY DEATH SPRITE");

@@ -4,11 +4,28 @@
 #include <BTypes.h>
 #include "Resources.h"
 
+// Sprite priorities
+// higher numbers mean deeper into the screen (highest values drawn first)
+const TInt CHEST_PRIORITY = 2;
+const TInt CRATE_PRIORITY = 2;
+const TInt DOOR_PRIORITY = 2;
+const TInt FLOOR_SWITCH_PRIORITY = 2;
+const TInt LEVER_PRIORITY = 2;
+const TInt SPIKES_PRIORITY = 2;
+const TInt STAIRS_PRIORITY = 2;
+const TInt ITEM_PRIORITY = 1;
+const TInt ENEMY_PRIORITY = 0;
+const TInt ENEMY_DEATH_PRIORITY = -1;
+const TInt PLAYER_PRIORITY = -10;
+const TInt PLAYER_HEAL_PRIORITY = -11;
+const TInt ENEMY_BULLET_PRIORITY = -12;
+
 enum {
   FONT_8x8_SLOT,
   FONT_16x16_SLOT,
   BKG_SLOT,
   PLAYER_SLOT,
+  PLAYER_HEAL_SLOT,
   TILESET_SLOT,
   ENVIRONMENT_SLOT,
   // enemies
@@ -75,6 +92,9 @@ const TUint16 IMG_SWORD_UP = 28;
 const TUint16 IMG_DAMAGE_DOWN = 32;
 const TUint16 IMG_DAMAGE_RIGHT = 36;
 const TUint16 IMG_DAMAGE_UP = 40;
+
+// PLAYER_HEAL_EFFECT.BMP
+const TUint16 IMG_HEAL = 0;
 
 // CHARA_SPIDER_BMP
 const TUint16 IMG_SPIDER_IDLE = 0;

@@ -24,6 +24,9 @@
 #define DEBUGME
 //#undef DEBUGME
 
+const TInt GAUGE_WIDTH = 90;
+
+
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
@@ -31,6 +34,7 @@
 // scope local to this file.  If the value for the slot is ETrue, then the slot
 // has already been remapped. We don't want to remap twice or the color range
 // ends up in the wrong place.
+
 static TBool slotRemapState[SLOT_MAX];
 
 // Load aBMP, and remap it to playfield's tilemap palette
@@ -94,11 +98,11 @@ void GGameState::PreRender() {
  *******************************************************************************
  *******************************************************************************/
 
-static void FuelGauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {
+static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {
   BBitmap *screen = gDisplay.renderBitmap;
 
   // calculate fill percentage
-  TRect r(0, 0, 100, 8);
+  TRect r(0, 0, GAUGE_WIDTH, 8);
 
   // offset to display coordinates
   r.Offset(x, y);
@@ -107,10 +111,10 @@ static void FuelGauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, T
   screen->DrawRect(vp, r, COLOR_TEXT);
 
   // calculate percentage
-  TInt pct = stat_max ? ((100 * stat) / stat_max) : 0;
+  TFloat pct = stat_max ? (TFloat(stat)) / TFloat(stat_max) : 0.;
 
   // fill area
-  TRect fill(0, 0, pct, 8);
+  TRect fill(0, 0, TInt(pct * GAUGE_WIDTH), 8);
   fill.x1 += 2;
   fill.y1 += 2;
   fill.x2 -= 2;
@@ -144,28 +148,75 @@ void GGameState::PostRender() {
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
     *screen = gDisplay.renderBitmap;
 
+  const TInt BOTTLE_X = 64 * 3,
+    BOTTLE_Y = 14,
+    BOTTLE_WIDTH = 12,
+    BOTTLE_HEIGHT = 15;
+
+  TInt x = 2;
+
   // render health potion
-  TRect bottle(64 * 3 + 16, 0, 64 * 3 + 28, 15);
-  screen->DrawBitmapTransparent(&vp, b, bottle, 2, 0);
+  TRect healing(BOTTLE_X, BOTTLE_Y, BOTTLE_X + BOTTLE_WIDTH, BOTTLE_Y + BOTTLE_HEIGHT);
+  switch (GPlayer::mHealthPotion) {
+    case 75:
+      healing.Offset(BOTTLE_WIDTH * 1, 0);
+      break;
+    case 50:
+      healing.Offset(BOTTLE_WIDTH * 2, 0);
+      break;
+    case 25:
+      healing.Offset(BOTTLE_WIDTH * 3, 0);
+      break;
+    case 0:
+      healing.Offset(BOTTLE_WIDTH * 4, 0);
+    default:
+      break;
+  }
+  screen->DrawBitmapTransparent(&vp, b, healing, x, 1);
+  x += 16;
+
+  // render mana potion
+  TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH, BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+  switch (GPlayer::mManaPotion) {
+    case 75:
+      mana.Offset(BOTTLE_WIDTH * 1, 0);
+      break;
+    case 50:
+      mana.Offset(BOTTLE_WIDTH * 2, 0);
+      break;
+    case 25:
+      mana.Offset(BOTTLE_WIDTH * 3, 0);
+      break;
+    case 0:
+      mana.Offset(BOTTLE_WIDTH * 4, 0);
+    default:
+      break;
+  }
+  screen->DrawBitmapTransparent(&vp, b, mana, x, 1);
+  x += 16;
+
   // render heart
   TRect heart(64 * 3, 0, 64 * 3 + 15, 11);
-  screen->DrawBitmapTransparent(&vp, b, heart, 16, 3);
+  screen->DrawBitmapTransparent(&vp, b, heart, x, 3);
+  x += 18;
 
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-  FuelGauge(&vp, 32, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, COLOR_HEALTH);
+  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, COLOR_HEALTH);
+  x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge
-  const TInt xp_x = 320 - 108 - 46 - 28;
   gDisplay.SetColor(COLOR_EXPERIENCE, 0, 255, 0);
-  screen->DrawString(&vp, "XP", gFont16x16, xp_x, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
-  FuelGauge(&vp, xp_x + 28, 4, GPlayer::mExperience, GPlayer::mNextLevel, COLOR_EXPERIENCE);
+  screen->DrawString(&vp, "XP", gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  x += 28;
+  fuel_gauge(&vp, x, 4, GPlayer::mExperience, GPlayer::mNextLevel, COLOR_EXPERIENCE);
+  x += GAUGE_WIDTH + 8;
 
   // display level
   char output[160];
   const TInt l_width = 48 + 2; // 2 px padding right
   sprintf(output, "L%-3d", GPlayer::mLevel);
-  screen->DrawString(&vp, output, gFont16x16, 320 - l_width, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  screen->DrawString(&vp, output, gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
 }
 
 /*******************************************************************************
@@ -215,6 +266,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   //  AddProcess(new GStartLevelProcess(aName, aLevel));
   RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
+  RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
   RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
   RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
@@ -332,8 +384,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(
-          new GGoblinSniperProcess(this, xx - 32, yy + 32, params));
+        AddProcess(new GGoblinSniperProcess(this, xx - 32, yy + 32, params));
         break;
       case ATTR_ORC:
         // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs

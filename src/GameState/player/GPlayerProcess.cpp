@@ -14,6 +14,7 @@ const TUint16 FALL_STATE = 4;
 const TUint16 HIT_LIGHT_STATE = 5;
 const TUint16 HIT_MEDIUM_STATE = 6;
 const TUint16 HIT_HARD_STATE = 7;
+const TUint16 QUAFF_STATE = 8;
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mState = IDLE_STATE;
@@ -21,9 +22,8 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState = aGameState;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;
-  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, -100, PLAYER_SLOT);
+  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
-  GPlayer::mHitPoints = PLAYER_HITPOINTS;
   mGameState->AddSprite(mSprite);
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
@@ -34,6 +34,12 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 }
 
 GPlayerProcess::~GPlayerProcess() {
+  if (mSprite2) {
+    mSprite2->Remove();
+    delete mSprite2;
+    mSprite2 = ENull;
+  }
+
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -155,6 +161,14 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
+
+    case QUAFF_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStep = 0;
+      mSprite->StartAnimation(quaff1Animation);
+      mSprite->mDirection = DIRECTION_DOWN;
+      break;
   }
 }
 
@@ -165,6 +179,18 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 | |___|  _  |/ ___ \| |\  | |_| | |___   ___) || |/ ___ \| | | |___
  \____|_| |_/_/   \_\_| \_|\____|_____| |____/ |_/_/   \_\_| |_____|
  */
+
+TBool GPlayerProcess::MaybeQuaff() {
+  if (gControls.WasPressed(BUTTONL)) {
+    if (GPlayer::mHealthPotion > 0) {
+      GPlayer::mHealthPotion -= 25;
+      NewState(QUAFF_STATE, DIRECTION_DOWN);
+    }
+    return ETrue;
+  }
+  return EFalse;
+}
+
 TBool GPlayerProcess::MaybeHit() {
   mSprite->ClearCType(STYPE_OBJECT);
 
@@ -182,7 +208,7 @@ TBool GPlayerProcess::MaybeHit() {
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
         mSprite->mInvulnerable = ETrue;
-        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +1"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitLightDownAnimation);
@@ -203,7 +229,7 @@ TBool GPlayerProcess::MaybeHit() {
         GPlayer::mHitPoints -= 2;
         mSprite->mInvulnerable = ETrue;
         state = HIT_MEDIUM_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x+64, mSprite->y, "HIT +2"));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +2"));
         switch (other->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitMediumDownAnimation);
@@ -247,7 +273,7 @@ TBool GPlayerProcess::MaybeHit() {
     if (GPlayer::mHitPoints <= 0) {
       // GAME OVER!
       printf("Player dead\n");
-      GPlayer::mHitPoints = PLAYER_HITPOINTS;
+      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
     }
 
     mSprite->cType = 0;
@@ -308,7 +334,7 @@ TBool GPlayerProcess::MaybeFall() {
 TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
-//      NewState(IDLE_STATE, mSprite->mDirection);
+      //      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -319,7 +345,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
-//      NewState(IDLE_STATE, mSprite->mDirection);
+      //      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -330,7 +356,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
-//      NewState(IDLE_STATE, mSprite->mDirection);
+      //      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -344,7 +370,7 @@ TBool GPlayerProcess::MaybeWalk() {
       return EFalse;
     }
     if (!CanWalk(DIRECTION_DOWN)) {
-//      NewState(IDLE_STATE, mSprite->mDirection);
+      //      NewState(IDLE_STATE, mSprite->mDirection);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
@@ -365,6 +391,10 @@ TBool GPlayerProcess::MaybeWalk() {
 TBool GPlayerProcess::IdleState() {
   // collision?
   if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeQuaff()) {
     return ETrue;
   }
 
@@ -403,6 +433,36 @@ TBool GPlayerProcess::SwordState() {
   return ETrue;
 }
 
+TBool GPlayerProcess::QuaffState() {
+  switch (mStep) {
+    case 0:
+      if (mSprite->AnimDone()) {
+        mStep++;
+        mSprite2 = new GAnchorSprite(mGameState, PLAYER_HEAL_PRIORITY, PLAYER_HEAL_SLOT);
+        mSprite2->x = mSprite->x + 16;
+        mSprite2->y = mSprite->y;
+        mSprite2->StartAnimation(quaffOverlayAnimation);
+        mGameState->AddSprite(mSprite2);
+      }
+      break;
+    case 1:
+      if (mSprite2->AnimDone()) {
+        mStep++;
+        mSprite->StartAnimation(quaff2Animation);
+        mSprite2->Remove();
+        delete mSprite2;
+        mSprite2 = ENull;
+      }
+      break;
+    case 2:
+      if (mSprite->AnimDone()) {
+        NewState(IDLE_STATE, DIRECTION_DOWN);
+      }
+      break;
+  }
+  return ETrue;
+}
+
 TBool GPlayerProcess::FallState() {
   if (mPlayfield->IsFloor(mSprite->x + 32, mSprite->y + mSprite->vy)) {
     // land
@@ -422,7 +482,6 @@ TBool GPlayerProcess::HitState() {
     }
   }
   return ETrue;
-
 }
 
 TBool GPlayerProcess::RunBefore() {
@@ -439,6 +498,8 @@ TBool GPlayerProcess::RunBefore() {
     case HIT_MEDIUM_STATE:
     case HIT_LIGHT_STATE:
       return HitState();
+    case QUAFF_STATE:
+      return QuaffState();
     default:
       return ETrue;
   }

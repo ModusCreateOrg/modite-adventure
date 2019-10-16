@@ -75,11 +75,12 @@ struct GPlayer {
     mLevel = 1;
     mNextLevel = 10;
     mExperience = 0;
-    mMaxHitPoints = 10;
+    mMaxHitPoints = 20;
     mHitPoints = mMaxHitPoints;
     mStrength = 10;
     mDexterity = 10;
     mHitStrength = 1;
+    mHealthPotion = mManaPotion = 100;
     mGold = 0;
     //
     mEquipped.mAmulet = ENull;
@@ -106,6 +107,7 @@ struct GPlayer {
   static TInt16 mHitPoints, mMaxHitPoints;
   static TInt16 mStrength, mDexterity;
   static TInt mHitStrength;
+  static TInt mHealthPotion, mManaPotion;   // 100, 75, 50, 25, 0 are possible values
   static TInt mGold;
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;

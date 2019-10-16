@@ -22,7 +22,7 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam,
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
-  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
+  mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w = mSprite->h = 32;

@@ -22,7 +22,7 @@ static const ANIMSCRIPT spikesAnimation[] = {
 GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam) {
   mParam = aParam;
   mGameState = aGameState;
-  mSprite = new GAnchorSprite(mGameState, 999, ENVIRONMENT_SLOT, IMG_SPIKES);
+  mSprite = new GAnchorSprite(mGameState, SPIKES_PRIORITY, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_DEFAULT;
   mSprite->w = mSprite->h = 24;
   mSprite->cx = -8;

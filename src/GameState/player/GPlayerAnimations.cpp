@@ -4,6 +4,49 @@
 const TInt16 HITSPEED_FIRST = TInt(1.5 * HITSPEED);
 
 /*
+ ____       _       _      ____       _   _              
+|  _ \ _ __(_)_ __ | | __ |  _ \ ___ | |_(_) ___  _ __   
+| | | | '__| | '_ \| |/ / | |_) / _ \| __| |/ _ \| '_ \  
+| |_| | |  | | | | |   <  |  __/ (_) | |_| | (_) | | | | 
+|____/|_|  |_|_| |_|_|\_\ |_|   \___/ \__|_|\___/|_| |_| 
+*/
+
+const TInt16 QUAFF_SPEED = 3;
+
+ANIMSCRIPT quaff1Animation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 0),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 1),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 2),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 5),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 6),
+  AEND,
+};
+
+ANIMSCRIPT quaff2Animation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 2),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 1),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 0),
+  ASTEP(QUAFF_SPEED, IMG_IDLE + 8),
+  AEND,
+};
+
+ANIMSCRIPT quaffOverlayAnimation[] = {
+  ABITMAP(PLAYER_HEAL_SLOT),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 0),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 1),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 2),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 3),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 4),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 5),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 6),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 7),
+  ASTEP(QUAFF_SPEED, IMG_HEAL + 8),
+  AEND,
+};
+
+/*
  ___    _ _         ______       _           _           _
 |_ _|__| | | ___   / / ___|  ___| | ___  ___| |_ ___  __| |
  | |/ _` | |/ _ \ / /\___ \ / _ \ |/ _ \/ __| __/ _ \/ _` |
@@ -101,14 +144,14 @@ ANIMSCRIPT swordDownNoBulletAnimation[] = {
 
   // this is the frame to collide with enemy to hit it
   ADELTA(-2, 22),
-//  ATYPE(STYPE_PBULLET),
+  //  ATYPE(STYPE_PBULLET),
   ASIZE(0, 23, 32, 55),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER
   ADELTA(-3, 22),
   ASIZE(0, 0, 32, 32),
-//  ATYPE(STYPE_PLAYER),
+  //  ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
   ADELTA(-2, 7),
@@ -210,11 +253,11 @@ ANIMSCRIPT swordLeftNoBulletAnimation[] = {
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT),
 
   ADELTA(-18, 0),
-//  ATYPE(STYPE_PBULLET),
+  //  ATYPE(STYPE_PBULLET),
   ASIZE(-32, 0, 40, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
-//  ATYPE(STYPE_PLAYER),
+  //  ATYPE(STYPE_PLAYER),
   ASIZE(0, 0, 32, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(-9, 0),
@@ -244,7 +287,6 @@ ANIMSCRIPT hitMediumLeftAnimation[] = {
   AFLIP(HITSPEED, IMG_DAMAGE_RIGHT + 3),
   AEND
 };
-
 
 ANIMSCRIPT hitHardLeftAnimation[] = {
   ABITMAP(PLAYER_SLOT),
@@ -318,12 +360,12 @@ ANIMSCRIPT swordRightNoBulletAnimation[] = {
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT),
 
   ADELTA(20, 0),
-//  ATYPE(STYPE_PBULLET),
+  //  ATYPE(STYPE_PBULLET),
   ASIZE(16, 0, 72, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
   ADELTA(20, 0),
-//  ATYPE(STYPE_PLAYER),
+  //  ATYPE(STYPE_PLAYER),
   ASIZE(0, 0, 32, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(11, 0),
@@ -426,12 +468,12 @@ ANIMSCRIPT swordUpNoBulletAnimation[] = {
   ASTEP(SWORDSPEED, IMG_SWORD_UP),
 
   ADELTA(2, -2),
-//  ATYPE(STYPE_PBULLET),
+  //  ATYPE(STYPE_PBULLET),
   ASIZE(0, 0, 32, 58),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 1),
 
   ADELTA(4, -2),
-//  ATYPE(STYPE_PLAYER),
+  //  ATYPE(STYPE_PLAYER),
   ASIZE(0, 0, 32, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 2),
 
@@ -463,7 +505,6 @@ ANIMSCRIPT hitMediumUpAnimation[] = {
   AEND
 };
 
-
 ANIMSCRIPT hitHardUpAnimation[] = {
   ABITMAP(PLAYER_SLOT),
   ASTEP(HITSPEED_FIRST, IMG_DAMAGE_UP + 3),
@@ -475,7 +516,3 @@ ANIMSCRIPT hitHardUpAnimation[] = {
   ASTEP(HITSPEED, IMG_DAMAGE_UP + 3),
   AEND
 };
-
-
-
-

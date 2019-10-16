@@ -19,7 +19,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aItemNumber, TFloat aX, 
   mGameState  = aGameState;
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
-    mSprite = new GAnchorSprite(mGameState, 998, ENVIRONMENT_SLOT, items[mItemNumber]);
+    mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber]);
     mSprite->type  = STYPE_OBJECT;
     mSprite->cMask = STYPE_PLAYER;
     mSprite->w     = mSprite->h = 32;
