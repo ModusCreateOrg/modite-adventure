@@ -72,7 +72,7 @@ public:
           (SCREEN_WIDTH - strlen(questionStr) * charWidth) / 2, 80,
           gWidgetTheme.GetInt(WIDGET_TITLE_FG),
           COLOR_TEXT_SHADOW,
-          gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+          COLOR_TEXT_TRANSPARENT,
           -6);
     }
 

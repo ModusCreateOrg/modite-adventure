@@ -19,7 +19,7 @@ TInt GSaveWidget::Render(TInt aX, TInt aY) {
       aX - 16, aY,
       gWidgetTheme.GetInt(WIDGET_TEXT_BG),
       COLOR_TEXT_SHADOW,
-      -1
+      COLOR_TEXT_TRANSPARENT
     );
   }
 
@@ -30,7 +30,7 @@ TInt GSaveWidget::Render(TInt aX, TInt aY) {
     aX, aY,
     gWidgetTheme.GetInt(WIDGET_TITLE_FG),
     COLOR_TEXT_SHADOW,
-    gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+    COLOR_TEXT_TRANSPARENT,
     -6
   );
 

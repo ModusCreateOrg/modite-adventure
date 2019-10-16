@@ -13,6 +13,7 @@ GInventory::GInventory(BViewPort *aViewPort) : BGameEngine(aViewPort) {
   mTop = 0;
   mCurrent = 0;
   mMode = MODE_INVENTORY;
+  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 }
 
 GInventory::~GInventory() {
@@ -24,7 +25,7 @@ void GInventory::RenderInventory() {
 
   BBitmap *bm = gDisplay.renderBitmap;
 
-  bm->DrawString(mViewPort, "INVENTORY", gFont16x16, 160 - 9 * 12 / 2, y, COLOR_TEXT, 0, -4);
+  bm->DrawString(mViewPort, "INVENTORY", gFont16x16, 160 - 9 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
   y += 32;
 
   BBitmap *env = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
@@ -52,11 +53,11 @@ void GInventory::RenderInventory() {
         selected = i;
         bm->FillRect(mViewPort, 0, y, SCREEN_WIDTH - 1, y + 17, COLOR_TEXT);
         bm->DrawBitmapTransparent(mViewPort, env, srcRect, 0, y - 7);
-        bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT_BG, -1, -4);
+        bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT_BG, COLOR_TEXT_TRANSPARENT, -4);
       }
       else {
         bm->DrawBitmapTransparent(mViewPort, env, srcRect, 0, y - 7);
-        bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT, -1, -4);
+        bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
       }
       rendered++;
       y += 18;
@@ -66,7 +67,7 @@ void GInventory::RenderInventory() {
 
   if (selected) {
     sprintf(buf, "A to use %s", itemNames[selected->mItemNumber]);
-    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, 0, -4);
+    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_BG, -4);
     if (gControls.WasPressed(BUTTONA)) {
       switch (selected->mItemNumber) {
         case ITEM_BLUE_AMULET:
@@ -145,7 +146,7 @@ static void render_equipped_item(const char *aSlot, GInventoryItem *aItem, BView
 
   if (!aItem) {
     sprintf(buf, "%8s:  None", aSlot);
-    bm->DrawString(aViewPort, buf, gFont16x16, x, y, COLOR_TEXT, 0, -4);
+    bm->DrawString(aViewPort, buf, gFont16x16, x, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
     return;
   }
 
@@ -163,7 +164,7 @@ static void render_equipped_item(const char *aSlot, GInventoryItem *aItem, BView
   bm->DrawBitmapTransparent(aViewPort, env, srcRect, x + 13 * 8, y - 7);
 
   sprintf(buf, "%8s:  %s", aSlot, itemNames[aItem->mItemNumber]);
-  bm->DrawString(aViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT, -1, -4);
+  bm->DrawString(aViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
 }
 
 void GInventory::RenderEquipped() {
@@ -172,7 +173,7 @@ void GInventory::RenderEquipped() {
 
   BBitmap *bm = gDisplay.renderBitmap;
 
-  bm->DrawString(mViewPort, "EQUPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, 0, -4);
+  bm->DrawString(mViewPort, "EQUPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_BG, -4);
   y += 32;
 
   render_equipped_item("Weapon", GPlayer::mEquipped.mWeapon, mViewPort, x, y);
