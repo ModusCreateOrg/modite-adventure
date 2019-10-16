@@ -1,9 +1,9 @@
 #ifndef GENUS_GEXITWIDGET_H
 #define GENUS_GEXITWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GExitWidget : public BButtonWidget {
+class GExitWidget : public GButtonWidget {
 public:
     GExitWidget();
     ~GExitWidget();

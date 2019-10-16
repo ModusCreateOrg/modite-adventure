@@ -1,9 +1,9 @@
 #ifndef GENUS_GSAVEWIDGET_H
 #define GENUS_GSAVEWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GSaveWidget : public BButtonWidget {
+class GSaveWidget : public GButtonWidget {
 public:
     GSaveWidget();
     ~GSaveWidget();

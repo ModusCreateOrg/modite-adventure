@@ -1,9 +1,9 @@
 #ifndef GENUS_GRESUMEWIDGET_H
 #define GENUS_GRESUMEWIDGET_H
 
-#include "Widgets.h"
+#include "Game.h"
 
-class GResumeWidget : public BButtonWidget {
+class GResumeWidget : public GButtonWidget {
 public:
     GResumeWidget();
     ~GResumeWidget();

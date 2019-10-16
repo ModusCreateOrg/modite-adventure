@@ -44,7 +44,6 @@ public:
     TBool RunAfter() {
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_MENU);
-        // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
         gSoundPlayer.SfxMenuCancel();
 #endif
@@ -100,7 +99,6 @@ GMainOptionsState::GMainOptionsState() : BGameEngine(gViewPort) {
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
-
 }
 
 GMainOptionsState::~GMainOptionsState() {

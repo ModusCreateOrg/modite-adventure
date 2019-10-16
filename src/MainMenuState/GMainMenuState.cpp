@@ -5,9 +5,7 @@
 GMainMenuState::GMainMenuState() : BGameEngine(gViewPort) {
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   mPlayfield = new GMainMenuPlayfield();
-  auto *p = new GMainMenuProcess();
-
-  AddProcess(p);
+  AddProcess(new GMainMenuProcess());
 
   gWidgetTheme.Configure(
       WIDGET_TEXT_BG, COLOR_TEXT_BG,
@@ -21,7 +19,6 @@ GMainMenuState::GMainMenuState() : BGameEngine(gViewPort) {
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
 
-// TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.PlayMusic(MAIN_MENU_XM);
 #endif

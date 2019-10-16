@@ -44,6 +44,7 @@ SET(MODITE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/src/SplashState
   ${CMAKE_SOURCE_DIR}/src/RulesState
   ${CMAKE_SOURCE_DIR}/src/CreditsState
+  ${CMAKE_SOURCE_DIR}/src/ResetState
   ${CMAKE_BINARY_DIR}/usr/local/include
   )
 
