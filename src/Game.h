@@ -27,6 +27,7 @@
 #include "GResources.h"
 #include "GGame.h"
 #include "GDialogWidget.h"
+#include "GButtonWidget.h"
 #include "TOptions.h"
 #include "GSoundPlayer.h"
 

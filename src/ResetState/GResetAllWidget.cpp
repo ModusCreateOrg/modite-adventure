@@ -1,11 +1,11 @@
-#include "GCancelResetWidget.h"
+#include "GResetAllWidget.h"
 #include "Game.h"
 
-GCancelResetWidget::GCancelResetWidget() : BButtonWidget("CANCEL", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetAllWidget::GResetAllWidget() : BButtonWidget("EVERYTHING", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GCancelResetWidget::~GCancelResetWidget() {}
+GResetAllWidget::~GResetAllWidget() {}
 
-TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
+TInt GResetAllWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
@@ -15,7 +15,7 @@ TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
         aX - 16, aY,
         gWidgetTheme.GetInt(WIDGET_TEXT_BG),
         COLOR_TEXT_SHADOW,
-        -1);
+        COLOR_TEXT_TRANSPARENT);
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
@@ -24,16 +24,24 @@ TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
       aX, aY,
       gWidgetTheme.GetInt(WIDGET_TITLE_FG),
       COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      COLOR_TEXT_TRANSPARENT,
       -6);
 
   return f->mHeight << 1;
 }
 
-void GCancelResetWidget::Select() {
+void GResetAllWidget::Select() {
+  gOptions->Reset();
+
+  // Go Back
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
+
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuCancel();
+  // Play notification sound
+  gSoundPlayer.SfxMenuAccept();
+
+  // Make sure we hear the reset in music volume immediately
+  gSoundPlayer.SetMusicVolume(gOptions->music);
 #endif
 }

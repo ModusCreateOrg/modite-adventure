@@ -25,7 +25,7 @@ TInt GSoundSliderWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
         aX - 16, aY,
         gWidgetTheme.GetInt(WIDGET_TEXT_BG),
         COLOR_TEXT_SHADOW,
-        -1);
+        COLOR_TEXT_TRANSPARENT);
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
@@ -34,7 +34,7 @@ TInt GSoundSliderWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
       aX, aY,
       gWidgetTheme.GetInt(WIDGET_TITLE_FG),
       COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      COLOR_TEXT_TRANSPARENT,
       -6);
 
 #ifdef __XTENSA__
@@ -52,9 +52,9 @@ TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
   aY -= 20;
 #endif
 
-  const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
-  const TInt  fg = gWidgetTheme.GetInt(WIDGET_SLIDER_FG),
-              bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
+  const BFont  *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
+  const TUint8 fg = gWidgetTheme.GetInt(WIDGET_SLIDER_FG),
+               bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
 
   for (TInt i = 0; i < 8; i++) {
     gDisplay.renderBitmap->DrawFastVLine(ENull, aX + 1, aY - 1, 16, COLOR_TEXT_SHADOW);

@@ -1,11 +1,11 @@
-#include "GOptionsWidget.h"
+#include "GCancelResetWidget.h"
 #include "Game.h"
 
-GOptionsWidget::GOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GCancelResetWidget::GCancelResetWidget() : BButtonWidget("CANCEL", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GOptionsWidget::~GOptionsWidget() {}
+GCancelResetWidget::~GCancelResetWidget() {}
 
-TInt GOptionsWidget::Render(TInt aX, TInt aY) {
+TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
 
   if (mActive) {
@@ -15,7 +15,7 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
         aX - 16, aY,
         gWidgetTheme.GetInt(WIDGET_TEXT_BG),
         COLOR_TEXT_SHADOW,
-        -1);
+        COLOR_TEXT_TRANSPARENT);
   }
 
   gDisplay.renderBitmap->DrawStringShadow(ENull,
@@ -24,16 +24,16 @@ TInt GOptionsWidget::Render(TInt aX, TInt aY) {
       aX, aY,
       gWidgetTheme.GetInt(WIDGET_TITLE_FG),
       COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      COLOR_TEXT_TRANSPARENT,
       -6);
 
-  return f->mHeight + 10;
+  return f->mHeight << 1;
 }
 
-void GOptionsWidget::Select() {
+void GCancelResetWidget::Select() {
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuCancel();
 #endif
 }

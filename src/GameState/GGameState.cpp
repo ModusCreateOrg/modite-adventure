@@ -131,7 +131,7 @@ void GGameState::PostRender() {
   if (mText[0]) {
     TInt len = strlen(mText);
     TInt x = gViewPort->mRect.Width() / 2 - len * 12 / 2;
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, -1, -4);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -4);
     if (--mTimer < 0) {
       mText[0] = '\0';
       gControls.Reset();
@@ -208,7 +208,7 @@ void GGameState::PostRender() {
 
   // experience fuel gauge
   gDisplay.SetColor(COLOR_EXPERIENCE, 0, 255, 0);
-  screen->DrawString(&vp, "XP", gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  screen->DrawString(&vp, "XP", gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
   x += 28;
   fuel_gauge(&vp, x, 4, GPlayer::mExperience, GPlayer::mNextLevel, COLOR_EXPERIENCE);
   x += GAUGE_WIDTH + 8;
@@ -217,7 +217,7 @@ void GGameState::PostRender() {
   char output[160];
   const TInt l_width = 48 + 2; // 2 px padding right
   sprintf(output, "L%-3d", GPlayer::mLevel);
-  screen->DrawString(&vp, output, gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_BG, -4);
+  screen->DrawString(&vp, output, gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
 }
 
 /*******************************************************************************

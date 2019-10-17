@@ -168,8 +168,8 @@ void GGame::Run() {
       mInventory->GameLoop();
     }
     else if (mGameMenu) {
-      mGameMenu->GameLoop();
       gGameEngine->GameLoop();
+      mGameMenu->GameLoop();
     }
     else {
       gGameEngine->GameLoop();

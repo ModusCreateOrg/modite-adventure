@@ -263,6 +263,7 @@ const TUint8 COLOR_SHMOO = 252;
 const TUint8 COLOR_TEXT_SHADOW = 253;
 const TUint8 COLOR_TEXT_BG = 254;
 const TUint8 COLOR_TEXT = 255;
+const TInt16 COLOR_TEXT_TRANSPARENT = -1;
 
 #define MAX_BBITMAP 5
 

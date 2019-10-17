@@ -20,7 +20,7 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY) : GDialogWidget("GAME P
 GGameMenuContainer::~GGameMenuContainer() {}
 
 TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
-  TInt color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);;
+  TUint8 color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);;
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
   const TInt x = (SCREEN_WIDTH - (strlen(mTitle) * f->mWidth)) / 2;
 
@@ -39,7 +39,7 @@ TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
       aX + x, aY + 16,
       color,
       COLOR_TEXT_SHADOW,
-      gWidgetTheme.GetInt(WIDGET_TITLE_BG),
+      COLOR_TEXT_TRANSPARENT,
       -6
       );
 
