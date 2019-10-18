@@ -22,6 +22,7 @@ enum HIT_STRENGTH {
   HIT_HARD
 };
 
+
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
 // this:
 const TFloat COLLISION_DELTA_Y = 16;
