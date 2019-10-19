@@ -20,6 +20,7 @@ public:
 
   ~GGameState();
 
+  void GameLoop() OVERRIDE;
   void PreRender();
   void PostRender();
 

@@ -2,6 +2,7 @@
 #include "Items.h"
 
 GInventoryList::GInventoryList() : BList() {
+  Reset();
   //
 }
 

@@ -22,6 +22,10 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam,
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
+  OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
+  mGroup = oa->group;
+  mOrder = oa->order;
+
   printf("FLOOR SWITCH %d %0x\n", mParam);
   mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
   mSprite->cMask = STYPE_PBULLET;
@@ -46,9 +50,25 @@ GFloorSwitchProcess::~GFloorSwitchProcess() {
 
 TBool GFloorSwitchProcess::RunBefore() {
   while (BEventMessage *m = GetMessage()) {
-    printf("me: %p - Received %d from %p %0x\n", this, m->mType, m->mSender, m->mMessage);
+//    printf("me: %p - Received %d from %p %0x\n", this, m->mType, m->mSender, m->mMessage);
     delete m;
   }
+
+  GGamePlayfield *p = mGameState->mGamePlayfield;
+
+  if (mGroup) {
+    if (mState) {
+      if (mOrder != OA_ORDER_ANY) {
+        p->mGroupState[mGroup] = EFalse;
+      }
+    }
+    else {
+      p->mGroupState[mGroup] = EFalse;
+      p->mGroupDone[mGroup] = EFalse;
+    }
+
+  }
+
   return ETrue;
 }
 

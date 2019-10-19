@@ -16,6 +16,7 @@ public:
 protected:
   GGameState *mGameState;
   TUint16 mParam;
+  TInt8 mGroup;
   TBool mHorizontal;
   GAnchorSprite *mSprite1;
   GAnchorSprite *mSprite2;

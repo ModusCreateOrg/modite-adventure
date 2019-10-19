@@ -2,7 +2,6 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GResources.h"
-#include "GameState/status/GStartLevelProcess.h"
 #include "GameState/player/GPlayerProcess.h"
 #include "GameState/enemies/GSpiderProcess.h"
 #include "GameState/enemies/GBatProcess.h"
@@ -26,7 +25,6 @@
 //#undef DEBUGME
 
 const TInt GAUGE_WIDTH = 90;
-
 
 /*******************************************************************************
  *******************************************************************************
@@ -233,6 +231,20 @@ TUint16 GGameState::MapHeight() {
 }
 
 GAnchorSprite *GGameState::PlayerSprite() { return GPlayer::mSprite; }
+
+void GGameState::GameLoop() {
+  for (TInt s=0; s<16; s++) {
+    mGamePlayfield->mGroupState[s] = ETrue;
+  }
+
+  BGameEngine::GameLoop();
+
+  for (TInt s=0; s<16; s++) {
+    if (mGamePlayfield->mGroupState[s] == ETrue) {
+      mGamePlayfield->mGroupDone[s] = ETrue;
+    }
+  }
+}
 
 /*******************************************************************************
  *******************************************************************************

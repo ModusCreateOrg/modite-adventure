@@ -2,9 +2,13 @@
 #include "GGamePlayfield.h"
 
 GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood,
-                           TBool aHorizontal) {
+                           TBool aHorizontal) : BProcess(-10) {
   mGameState = aGameState;
   mParam = aParam;
+  
+  OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
+  mGroup = oa->group;
+    
   mHorizontal = aHorizontal;
   mSprite1 = mSprite2 = ENull;
 
@@ -50,10 +54,16 @@ GDoorProcess::~GDoorProcess() {
 }
 
 TBool GDoorProcess::RunBefore() {
+  if (mGroup && mGameState->mGamePlayfield->mGroupDone[mGroup]) {
+    return EFalse;
+  }
   return ETrue;
 }
 
 TBool GDoorProcess::RunAfter() {
+  if (mGroup) {
+    return ETrue;
+  }
   if ((mSprite1 && (mSprite1->cType & STYPE_PBULLET)) || (mSprite2 && (mSprite2->cType & STYPE_PBULLET))) {
     return EFalse;
   } else {
