@@ -1,12 +1,9 @@
 #ifndef MODITE_GSTAIRSPROCESS_H
 #define MODITE_GSTAIRSPROCESS_H
 
-#include <BProcess.h>
-#include <GAnchorSprite.h>
-#include <GGamePlayfield.h>
-#include <GGameState.h>
+#include "GEnvironmentProcess.h"
 
-class GStairsProcess : public BProcess {
+class GStairsProcess : public GEnvironmentProcess {
 public:
   GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY, const char *aKind);
 
@@ -18,12 +15,10 @@ public:
   TBool RunAfter();
 
 protected:
-  GGameState    *mGameState;
   GAnchorSprite *mSprite1;
   GAnchorSprite *mSprite2;
-  DIRECTION     mDirection;      // UP or DOWN
-  TInt          mLevel;                // target level (where stairs lead)
+  DIRECTION mDirection; // UP or DOWN
+  TInt mLevel;          // target level (where stairs lead)
 };
-
 
 #endif //MODITE_GSTAIRSPROCESS_H

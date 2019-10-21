@@ -1,11 +1,9 @@
 #ifndef MODITE_GSPIKESPROCESS_H
 #define MODITE_GSPIKESPROCESS_H
 
-#include <BProcess.h>
-#include "GAnchorSprite.h"
-#include "GGameState.h"
+#include "GEnvironmentProcess.h"
 
-class GSpikesProcess : public BProcess {
+class GSpikesProcess : public GEnvironmentProcess {
 public:
   GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam);
 
@@ -20,9 +18,6 @@ public:
   static TInt mNumber;
 
 protected:
-  GGameState *mGameState;
-  TUint16 mParam;
-  GAnchorSprite *mSprite;
   TBool mState;   // true if animating
   TInt mTimer, mTime;
 };

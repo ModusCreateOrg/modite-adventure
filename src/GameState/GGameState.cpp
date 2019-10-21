@@ -2,7 +2,6 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GResources.h"
-#include "GameState/status/GStartLevelProcess.h"
 #include "GameState/player/GPlayerProcess.h"
 #include "GameState/enemies/GSpiderProcess.h"
 #include "GameState/enemies/GBatProcess.h"
@@ -26,7 +25,6 @@
 //#undef DEBUGME
 
 const TInt GAUGE_WIDTH = 90;
-
 
 /*******************************************************************************
  *******************************************************************************
@@ -79,7 +77,7 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   GPlayer::Init();
-  LoadLevel("Dungeon0", 1, DEVDUNGEON_0_LEVEL1_MAP);
+  LoadLevel("Dungeon0", 1, DEVDUNGEON_0_LEVEL2_MAP);
 }
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
@@ -234,6 +232,20 @@ TUint16 GGameState::MapHeight() {
 
 GAnchorSprite *GGameState::PlayerSprite() { return GPlayer::mSprite; }
 
+void GGameState::GameLoop() {
+  for (TInt s=0; s<16; s++) {
+    mGamePlayfield->mGroupState[s] = ETrue;
+  }
+
+  BGameEngine::GameLoop();
+
+  for (TInt s=0; s<16; s++) {
+    if (mGamePlayfield->mGroupState[s] == ETrue) {
+      mGamePlayfield->mGroupDone[s] = ETrue;
+    }
+  }
+}
+
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
@@ -359,7 +371,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         AddProcess(new GLeverProcess(this, params, xx, yy + 32));
         break;
       case ATTR_FLOOR_SWITCH:
-        printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("FLOOR_SWITCH at %.2f,%.2f %d %d params: %x\n", xx, yy, row, col, params);
         AddProcess(new GFloorSwitchProcess(this, params, xx, yy + 32, EFalse));
         break;
       case ATTR_FLOOR_SWITCH_WOOD:

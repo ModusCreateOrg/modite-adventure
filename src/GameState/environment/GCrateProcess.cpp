@@ -1,6 +1,4 @@
 #include "GCrateProcess.h"
-#include "inventory/GItemProcess.h"
-#include "GGamePlayfield.h"
 
 static const TInt BREAK_SPEED = 5;
 
@@ -34,9 +32,7 @@ static ANIMSCRIPT breakAnimation[] = {
   AEND,
 };
 
-GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY) {
-  mGameState = aGameState;
-  mParam = aParam;
+GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY) : GEnvironmentProcess(aGameState, aParam, aX, aY) {
   mAnimating = EFalse;
   mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
   mSprite->cMask = STYPE_PBULLET;
@@ -51,11 +47,7 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
 }
 
 GCrateProcess::~GCrateProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
+  //
 }
 
 TBool GCrateProcess::RunBefore() {
@@ -74,11 +66,13 @@ TBool GCrateProcess::RunAfter() {
       }
       mSprite->StartAnimation(crateAnimation);
     }
-  } else if (mSprite->cType & STYPE_PBULLET) {
+  }
+  else if (mSprite->cType & STYPE_PBULLET) {
     mAnimating = ETrue;
     if (--mSprite->mHitPoints > 0) {
       mSprite->StartAnimation(hitAnimation);
-    } else {
+    }
+    else {
       mSprite->StartAnimation(breakAnimation);
     }
   }

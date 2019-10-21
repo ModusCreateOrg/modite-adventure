@@ -23,6 +23,9 @@ struct GInventoryItem : public BNode {
 
 struct GInventoryList : public BList {
   GInventoryList();
+  ~GInventoryList() {
+    Reset();
+  }
 
   void AddItem(GInventoryItem *aItem) {
     AddHead(*aItem);

@@ -1,24 +1,21 @@
 #ifndef MODITE_GLEVERPROCESS_H
 #define MODITE_GLEVERPROCESS_H
 
-#include <BProcess.h>
-#include "GAnchorSprite.h"
-#include "GGameState.h"
+#include "GEnvironmentProcess.h"
 
-class GLeverProcess : public BProcess {
+class GLeverProcess : public GEnvironmentProcess {
 public:
   GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY);
   ~GLeverProcess() OVERRIDE;
+
 public:
   TBool RunBefore() OVERRIDE;
   TBool RunAfter() OVERRIDE;
 
 protected:
-  GGameState *mGameState;
-  TUint16 mParam;
   TInt16 mState;
-  TBool mAnimating, mDirection;
-  GAnchorSprite *mSprite;
+  TBool mAnimating,
+      mDirection; // which direction next activation moves the switch (e.g. left/right)
 };
 
 #endif //MODITE_GLEVERPROCESS_H
