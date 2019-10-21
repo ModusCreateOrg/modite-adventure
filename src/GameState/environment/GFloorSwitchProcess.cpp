@@ -1,30 +1,11 @@
 #include "GFloorSwitchProcess.h"
-#include "GGamePlayfield.h"
 
 const TInt ANIM_SPEED = FRAMES_PER_SECOND;
 
-#if 0
-static ANIMSCRIPT switchOffAnimation[] = {
-  ABITMAP(ENVIRONMENT_SLOT),
-  ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH),
-  AEND,
-};
-static ANIMSCRIPT switchOnAnimation[]  = {
-  ABITMAP(ENVIRONMENT_SLOT),
-  ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH + 1),
-  AEND,
-};
-#endif
-
-GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden) {
-  mGameState = aGameState;
-  mParam = aParam;
+GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden)
+    : GEnvironmentProcess(aGameState, aParam, aX, aY) {
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
-
-  OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
-  mGroup = oa->group;
-  mOrder = oa->order;
 
   printf("FLOOR SWITCH %d %0x\n", mParam);
   mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
@@ -41,32 +22,28 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam,
 }
 
 GFloorSwitchProcess::~GFloorSwitchProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
+  //
 }
 
 TBool GFloorSwitchProcess::RunBefore() {
   while (BEventMessage *m = GetMessage()) {
-//    printf("me: %p - Received %d from %p %0x\n", this, m->mType, m->mSender, m->mMessage);
+    //    printf("me: %p - Received %d from %p %0x\n", this, m->mType, m->mSender, m->mMessage);
     delete m;
   }
 
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
-  if (mGroup) {
+  TInt group = mAttribute->group;
+  if (group) {
     if (mState) {
-      if (mOrder != OA_ORDER_ANY) {
-        p->mGroupState[mGroup] = EFalse;
+      if (mAttribute->order != OA_ORDER_ANY) {
+        p->mGroupState[group] = EFalse;
       }
     }
     else {
-      p->mGroupState[mGroup] = EFalse;
-      p->mGroupDone[mGroup] = EFalse;
+      p->mGroupState[group] = EFalse;
+      p->mGroupDone[group] = EFalse;
     }
-
   }
 
   return ETrue;
@@ -80,6 +57,7 @@ TBool GFloorSwitchProcess::RunAfter() {
       return ETrue;
     }
   }
+
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
     mSprite->ClearFlags(SFLAG_CHECK);
     mState = !mState;
@@ -94,5 +72,6 @@ TBool GFloorSwitchProcess::RunAfter() {
       gEventEmitter.FireEvent(this, MESSAGE_FLOOR_SWITCH_UP, (TAny *)TUint64(mParam));
     }
   }
+
   return ETrue;
 }

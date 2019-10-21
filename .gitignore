@@ -101,4 +101,4 @@ sdkconfig.old
 Resources.bin
 Resources.h
 .built
-object_layer_attributes
+object_attribute

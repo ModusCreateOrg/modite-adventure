@@ -1,12 +1,11 @@
 #include "GStairsProcess.h"
 
-GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY,
-                               const char *aKind)
-  : BProcess(0) {
+GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aParams, TFloat aX, TFloat aY, const char *aKind)
+    : GEnvironmentProcess(aGameState, aParams, aX, aY) {
   mSprite1 = mSprite2 = ENull;
   mDirection = aDirection;
   mGameState = aGameState;
-  mLevel = aLevel;
+  mLevel = aParams;
   if (mDirection == DIRECTION_UP) {
     const int img = strcmp(aKind, "WOOD") ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
     mSprite1 = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img);
@@ -26,7 +25,8 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TIn
     mSprite2->y = aY + 32;
     mSprite2->w = mSprite2->h = 32;
     mGameState->AddSprite(mSprite2);
-  } else {
+  }
+  else {
     const int img = strcmp(aKind, "WOOD") ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
     mSprite1 = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img);
     mSprite1->cx = -16;
@@ -40,16 +40,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TIn
 }
 
 GStairsProcess::~GStairsProcess() {
-  if (mSprite2) {
-    mSprite2->Remove();
-    delete mSprite2;
-    mSprite2 = ENull;
-  }
-  if (mSprite1) {
-    mSprite1->Remove();
-    delete mSprite1;
-    mSprite1 = ENull;
-  }
+  //
 }
 
 TBool GStairsProcess::RunBefore() {
