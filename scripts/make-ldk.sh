@@ -2,20 +2,21 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-. ${SCRIPT_DIR}/ldk_scripts_common.sh
+# shellcheck disable=SC1090
+. "${SCRIPT_DIR}/ldk_scripts_common.sh"
 
-cd ${WORKING_DIR}
+cd "${WORKING_DIR}" || exit 1
 
 
 echo "Compiling"
 mkdir -p build/ldk/
 
-make -f Makefile-ldk.mk -j 12 ipk >/dev/null
-if [[ $? -eq 0 ]]; then
+
+if make -f Makefile-ldk.mk -j 12 ipk >/dev/null; then
  	make -f Makefile-ldk.mk cleanobjects >/dev/null 2>&1
 fi
 
-me=`whoami`
+//me="$(whoami)"
 
 
 ping 169.254.1.1 -c 1 -W 0 -i 200
@@ -40,14 +41,12 @@ ping 169.254.1.1 -c 1 -W 0 -i 200
 # fi
 
 
-md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
-md5=${md5: -6}
-
-
+md5="$(md5sum build/ldk/modite-adventure.dge | awk '{print $1}')"
+md5="${md5: -6}"
 
 function deploy_binary_via_ftp {
 
-ftp -n -v $LDK_IP << EOT
+ftp -n -v "$LDK_IP" << EOT
 user $USER
 prompt
 passive
@@ -63,7 +62,7 @@ EOT
 
 
 function deploy_ipk_via_ftp {
-ftp -n -v $LDK_IP << EOT
+ftp -n -v "$LDK_IP" << EOT
 user $USER
 prompt
 passive
