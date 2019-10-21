@@ -8,12 +8,12 @@
 //
 // See tools/object_attribute.cpp - the executable takes a group, order, and item and prints out the code.
 struct OBJECT_ATTRIBUTE {
-  int group : 4;  // 4 bits of group to assocate things together
+  unsigned int group : 4;  // 4 bits of group to assocate things together
                   // next 8 bits are either order or item number, accessed via attribute.order or attribute.item
-  int order : 5;  // see order bits below
-  int state : 2;  // desired state for operation of 3-way switches
-  int unused : 4; // unused bits
-  int flag : 1;
+  unsigned int order : 5;  // see order bits below
+  unsigned int state : 2;  // desired state for operation of 3-way switches
+  unsigned int unused : 4; // unused bits
+  unsigned int flag : 1;
 };
 
 const TUint8 OA_GROUP_NONE = 0;  // thing does not belong to any group

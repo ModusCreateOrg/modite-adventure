@@ -21,7 +21,6 @@ static ANIMSCRIPT leverRightAnimation[] = {
 GLeverProcess::GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY)
     : GEnvironmentProcess(aGameState, aParam, aX, aY) {
   mGameState = aGameState;
-  mState = 1;
   mAnimating = EFalse;
   mDirection = ETrue;
 
@@ -33,6 +32,8 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, 
   mSprite->x = aX;
   mSprite->y = aY + 3;
   mGameState->AddSprite(mSprite);
+  mState = 1;
+  mSprite->StartAnimation(leverCenterAnimation);
 }
 
 GLeverProcess::~GLeverProcess() {
@@ -40,15 +41,11 @@ GLeverProcess::~GLeverProcess() {
 }
 
 TBool GLeverProcess::RunBefore() {
-  while (BEventMessage *m = GetMessage()) {
-    //    printf("me: %p - Received %d from %p %0x\n", this, m->mType, m->mSender, m->mMessage);
-    delete m;
-  }
-
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
   TInt group = mAttribute->group,
        state = mAttribute->state;
+
   if (group) {
     if (mState == state) {
       if (mAttribute->order != OA_ORDER_ANY) {
@@ -77,7 +74,6 @@ TBool GLeverProcess::RunAfter() {
   if (mSprite->cType & STYPE_PBULLET) {
     mSprite->cType = 0;
     mSprite->ClearFlags(SFLAG_CHECK);
-    printf("\n\nmState: %d %s\n", mState, mDirection ? "TRUE" : "FALSE");
     if (mDirection) {
       mState++;
       if (mState > 2) {
@@ -92,7 +88,6 @@ TBool GLeverProcess::RunAfter() {
         mDirection = ETrue;
       }
     }
-    printf("mState: %d %s\n", mState, mDirection ? "TRUE" : "FALSE");
     mAnimating = ETrue;
     switch (mState) {
       case 0:

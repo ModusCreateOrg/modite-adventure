@@ -25,7 +25,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TF
   mSprite1->w = mSprite1->h = 32;
   mSprite1->cx = -16;
   mSprite1->x = aX;
-  mSprite1->y = aY + 3;
+  mSprite1->y = aY + (mHorizontal ? 2 : 3);
   mGameState->AddSprite(mSprite1);
 
   if (!mHorizontal) {
@@ -44,8 +44,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TF
     mSprite2->y = mSprite1->y - 32;
     mGameState->AddSprite(mSprite2);
   }
-
-  printf("mAttr %d, %d, %d, %d\n", mAttribute->group, mAttribute->order, mAttribute->state, mAttribute->flag);
 }
 
 GDoorProcess::~GDoorProcess() {
@@ -82,3 +80,6 @@ TBool GDoorProcess::RunAfter() {
   }
   return ETrue;
 }
+
+
+
