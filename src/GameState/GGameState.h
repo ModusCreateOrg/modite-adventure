@@ -10,12 +10,17 @@ class GGamePlayfield;
 class GPlayerProcess;
 class GAnchorSprite;
 
+// Message Types
+static TUint16 MESSAGE_FLOOR_SWITCH_DOWN = 0;
+static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
+
 class GGameState : public BGameEngine {
 public:
   GGameState();
 
   ~GGameState();
 
+  void GameLoop() OVERRIDE;
   void PreRender();
   void PostRender();
 

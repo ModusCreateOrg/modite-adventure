@@ -1,24 +1,9 @@
 #include "GFloorSwitchProcess.h"
-#include "GGamePlayfield.h"
 
 const TInt ANIM_SPEED = FRAMES_PER_SECOND;
 
-#if 0
-static ANIMSCRIPT switchOffAnimation[] = {
-  ABITMAP(ENVIRONMENT_SLOT),
-  ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH),
-  AEND,
-};
-static ANIMSCRIPT switchOnAnimation[]  = {
-  ABITMAP(ENVIRONMENT_SLOT),
-  ASTEP(ANIM_SPEED, IMG_FLOOR_SWITCH + 1),
-  AEND,
-};
-#endif
-
-GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden) {
-  mGameState = aGameState;
-  mParam = aParam;
+GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden)
+    : GEnvironmentProcess(aGameState, aParam, aX, aY) {
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
@@ -34,14 +19,25 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam,
 }
 
 GFloorSwitchProcess::~GFloorSwitchProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
+  //
 }
 
 TBool GFloorSwitchProcess::RunBefore() {
+  GGamePlayfield *p = mGameState->mGamePlayfield;
+
+  TInt group = mAttribute->group;
+  if (group) {
+    if (mState) {
+      if (mAttribute->order != OA_ORDER_ANY) {
+        p->mGroupState[group] = EFalse;
+      }
+    }
+    else {
+      p->mGroupState[group] = EFalse;
+      p->mGroupDone[group] = EFalse;
+    }
+  }
+
   return ETrue;
 }
 
@@ -53,12 +49,14 @@ TBool GFloorSwitchProcess::RunAfter() {
       return ETrue;
     }
   }
-  if (mSprite->cType & STYPE_PBULLET) {
-    mSprite->cType = 0;
+
+  if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
     mSprite->ClearFlags(SFLAG_CHECK);
     mState = !mState;
-    printf("Toggle Floor Switch %s\n", mState ? "ON" : "OFF");
+    OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
+    mAnimating = ETrue;
     mSprite->mImageNumber = mState ? (mImage + 1) : mImage;
   }
+
   return ETrue;
 }

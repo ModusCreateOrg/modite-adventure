@@ -48,22 +48,22 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y1)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_X, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_X, r.y2)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
         return ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_Y)) {
+      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_Y) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_Y)) {
+      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
