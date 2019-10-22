@@ -2,10 +2,9 @@
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-# shellcheck disable=SC1090
-. "$SCRIPT_DIR/ldk_scripts_common.sh"
+. $SCRIPT_DIR/ldk_scripts_common.sh
 
-cd "$WORKING_DIR" || exit 1
+cd $WORKING_DIR
 
 
 #### Example IPK File
@@ -20,26 +19,26 @@ cd "$WORKING_DIR" || exit 1
 
 
 #### BEGIN IPK CREATION #####
-rm -rf "${IPK_WORKING_DIR}"
-mkdir -p "${IPK_EXEC_DIR}"
-mkdir -p "${LNK_DESTINATION_DIR}"
+rm -rf ${IPK_WORKING_DIR}
+mkdir -p ${IPK_EXEC_DIR}
+mkdir -p ${LNK_DESTINATION_DIR}
 
 
 # Copy binary and launcher image to the execution directory
-cp -r "${TARGET}" "${LDK_FILES_DIR}/modite-adventure.png" "${IPK_EXEC_DIR}"
+cp -r ${TARGET} ${LDK_FILES_DIR}/modite-adventure.png ${IPK_EXEC_DIR}
 #rm ${TARGET}
 
-cp "${LDK_FILES_DIR}/modite-adventure.lnk" "${LNK_DESTINATION_DIR}"
+cp ${LDK_FILES_DIR}/modite-adventure.lnk ${LNK_DESTINATION_DIR}
 
-NOW="$(date +%s)"
+NOW=`date +%s`
 
-sed "s/^Version:.*/Version: ${NOW}/" "${LDK_FILES_DIR}/control" > "${IPK_WORKING_DIR}/control"
+sed "s/^Version:.*/Version: ${NOW}/" ${LDK_FILES_DIR}/control > ${IPK_WORKING_DIR}/control
 #cp ${LDK_FILES_DIR}/conffiles ${IPK_EXEC_DIR}/
 
-tar --owner=0 --group=0 -czvf "${IPK_WORKING_DIR}/control.tar.gz" -C "${IPK_WORKING_DIR}" control #conffiles
-tar --owner=0 --group=0 -czvf "${IPK_WORKING_DIR}/data.tar.gz" -C "${IPK_WORKING_DIR}" home/
+tar --owner=0 --group=0 -czvf ${IPK_WORKING_DIR}/control.tar.gz -C ${IPK_WORKING_DIR} control #conffiles
+tar --owner=0 --group=0 -czvf ${IPK_WORKING_DIR}/data.tar.gz -C ${IPK_WORKING_DIR} home/
 
 
-echo 2.0 > "${IPK_WORKING_DIR}/debian-binary"
-ar r "${BUILD_DIR}/modite-adventure.ipk" "${IPK_WORKING_DIR}/control.tar.gz" "${IPK_WORKING_DIR}/data.tar.gz" "${IPK_WORKING_DIR}/debian-binary"
+echo 2.0 > ${IPK_WORKING_DIR}/debian-binary
+ar r ${BUILD_DIR}/modite-adventure.ipk ${IPK_WORKING_DIR}/control.tar.gz ${IPK_WORKING_DIR}/data.tar.gz ${IPK_WORKING_DIR}/debian-binary
 

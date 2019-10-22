@@ -49,8 +49,7 @@ function PRINT_CYAN {
 export WORKING_DIR=${SCRIPT_DIR}/..
 
 
-me="$(whoami)"
-export me
+export me=`whoami`
 export DEPLOY_MOUNT=/media/${me}/RETROFW
 export LDK_DEVICE_DIR=${DEPLOY_MOUNT}/test
 

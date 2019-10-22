@@ -25,8 +25,6 @@ BUILD_DIR="$BASE_DIR/build"
 TOP_DIR="$BASE_DIR/.."
 CREATIVE_ENGINE_DIR="${CREATIVE_ENGINE_PATH:-$TOP_DIR/creative-engine}"
 export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR
-# shellcheck disable=SC2086
-shellcheck $BASE_DIR/**/*.sh
 # shellcheck disable=SC1090
 source "$DIR/common.sh"
 
