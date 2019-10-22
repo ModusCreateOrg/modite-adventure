@@ -314,92 +314,135 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   TInt16 spikes_number = GSpikesProcess::mNumber;
   TInt eCount = 0;
   for (TInt ip = 0; ip < objectCount; ip++) {
-    TUint16 op = program[ip].mCode & TUint32(0xffff),
-            params = program[ip].mCode >> TUint32(16),
-            row = program[ip].mRow, // row
-        col = program[ip].mCol;     // col
+    const TUint16 op = program[ip].mCode & TUint32(0xffff),
+                  params = program[ip].mCode >> TUint32(16),
+                  row = program[ip].mRow,
+                  col = program[ip].mCol;
 
     auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
     switch (op) {
+
+        //
+        // ENVIRONMENT
+        //
+
       case ATTR_STONE_STAIRS_UP:
         printf("STONE STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GStairsProcess(this, ip, DIRECTION_UP, params, xx, yy, "STONE"));
         break;
+
       case ATTR_STONE_STAIRS_DOWN:
         printf("STONE STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GStairsProcess(this, ip, DIRECTION_DOWN, params, xx, yy, "STONE"));
         break;
+
       case ATTR_WOOD_STAIRS_UP:
         printf("WOOD STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GStairsProcess(this, ip, DIRECTION_UP, params, xx, yy, "WOOD"));
         break;
+
       case ATTR_WOOD_STAIRS_DOWN:
         printf("WOOD STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GStairsProcess(this, ip, DIRECTION_DOWN, params, xx, yy, "WOOD"));
         break;
+
       case ATTR_CRATE:
         printf("CRATE at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GCrateProcess(this, ip, params, xx, yy));
         break;
-      case ATTR_CHEST:
-        printf("CHEST at %.2f,%.2f %d %d\n", xx, yy, row, col);
-        AddProcess(new GChestProcess(this, ip, params, xx, yy));
+
+      case ATTR_CRATE_GONE:
+        printf("CRATE GONE at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        if (params) {
+          GItemProcess::SpawnItem(this, ip, params, xx, yy + 32);
+        }
         break;
+
+      case ATTR_CHEST:
+        printf("CHEST CLOSED at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        AddProcess(new GChestProcess(this, ip, params, xx, yy, EFalse));
+        break;
+
+      case ATTR_CHEST_OPEN:
+        printf("CHEST OPEN at %.2f,%.2f %d %d ATTR: %d\n", xx, yy, row, col, params);
+        AddProcess(new GChestProcess(this, ip, params, xx, yy, ETrue));
+        break;
+
       case ATTR_SPIKES:
         printf("SPIKES at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GSpikesProcess(this, ip, xx, yy + 30, spikes_number--));
         break;
+
       case ATTR_METAL_DOOR_H:
         printf("METAL DOOR H at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, EFalse, ETrue));
         break;
+
       case ATTR_METAL_DOOR_V:
         printf("METAL DOOR V at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, EFalse, EFalse));
         break;
+
       case ATTR_WOOD_DOOR_H:
         printf("WOOD DOOR H at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, ETrue, ETrue));
         break;
+
       case ATTR_WOOD_DOOR_V:
         printf("WOOD DOOR V at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, ETrue, EFalse));
         break;
+
       case ATTR_LEVER:
         printf("LEVER at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GLeverProcess(this, ip, params, xx, yy + 32));
         break;
+
       case ATTR_FLOOR_SWITCH:
         printf("FLOOR_SWITCH at %.2f,%.2f %d %d params: %x\n", xx, yy, row, col, params);
         AddProcess(new GFloorSwitchProcess(this, ip, params, xx, yy + 32, EFalse));
         break;
+
       case ATTR_FLOOR_SWITCH_WOOD:
         printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GFloorSwitchProcess(this, ip, params, xx, yy + 32, ETrue));
         break;
+
+        //
+        // PLAYER
+        //
 
       case ATTR_PLAYER:
         printf("PLAYER at %.2f,%.2f\n", xx, yy);
         GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32);
         startedPlayer = ETrue;
         break;
+
+        //
+        // ENEMIES
+        //
+
       case ATTR_SPIDER:
         printf("SPIDER at %.2f,%.2f %d %d\n", xx - 32, yy, row, col);
         AddProcess(new GSpiderProcess(this, ip, xx - 32, yy + 32, params));
         break;
+
       case ATTR_BAT:
         printf("BAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GBatProcess(this, ip, xx - 32, yy + 32, params));
         break;
+
       case ATTR_GOBLIN:
         printf("GOBLIN at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GGoblinProcess(this, ip, xx, yy + 32, params));
         break;
+
       case ATTR_GOBLIN_SNIPER:
         printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GGoblinSniperProcess(this, ip, xx - 32, yy + 32, params));
         break;
+
       case ATTR_ORC:
         // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
         // to test other enemy logic, comment out spawning the Orc and instead spawn the enemy we want to see/test
@@ -407,18 +450,22 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
         AddProcess(new GOrcProcess(this, ip, xx, yy + 32, params));
         break;
+
       case ATTR_RAT:
         printf("RAT at %.2f,%.2f %d %d %d\n", xx, yy, row, col, eCount);
         AddProcess(new GRatProcess(this, ip, xx - 18, yy + 31, params));
         break;
+
       case ATTR_SLIME:
         printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GSlimeProcess(this, ip, xx - 18, yy + 31, params));
         break;
+
       case ATTR_TROLL:
         printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, row, col);
         AddProcess(new GTrollProcess(this, ip, xx - 20, yy + 32, params));
         break;
+
       default:
         printf("Invalid op code in Object Program: %x at col,row %d,%d\n", program[ip].mCode, col, row);
         break;
@@ -430,10 +477,25 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   }
 }
 
-void GGameState::EndProgram(TInt aIp, TUint16 aCode) {
-  BObjectProgram *program = mGamePlayfield->mObjectProgram;
-  program[aIp].mCode = aCode;
+void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
+  BObjectProgram *program = mGamePlayfield->mObjectProgram,
+                 *step = &program[aIp];
+
+  TUint32 code = aCode,
+          attr = aAttr,
+          sCode = step->mCode;
+
+  if (aCode == ATTR_KEEP) {
+    if (aAttr == ATTR_KEEP) {
+      // keep both?  Nothing to do!
+      return;
+    }
+    step->mCode = LOWORD(sCode) | (attr << 16);
+  }
+  else if (aAttr == ATTR_KEEP) {
+    step->mCode = (sCode & 0xffff0000) | (attr << 16);
+  }
+  else {
+    step->mCode = code | (attr << 16);
+  }
 }
-
-
- 

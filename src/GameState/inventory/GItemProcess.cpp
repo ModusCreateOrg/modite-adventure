@@ -7,27 +7,31 @@
 
 GItemProcess *GItemProcess::SpawnItem(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) {
   if (aItemNumber && aItemNumber < sizeof(items)) {
-    GItemProcess *p = new GItemProcess(aGameState, aItemNumber, aX, aY);
+    GItemProcess *p = new GItemProcess(aGameState, aIp, aItemNumber, aX, aY);
     aGameState->AddProcess(p);
     return p;
-  } else {
+  }
+  else {
     return ENull;
   }
 }
 
-GItemProcess::GItemProcess(GGameState *aGameState, TInt aItemNumber, TFloat aX, TFloat aY) : BProcess() {
-  mGameState  = aGameState;
+GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) : BProcess() {
+  mGameState = aGameState;
+  mIp = aIp;
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber]);
-    mSprite->type  = STYPE_OBJECT;
+    mSprite->type = STYPE_OBJECT;
     mSprite->cMask = STYPE_PLAYER;
-    mSprite->w     = mSprite->h = 32;
-    mSprite->cx    = -16;
-    mSprite->x     = aX;
-    mSprite->y     = aY;
+    mSprite->w = mSprite->h = 32;
+    mSprite->cx = -16;
+    mSprite->x = aX;
+    mSprite->y = aY;
     mGameState->AddSprite(mSprite);
-  } else {
+//    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
+  }
+  else {
     Panic("GItemProcess contructor: invalid item number: %d\n", mItemNumber);
   }
 }
@@ -51,6 +55,8 @@ TBool GItemProcess::RunAfter() {
     p->SetTimeout(5 * FRAMES_PER_SECOND);
     mGameState->AddProcess(p);
     GPlayer::mInventoryList.PickupItem(mItemNumber);
+    // mark ObjectProgram at mIp that item has been picked up (don't persist it)
+    mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     GPlayer::mInventoryList.Dump();
     return EFalse;
   }

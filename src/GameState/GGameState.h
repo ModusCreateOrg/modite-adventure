@@ -29,7 +29,8 @@ public:
   void NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
 
-  void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE);
+  // store code and attr into ObjectProgram at aIp
+  void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE, TUint16 aAttr = 0);
 
   TUint16 MapWidth();
   TUint16 MapHeight();

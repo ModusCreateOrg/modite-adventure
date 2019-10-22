@@ -54,8 +54,11 @@ const TUint16 ATTR_ORC = 21;
 const TUint16 ATTR_RAT = 22;
 const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
-const TUint16 ATTR_CRATE_GONE = 25;
-const TUint16 ATTR_CHEST_GONE = 26;
+const TUint16 ATTR_CHEST_OPEN = 25;
+const TUint16 ATTR_CRATE_GONE = 26;
+const TUint16 ATTR_ITEM = 27; // this is used for ObjectProgram to indicate an item is present
+//
+const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OBJECT_LAYER value
 
 //// OBJECT ATTRIBUTE LAYER ATTRIBUTES
 // Note: these attributes are unique per thing

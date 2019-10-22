@@ -7,7 +7,7 @@
 
 class GItemProcess : public BProcess {
 public:
-  GItemProcess(GGameState *aGameState, TInt mItemNumber, TFloat aX, TFloat aY);
+  GItemProcess(GGameState *aGameState, TInt aIp, TInt mItemNumber, TFloat aX, TFloat aY);
 
 public:
   ~GItemProcess();

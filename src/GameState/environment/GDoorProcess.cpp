@@ -6,8 +6,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
   mHorizontal = aHorizontal;
 
-  printf("Door ip %d\n", mIp);
-
   if (mHorizontal) {
     mSprite1 = new GAnchorSprite(
         mGameState,
