@@ -13,11 +13,12 @@ const TInt ENVIRONMENT_PRIORITY_DOOR = -10;     // doors run after switches for 
 
 class GEnvironmentProcess : public BProcess {
 public:
-  GEnvironmentProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TInt aPri = ENVIRONMENT_PRIORITY_DEFAULT);
+  GEnvironmentProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TInt aPri = ENVIRONMENT_PRIORITY_DEFAULT);
   ~GEnvironmentProcess();
 
 protected:
   GGameState *mGameState;
+  TInt mIp;   // instruction pointer of ObjectProgram in map
   TUint16 mParam;
   OBJECT_ATTRIBUTE *mAttribute;
 //  TInt mGroup, mOrder;

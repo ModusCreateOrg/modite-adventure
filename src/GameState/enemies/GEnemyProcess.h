@@ -30,13 +30,14 @@ static const char *stateMessages[] = {
 
 class GEnemyProcess : public BProcess {
 public:
-  GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity);
+  GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity);
 
   ~GEnemyProcess() OVERRIDE;
 
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
+  TInt mIp;
   TUint16 mParams;
   GAnchorSprite *mSprite, *mSprite2;
   TFloat mStartX, mStartY;

@@ -8,7 +8,7 @@
 
 class GRatProcess : public GEnemyProcess {
 public:
-  GRatProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
+  GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GRatProcess() OVERRIDE;
 

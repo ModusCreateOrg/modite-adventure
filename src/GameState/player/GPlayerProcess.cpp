@@ -1,4 +1,5 @@
 #include "GPlayerProcess.h"
+#include "GPlayer.h"
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
 #include "GPlayerAnimations.h"
@@ -17,6 +18,10 @@ const TUint16 HIT_MEDIUM_STATE = 6;
 const TUint16 HIT_HARD_STATE = 7;
 const TUint16 QUAFF_STATE = 8;
 const TUint16 SPELL_STATE = 9;
+
+TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
+
+TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mState = IDLE_STATE;

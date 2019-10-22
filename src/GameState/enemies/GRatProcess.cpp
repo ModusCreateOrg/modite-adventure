@@ -305,8 +305,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GRatProcess::GRatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, RAT_SLOT, aParams, VELOCITY) {
+GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, aIp, RAT_SLOT, aParams, VELOCITY) {
   mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;

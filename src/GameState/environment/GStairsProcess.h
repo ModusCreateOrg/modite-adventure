@@ -5,7 +5,7 @@
 
 class GStairsProcess : public GEnvironmentProcess {
 public:
-  GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY, const char *aKind);
+  GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY, const char *aKind);
 
   ~GStairsProcess();
 

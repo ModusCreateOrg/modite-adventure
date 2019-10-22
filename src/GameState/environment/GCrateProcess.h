@@ -6,7 +6,7 @@
 
 class GCrateProcess : public GEnvironmentProcess {
 public:
-  GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY);
+  GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY);
   ~GCrateProcess();
 public:
   TBool RunBefore();

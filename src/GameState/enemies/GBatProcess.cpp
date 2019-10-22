@@ -271,8 +271,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GBatProcess::GBatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, BAT_SLOT, aParams, VELOCITY) {
+GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("BAT SPRITE");
   mSprite->x = aX;

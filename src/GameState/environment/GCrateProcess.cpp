@@ -32,7 +32,8 @@ static ANIMSCRIPT breakAnimation[] = {
   AEND,
 };
 
-GCrateProcess::GCrateProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY) : GEnvironmentProcess(aGameState, aParam, aX, aY) {
+GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mAnimating = EFalse;
   mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
   mSprite->cMask = STYPE_PBULLET;
@@ -60,7 +61,7 @@ TBool GCrateProcess::RunAfter() {
       mAnimating = EFalse;
       mSprite->cType = 0;
       if (mSprite->mHitPoints <= 0) {
-        GItemProcess::SpawnItem(mGameState, mParam, mSprite->x, mSprite->y);
+        GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
         printf("Crate broken param = %x %d\n", mParam, mParam);
         return EFalse;
       }

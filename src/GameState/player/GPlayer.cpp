@@ -10,7 +10,7 @@ void GInventoryList::DropItem(GInventoryItem *aItem) {
   if (--aItem->mCount <= 0) {
     aItem->Remove();
   }
-  GItemProcess::SpawnItem(GPlayer::mGameState, aItem->mItemNumber, GPlayer::mSprite->x, GPlayer::mSprite->y);
+  GItemProcess::SpawnItem(GPlayer::mGameState, -1, aItem->mItemNumber, GPlayer::mSprite->x, GPlayer::mSprite->y);
 }
 
 void GInventoryList::PickupItem(TInt aItemNumber) {

@@ -1,4 +1,6 @@
+#include "Game.h"
 #include "GGame.h"
+#include "inventory/GInventory.h"
 
 static TUint32 start;
 

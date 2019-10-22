@@ -6,10 +6,13 @@
 #ifndef MODITE_GPLAYER_H
 #define MODITE_GPLAYER_H
 
-#include "Game.h"
+class GGameState;
+class GPlayerProcess;
 #include "inventory/GItemProcess.h"
-#include "GPlayerProcess.h"
+//#include "GGameState.h"
+//#include "GPlayerProcess.h"
 #include "GPlayer.h"
+
 
 struct GInventoryItem : public BNode {
   GInventoryItem(TInt aItemNumber);

@@ -18,8 +18,8 @@ static const ANIMSCRIPT spikesAnimation[] = {
   AEND,
 };
 
-GSpikesProcess::GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam)
-    : GEnvironmentProcess(aGameState, aParam, aX, aY) {
+GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mParam = aParam;
   mGameState = aGameState;
   mSprite = new GAnchorSprite(mGameState, SPIKES_PRIORITY, ENVIRONMENT_SLOT, IMG_SPIKES);

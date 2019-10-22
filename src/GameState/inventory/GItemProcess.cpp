@@ -5,7 +5,7 @@
 #include "GStatSprite.h"
 #include "GStatProcess.h"
 
-GItemProcess *GItemProcess::SpawnItem(GGameState *aGameState, TInt aItemNumber, TFloat aX, TFloat aY) {
+GItemProcess *GItemProcess::SpawnItem(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) {
   if (aItemNumber && aItemNumber < sizeof(items)) {
     GItemProcess *p = new GItemProcess(aGameState, aItemNumber, aX, aY);
     aGameState->AddProcess(p);

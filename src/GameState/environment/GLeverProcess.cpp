@@ -18,8 +18,8 @@ static ANIMSCRIPT leverRightAnimation[] = {
   AEND,
 };
 
-GLeverProcess::GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY)
-    : GEnvironmentProcess(aGameState, aParam, aX, aY) {
+GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mGameState = aGameState;
   mAnimating = EFalse;
   mDirection = ETrue;

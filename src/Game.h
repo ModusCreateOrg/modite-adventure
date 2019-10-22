@@ -33,13 +33,13 @@
 
 // GGameEngine states
 #include "GSplashState.h"
+#include "GGameState.h"
 #include "GMainMenuState.h"
 #include "GMainOptionsState.h"
 #include "GResetOptionsState.h"
 #include "GCreditsState.h"
 #include "GGameMenuState.h"
-#include "GInventory.h"
-#include "GGameState.h"
+//#include "GInventory.h"
 
 extern BViewPort   *gViewPort;
 extern BGameEngine *gGameEngine;

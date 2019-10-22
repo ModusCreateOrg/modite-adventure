@@ -1,10 +1,12 @@
 #include "GDoorProcess.h"
 #include "GGamePlayfield.h"
 
-GDoorProcess::GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
-    : GEnvironmentProcess(aGameState, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
+GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
 
   mHorizontal = aHorizontal;
+
+  printf("Door ip %d\n", mIp);
 
   if (mHorizontal) {
     mSprite1 = new GAnchorSprite(
@@ -56,6 +58,7 @@ TBool GDoorProcess::RunBefore() {
   TInt group = mAttribute->group;
   if (group && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
+    mGameState->EndProgram(mIp);
     return EFalse;
   }
   return ETrue;
@@ -70,6 +73,7 @@ TBool GDoorProcess::RunAfter() {
     TInt cType1 = mSprite1->cType;
     TInt cType2 = mSprite2->cType;
     if (mSprite1->TestCType(STYPE_PBULLET) && mSprite2->TestCType(STYPE_PBULLET)) {
+      mGameState->EndProgram(mIp);
       return EFalse;
     }
   }
@@ -80,6 +84,3 @@ TBool GDoorProcess::RunAfter() {
   }
   return ETrue;
 }
-
-
-

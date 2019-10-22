@@ -5,7 +5,7 @@
 
 class GLeverProcess : public GEnvironmentProcess {
 public:
-  GLeverProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY);
+  GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY);
   ~GLeverProcess() OVERRIDE;
 
 public:
