@@ -43,7 +43,8 @@ public:
 
   void Nudge();
 
-  TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
+  TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy);
+  TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy, TRect r);
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
