@@ -8,7 +8,7 @@
 
 class GGoblinProcess : public GEnemyProcess {
 public:
-  GGoblinProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
+  GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GGoblinProcess() OVERRIDE;
 

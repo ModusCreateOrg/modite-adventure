@@ -8,7 +8,7 @@
 
 class GBatProcess : public GEnemyProcess {
 public:
-  GBatProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams);
+  GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GBatProcess() OVERRIDE;
 

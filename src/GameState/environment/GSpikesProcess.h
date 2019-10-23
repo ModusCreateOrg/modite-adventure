@@ -5,7 +5,7 @@
 
 class GSpikesProcess : public GEnvironmentProcess {
 public:
-  GSpikesProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParam);
+  GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam);
 
   ~GSpikesProcess() OVERRIDE;
 

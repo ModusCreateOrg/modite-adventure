@@ -5,7 +5,7 @@
 
 class GFloorSwitchProcess : public GEnvironmentProcess {
 public:
-  GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden);
+  GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden);
   ~GFloorSwitchProcess() OVERRIDE;
 public:
   TBool RunBefore() OVERRIDE;

@@ -8,7 +8,7 @@
 
 class GSpiderProcess : public GEnemyProcess {
 public:
-  GSpiderProcess(GGameState *aGameState,  TFloat aX, TFloat aY, TUint16 aParams);
+  GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GSpiderProcess() OVERRIDE;
 

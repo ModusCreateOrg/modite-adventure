@@ -5,7 +5,7 @@
 
 class GDoorProcess : public GEnvironmentProcess {
 public:
-  GDoorProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal);
+  GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal);
   ~GDoorProcess();
 public:
   TBool RunBefore();

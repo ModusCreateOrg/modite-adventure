@@ -2,8 +2,8 @@
 
 const TInt ANIM_SPEED = FRAMES_PER_SECOND;
 
-GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden)
-    : GEnvironmentProcess(aGameState, aParam, aX, aY) {
+GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWooden)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 

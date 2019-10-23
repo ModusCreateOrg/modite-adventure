@@ -5,7 +5,7 @@
 
 class GChestProcess : public GEnvironmentProcess {
 public:
-  GChestProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY);
+  GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aIsOpen);
   ~GChestProcess();
 
 public:

@@ -2,7 +2,8 @@
 #define MODITE_GANCHORSPRITE_H
 
 #include <BAnimSprite.h>
-#include "GGameState.h"
+class GGameState;
+//#include "GGameState.h"
 
 enum DIRECTION {
   DIRECTION_UP,

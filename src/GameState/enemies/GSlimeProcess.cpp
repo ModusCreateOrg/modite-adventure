@@ -261,7 +261,6 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ALOOP
 };
 
-
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(SLIME_SLOT),
   ASTEP(WALK_SPEED, IMG_SLIME_WALK_UP + 0),
@@ -309,8 +308,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSlimeProcess::GSlimeProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, SLIME_SLOT, aParams, VELOCITY) {
+GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
+    : GEnemyProcess(aGameState, aIp, SLIME_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("SLIME SPRITE");
   mSprite->x = aX;
@@ -401,4 +400,3 @@ void GSlimeProcess::Hit(DIRECTION aDirection) {
 void GSlimeProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-

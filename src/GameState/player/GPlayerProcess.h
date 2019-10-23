@@ -1,11 +1,13 @@
 #ifndef MODITE_GPLAYERPROCESS_H
 #define MODITE_GPLAYERPROCESS_H
 
-#include "Game.h"
-#include "GAnchorSprite.h"
-#include "GPlayer.h"
-
+class GGameState ;
 class GGamePlayfield;
+class GGameState;
+//class GAnchorSprite;
+
+#include "GGame.h"
+#include "GAnchorSprite.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 
@@ -20,9 +22,9 @@ public:
 
   GAnchorSprite *Sprite() { return mSprite; }
 
-  TFloat PlayerX() { return mSprite->x; }
+  TFloat PlayerX();
 
-  TFloat PlayerY() { return mSprite->y; }
+  TFloat PlayerY();
 
 public:
   TBool RunBefore();

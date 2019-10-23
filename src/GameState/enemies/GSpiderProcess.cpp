@@ -297,8 +297,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GSpiderProcess::GSpiderProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, SPIDER_SLOT, aParams, VELOCITY) {
+GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
+  : GEnemyProcess(aGameState, aIp, SPIDER_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;

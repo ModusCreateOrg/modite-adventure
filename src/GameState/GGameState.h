@@ -5,10 +5,12 @@
 #define TILES_HIGH 7
 
 #include "Game.h"
+#include "GGamePlayfield.h"
+#include "GPlayerProcess.h"
 
-class GGamePlayfield;
 class GPlayerProcess;
 class GAnchorSprite;
+class GGamePlayfield;
 
 // Message Types
 static TUint16 MESSAGE_FLOOR_SWITCH_DOWN = 0;
@@ -26,6 +28,9 @@ public:
 
   void NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
+
+  // store code and attr into ObjectProgram at aIp
+  void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE, TUint16 aAttr = 0);
 
   TUint16 MapWidth();
   TUint16 MapHeight();

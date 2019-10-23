@@ -39,8 +39,8 @@ ANIMSCRIPT spellOverlayAnimation[] = {
   AEND,
 };
 
-GEnemyProcess::GEnemyProcess(GGameState *aGameState, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
-    : mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
+    : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
   mHitPoints = HIT_POINTS;
@@ -335,16 +335,16 @@ TBool GEnemyProcess::DeathState() {
         // drop a potion
         switch (Random(0, 3)) {
           case 0:
-            GItemProcess::SpawnItem(mGameState, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
+            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
             break;
           case 1:
-            GItemProcess::SpawnItem(mGameState, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
+            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
             break;
           case 2:
-            GItemProcess::SpawnItem(mGameState, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
+            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
             break;
           case 3:
-            GItemProcess::SpawnItem(mGameState, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
+            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
             break;
         }
         return EFalse;

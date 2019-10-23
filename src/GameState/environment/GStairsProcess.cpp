@@ -1,7 +1,7 @@
 #include "GStairsProcess.h"
 
-GStairsProcess::GStairsProcess(GGameState *aGameState, DIRECTION aDirection, TInt aParams, TFloat aX, TFloat aY, const char *aKind)
-    : GEnvironmentProcess(aGameState, aParams, aX, aY) {
+GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aParams, TFloat aX, TFloat aY, const char *aKind)
+    : GEnvironmentProcess(aGameState, aIp, aParams, aX, aY) {
   mSprite1 = mSprite2 = ENull;
   mDirection = aDirection;
   mGameState = aGameState;

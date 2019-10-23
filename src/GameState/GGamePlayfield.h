@@ -1,15 +1,19 @@
 #ifndef MODITE_GGAMEPLAYFIELD_H
 #define MODITE_GGAMEPLAYFIELD_H
 
-#include "Game.h"
+//#include "Game.h"
+
+#include <CreativeEngine.h>
+
+class GGameState;
 
 const TFloat GRAVITY = 0.25; // for falling, arrow dropping, etc.
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT= 3;
-const TFloat FLOOR_ADJUST_TOP= 5;
-const TFloat FLOOR_ADJUST_RIGHT= 3;
-const TFloat FLOOR_ADJUST_BOTTOM= 2;
+const TFloat FLOOR_ADJUST_LEFT = 3;
+const TFloat FLOOR_ADJUST_TOP = 5;
+const TFloat FLOOR_ADJUST_RIGHT = 3;
+const TFloat FLOOR_ADJUST_BOTTOM = 2;
 
 #include "object_layer_attributes.h"
 
@@ -26,6 +30,7 @@ const TUint16 ATTR_LEDGE = 2;
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
 //// OBJECT LAYER ATTRIBUTES
+const TUint16 ATTR_GONE = 0; // thing is no longer in the world
 const TUint16 ATTR_STONE_STAIRS_UP = 1;
 const TUint16 ATTR_STONE_STAIRS_DOWN = 2;
 const TUint16 ATTR_WOOD_STAIRS_UP = 3;
@@ -49,6 +54,11 @@ const TUint16 ATTR_ORC = 21;
 const TUint16 ATTR_RAT = 22;
 const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
+const TUint16 ATTR_CHEST_OPEN = 25;
+const TUint16 ATTR_CRATE_GONE = 26;
+const TUint16 ATTR_ITEM = 27; // this is used for ObjectProgram to indicate an item is present
+//
+const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OBJECT_LAYER value
 
 //// OBJECT ATTRIBUTE LAYER ATTRIBUTES
 // Note: these attributes are unique per thing

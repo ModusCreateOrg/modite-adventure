@@ -1,8 +1,9 @@
 #include "GEnvironmentProcess.h"
 
-GEnvironmentProcess::GEnvironmentProcess(GGameState *aGameState, TUint16 aParam, TFloat aX, TFloat aY, TInt aPri)
+GEnvironmentProcess::GEnvironmentProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TInt aPri)
     : BProcess(aPri) {
   mGameState = aGameState;
+  mIp = aIp;
   mParam = aParam;
   mAttribute = (OBJECT_ATTRIBUTE *)&mParam;
   mSprite = mSprite1 = mSprite2 = ENull;

@@ -8,7 +8,7 @@
 
 class GOrcProcess : public GEnemyProcess {
 public:
-  GOrcProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aParams);
+  GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
   ~GOrcProcess() OVERRIDE;
 
