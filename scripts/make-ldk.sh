@@ -18,7 +18,7 @@ fi
 me=`whoami`
 
 
-ping 169.254.1.1 -c 1 -W 0 -i 200
+ping 169.254.1.1 -c 1 -W 1 -i 200
 # RC=$?
 
 # if [[ $RC -gt 0 ]]; then
@@ -52,7 +52,9 @@ user $USER
 prompt
 passive
 lcd build/ldk
-cd /home/retrofw/games/modite-adventure
+cd /home/retrofw/games
+mkdir modite-adventure
+cd modite-adventure
 bin
 put modite-adventure.dge
 quit
