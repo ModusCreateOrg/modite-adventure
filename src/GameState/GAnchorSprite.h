@@ -41,8 +41,6 @@ public:
 
   void Collide(BSprite *aOther) OVERRIDE;
 
-  void GetRect(TRect &aRect) OVERRIDE;
-
   void Nudge();
 
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);

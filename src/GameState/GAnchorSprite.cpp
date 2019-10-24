@@ -27,10 +27,10 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mInvulnerable = EFalse;
   mCollided = ENull;
 
-  floorOffsetLeft = 0;
-  floorOffsetTop = 0;
-  floorOffsetRight = 0;
-  floorOffsetBottom = 0;
+  floorOffsetLeft = 3;
+  floorOffsetTop = 5;
+  floorOffsetRight = 3;
+  floorOffsetBottom = 2;
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -46,6 +46,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   TRect r;
   GetRect(r);
   r.Offset(aVx, aVy);
+  r.Set(r.x1 + floorOffsetLeft, r.y1 + floorOffsetTop, r.x2 - floorOffsetRight, r.y2 - floorOffsetBottom);
 
   if (r.x1 < 0 || r.y1 < 0) {
     return EFalse;
@@ -116,18 +117,6 @@ void GAnchorSprite::Collide(BSprite *aOther) {
   s->mCollided = this;
   cType |= aOther->type;
   aOther->cType |= type;
-}
-
-void GAnchorSprite::GetRect(TRect &aRect) {
-  TInt xx = 0, yy = 0;
-  if (flags & SFLAG_ANCHOR) {
-    xx = TInt(x + w/2);
-    yy = TInt(y - h);
-  } else {
-    xx = TInt(x);
-    yy = TInt(y);
-  }
-  aRect.Set(cx + xx + floorOffsetLeft, cy + yy + floorOffsetTop, cx + xx + w - 1 - floorOffsetRight, cy + yy + h - 1 - floorOffsetBottom);
 }
 
 void GAnchorSprite::Nudge() {
