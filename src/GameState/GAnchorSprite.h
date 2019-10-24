@@ -28,6 +28,9 @@ enum HIT_STRENGTH {
 // this:
 const TFloat COLLISION_DELTA_Y = 16;
 
+// additional distance to look ahead when approaching a wall
+const TFloat FLOOR_ADJUST_BUFFER = 1;
+
 class GAnchorSprite : public BAnimSprite {
 public:
   GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);

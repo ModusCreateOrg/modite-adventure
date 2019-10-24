@@ -83,22 +83,22 @@ TBool GPlayerProcess::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y1 - 1) && mSprite->IsFloorTile(mSprite, r.x2, r.y1 - 1)) {
+      if (mSprite->IsFloorTile(mSprite, r.x1, r.y1 - FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2, r.y1 - FLOOR_ADJUST_BUFFER)) {
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + 1) && mSprite->IsFloorTile(mSprite, r.x2 , r.y2 + 1)) {
+      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2 , r.y2 + FLOOR_ADJUST_BUFFER)) {
         return ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      if (mSprite->IsFloorTile(mSprite, r.x1 - 1, r.y1 ) && mSprite->IsFloorTile(mSprite, r.x1 - 1, r.y2)) {
+      if (mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y1 ) && mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (mSprite->IsFloorTile(mSprite, r.x2 + 1, r.y1) && mSprite->IsFloorTile(mSprite, r.x2 + 1, r.y2)) {
+      if (mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y1) && mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y2)) {
         return ETrue;
       }
       break;
