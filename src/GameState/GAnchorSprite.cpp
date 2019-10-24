@@ -26,13 +26,14 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mLastY = 0;
   mInvulnerable = EFalse;
   mCollided = ENull;
+
 }
 
 GAnchorSprite::~GAnchorSprite() {
   //
 }
 
-TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
+TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
   TUint16 attr = aSprite->mGameState->mGamePlayfield->GetAttribute(aX, aY);
   return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aSprite->mDirection != DIRECTION_UP);
 }
@@ -48,22 +49,22 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
+      if (IsFloorTile(this, r.x1, r.y1 - FLOOR_ADJUST_BUFFER) && IsFloorTile(this, r.x2, r.y1 - FLOOR_ADJUST_BUFFER)) {
         return ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
+      if (IsFloorTile(this, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && IsFloorTile(this, r.x2 , r.y2 + FLOOR_ADJUST_BUFFER)) {
         return ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(this, r.x1 - FLOOR_ADJUST_BUFFER, r.y1 ) && IsFloorTile(this, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
         return ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(this, r.x2 + FLOOR_ADJUST_BUFFER, r.y1) && IsFloorTile(this, r.x2 + FLOOR_ADJUST_BUFFER, r.y2)) {
         return ETrue;
       }
       break;
