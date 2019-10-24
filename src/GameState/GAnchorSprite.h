@@ -45,7 +45,7 @@ public:
 
   void Nudge();
 
-  TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy);
+  TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
@@ -53,7 +53,7 @@ public:
 public:
   static DIRECTION RandomDirection();
 
-  TBool CanWalk(DIRECTION aDireciton, TFloat aVx, TFloat aVy);
+  TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
 public:
   GGameState *mGameState;

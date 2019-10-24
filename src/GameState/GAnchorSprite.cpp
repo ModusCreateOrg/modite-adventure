@@ -127,7 +127,7 @@ void GAnchorSprite::GetRect(TRect &aRect) {
     xx = TInt(x);
     yy = TInt(y);
   }
-  aRect.Set(cx+xx+floorOffsetLeft, cy+yy+floorOffsetTop, cx+xx + w - 1 - floorOffsetRight, cy+yy + h - 1 - floorOffsetBottom);
+  aRect.Set(cx + xx + floorOffsetLeft, cy + yy + floorOffsetTop, cx + xx + w - 1 - floorOffsetRight, cy + yy + h - 1 - floorOffsetBottom);
 }
 
 void GAnchorSprite::Nudge() {
