@@ -27,17 +27,13 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mInvulnerable = EFalse;
   mCollided = ENull;
 
-  floorOffsetLeft = 3;
-  floorOffsetTop = 5;
-  floorOffsetRight = 3;
-  floorOffsetBottom = 2;
 }
 
 GAnchorSprite::~GAnchorSprite() {
   //
 }
 
-TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
+TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
   TUint16 attr = aSprite->mGameState->mGamePlayfield->GetAttribute(aX, aY);
   return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aSprite->mDirection != DIRECTION_UP);
 }
@@ -46,8 +42,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   TRect r;
   GetRect(r);
   r.Offset(aVx, aVy);
-  r.Set(r.x1 + floorOffsetLeft, r.y1 + floorOffsetTop, r.x2 - floorOffsetRight, r.y2 - floorOffsetBottom);
-
+  
   if (r.x1 < 0 || r.y1 < 0) {
     return EFalse;
   }

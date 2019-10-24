@@ -43,6 +43,8 @@ public:
 
   void Nudge();
 
+  TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY);
+
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 
 public:
