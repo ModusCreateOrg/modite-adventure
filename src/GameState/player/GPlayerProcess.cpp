@@ -37,6 +37,9 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
+  mSprite->floorOffsetRight = 6;
+  mSprite->floorOffsetLeft = 8;
+  mSprite->floorOffsetTop = 22;
 
   mSprite2 = ENull;
 
@@ -72,19 +75,16 @@ TBool GPlayerProcess::IsLedge() {
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
-    TRect r;
-    mSprite->GetRect(r);
-    r.Set(r.x1 + 6, r.y1 + 22, r.x2 - 8, r.y2 - 2);
   switch (aDirection) {
     case DIRECTION_UP:
-        return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY, r);
+      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
     case DIRECTION_DOWN:
-      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY, r);
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
     case DIRECTION_LEFT:
-      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0, r);
+      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
     case DIRECTION_RIGHT:
     default:
-      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0, r);
+      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
   }
 }
 

@@ -9,12 +9,6 @@ class GGameState;
 
 const TFloat GRAVITY = 0.25; // for falling, arrow dropping, etc.
 
-// Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 3;
-const TFloat FLOOR_ADJUST_TOP = 8;
-const TFloat FLOOR_ADJUST_RIGHT = 3;
-const TFloat FLOOR_ADJUST_BOTTOM = 2;
-
 #include "object_layer_attributes.h"
 
 // these match the codes set for tiles in Pro Motion:

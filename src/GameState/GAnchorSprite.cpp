@@ -26,6 +26,11 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mLastY = 0;
   mInvulnerable = EFalse;
   mCollided = ENull;
+
+  floorOffsetLeft = 0;
+  floorOffsetTop = 0;
+  floorOffsetRight = 0;
+  floorOffsetBottom = 0;
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -38,17 +43,11 @@ TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
 }
 
 TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-    TRect r;
-    GetRect(r);
-    r.Set(r.x1 + FLOOR_ADJUST_LEFT, r.y1 + FLOOR_ADJUST_TOP, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - FLOOR_ADJUST_BOTTOM);
-    return IsFloor(aDirection, aVx, aVy, r);
-}
+  TRect r;
+  GetRect(r);
+  r.Offset(aVx, aVy);
 
-TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy, TRect r) {
-
-    r.Offset(aVx, aVy);
-
-    if (r.x1 < 0 || r.y1 < 0) {
+  if (r.x1 < 0 || r.y1 < 0) {
     return EFalse;
   }
 
@@ -117,6 +116,18 @@ void GAnchorSprite::Collide(BSprite *aOther) {
   s->mCollided = this;
   cType |= aOther->type;
   aOther->cType |= type;
+}
+
+void GAnchorSprite::GetRect(TRect &aRect) {
+  TInt xx = 0, yy = 0;
+  if (flags & SFLAG_ANCHOR) {
+    xx = TInt(x + w/2);
+    yy = TInt(y - h);
+  } else {
+    xx = TInt(x);
+    yy = TInt(y);
+  }
+  aRect.Set(cx+xx+floorOffsetLeft, cy+yy+floorOffsetTop, cx+xx + w - 1 - floorOffsetRight, cy+yy + h - 1 - floorOffsetBottom);
 }
 
 void GAnchorSprite::Nudge() {

@@ -41,10 +41,11 @@ public:
 
   void Collide(BSprite *aOther) OVERRIDE;
 
+  void GetRect(TRect &aRect) OVERRIDE;
+
   void Nudge();
 
   TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy);
-  TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy, TRect r);
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
@@ -65,6 +66,10 @@ public:
   TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
+  TFloat floorOffsetLeft;
+  TFloat floorOffsetTop;
+  TFloat floorOffsetRight;
+  TFloat floorOffsetBottom;
 
 protected:
   char mName[64];
