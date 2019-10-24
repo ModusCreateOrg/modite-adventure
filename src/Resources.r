@@ -44,6 +44,20 @@ BITMAP projectile_arrow.bmp
 BITMAP enemy_death.bmp
 
 #
+### MID BOSSES
+#
+PATH resources/sprites/mid_boss
+BITMAP mid_boss_death_explosion.bmp
+BITMAP mid_boss_earth_brown.bmp
+BITMAP mid_boss_earth_projectile.bmp
+BITMAP mid_boss_energy.bmp
+BITMAP mid_boss_energy_projectile.bmp
+BITMAP mid_boss_fire.bmp
+BITMAP mid_boss_fire_projectile.bmp
+BITMAP mid_boss_water.bmp
+BITMAP mid_boss_water_projectile.bmp
+
+#
 ### TILEMAPS
 #
 PATH resources/tilemaps/DevDungeon_0

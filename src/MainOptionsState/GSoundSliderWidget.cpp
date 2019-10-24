@@ -57,9 +57,9 @@ TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
                bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
 
   for (TInt i = 0; i < 8; i++) {
-    gDisplay.renderBitmap->DrawFastVLine(ENull, aX + 1, aY - 1, 16, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 2, aY + 14, 7, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->FillRect(ENull, aX + 2, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
+    gDisplay.renderBitmap->DrawFastVLine8(ENull, aX + 1, aY - 1, 16, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->DrawFastHLine8(ENull, aX + 2, aY + 14, 7, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->FillRect8(ENull, aX + 2, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
     aX += 16;
   }
 

@@ -18,6 +18,7 @@
 #include "GameState/environment/GDoorProcess.h"
 #include "GameState/environment/GLeverProcess.h"
 #include "GameState/environment/GFloorSwitchProcess.h"
+#include "GameState/mid-bosses/GMidBossFireProcess.h"
 
 #include "GPlayer.h"
 
@@ -25,6 +26,23 @@
 //#undef DEBUGME
 
 const TInt GAUGE_WIDTH = 90;
+
+// info about the dungeons
+static struct DUNGEON_DEF {
+  const char *name;
+  TUint16 map[10];
+} dungeon_defs[] = {
+  // DUNGEON_DEV
+  { "DEV DUNGEON",
+      {
+          DEVDUNGEON_0_LEVEL1_MAP,
+          DEVDUNGEON_0_LEVEL1_MAP,
+          DEVDUNGEON_0_LEVEL2_MAP,
+          DEVDUNGEON_0_LEVEL3_MAP,
+          DEVDUNGEON_0_LEVEL4_MAP,
+      } },
+};
+const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
 
 /*******************************************************************************
  *******************************************************************************
@@ -77,7 +95,7 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   GPlayer::Init();
-  LoadLevel("Dungeon0", 1, DEVDUNGEON_0_LEVEL2_MAP);
+  LoadLevel("Dungeon0", 2, DEVDUNGEON_0_LEVEL2_MAP);
 }
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
@@ -87,7 +105,6 @@ GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
  *******************************************************************************/
 
 void GGameState::PreRender() {
-  gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
   if (mNextLevel != mLevel) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
   }
@@ -107,7 +124,7 @@ static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, 
   r.Offset(x, y);
 
   // draw frame
-  screen->DrawRect(vp, r, COLOR_TEXT);
+  screen->DrawRect8(vp, r, COLOR_TEXT);
 
   // calculate percentage
   TFloat pct = stat_max ? (TFloat(stat)) / TFloat(stat_max) : 0.;
@@ -122,13 +139,14 @@ static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, 
     fill.x2 = fill.x1 + 1;
   }
   fill.Offset(x, y);
-  screen->FillRect(vp, fill, color);
+  screen->FillRect8(vp, fill, color);
 }
 
 void GGameState::PostRender() {
   if (mText[0]) {
     TInt len = strlen(mText);
     TInt x = gViewPort->mRect.Width() / 2 - len * 12 / 2;
+    gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
     gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -4);
     if (--mTimer < 0) {
       mText[0] = '\0';
@@ -250,12 +268,12 @@ void GGameState::GameLoop() {
  *******************************************************************************
  *******************************************************************************/
 
-void GGameState::NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId) {
+void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
+  mNextDungeon = aDungeon;
   mNextLevel = aLevel;
-  strcpy(mName, aName);
-  mNextTileMapId = aTileMapId;
-  mTimer = 1 * FRAMES_PER_SECOND;
-  sprintf(mText, "%s Level %d", aName, aLevel);
+  strcpy(mName, dungeon_defs[aDungeon].name);
+  mNextTileMapId = dungeon_defs[aDungeon].map[aLevel];
+  Disable();
 }
 
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId) {
@@ -294,8 +312,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
 
-  printf("Level loaded, colors used %d\n",
-      mGamePlayfield->GetTilesBitmap()->CountUsedColors());
+  printf("Level loaded, colors used %d\n", mGamePlayfield->GetTilesBitmap()->CountUsedColors());
 
   TInt objectCount = mGamePlayfield->mObjectCount;
   BObjectProgram *program = mGamePlayfield->mObjectProgram;
@@ -466,8 +483,17 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         AddProcess(new GTrollProcess(this, ip, xx - 20, yy + 32, params));
         break;
 
+      case ATTR_MID_BOSS_FIRE:
+        // mid boss
+        // only one mid boss can be available
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
+        RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        RemapSlot(MID_BOSS_FIRE_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        AddProcess(new GMidBossFireProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        break;
+
       default:
-        printf("Invalid op code in Object Program: %x at col,row %d,%d\n", program[ip].mCode, col, row);
+        printf("Invalid op code in Object Program: $%0x at col,row %d,%d\n", program[ip].mCode, col, row);
         break;
     }
   }
