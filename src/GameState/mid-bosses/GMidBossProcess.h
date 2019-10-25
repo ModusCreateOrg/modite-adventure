@@ -8,6 +8,8 @@
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
+const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
+
 enum {
   MB_IDLE_STATE,
   MB_WALK_STATE,
@@ -32,7 +34,7 @@ public:
   TBool RunAfter() OVERRIDE;
 
 protected:
-  TBool MaybeAttack();
+  virtual TBool MaybeAttack() = 0;
 
   TBool MaybeHit();
 

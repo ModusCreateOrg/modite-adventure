@@ -52,7 +52,7 @@ void GInventory::RenderInventory() {
       }
       if (count == mCurrent) {
         selected = i;
-        bm->FillRect8(mViewPort, 0, y, SCREEN_WIDTH - 1, y + 17, COLOR_TEXT);
+        bm->FillRect(mViewPort, 0, y, SCREEN_WIDTH - 1, y + 17, COLOR_TEXT);
         bm->DrawBitmapTransparent(mViewPort, env, srcRect, 0, y - 7);
         bm->DrawString(mViewPort, buf, gFont16x16, x, y + 1, COLOR_TEXT_BG, COLOR_TEXT_TRANSPARENT, -4);
       }

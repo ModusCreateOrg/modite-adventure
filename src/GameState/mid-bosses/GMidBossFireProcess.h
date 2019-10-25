@@ -6,18 +6,30 @@
 class GMidBossFireProcess : public GMidBossProcess {
 public:
   GMidBossFireProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot);
+
   ~GMidBossFireProcess();
-public:
-  void Idle(DIRECTION aDirection);
-  void Walk(DIRECTION aDirection);
-  void Ball(DIRECTION aDirection);
-  void Return(DIRECTION aDirection);
-  void Revert(DIRECTION aDirection);
-  void Attack(DIRECTION aDirection);
-  void Hit(DIRECTION aDirection);
-  void Death(DIRECTION aDirection);
-  void Spell(DIRECTION aDirection);
+
+protected:
+  TBool MaybeAttack();
+
+protected:
+  void Idle(DIRECTION aDirection) OVERRIDE;
+
+  void Walk(DIRECTION aDirection) OVERRIDE;
+
+  void Ball(DIRECTION aDirection) OVERRIDE;
+
+  void Return(DIRECTION aDirection) OVERRIDE;
+
+  void Revert(DIRECTION aDirection) OVERRIDE;
+
+  void Attack(DIRECTION aDirection) OVERRIDE;
+
+  void Hit(DIRECTION aDirection) OVERRIDE;
+
+  void Death(DIRECTION aDirection) OVERRIDE;
+
+  void Spell(DIRECTION aDirection) OVERRIDE;
 };
 
 #endif
-

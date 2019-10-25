@@ -100,15 +100,15 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(ORC_SLOT),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED*4, IMG_ORC_ATTACK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_ORC_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
   ADELTA(0, 20),
-  ASIZE(0,24,32,48),
+  ASIZE(0, 24, 32, 48),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 1),
   ADELTA(0, 18),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 3),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0,0,32,32),
+  ASIZE(0, 0, 32, 32),
   ADELTA(0, 24),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 2),
   ADELTA(0, 0),
@@ -160,7 +160,7 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ADELTA(0, 0),//
+  ADELTA(0, 0), //
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-22, 0),
   ATYPE(STYPE_EBULLET),
@@ -221,7 +221,7 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ADELTA(0, 0),//
+  ADELTA(0, 0), //
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(20, 0),
   ATYPE(STYPE_EBULLET),
@@ -283,15 +283,15 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(ORC_SLOT),
   ADELTA(0, 6),
-  ASTEP(ATTACK_SPEED*4, IMG_ORC_ATTACK_UP + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_ORC_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
   ADELTA(0, 10),
-  ASIZE(0,0,32,48),
+  ASIZE(0, 0, 32, 48),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 1),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 3),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0,0,32,32),
+  ASIZE(0, 0, 32, 32),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_UP + 2),
   ASTEP(ATTACK_SPEED, IMG_ORC_WALK_UP + 0),
@@ -316,7 +316,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, ORC_SLOT, aParams, VELOCITY) {
+    : GEnemyProcess(aGameState, aIp, ORC_SLOT, aParams, VELOCITY) {
   mSprite->Name("ORC SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
@@ -356,13 +356,11 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
       break;
     case DIRECTION_DOWN:
       mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(
-        mStep ? walkDownAnimation1 : walkDownAnimation2);
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
     case DIRECTION_LEFT:
       mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(
-        mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
       break;
     case DIRECTION_RIGHT:
       mSprite->vx = VELOCITY;
@@ -408,4 +406,3 @@ void GOrcProcess::Hit(DIRECTION aDirection) {
 void GOrcProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-

@@ -50,7 +50,7 @@ protected:
   void RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize = IMAGE_64x64);
 
 public:
-  GGamePlayfield *mGamePlayfield;
+  GGamePlayfield *mGamePlayfield, *mPreviousPlayfield;
 
 protected:
   TInt mTimer;

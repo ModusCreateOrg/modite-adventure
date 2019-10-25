@@ -2,7 +2,7 @@
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
-const TInt ATTACK_TIME = 3 * FRAMES_PER_SECOND;
+const TFloat VELOCITY = 1.0;
 
 GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot) : BProcess() {
   mSprite = ENull;
@@ -11,10 +11,10 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mStartX = aX;
   mStartY = aY;
 
-
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
   mSprite->x = aX;
   mSprite->y = aY;
+  mSprite->cx = 20;
   mSprite->w = 44;
   mSprite->h = 75;
   mGameState->AddSprite(mSprite);
@@ -22,6 +22,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
 
 GMidBossProcess::~GMidBossProcess() {
   if (mSprite) {
+    mSprite->Remove();
     delete mSprite;
     mSprite = ENull;
   }
@@ -72,6 +73,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
+      mStateTimer = Random(15, 180);
       Idle(aDirection);
       break;
 
@@ -98,6 +100,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_WALK_STATE:
       mStep = 1 - mStep;
+      mStateTimer = Random(30, 270);
       Walk(aDirection);
       break;
 
@@ -105,7 +108,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
-      mAttackTimer = ATTACK_TIME;
+      mAttackTimer = MID_BOSS_ATTACK_TIME;
       Attack(aDirection);
       break;
 
@@ -113,7 +116,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
-      mSprite->cMask &= ~STYPE_EBULLET;
+      mSprite->ClearCMask(STYPE_EBULLET);
       Hit(aDirection);
       break;
 
@@ -121,7 +124,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
-      mSprite->cMask &= ~STYPE_EBULLET;
+      mSprite->ClearCMask(STYPE_EBULLET);
       Spell(aDirection);
       break;
 
@@ -134,11 +137,69 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   }
 }
 
+TBool GMidBossProcess::MaybeHit() {
+  return EFalse;
+}
+
+//TBool GMidBossProcess::MaybeAttack() {
+//  return EFalse;
+//}
+
 TBool GMidBossProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  if (--mStateTimer < 0) {
+    for (TInt retries = 0; retries < 8; retries++) {
+      DIRECTION direction = (Random() & 2) ? DIRECTION_LEFT : DIRECTION_RIGHT;
+      
+      TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY;
+
+      if (mSprite->CanWalk(direction, vx, 0)) {
+        NewState(MB_WALK_STATE, direction);
+        return ETrue;
+      }
+    }
+
+    // after 8 tries, we couldn't find a direction to walk.
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
+  }
   return ETrue;
 }
 
 TBool GMidBossProcess::WalkState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  mAttackTimer = 1;
+  if (--mStateTimer < 0) {
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (!mSprite->CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->AnimDone()) {
+    Walk(mSprite->mDirection);
+  }
+
   return ETrue;
 }
 
@@ -169,4 +230,3 @@ TBool GMidBossProcess::DeathState() {
 TBool GMidBossProcess::SpellState() {
   return ETrue;
 }
-
