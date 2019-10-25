@@ -1,0 +1,28 @@
+os:
+- linux
+- osx
+osx_image: xcode11.2
+dist: bionic
+language: cpp
+sudo: enabled
+git:
+  depth: 1
+install: "./.ci/travis/install_deps.sh"
+before_script: "./.ci/travis/lint.sh"
+script: "./scripts/build.sh"
+deploy:
+  provider: releases
+  skip_cleanup: true
+  overwrite: true
+  file_glob: true
+  file: build/*.tgz
+  api_key:
+    secure: WD5Rg4ama1sD34+F8A5x/nLiAE1GbI/grzDGPfhWDZCN8DHk36KHCBrmogDfT/vvx6auVCYJ9GZMA2L5JcxBiUwRPsi2k07oM8bAQwtMlYrRbjo3gw3Wl2lQhup6k7Su+dwXZtY8IJubP/SzNi0oOKvq5JHiFvRekF3dlrO8NATG0zCrsjQp4FjwlToPZwwDyTVU0JWqv/lW8H/RJzHc8BLAOUgpHh83peQApuADAWNv6woV+Xv5PQKLuz46i2WoWfXRMcNiZMNbeB8rpgLnAsl14e/0mHV+1YTVyGk5WcJjBKgSSnLxMu/lH6/X7vqyOFK97JONeua88XW6ICcKdtyeVEcQuPlXYqqEdNvgO+v/IAp1vBVkHVYW47+vqYLE0las50+NmgAQohvVdU9Kt6AIa7sLpinF+9UVUW6UPftVFqdajk9RoSvyORL1FDz6NjExa4BQtLRpEkN8kW+JobGaPnjka/dMuOUVau+MLYmDfrlZCSEDKVh8u8CI8k4AsfdnIJvFP8keRQIrHxx3cdGQ9/I//+Nn8pW113LnT9TxlHkjbOgE5whUwabiMQwOdVoF27s7zgQKQdvR8g4qIyXZTN1zua++MQKiOfbv4SJFFSgEqwq8MhNNb10W7WYpIkJwYCTxg8ztqKQrvMVBWJXHc6B+MzVSGcpp7DfofUs=
+  file: build/*.(zip|tgz)
+  on:
+    tags: true
+    repo: ModusCreateOrg/creative-engine-travisci
+    condition: -n $TRAVIS_TAG
+notifications:
+  slack:
+    secure: PbLz669iiM0da2VNrdtT4L3gIXpaSWFKQoGBi1vEhFLNHwCmRFkowhfCnAEdiIvOOCgjJYQrQzt2Yx6+dx2d9q+kzyFRIG91kMcrfVh1gSF6MbZ9By4bwYlTdUk8iDmL8QRHMiLVJe6HfVVHVCxkKL2XGkHczQfUbc47lrW2kivXJv/ETm/Os7hroIWvgOnxFBJZLVCESWqU+n70QETPG+dGuEohQpRqxL3B2jE6t1jO2ZOdjMpei/roc5SLmAdlbkbkkfFuuMa9VRMT98yGoD/LNVjFEnrrro9tUAMmOAeIAxrNlGFV7fTvR62t/Y1xMPucmtc3C1T/k24GoCyEgmMu2jJuBMSVVGDNH+XHDUa7gzoMJMzS+gwWYEqAI3A9WDIzZJc0/zRKz3ku0BaR0fbJ3ZJsoUORC2jrbYEIS2dED8tblSMpvsFuYkET9uTMzhKm5wR6fLEalF7fM6aaIs4v6UJeoC2YEFMr1qkJv2fIFg7WZCcHIT0aPNp8EqC/VLa2NklM9xB7uDuQDg2U9QvxrDvgfIasCY2iX0Hpr0zQa07JXpK/m+EXQISeBseaW+bLQaSAUJtMOKI09u9PfNx9fdIpA48M9YhQ2fh3YgU3/UUwArIurH/DMl+s0o/MFITJ2sbUI4fH8qo0rT69z0FlPYijxlK8wtGY9SeV/Xs=

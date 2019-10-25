@@ -33,6 +33,7 @@ function ensure_cmake {
     if [[ -x /usr/local/bin/cmake ]]; then
         return
     fi
+
     local version
     local -i build
     local tmpdir
@@ -46,18 +47,21 @@ function ensure_cmake {
     cd "$tmpdir" || exit 1
     if curl -fsSO "https://cmake.org/files/v$version/$cmake.sh"; then
         # Install binary package if we could retrieve it
+        echo "Installing binary: https://cmake.org/files/v$version/$cmake.sh"
         $SUDO mkdir -p /opt/cmake
-        yes | $SUDO sh "$cmake.sh" --prefix=/opt/cmake || true # exits 141 on success for some reason
+        $SUDO sh "$cmake.sh" --skip-license --prefix=/opt/cmake || true # exits 141 on success for some reason
         $SUDO rm -f /usr/local/bin/cmake
-        $SUDO ln -s "/opt/cmake/$cmake/bin/cmake" /usr/local/bin/cmake
+        $SUDO ln -s "/opt/cmake/bin/cmake" /usr/local/bin/cmake
     else
-
         # Install from source (on Raspberry Pi with Rasbian 9.6 (stretch) for example.
         cmake="cmake-$version.$build"
+        echo "Installing from source: https://cmake.org/files/v$version/$cmake.tar.gz"
         curl -fsSO "https://cmake.org/files/v$version/$cmake.tar.gz"
         tar xfz "$cmake.tar.gz"
         cd "$cmake" || exit 1
+        echo "Before configure."
         ./configure
+        echo "Before make."
         make
         $SUDO make install
     fi
@@ -80,14 +84,13 @@ function ensure_arch_devtools_installed {
 
 function ensure_creative_engine {
     if [[ ! -d "$CREATIVE_ENGINE_DIR" ]]; then
-        git clone git@github.com:ModusCreateOrg/creative-engine.git "$CREATIVE_ENGINE_DIR"
+        git clone https://github.com/ModusCreateOrg/creative-engine.git "$CREATIVE_ENGINE_DIR"
     fi
 }
 
 function build {
     cd "$BASE_DIR" || exit 1
-    if [[ ! -d $CREATIVE_ENGINE_DIR ]]; then
-        # rm -f creative-engine
+    if [[ ! -d creative-engine ]]; then
         ln -sf "$CREATIVE_ENGINE_DIR" .
     fi
     mkdir -p "$BUILD_DIR"
@@ -143,9 +146,11 @@ function build_xtensa {
 }
 
 function clean {
-    cd "$CREATIVE_ENGINE_DIR" || exit 1
-    git clean -fdx
-    rm -rf "$BASE_DIR/build"
+    if [ -d "$CREATIVE_ENGINE_DIR" ];then
+        cd "$CREATIVE_ENGINE_DIR" || exit 1
+        git clean -fdx
+        rm -rf "$BASE_DIR/build"
+    fi
 }
 
 # TODO: Use otool -L and some foo to find the dependencies
@@ -224,9 +229,10 @@ EOF
             # INSTALL APP.PLIST & ETC
             cp "$BASE_DIR/resources/info.plist" "$APP_CNT_DIR"
             mkdir -p "$APP_RES_DIR"
-            cp "$BASE_DIR/resources/desktop-icon/Modite-Adventure.icns" "$APP_RES_DIR"
+            cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
 
-            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app"
+            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app"] ] \
+             || echo "Codesign has keychain dependencies, run this on your workstation!"
 
         fi
     fi
@@ -259,7 +265,7 @@ function archive_app {
         echo "Archiving app"
         cd "$BUILD_DIR" || exit 1
         # tar czvfp modite.tgz modite-docs modite.app .bin .elf .map
-        tar czvfp modite.tgz modite.app
+        tar czvfp modite.app.tgz modite.app
         # ls -l
         cd - || exit 1
     fi
