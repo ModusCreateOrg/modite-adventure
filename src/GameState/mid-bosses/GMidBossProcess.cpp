@@ -239,6 +239,7 @@ TBool GMidBossProcess::IdleState() {
 
 TBool GMidBossProcess::WalkState() {
   if (MaybeHit()) {
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
