@@ -38,7 +38,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->h = PLAYER_RECT_H;
   mSprite->cx = PLAYER_RECT_X;
   mSprite->cy = PLAYER_RECT_Y;
-  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
+  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_SORTY);
 
   mSprite2 = ENull;
 

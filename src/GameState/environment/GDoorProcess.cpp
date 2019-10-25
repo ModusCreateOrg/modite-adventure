@@ -22,8 +22,10 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
   mSprite1->SetCMask(STYPE_PBULLET);
   mSprite1->ClearCMask(STYPE_PLAYER);
-  mSprite1->w = mSprite1->h = 32;
-  mSprite1->cx = -16;
+  mSprite1->w = mHorizontal ? 32 : 16;
+  mSprite1->h = mHorizontal ? 16 : 64;
+  mSprite1->cx = mHorizontal ? -16 : 0;
+  mSprite1->cy = mHorizontal ? 0 : 8;
   mSprite1->x = aX;
   mSprite1->y = aY + (mHorizontal ? 2 : 3);
   mGameState->AddSprite(mSprite1);
@@ -38,8 +40,10 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
     mSprite2->SetCMask(STYPE_PBULLET);
     mSprite2->ClearCMask(STYPE_PLAYER);
-    mSprite2->w = mSprite2->h = 32;
-    mSprite2->cx = -16;
+    mSprite2->w = 16;
+    mSprite2->h = 64;
+    mSprite2->cx = 0;
+    mSprite2->cy = 40;
     mSprite2->x = mSprite1->x;
     mSprite2->y = mSprite1->y - 32;
     mGameState->AddSprite(mSprite2);

@@ -6,6 +6,11 @@
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
+const TInt RAT_RECT_X = 8;
+const TInt RAT_RECT_Y = 0;
+const TInt RAT_RECT_W = 24;
+const TInt RAT_RECT_H = 24;
+
 class GRatProcess : public GEnemyProcess {
 public:
   GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);

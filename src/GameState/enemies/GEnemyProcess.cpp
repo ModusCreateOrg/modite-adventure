@@ -49,7 +49,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mSprite->mHitPoints = mHitPoints;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
-  mSprite->SetFlags(SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_CHECK | SFLAG_SORTY);
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->Name("ENEMY SPRITE");
