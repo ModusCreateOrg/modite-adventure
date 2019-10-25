@@ -16,12 +16,18 @@ static ANIMSCRIPT fireballExplodeAnimation[] = {
 class FireballSprite : public GAnchorSprite {
 public:
   FireballSprite(GGameState *aGameState) : GAnchorSprite(aGameState, ENEMY_PRIORITY, MID_BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
+    mExploding = EFalse;
     //
   }
 
 public:
+  void Explode() {
+    mExploding = ETrue;
+    StartAnimation(fireballExplodeAnimation);
+  }
+
   void Animate() OVERRIDE {
-    if (TestFlags(SFLAG_ANIMATE)) {
+    if (mExploding) {
       BAnimSprite::Animate();
     }
     else {
@@ -29,6 +35,9 @@ public:
       mImageNumber = IMG_FIREBALL + Random(0, 4);
     }
   }
+
+protected:
+  TBool mExploding;
 };
 
 const TFloat FRAMES_TO_HIT_PLAYER = 60;
@@ -71,7 +80,7 @@ TBool GMidBossFireballProcess::RunAfter() {
   if (mSprite->TestAndClearCType(STYPE_PLAYER) || mSprite->Clipped()) {
     mSprite->vx = mSprite->vy = 0;
     mSprite->type = STYPE_DEFAULT;
-    mSprite->StartAnimation(fireballExplodeAnimation);
+    mSprite->Explode();
     mState = ETrue;
   }
   return ETrue;
