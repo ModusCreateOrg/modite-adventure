@@ -4,6 +4,7 @@
 const TFloat VELOCITY = 2.0;
 
 const TInt16 IDLE_SPEED = 20;
+const TInt16 HIT_SPEED = 20;
 const TInt16 WALK_SPEED = 4;
 
 static ANIMSCRIPT idleAnimation[] = {
@@ -12,6 +13,15 @@ static ANIMSCRIPT idleAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_MID_BOSS_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_MID_BOSS_IDLE + 3),
   ALOOP,
+};
+
+
+static ANIMSCRIPT hitAnimation[] = {
+  ABITMAP(MID_BOSS_SLOT),
+  ASTEP(HIT_SPEED, IMG_MID_BOSS_IDLE + 1),
+  ASTEP(HIT_SPEED, IMG_MID_BOSS_IDLE + 3),
+  ASTEP(HIT_SPEED, IMG_MID_BOSS_IDLE + 1),
+  AEND,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
@@ -85,6 +95,7 @@ void GMidBossFireProcess::Idle(DIRECTION aDirection) {
 }
 
 void GMidBossFireProcess::Walk(DIRECTION aDirection) {
+  printf("WALK %d\n", aDirection);
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->vy = -VELOCITY;
@@ -136,7 +147,9 @@ void GMidBossFireProcess::Attack(DIRECTION aDirection) {
 }
 
 void GMidBossFireProcess::Hit(DIRECTION aDirection) {
-  mSprite->StartAnimation(idleAnimation);
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(hitAnimation);
+//  mSprite->StartAnimation(idleAnimation);
 }
 
 void GMidBossFireProcess::Death(DIRECTION aDirection) {

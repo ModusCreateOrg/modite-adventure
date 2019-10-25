@@ -1,4 +1,7 @@
 #include "GMidBossProcess.h"
+#include "GPlayer.h"
+#include "GStatProcess.h"
+ 
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
@@ -18,6 +21,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->w = 44;
   mSprite->h = 75;
   mGameState->AddSprite(mSprite);
+  mSprite->mHitPoints = 1000;
 }
 
 GMidBossProcess::~GMidBossProcess() {
@@ -138,6 +142,62 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 TBool GMidBossProcess::MaybeHit() {
+  if (mSprite->TestCType(STYPE_SPELL)) {
+    mSprite->ClearCType(STYPE_SPELL);
+    if (!mSprite->mInvulnerable) {
+      mSprite->mInvulnerable = ETrue;
+      // TODO take into account which spellbook is being wielded
+      mSprite->mHitPoints -= GPlayer::mHitStrength;
+      if (mSprite->mHitPoints <= 0) {
+        printf("MID BOSS DEATH\n");
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+      }
+      else {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
+      }
+      NewState(MB_SPELL_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
+  GAnchorSprite *other = mSprite->mCollided;
+  if (mSprite->TestCType(STYPE_PBULLET)) {
+    mSprite->ClearCType(STYPE_PBULLET);
+    if (!mSprite->mInvulnerable) {
+      mSprite->Nudge(); // move sprite so it's not on top of player
+      mSprite->mInvulnerable = ETrue;
+      mSprite->mHitPoints -= other->mHitStrength;
+      if (mSprite->mHitPoints <= 0) {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+      }
+      else {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
+      }
+      switch (other->mDirection) {
+        case DIRECTION_RIGHT:
+          NewState(MB_HIT_STATE, DIRECTION_LEFT);
+          break;
+        case DIRECTION_LEFT:
+          NewState(MB_HIT_STATE, DIRECTION_RIGHT);
+          break;
+        case DIRECTION_UP:
+          NewState(MB_HIT_STATE, DIRECTION_DOWN);
+          break;
+        case DIRECTION_DOWN:
+          NewState(MB_HIT_STATE, DIRECTION_UP);
+          break;
+      }
+      mSprite->Nudge();
+      return ETrue;
+    }
+  }
+
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
+    mSprite->Nudge();
+    return ETrue;
+  }
+
   return EFalse;
 }
 
@@ -147,17 +207,19 @@ TBool GMidBossProcess::MaybeHit() {
 
 TBool GMidBossProcess::IdleState() {
   if (MaybeHit()) {
+    printf("maybehit\n");
     return ETrue;
   }
 
   if (MaybeAttack()) {
+    printf("maybeattack\n");
     return ETrue;
   }
 
   if (--mStateTimer < 0) {
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = (Random() & 2) ? DIRECTION_LEFT : DIRECTION_RIGHT;
-      
+
       TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY;
 
       if (mSprite->CanWalk(direction, vx, 0)) {
@@ -169,6 +231,9 @@ TBool GMidBossProcess::IdleState() {
     // after 8 tries, we couldn't find a direction to walk.
     NewState(MB_IDLE_STATE, mSprite->mDirection);
   }
+  else {
+    printf("idle timer %d\n", mStateTimer);
+  }
   return ETrue;
 }
 
@@ -176,22 +241,24 @@ TBool GMidBossProcess::WalkState() {
   if (MaybeHit()) {
     return ETrue;
   }
+
   if (MaybeAttack()) {
     return ETrue;
   }
 
   mAttackTimer = 1;
+
   if (--mStateTimer < 0) {
     NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
-  if (!mSprite->CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+  if (mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_PBULLET)) {
     NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 
-  if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+  if (!mSprite->CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
     NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -220,13 +287,90 @@ TBool GMidBossProcess::AttackState() {
 }
 
 TBool GMidBossProcess::HitState() {
+  if (mSprite->AnimDone()) {
+    if (mSprite->mHitPoints <= 0) {
+      NewState(MB_DEATH_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+    mSprite->mInvulnerable = EFalse;
+    mSprite->ClearCType(STYPE_PBULLET);
+    NewState(MB_IDLE_STATE, mSprite->mDirection);
+  }
   return ETrue;
 }
 
 TBool GMidBossProcess::DeathState() {
-  return ETrue;
+  return EFalse;
 }
 
 TBool GMidBossProcess::SpellState() {
   return ETrue;
 }
+ 
+    
+    
+
+
+  
+  
+
+
+
+
+
+
+ 
+    
+    
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+    
+        
+                
+
+     
+    
+
+
+
+  
+  
+
+  
+
+
+     
+      
+      
+      
+      
+     
+  
+
+    
+      
+        
+      
+      
+      
+        
+      
+      
+    

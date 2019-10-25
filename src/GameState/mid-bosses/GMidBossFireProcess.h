@@ -7,10 +7,10 @@ class GMidBossFireProcess : public GMidBossProcess {
 public:
   GMidBossFireProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot);
 
-  ~GMidBossFireProcess();
+  ~GMidBossFireProcess() OVERRIDE;
 
 protected:
-  TBool MaybeAttack();
+  TBool MaybeAttack() OVERRIDE;
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
