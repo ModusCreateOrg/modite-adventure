@@ -17,12 +17,16 @@ class FireballSprite : public GAnchorSprite {
 public:
   FireballSprite(GGameState *aGameState) : GAnchorSprite(aGameState, ENEMY_PRIORITY, MID_BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
     mExploding = EFalse;
+    mTimer = 128;
     //
   }
 
 public:
   void Explode() {
     mExploding = ETrue;
+    mTimer = 100000; // really big number
+    vx = vy = 0;
+    type = STYPE_DEFAULT;
     StartAnimation(fireballExplodeAnimation);
   }
 
@@ -31,13 +35,19 @@ public:
       BAnimSprite::Animate();
     }
     else {
+      mTimer--;
       // instead of anim script, we just randomly choose an animation frame (for variety)
       mImageNumber = IMG_FIREBALL + Random(0, 4);
     }
   }
 
+  TBool TimedOut() {
+    return mTimer < 1;
+  }
+
 protected:
   TBool mExploding;
+  TInt mTimer; // lifetime (before we explode)
 };
 
 const TFloat FRAMES_TO_HIT_PLAYER = 60;
@@ -77,9 +87,10 @@ TBool GMidBossFireballProcess::RunBefore() {
 }
 
 TBool GMidBossFireballProcess::RunAfter() {
-  if (mSprite->TestAndClearCType(STYPE_PLAYER) || mSprite->Clipped()) {
-    mSprite->vx = mSprite->vy = 0;
-    mSprite->type = STYPE_DEFAULT;
+  if (mState) {
+    return ETrue;
+  }
+  if (mSprite->TimedOut() || mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY) || mSprite->Clipped()) {
     mSprite->Explode();
     mState = ETrue;
   }

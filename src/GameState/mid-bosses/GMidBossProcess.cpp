@@ -207,12 +207,10 @@ TBool GMidBossProcess::MaybeHit() {
 
 TBool GMidBossProcess::IdleState() {
   if (MaybeHit()) {
-    printf("maybehit\n");
     return ETrue;
   }
 
   if (MaybeAttack()) {
-    printf("maybeattack\n");
     return ETrue;
   }
 
@@ -230,9 +228,6 @@ TBool GMidBossProcess::IdleState() {
 
     // after 8 tries, we couldn't find a direction to walk.
     NewState(MB_IDLE_STATE, mSprite->mDirection);
-  }
-  else {
-    printf("idle timer %d\n", mStateTimer);
   }
   return ETrue;
 }

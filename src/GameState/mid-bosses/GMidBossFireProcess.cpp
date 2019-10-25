@@ -95,7 +95,6 @@ void GMidBossFireProcess::Idle(DIRECTION aDirection) {
 }
 
 void GMidBossFireProcess::Walk(DIRECTION aDirection) {
-  printf("WALK %d\n", aDirection);
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->vy = -VELOCITY;
