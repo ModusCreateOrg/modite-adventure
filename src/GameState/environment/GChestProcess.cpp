@@ -12,11 +12,11 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   }
   else {
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST, STYPE_ENEMY);
-    mSprite->SetCMask(STYPE_PBULLET);
-    mSprite->ClearCMask(STYPE_PLAYER);
+    mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
   }
 
-  mSprite->w = mSprite->h = 32;
+  mSprite->w = 32;
+  mSprite->h = 16;
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;

@@ -6,7 +6,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
   mGameState = aGameState;
-  SetFlags(SFLAG_ANCHOR);
+  SetFlags(SFLAG_ANCHOR | SFLAG_SORTY);
   if (aType) {
     SetFlags(SFLAG_CHECK);
   }

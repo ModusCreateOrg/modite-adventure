@@ -25,10 +25,12 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite = new GAnchorSprite(mGameState, SPIKES_PRIORITY, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_DEFAULT;
   mSprite->w = mSprite->h = 24;
-  mSprite->cx = -8;
-  mSprite->cy = -4;
+  mSprite->cx = 4;
+  mSprite->cy = 4;
   mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->y = aY - 32;
+  mSprite->ClearFlags(SFLAG_ANCHOR);
+  mSprite->SetFlags(SFLAG_SORTY);
   mGameState->AddSprite(mSprite);
   mState = EFalse;
   mTime = (7 * SPIKE_SPEED);

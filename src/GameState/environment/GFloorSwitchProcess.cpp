@@ -11,9 +11,9 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w = mSprite->h = 32;
-  mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 3;
+  mSprite->ClearFlags(SFLAG_ANCHOR);
   mGameState->AddSprite(mSprite);
   mState = mAnimating = EFalse;
 }
