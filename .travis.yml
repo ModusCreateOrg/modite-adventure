@@ -1,0 +1,22 @@
+os:
+- linux
+- osx
+osx_image: xcode11.2
+dist: bionic
+language: cpp
+sudo: enabled
+git:
+  depth: 1
+install: "./.ci/travis/install_deps.sh"
+before_script: "./.ci/travis/lint.sh"
+script: "./scripts/build.sh"
+deploy:
+  provider: releases
+  api_key:
+    secure: TbgL7t23TYfzRNfrcounVfXfPddAeyk2yaEIvbORsu98oG6fJCIc2uSNBr6Hnkva51pjSkSsFuTkeubEMQkOIqrlAKVi1Y0g+iwk0ZrGQca+4FWzK7CM2uAwWZcH03ni5q1fruDEdi4w+SUtp1prgkrt2ANyhLnGYjEMrpTInB+Fox2Cy56wrvbZf2SkqqjW4oVVa2wb/XVgA+B+kUBfLUGeRClMIEUpBiQxyzrBsCBSn6o8x7VYhpVL0LcW5POxwZO+MTrGsLInDZ1ErDAaG2x7omIDAvdsi6GL/qyAOFBDMvhawxosI8TF6oRWy4ZcN7Jtp2Oly6ml/7OVjIdWSd9BwulL8r+sGNgnyIuQpfBmpDUmpmgxoMX12p+B+pRdKywTNu9Fvh00zwiTg0Ez2NSq/yr+Km/jXxqc9CT29X9LjER9qX1pnY7F9IDlCeBjtzI8he+930t0Rs88dt6L1lXOFNgbjtC+caqr/WO8aySuy4HpVlcnjqw9idUe6v7Ym0xqr7poPvlaTuQtmAZlMbLJ5Hx3Vmhp38VJm98UtbxwEJNV15j/NphYrMnbeuI9QfhyyQPtEBZxHDqAKllm5SaN+LPnd9FJSz/phOP2E/r37NhL2lOoIGuDDgMSC3v3yrGydwfCOUCKF7lKzsQwtJjYHINHwjwrQouIHGHoRpA=
+  file: foo.txt
+  on:
+    repo: ModusCreateOrg/modite-adventure
+notifications:
+  slack:
+    secure: a26dJYv5pdVz2x+VY1sfr8FHa+M9JfR0s8sj2Iah5h/deaR1I4w6ar+d63sPZFOKzczMKcO8GyG+qkpHmh4Y1OdPzKuRGjrDksqSYKHmHsWXqcWYtfXUzS1IzK+fU+B46UiC3byLKIaeHmgRQULndeZoTLQUMcznMFzr2jWGoUsXuI+vIedorcT2hkenwU1ajz9pili/hVEiLCPOCL1MF/7va+4dU8wR9c7A6mHl2pJ3Q+nMS5f9srvHqJiYQ5Fuxn8IaaNb1FYQCu46nFij62P0Wnu+i7Wu/tQeJvUH82BxcqDHW9Dya+IUvJsLVyNz4MZOld5nLW8m2Shc3UlpUTKmmtjlnlNkwnPX5bkHaxx9Og0jJ0lINa8x2//y4iAn7UxdTnni4Txts5Mm0pdfaZzh55C5iitwb0VPoj6hbAhpvnQQhX2efGCGjSp8cuQUa4Z/uKoEx40XOPkSQhdSDrPtFlpM1ZLiwX9k9qqZt5ZJhyad/7G9ZtMMqokRMPu7PYa2hzBBTQePJwIv4R68yUfzmZhq16BR+tSXdj78MX7Dnn958TnphfkXKbaKwERbnYps/MEcAtoBo8c/HQ0/kqFfgGUH/97ExSrl9eTdi67YJ2nAsWK9apn/9/cSYad6uYXe+hWU06/5aeuQ57gqMl7601jhhH6liw+e0uv91CM=

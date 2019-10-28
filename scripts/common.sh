@@ -224,7 +224,7 @@ EOF
             # INSTALL APP.PLIST & ETC
             cp "$BASE_DIR/resources/info.plist" "$APP_CNT_DIR"
             mkdir -p "$APP_RES_DIR"
-            cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
+            cp "$BASE_DIR/resources/desktop-icon/Modite-Adventure.icns" "$APP_RES_DIR"
 
             codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app"
 

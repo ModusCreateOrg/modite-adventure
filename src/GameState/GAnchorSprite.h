@@ -28,6 +28,9 @@ enum HIT_STRENGTH {
 // this:
 const TFloat COLLISION_DELTA_Y = 16;
 
+// additional distance to look ahead when approaching a wall
+const TFloat FLOOR_ADJUST_BUFFER = 1;
+
 class GAnchorSprite : public BAnimSprite {
 public:
   GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
@@ -43,6 +46,8 @@ public:
 
   void Nudge();
 
+  TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY);
+
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 
 public:
@@ -51,7 +56,7 @@ public:
 public:
   static DIRECTION RandomDirection();
 
-  TBool CanWalk(DIRECTION aDireciton, TFloat aVx, TFloat aVy);
+  TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
 public:
   GGameState *mGameState;
@@ -64,6 +69,10 @@ public:
   TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
+  TFloat floorOffsetLeft;
+  TFloat floorOffsetTop;
+  TFloat floorOffsetRight;
+  TFloat floorOffsetBottom;
 
 protected:
   char mName[64];
