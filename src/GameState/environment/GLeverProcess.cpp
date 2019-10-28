@@ -28,9 +28,9 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mSprite->cMask = STYPE_PBULLET;
   mSprite->cMask &= ~STYPE_PLAYER;
   mSprite->w = mSprite->h = 32;
-  mSprite->cx = -16;
   mSprite->x = aX;
-  mSprite->y = aY + 3;
+  mSprite->y = aY - 29;
+  mSprite->ClearFlags(SFLAG_ANCHOR);
   mGameState->AddSprite(mSprite);
   mState = 1;
   mSprite->StartAnimation(leverCenterAnimation);

@@ -7,23 +7,27 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   if (aIsOpen) {
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST + 1, STYPE_ENEMY);
     mSprite->cType = 0;
-    mSprite->ClearFlags(SFLAG_CHECK);
+    mSprite->ClearFlags(SFLAG_CHECK | SFLAG_ANCHOR);
     mSprite->type = STYPE_DEFAULT;
+
+    mSprite->y = aY;
   }
   else {
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST, STYPE_ENEMY);
     mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+    mSprite->cx = -16;
+    mSprite->y = aY + 32;
+
   }
 
   mSprite->w = 32;
   mSprite->h = 16;
-  mSprite->cx = -16;
   mSprite->x = aX;
-  mSprite->y = aY + 32;
+
   mGameState->AddSprite(mSprite);
 
   if (aIsOpen) {
-    GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
+    GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y+32);
   }
 }
 
@@ -42,7 +46,7 @@ TBool GChestProcess::RunAfter() {
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
     printf("Chest open param = %x %d\n", mParam, mParam);
-    GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
+    GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y+32);
     mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
 
