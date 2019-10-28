@@ -164,9 +164,9 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-32, 0, 64, 64),
+  ASIZE(-24, 0, 48, 24),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(0, 0, 32, 24),
   ATYPE(STYPE_ENEMY),
   AFLIP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
   AEND,
@@ -219,9 +219,9 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ATYPE(STYPE_EBULLET),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 0),
-  ASIZE(0, 0, 64, 64),
+  ASIZE(-8, 0, 48, 24),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 1),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(0, 0, 32, 24),
   ASTEP(ATTACK_SPEED, IMG_SPIDER_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
   AEND,
@@ -301,6 +301,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   : GEnemyProcess(aGameState, aIp, SPIDER_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("SPIDER SPRITE");
+  mSprite->h = 24;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_MEDIUM;
