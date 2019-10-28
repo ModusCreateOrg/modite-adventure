@@ -168,7 +168,7 @@ ANIMSCRIPT swordDownAnimation[] = {
   // this is the frame to collide with enemy to hit it
   ADELTA(-2, 22),
   ATYPE(STYPE_PBULLET),
-  ASIZE(0, 23, 32, 55),
+  ASIZE(0, 22, 32, 34),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER
@@ -191,7 +191,7 @@ ANIMSCRIPT swordDownNoBulletAnimation[] = {
   // this is the frame to collide with enemy to hit it
   ADELTA(-2, 22),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(0, 23, 32, 55),
+  ASIZE(0, 22, 32, 34),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER
@@ -281,7 +281,7 @@ ANIMSCRIPT swordLeftAnimation[] = {
 
   ADELTA(-18, 0),
   ATYPE(STYPE_PBULLET),
-  ASIZE(-32, 0, 40, 32),
+  ASIZE(-37, 0, 41, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   ATYPE(STYPE_PLAYER),
@@ -300,7 +300,7 @@ ANIMSCRIPT swordLeftNoBulletAnimation[] = {
 
   ADELTA(-18, 0),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(-32, 0, 40, 32),
+  ASIZE(-37, 0, 41, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   //  ATYPE(STYPE_PLAYER),
@@ -387,7 +387,7 @@ ANIMSCRIPT swordRightAnimation[] = {
 
   ADELTA(20, 0),
   ATYPE(STYPE_PBULLET),
-  ASIZE(16, 0, 48, 32),
+  ASIZE(22, 0, 41, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
   ADELTA(20, 0),
@@ -407,7 +407,7 @@ ANIMSCRIPT swordRightNoBulletAnimation[] = {
 
   ADELTA(20, 0),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(16, 0, 72, 32),
+  ASIZE(22, 0, 41, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
   ADELTA(20, 0),
@@ -494,7 +494,7 @@ ANIMSCRIPT swordUpAnimation[] = {
 
   ADELTA(2, -2),
   ATYPE(STYPE_PBULLET),
-  ASIZE(0, 0, 32, 58),
+  ASIZE(0, -22, 32, 34),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 1),
 
   ADELTA(4, -2),
@@ -515,7 +515,7 @@ ANIMSCRIPT swordUpNoBulletAnimation[] = {
 
   ADELTA(2, -2),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(0, 0, 32, 58),
+  ASIZE(0, -22, 32, 34),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 1),
 
   ADELTA(4, -2),
