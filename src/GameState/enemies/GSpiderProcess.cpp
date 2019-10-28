@@ -16,6 +16,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
+const TInt ATTACK_STRENGTH = 30;
+
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -303,7 +305,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->Name("SPIDER SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitStrength = HIT_MEDIUM;
+  mSprite->mHitStrength = ATTACK_STRENGTH;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

@@ -5,7 +5,8 @@
 #include "inventory/GItemProcess.h"
 #include "Items.h"
 
-const TInt HIT_POINTS = 5; // default hit points for enemy
+const TInt HIT_POINTS = 200; // default hit points for enemy
+const TInt ATTACK_STRENGTH = 20; // default attack strength
 
 const TInt16 DEATH_SPEED = 4,
              SPELL_SPEED = 2;
@@ -47,6 +48,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mState = IDLE_STATE;
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->mHitPoints = mHitPoints;
+  mSprite->mHitStrength = ATTACK_STRENGTH;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
@@ -160,12 +162,13 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      mSprite->mHitPoints -= GPlayer::mHitStrength;
+      TInt hitAmount = GPlayer::mHitStrength + (rand() % (GPlayer::mHitStrength / 2 + 1));
+      mSprite->mHitPoints -= hitAmount;
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
       }
       else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", hitAmount));
       }
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -178,12 +181,13 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->mHitPoints -= other->mHitStrength;
+      TInt hitAmount = other->mHitStrength + (rand() % (other->mHitStrength / 2 + 1));
+      mSprite->mHitPoints -= hitAmount;
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
       }
       else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", hitAmount));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:

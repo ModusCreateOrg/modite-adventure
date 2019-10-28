@@ -11,7 +11,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
     SetFlags(SFLAG_CHECK);
   }
   mDirection = DIRECTION_DOWN;
-  mHitStrength = HIT_LIGHT;
+  mHitStrength = 20;
 
   w = 64;
   h = 64;

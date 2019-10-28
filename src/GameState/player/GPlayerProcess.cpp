@@ -37,6 +37,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->w = 32;
   mSprite->h = 32;
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
+  mSprite->mHitStrength = 25;
 
   mSprite2 = ENull;
 
@@ -71,53 +72,17 @@ TBool GPlayerProcess::IsLedge() {
   return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
-TBool GPlayerProcess::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  TRect r;
-  mSprite->GetRect(r);
-  r.Offset(aVx, aVy);
-  r.Set(r.x1 + FLOOR_ADJUST_LEFT, r.y1 + FLOOR_ADJUST_TOP, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - FLOOR_ADJUST_BOTTOM);
-
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
-
-  switch (aDirection) {
-    case DIRECTION_UP:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y1 - FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2, r.y1 - FLOOR_ADJUST_BUFFER)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_DOWN:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2 , r.y2 + FLOOR_ADJUST_BUFFER)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_LEFT:
-      if (mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y1 ) && mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      if (mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y1) && mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y2)) {
-        return ETrue;
-      }
-      break;
-  }
-
-  return EFalse;
-};
-
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
-      return IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
     case DIRECTION_DOWN:
-      return IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
     case DIRECTION_LEFT:
-      return IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
     case DIRECTION_RIGHT:
     default:
-      return IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
   }
 }
 
@@ -181,7 +146,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       // TODO: calculate hit strengh based upon level and strength
-      mSprite->mHitStrength = 1;
+
       gSoundPlayer.SfxBadDrop();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -282,70 +247,58 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->Nudge();
     TInt state = HIT_LIGHT_STATE;
     const GAnchorSprite *other = mSprite->mCollided;
-    switch (other->mHitStrength) {
 
-      case HIT_LIGHT:
-        GPlayer::mHitPoints -= 1;
-        mSprite->mInvulnerable = ETrue;
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +1"));
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitLightDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitLightUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitLightRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitLightLeftAnimation);
-            break;
-        }
-        break;
+    // random variation from 100% to 150% base damage
+    TInt hitAmount = other->mHitStrength + (rand() % (other->mHitStrength / 2 + 1));
+    GPlayer::mHitPoints -= hitAmount;
+    mSprite->mInvulnerable = ETrue;
+    mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +%d", hitAmount));
 
-      case HIT_MEDIUM:
-        GPlayer::mHitPoints -= 2;
-        mSprite->mInvulnerable = ETrue;
-        state = HIT_MEDIUM_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +2"));
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitMediumDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitMediumUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitMediumRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitMediumLeftAnimation);
-            break;
-        }
-        break;
-
-      case HIT_HARD:
-      default:
-        GPlayer::mHitPoints -= 3;
-        mSprite->mInvulnerable = ETrue;
-        state = HIT_HARD_STATE;
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitHardDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitHardUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitHardRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-            mSprite->StartAnimation(hitHardLeftAnimation);
-            break;
-        }
-        break;
+    if (hitAmount <= GPlayer::mMaxHitPoints * 0.05) {
+      switch (other->mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(hitLightDownAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(hitLightUpAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(hitLightRightAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(hitLightLeftAnimation);
+          break;
+      }
+    } else if (hitAmount <= GPlayer::mMaxHitPoints * 0.10) {
+      switch (other->mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(hitMediumDownAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(hitMediumUpAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(hitMediumRightAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(hitMediumLeftAnimation);
+          break;
+      }
+    } else {
+      switch (other->mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(hitHardDownAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(hitHardUpAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(hitHardRightAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(hitHardLeftAnimation);
+          break;
+      }
     }
     mState = state;
 

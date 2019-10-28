@@ -16,6 +16,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = PLAYER_VELOCITY / 4;
 
+const TInt ATTACK_STRENGTH = 40;
+
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -314,7 +316,7 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->Name("SLIME SPRITE");
   mSprite->x = aX;
   mSprite->y = aY;
-  mSprite->mHitStrength = HIT_HARD;
+  mSprite->mHitStrength = ATTACK_STRENGTH;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
 
