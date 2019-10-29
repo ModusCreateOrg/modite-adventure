@@ -25,7 +25,8 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->w = 44;
   mSprite->h = 75;
   mGameState->AddSprite(mSprite);
-  mSprite->mHitPoints = 3;
+  mSprite->mHitPoints = 45;
+  mSprite->mHitStrength = HIT_HARD;
   mDeathCounter = 0;
   mSpellCounter = 0;
 
