@@ -281,7 +281,7 @@ ANIMSCRIPT swordLeftAnimation[] = {
 
   ADELTA(-18, 0),
   ATYPE(STYPE_PBULLET),
-  ASIZE(-37, 2, 41, 16 + 8),
+  ASIZE(-37, 2, 41, 24),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   ATYPE(STYPE_PLAYER),
@@ -300,7 +300,7 @@ ANIMSCRIPT swordLeftNoBulletAnimation[] = {
 
   ADELTA(-18, 0),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(-37, 2, 41, 16 + 8),
+  ASIZE(-37, 2, 41, 24),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   //  ATYPE(STYPE_PLAYER),
@@ -387,7 +387,7 @@ ANIMSCRIPT swordRightAnimation[] = {
 
   ADELTA(20, 0),
   ATYPE(STYPE_PBULLET),
-  ASIZE(22, 2, 41, 16 + 8),
+  ASIZE(22, 2, 41, 24),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
   ADELTA(20, 0),
@@ -407,7 +407,7 @@ ANIMSCRIPT swordRightNoBulletAnimation[] = {
 
   ADELTA(20, 0),
   //  ATYPE(STYPE_PBULLET),
-  ASIZE(22, 2, 41, 16 + 8),
+  ASIZE(22, 2, 41, 24),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
   ADELTA(20, 0),

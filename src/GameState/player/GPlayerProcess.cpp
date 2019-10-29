@@ -34,10 +34,10 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mGameState->AddSprite(mSprite);
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
-  mSprite->w = PLAYER_RECT_W;
-  mSprite->h = PLAYER_RECT_H;
-  mSprite->cx = PLAYER_RECT_X;
-  mSprite->cy = PLAYER_RECT_Y;
+  mSprite->w = 26;
+  mSprite->h = 16;
+  mSprite->cx = 7;
+  mSprite->cy = 2;
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_SORTY);
 
   mSprite2 = ENull;
