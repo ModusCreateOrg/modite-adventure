@@ -7,13 +7,15 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
+#include "GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
 
 enum {
   MB_IDLE_STATE,
   MB_WALK_STATE,
-  MB_BALL_STATE,   // bounce of walls N times, hit player
+  MB_BALL_STATE,   // change into ball
+  MB_MOVE_STATE,    // bounce of walls N times, hit player
   MB_RETURN_STATE, // returning to starting position
   MB_REVERT_STATE, // revert back to original shape
   MB_ATTACK_STATE, // projectile attack
@@ -38,6 +40,8 @@ protected:
 
   TBool MaybeHit();
 
+  TBool MaybeBounce();
+
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection);
 
@@ -49,6 +53,9 @@ protected:
 
   virtual void Ball(DIRECTION aDirection) = 0;
   TBool BallState();
+
+  virtual void Move(DIRECTION aDirection) = 0;
+  TBool MoveState();
 
   virtual void Return(DIRECTION aDirection) = 0;
   TBool ReturnState();
@@ -69,15 +76,23 @@ protected:
   virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
+public:
+  void DeathAnimationDone() {
+    mDeathCounter--;
+  }
+
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   GAnchorSprite *mSprite;
+  GSpellOverlayProcess *mSpellOverlayProcess;
   TFloat mStartX, mStartY;
   TInt16 mState, mStep;
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitPoints;
+  TInt mDeathCounter; // number of death animation processes spawned/outstanding
+  TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };
 
 #endif

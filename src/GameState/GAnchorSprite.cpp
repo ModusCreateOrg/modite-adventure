@@ -7,7 +7,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
   mGameState = aGameState;
   SetFlags(SFLAG_ANCHOR);
-  if (aType) {
+  if (aType != STYPE_DEFAULT) {
     SetFlags(SFLAG_CHECK);
   }
   mDirection = DIRECTION_DOWN;
@@ -31,6 +31,21 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
 GAnchorSprite::~GAnchorSprite() {
   //
+}
+
+void GAnchorSprite::SafePosition(BSprite *aOther) {
+  TRect myRect, hisRect;
+  aOther->GetRect(hisRect);
+  GetRect(myRect);
+  if (!myRect.Overlaps(hisRect)) {
+    // already dafe to position here (not on top of other sprite)
+    return;
+  }
+  x = hisRect.x1 - hisRect.Width() -1;
+  if (IsFloor(DIRECTION_LEFT, x, y)) {
+    return;
+  }
+  x = hisRect.x2 + 1;
 }
 
 TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {

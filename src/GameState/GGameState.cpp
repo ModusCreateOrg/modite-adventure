@@ -128,9 +128,10 @@ static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, 
 
   // calculate percentage
   TFloat pct = stat_max ? (TFloat(stat)) / TFloat(stat_max) : 0.;
+  TFloat gw = pct * GAUGE_WIDTH;
 
   // fill area
-  TRect fill(0, 0, TInt(pct * GAUGE_WIDTH), 8);
+  TRect fill(0, 0, TInt(gw), 8);
   fill.x1 += 2;
   fill.y1 += 2;
   fill.x2 -= 2;
@@ -161,6 +162,7 @@ void GGameState::PostRender() {
   vp.SetRect(rect);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
+  gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_TEXT_BG);
 
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
     *screen = gDisplay.renderBitmap;

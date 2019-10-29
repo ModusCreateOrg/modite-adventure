@@ -17,6 +17,8 @@ protected:
 
   void Walk(DIRECTION aDirection) OVERRIDE;
 
+  void Move(DIRECTION aDirection) OVERRIDE;
+
   void Ball(DIRECTION aDirection) OVERRIDE;
 
   void Return(DIRECTION aDirection) OVERRIDE;
