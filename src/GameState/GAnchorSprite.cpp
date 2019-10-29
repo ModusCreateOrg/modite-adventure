@@ -3,11 +3,11 @@
 #include "GGamePlayfield.h"
 
 GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType)
-  : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
+    : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
   mGameState = aGameState;
   SetFlags(SFLAG_ANCHOR);
-  if (aType) {
+  if (aType != STYPE_DEFAULT) {
     SetFlags(SFLAG_CHECK);
   }
   mDirection = DIRECTION_DOWN;
@@ -31,6 +31,21 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
 GAnchorSprite::~GAnchorSprite() {
   //
+}
+
+void GAnchorSprite::SafePosition(BSprite *aOther) {
+  TRect myRect, hisRect;
+  aOther->GetRect(hisRect);
+  GetRect(myRect);
+  if (!myRect.Overlaps(hisRect)) {
+    // already dafe to position here (not on top of other sprite)
+    return;
+  }
+  x = hisRect.x1 - hisRect.Width() -1;
+  if (IsFloor(DIRECTION_LEFT, x, y)) {
+    return;
+  }
+  x = hisRect.x2 + 1;
 }
 
 TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
@@ -96,10 +111,8 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
     gDisplay.renderBitmap->DrawRect(aViewPort, r, COLOR_TEXT_SHADOW);
 
-    gDisplay.renderBitmap->DrawFastHLine(
-      aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastVLine(
-      aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_TEXT_SHADOW);
   }
 #endif
 
@@ -107,7 +120,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {
-  auto *s = (GAnchorSprite *) aOther;
+  auto *s = (GAnchorSprite *)aOther;
   mCollided = s;
   s->mCollided = this;
   cType |= aOther->type;

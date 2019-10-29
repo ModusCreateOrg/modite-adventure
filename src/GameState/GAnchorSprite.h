@@ -50,6 +50,8 @@ public:
 
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 
+  void SafePosition(BSprite *aOther);
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
 

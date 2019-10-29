@@ -4,6 +4,9 @@
 #include <BTypes.h>
 #include "Resources.h"
 
+// Events
+const TUint16 EVENT_SPELL_PROCESS_EXIT = 1;
+
 // Sprite priorities
 // higher numbers mean deeper into the screen (highest values drawn first)
 const TInt CHEST_PRIORITY = 2;
@@ -42,6 +45,11 @@ enum {
   SPIDER_SLOT,
   TROLL_SLOT,
   ENEMY_DEATH_SLOT,
+  // mid bosses
+  MID_BOSS_DEATH_SLOT,
+  MID_BOSS_SLOT,
+  MID_BOSS_PROJECTILE_SLOT,
+
   SLOT_MAX,
 };
 
@@ -101,6 +109,21 @@ const TUint16 IMG_HEAL = 0;
 
 // PLAYER_SPELL_EFFECT.BMP
 const TUint16 IMG_SPELL = 0;
+
+// MID BOSS
+const TUint16 IMG_MID_BOSS_IDLE = 0;
+const TUint16 IMG_MID_BOSS_WALK_DOWN = 0;
+const TUint16 IMG_MID_BOSS_WALK_RIGHT = 4;
+const TUint16 IMG_MID_BOSS_WALK_LEFT = 4;
+const TUint16 IMG_MID_BOSS_WALK_UP = 8;
+const TUint16 IMG_MID_BOSS_MOVE = 12; // move and attack
+
+// MID BOSS PROJECTILE
+const TUint16 IMG_FIREBALL = 0;
+const TUint16 IMG_FIREBALL_EXPLODE = 5;
+
+// MID BOSS DEATH
+const TUint16 IMG_MID_BOSS_DEATH = 0;
 
 // CHARA_SPIDER_BMP
 const TUint16 IMG_SPIDER_IDLE = 0;

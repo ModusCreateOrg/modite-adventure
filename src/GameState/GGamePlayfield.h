@@ -50,7 +50,11 @@ const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
 const TUint16 ATTR_CHEST_OPEN = 25;
 const TUint16 ATTR_CRATE_GONE = 26;
-const TUint16 ATTR_ITEM = 27; // this is used for ObjectProgram to indicate an item is present
+// mid bosses
+const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
+const TUint16 ATTR_MID_BOSS_FIRE = 1002;
+const TUint16 ATTR_MID_BOSS_EARTH= 1003;
+const TUint16 ATTR_MID_BOSS_WATER= 1004;
 //
 const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OBJECT_LAYER value
 

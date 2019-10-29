@@ -261,8 +261,10 @@ TBool GPlayerProcess::MaybeQuaff() {
 
 TBool GPlayerProcess::MaybeSpell() {
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook) {
-      GPlayer::mManaPotion -= 25;
+    if (ETrue || (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook)) {
+      if (GPlayer::mManaPotion >= 25) {
+        GPlayer::mManaPotion -= 25;
+      }
       NewState(SPELL_STATE, DIRECTION_DOWN);
     }
     return ETrue;
@@ -286,6 +288,7 @@ TBool GPlayerProcess::MaybeHit() {
 
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
+        printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
         mSprite->mInvulnerable = ETrue;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +1"));
         switch (other->mDirection) {
@@ -306,6 +309,7 @@ TBool GPlayerProcess::MaybeHit() {
 
       case HIT_MEDIUM:
         GPlayer::mHitPoints -= 2;
+        printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
         mSprite->mInvulnerable = ETrue;
         state = HIT_MEDIUM_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +2"));
@@ -328,6 +332,7 @@ TBool GPlayerProcess::MaybeHit() {
       case HIT_HARD:
       default:
         GPlayer::mHitPoints -= 3;
+        printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
         mSprite->mInvulnerable = ETrue;
         state = HIT_HARD_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
