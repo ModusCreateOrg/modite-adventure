@@ -36,6 +36,8 @@ protected:
 
   TBool IsLedge();
 
+  TBool IsSwordObstructed(DIRECTION aDirection);
+
   TBool CanWalk(DIRECTION aDirection);
 
 protected:

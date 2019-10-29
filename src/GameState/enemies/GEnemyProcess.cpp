@@ -357,7 +357,7 @@ TBool GEnemyProcess::DeathState() {
     mSprite2->x = mSprite->x + 16;
     mSprite2->y = mSprite->y;
     mSprite2->Name("ENEMY DEATH SPRITE");
-    mSprite2->ClearFlags(SFLAG_CHECK);
+    mSprite2->ClearFlags(SFLAG_CHECK | SFLAG_SORTY); // workaround to display death animation on top
     mGameState->AddSprite(mSprite2);
     mSprite2->StartAnimation(deathAnimation);
   }

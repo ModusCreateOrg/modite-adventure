@@ -73,6 +73,25 @@ TBool GPlayerProcess::IsLedge() {
   return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
+TBool GPlayerProcess::IsSwordObstructed(DIRECTION aDirection) {
+  TRect r;
+  mSprite->GetRect(r);
+  TInt centerX = (r.x1 + r.x2) / 2, centerY = (r.y1 + r.y2) / 2;
+  switch (aDirection) {
+    case DIRECTION_UP:
+      return mPlayfield->GetAttribute(centerX, centerY - 16) == ATTR_WALL;
+    case DIRECTION_DOWN:
+      return mPlayfield->GetAttribute(centerX, centerY + 16) == ATTR_WALL;
+
+    case DIRECTION_LEFT:
+      return mPlayfield->GetAttribute(centerX - 32, centerY) == ATTR_WALL;
+
+    case DIRECTION_RIGHT:
+    default:
+      return mPlayfield->GetAttribute(centerX + 32, centerY) == ATTR_WALL;
+  }
+}
+
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
@@ -340,29 +359,7 @@ TBool GPlayerProcess::MaybeSword() {
     return EFalse;
   }
 
-  TBool is_wall = EFalse;
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      if (!mSprite->IsFloor(DIRECTION_UP, 0, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_DOWN:
-      if (!mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_LEFT:
-      if (!mSprite->IsFloor(DIRECTION_LEFT, 0, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      if (!mSprite->IsFloor(DIRECTION_RIGHT, 0, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-  }
+  TBool is_wall = IsSwordObstructed(mSprite->mDirection);
 
   NewState(is_wall ? SWORD_NO_BULLET_STATE : SWORD_STATE, mSprite->mDirection);
   return ETrue;
@@ -379,7 +376,7 @@ TBool GPlayerProcess::MaybeFall() {
 TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_LEFT);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -390,7 +387,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_RIGHT);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -401,7 +398,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_UP);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -415,7 +412,7 @@ TBool GPlayerProcess::MaybeWalk() {
       return EFalse;
     }
     if (!CanWalk(DIRECTION_DOWN)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_DOWN);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {

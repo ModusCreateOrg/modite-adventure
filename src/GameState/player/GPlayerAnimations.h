@@ -5,11 +5,6 @@ const TInt16 WALKSPEED = 3 * FACTOR;
 const TInt16 SWORDSPEED = 3 * FACTOR;
 const TInt16 HITSPEED = 2 * FACTOR;
 
-const TInt PLAYER_RECT_X = 7;
-const TInt PLAYER_RECT_Y = 2;
-const TInt PLAYER_RECT_W = 26;
-const TInt PLAYER_RECT_H = 16;
-
 extern ANIMSCRIPT idleAnimation[];
 
 extern ANIMSCRIPT selectedAnimation[];
