@@ -4,6 +4,7 @@
 class GGameState ;
 class GGamePlayfield;
 class GGameState;
+class GPlayerBlinkProcess;
 //class GAnchorSprite;
 
 #include "GGame.h"
@@ -75,6 +76,8 @@ protected:
 
   TBool HitState();
 
+public:
+  GPlayerBlinkProcess *mBlinkProcess;
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
