@@ -57,7 +57,9 @@ TBool GItemProcess::RunAfter() {
     mGameState->AddProcess(p);
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
-    mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
+    if (mIp != -1) {
+      mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
+    }
     GPlayer::mInventoryList.Dump();
     return EFalse;
   }

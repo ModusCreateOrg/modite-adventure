@@ -5,6 +5,8 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
+#include "GSpellOverlayProcess.h"
+#include "GEnemyDeathOverlayProcess.h"
 
 const TFloat SEEK_Y = COLLISION_DELTA_Y;  // seek to player Y within this many pixels
 const TFloat SEEK_X = 40; // seek to player X within this many pixels
@@ -39,7 +41,9 @@ protected:
   GGamePlayfield *mPlayfield;
   TInt mIp;
   TUint16 mParams;
-  GAnchorSprite *mSprite, *mSprite2;
+  GSpellOverlayProcess *mSpellOverlayProcess;
+  GEnemyDeathOverlayProcess *mEnemyDeathOverlayProcess;
+  GAnchorSprite *mSprite;
   TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;

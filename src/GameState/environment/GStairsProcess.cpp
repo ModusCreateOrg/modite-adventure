@@ -48,18 +48,19 @@ TBool GStairsProcess::RunBefore() {
 
 TBool GStairsProcess::RunAfter() {
   if (mSprite1->TestCType(STYPE_PLAYER)) {
-    switch (mLevel) {
-      case 0:
-      case 1:
-        mGameState->NextLevel("Dungeon0", mLevel, DEVDUNGEON_0_LEVEL1_MAP);
-        break;
-      case 2:
-        mGameState->NextLevel("Dungeon0", mLevel, DEVDUNGEON_0_LEVEL2_MAP);
-        break;
-      case 3:
-        mGameState->NextLevel("Dungeon0", mLevel, DEVDUNGEON_0_LEVEL3_MAP);
-        break;
+    mSprite1->type = STYPE_DEFAULT;
+    mSprite1->cType = 0;
+    mSprite1->cMask = 0;
+    mSprite1->ClearCType(STYPE_PLAYER);
+    mSprite1->ClearFlags(SFLAG_CHECK);
+    if (mSprite2) {
+      mSprite2->type = STYPE_DEFAULT;
+      mSprite2->cType = 0;
+      mSprite2->cMask = 0;
+      mSprite2->ClearFlags(SFLAG_CHECK);
     }
+    printf("USE STAIRS to level %d\n", mLevel);
+    mGameState->NextLevel(DUNGEON_DEV, mLevel);
     mSprite1->mCollided->ClearCType(STYPE_OBJECT);
   }
   mSprite1->cType = 0;

@@ -16,6 +16,9 @@ class GGamePlayfield;
 static TUint16 MESSAGE_FLOOR_SWITCH_DOWN = 0;
 static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 
+const TInt16 DUNGEON_DEV = 0;
+const TInt16 DUNGEON_LIVE = 1;
+
 class GGameState : public BGameEngine {
 public:
   GGameState();
@@ -26,7 +29,7 @@ public:
   void PreRender();
   void PostRender();
 
-  void NextLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
+  void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
 
   // store code and attr into ObjectProgram at aIp
@@ -47,14 +50,14 @@ protected:
   void RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize = IMAGE_64x64);
 
 public:
-  GGamePlayfield *mGamePlayfield;
+  GGamePlayfield *mGamePlayfield, *mPreviousPlayfield;
 
 protected:
   TInt mTimer;
   char mText[128];
   char mName[128];
   TInt16 mNextLevel, mLevel;
-  TUint16 mNextTileMapId, mTileMapId;
+  TUint16 mNextDungeon, mNextTileMapId, mTileMapId;
 
 public:
   GAnchorSprite *PlayerSprite();
