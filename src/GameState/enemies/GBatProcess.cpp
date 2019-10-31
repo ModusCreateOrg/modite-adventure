@@ -33,7 +33,8 @@ const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
 
-ANIMSCRIPT idleAnimation[] = {
+ANIMSCRIPT idleAnima
+  ion[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(40, IMG_BAT_IDLE),
   ASTEP(4, IMG_BAT_IDLE + 1),
@@ -42,7 +43,8 @@ ANIMSCRIPT idleAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT selectAnimation[] = {
+static ANIMSCRIPT se
+  ectAnimation[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 1),
@@ -71,7 +73,8 @@ static ANIMSCRIPT deathAnimation[] = {
 |____/ \___/ \_/\_/ |_| |_|
 */
 
-static ANIMSCRIPT idleDownAnimation[] = {
+static ANIMSCRIPT id
+  eDownAnimation[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
@@ -123,10 +126,12 @@ static ANIMSCRIPT hitDownAnimation[] = {
 
  */
 
-static ANIMSCRIPT idleLeftAnimation[] = {
+static ANIMSCRIPT id
+  eLeftAnimation[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
@@ -173,10 +178,12 @@ static ANIMSCRIPT hitLeftAnimation[] = {
          |___/
  */
 
-static ANIMSCRIPT idleRightAnimation[] = {
+static ANIMSCRIPT id
+  eRightAnimation[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
 static ANIMSCRIPT walkRightAnimation1[] = {
@@ -223,10 +230,12 @@ static ANIMSCRIPT hitRightAnimation[] = {
       |_|
  */
 
-static ANIMSCRIPT idleUpAnimation[] = {
+static ANIMSCRIPT id
+  eUpAnimation[] = {
   ABITMAP(BAT_SLOT), ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
+  
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
 
 static ANIMSCRIPT walkUpAnimation1[] = {
@@ -271,7 +280,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
  *********************************************************************************/
 
 // constructor
-GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
+
+    atProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
   : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY) {
   mStateTimer = 0;
   mSprite->Name("BAT SPRITE");
@@ -280,6 +290,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitPoints = mHitPoints;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
@@ -294,7 +305,7 @@ GBatProcess::~GBatProcess() {
 
 /*********************************************************************************
  *********************************************************************************
- *********************************************************************************/
+
 
 
 void GBatProcess::Idle(DIRECTION aDirection) {
@@ -314,12 +325,13 @@ void GBatProcess::Walk(DIRECTION aDirection) {
       break;
     case DIRECTION_DOWN:
       mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(
+
+          prite->StartAnimation(
         mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
     case DIRECTION_LEFT:
       mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(
+          prite->StartAnimation(
         mStep ? walkLeftAnimation1 : walkLeftAnimation2);
       break;
     case DIRECTION_RIGHT:
@@ -364,6 +376,5 @@ void GBatProcess::Hit(DIRECTION aDirection) {
 }
 
 void GBatProcess::Death(DIRECTION aDirection) {
-  mSprite->StartAnimation(deathAnimation);
-}
+ 
 

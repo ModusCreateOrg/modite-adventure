@@ -289,6 +289,7 @@ GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFl
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_SNIPER_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

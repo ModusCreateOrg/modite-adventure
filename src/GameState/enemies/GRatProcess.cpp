@@ -312,6 +312,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_LIGHT;
   mStateTimer = 0;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 

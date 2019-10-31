@@ -2,6 +2,7 @@
 #define MODITE_GENEMYPROCESS_H
 
 #include <BProcess.h>
+#include "GResources.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
