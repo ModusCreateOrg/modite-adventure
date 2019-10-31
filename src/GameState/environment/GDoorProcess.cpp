@@ -20,8 +20,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
         STYPE_ENEMY);
   }
 
-  mSprite1->SetCMask(STYPE_PBULLET);
-  mSprite1->ClearCMask(STYPE_PLAYER);
+  mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
   mSprite1->w = mHorizontal ? 32 : 16;
   mSprite1->h = mHorizontal ? 16 : 64;
   mSprite1->cx = mHorizontal ? -16 : 0;
@@ -38,8 +37,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
         aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10,
         STYPE_ENEMY);
 
-    mSprite2->SetCMask(STYPE_PBULLET);
-    mSprite2->ClearCMask(STYPE_PLAYER);
+    mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
     mSprite2->w = 16;
     mSprite2->h = 64;
     mSprite2->cx = 0;
