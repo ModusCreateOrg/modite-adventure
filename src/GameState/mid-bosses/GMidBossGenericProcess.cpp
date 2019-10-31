@@ -1,5 +1,5 @@
-#include "GMidBossFireProcess.h"
-#include "GMidBossFireballProcess.h"
+#include "GMidBossGenericProcess.h"
+#include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
 
 const TFloat VELOCITY = 2.0;
@@ -125,21 +125,21 @@ static ANIMSCRIPT revertAnimation[] = {
 
 /* endregion }}} */
 
-GMidBossFireProcess::GMidBossFireProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot)
+GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot)
     : GMidBossProcess(aGameState, aX, aY, aSlot) {
   //
   NewState(MB_IDLE_STATE, DIRECTION_DOWN);
 }
 
-GMidBossFireProcess::~GMidBossFireProcess() {
+GMidBossGenericProcess::~GMidBossGenericProcess() {
   //
 }
 
-void GMidBossFireProcess::Idle(DIRECTION aDirection) {
+void GMidBossGenericProcess::Idle(DIRECTION aDirection) {
   mSprite->StartAnimation(idleAnimation);
 }
 
-void GMidBossFireProcess::Walk(DIRECTION aDirection) {
+void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->vy = -VELOCITY;
@@ -161,7 +161,7 @@ void GMidBossFireProcess::Walk(DIRECTION aDirection) {
   mStep = !mStep;
 }
 
-TBool GMidBossFireProcess::MaybeAttack() {
+TBool GMidBossGenericProcess::MaybeAttack() {
   if (mState != MB_IDLE_STATE) {
     return EFalse;
   }
@@ -169,17 +169,17 @@ TBool GMidBossFireProcess::MaybeAttack() {
     return EFalse;
   }
   mAttackTimer = MID_BOSS_ATTACK_TIME;
-  BProcess *p = new GMidBossFireballProcess(mGameState, mSprite->x + 32, mSprite->y - 32);
+  BProcess *p = new GMidBossProjectileProcess(mGameState, mSprite->x + 32, mSprite->y - 32);
   mGameState->AddProcess(p);
   return ETrue;
 }
 
 // boss changes into ball
-void GMidBossFireProcess::Ball(DIRECTION aDirection) {
+void GMidBossGenericProcess::Ball(DIRECTION aDirection) {
   mSprite->StartAnimation(transformAnimation);
 }
 
-void GMidBossFireProcess::Move(DIRECTION aDirection) {
+void GMidBossGenericProcess::Move(DIRECTION aDirection) {
   GAnchorSprite *player = GPlayer::mSprite;
   mSprite->StartAnimation(moveAnimation);
   mSprite->vx = mSprite->x > player->x ? -BOUNCE_VELOCITY : BOUNCE_VELOCITY;
@@ -187,29 +187,29 @@ void GMidBossFireProcess::Move(DIRECTION aDirection) {
 }
 
 // ball returns to top of screen
-void GMidBossFireProcess::Return(DIRECTION aDirection) {
+void GMidBossGenericProcess::Return(DIRECTION aDirection) {
   mSprite->StartAnimation(moveAnimation);
 }
 
 // This is changing from ball back to normal state
-void GMidBossFireProcess::Revert(DIRECTION aDirection) {
+void GMidBossGenericProcess::Revert(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0.;
   mSprite->StartAnimation(revertAnimation);
 }
 
-void GMidBossFireProcess::Attack(DIRECTION aDirection) {
+void GMidBossGenericProcess::Attack(DIRECTION aDirection) {
   mSprite->StartAnimation(idleAnimation);
 }
 
-void GMidBossFireProcess::Hit(DIRECTION aDirection) {
+void GMidBossGenericProcess::Hit(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(hitAnimation);
 }
 
-void GMidBossFireProcess::Death(DIRECTION aDirection) {
+void GMidBossGenericProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
 
-void GMidBossFireProcess::Spell(DIRECTION aDirection) {
+void GMidBossGenericProcess::Spell(DIRECTION aDirection) {
   mSprite->StartAnimation(hitAnimation);
 }
