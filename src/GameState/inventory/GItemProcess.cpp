@@ -24,11 +24,10 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber]);
     mSprite->type = STYPE_OBJECT;
     mSprite->cMask = STYPE_PLAYER;
-    mSprite->ClearFlags(SFLAG_ANCHOR);
-    mSprite->SetFlags(SFLAG_SORTY);
     mSprite->w = mSprite->h = 32;
+    mSprite->cx = -16;
     mSprite->x = aX;
-    mSprite->y = aY - 32;
+    mSprite->y = aY;
     mGameState->AddSprite(mSprite);
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
   }

@@ -24,7 +24,7 @@ GEnemyDeathOverlayProcess::GEnemyDeathOverlayProcess(GGameState *aGameState, TFl
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->Name("ENEMY DEATH SPRITE");
-  mSprite->ClearFlags(SFLAG_CHECK | SFLAG_SORTY); // workaround to display above enemy
+  mSprite->ClearFlags(SFLAG_CHECK);
   aGameState->AddSprite(mSprite);
   mSprite->StartAnimation(deathAnimation);
 }

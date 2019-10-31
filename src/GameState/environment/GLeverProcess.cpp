@@ -24,13 +24,13 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mAnimating = EFalse;
   mDirection = ETrue;
 
-  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
-  mSprite->cMask = STYPE_PBULLET;
-  mSprite->cMask &= ~STYPE_PLAYER;
-  mSprite->w = mSprite->h = 32;
+  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_ENEMY);
+  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite->w = 32;
+  mSprite->h = 24;
+  mSprite->cx = -16;
   mSprite->x = aX;
-  mSprite->y = aY - 29;
-  mSprite->ClearFlags(SFLAG_ANCHOR);
+  mSprite->y = aY + 3;
   mGameState->AddSprite(mSprite);
   mState = 1;
   mSprite->StartAnimation(leverCenterAnimation);
@@ -61,45 +61,37 @@ TBool GLeverProcess::RunBefore() {
 }
 
 TBool GLeverProcess::RunAfter() {
-  if (mAnimating) {
-    if (mSprite->AnimDone()) {
-      mAnimating = EFalse;
-      mSprite->type = STYPE_OBJECT;
-      mSprite->cType = 0;
-      mSprite->SetFlags(SFLAG_CHECK);
-      return ETrue;
-    }
-  }
-
-  if (mSprite->cType & STYPE_PBULLET) {
-    mSprite->cType = 0;
-    mSprite->ClearFlags(SFLAG_CHECK);
-    if (mDirection) {
-      mState++;
-      if (mState > 2) {
-        mState = 1;
-        mDirection = EFalse;
+  if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
+    if (!mAnimating) {
+      mAnimating = ETrue;
+      if (mDirection) {
+        mState++;
+        if (mState > 2) {
+          mState = 1;
+          mDirection = EFalse;
+        }
+      }
+      else {
+        mState--;
+        if (mState < 0) {
+          mState = 1;
+          mDirection = ETrue;
+        }
+      }
+      switch (mState) {
+        case 0:
+          mSprite->StartAnimation(leverLeftAnimation);
+          break;
+        case 1:
+          mSprite->StartAnimation(leverCenterAnimation);
+          break;
+        case 2:
+          mSprite->StartAnimation(leverRightAnimation);
+          break;
       }
     }
-    else {
-      mState--;
-      if (mState < 0) {
-        mState = 1;
-        mDirection = ETrue;
-      }
-    }
-    mAnimating = ETrue;
-    switch (mState) {
-      case 0:
-        mSprite->StartAnimation(leverLeftAnimation);
-        break;
-      case 1:
-        mSprite->StartAnimation(leverCenterAnimation);
-        break;
-      case 2:
-        mSprite->StartAnimation(leverRightAnimation);
-        break;
-    }
+  } else {
+    mAnimating = EFalse;
   }
 
   return ETrue;

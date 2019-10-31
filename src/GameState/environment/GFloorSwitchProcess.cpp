@@ -8,12 +8,12 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
   mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
-  mSprite->cMask = STYPE_PBULLET;
-  mSprite->cMask &= ~STYPE_PLAYER;
+  mSprite->SetCMask(STYPE_PBULLET);
+  mSprite->ClearCMask(STYPE_PLAYER);
   mSprite->w = mSprite->h = 32;
+  mSprite->cx = -16;
   mSprite->x = aX;
-  mSprite->y = aY - 29;
-  mSprite->ClearFlags(SFLAG_ANCHOR);
+  mSprite->y = aY + 3;
   mGameState->AddSprite(mSprite);
   mState = mAnimating = EFalse;
 }
@@ -42,20 +42,15 @@ TBool GFloorSwitchProcess::RunBefore() {
 }
 
 TBool GFloorSwitchProcess::RunAfter() {
-  if (mAnimating) {
-    if (mSprite->AnimDone()) {
-      mSprite->cType = 0;
-      mSprite->SetFlags(SFLAG_CHECK);
-      return ETrue;
-    }
-  }
-
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-    mSprite->ClearFlags(SFLAG_CHECK);
-    mState = !mState;
-    OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
-    mAnimating = ETrue;
-    mSprite->mImageNumber = mState ? (mImage + 1) : mImage;
+    if (!mAnimating) {
+      mState = !mState;
+      OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
+      mAnimating = ETrue;
+      mSprite->mImageNumber = mState ? (mImage + 1) : mImage;
+    }
+  } else {
+    mAnimating = EFalse;
   }
 
   return ETrue;

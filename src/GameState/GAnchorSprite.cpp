@@ -6,7 +6,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
     : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
   mGameState = aGameState;
-  SetFlags(SFLAG_ANCHOR | SFLAG_SORTY);
+  SetFlags(SFLAG_ANCHOR | SFLAG_SORTPRI);
   if (aType != STYPE_DEFAULT) {
     SetFlags(SFLAG_CHECK);
   }
@@ -91,6 +91,9 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 void GAnchorSprite::Move() {
   mLastX = x;
   mLastY = y;
+  if (pri <= 10000 && pri >= -10000) {
+    pri = y;
+  }
   BAnimSprite::Move();
 }
 

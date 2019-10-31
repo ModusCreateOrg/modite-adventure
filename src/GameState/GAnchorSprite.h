@@ -4,6 +4,7 @@
 #include <BAnimSprite.h>
 class GGameState;
 //#include "GGameState.h"
+class GAnchorSpriteList;
 
 enum DIRECTION {
   DIRECTION_UP,
