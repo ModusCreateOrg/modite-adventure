@@ -18,7 +18,7 @@
 #include "GameState/environment/GDoorProcess.h"
 #include "GameState/environment/GLeverProcess.h"
 #include "GameState/environment/GFloorSwitchProcess.h"
-#include "GameState/mid-bosses/GMidBossFireProcess.h"
+#include "GameState/mid-bosses/GMidBossGenericProcess.h"
 
 #include "GPlayer.h"
 
@@ -33,14 +33,14 @@ static struct DUNGEON_DEF {
   TUint16 map[10];
 } dungeon_defs[] = {
   // DUNGEON_DEV
-  {"DEV DUNGEON",
-    {
-      DEVDUNGEON_0_LEVEL1_MAP,
-      DEVDUNGEON_0_LEVEL1_MAP,
-      DEVDUNGEON_0_LEVEL2_MAP,
-      DEVDUNGEON_0_LEVEL3_MAP,
-      DEVDUNGEON_0_LEVEL4_MAP,
-    }},
+  { "DEV DUNGEON",
+      {
+          DEVDUNGEON_0_LEVEL1_MAP,
+          DEVDUNGEON_0_LEVEL1_MAP,
+          DEVDUNGEON_0_LEVEL2_MAP,
+          DEVDUNGEON_0_LEVEL3_MAP,
+          DEVDUNGEON_0_LEVEL4_MAP,
+      } },
 };
 const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
 
@@ -85,7 +85,7 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
 GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0),
                            mNextTileMapId(0) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
-                           MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
+      MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
 
@@ -165,12 +165,12 @@ void GGameState::PostRender() {
   gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_TEXT_BG);
 
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
-    *screen = gDisplay.renderBitmap;
+          *screen = gDisplay.renderBitmap;
 
   const TInt BOTTLE_X = 64 * 3,
-    BOTTLE_Y = 14,
-    BOTTLE_WIDTH = 12,
-    BOTTLE_HEIGHT = 15;
+             BOTTLE_Y = 14,
+             BOTTLE_WIDTH = 12,
+             BOTTLE_HEIGHT = 15;
 
   TInt x = 2;
 
@@ -196,7 +196,7 @@ void GGameState::PostRender() {
 
   // render mana potion
   TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-             BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+      BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
   switch (GPlayer::mManaPotion) {
     case 75:
       mana.Offset(BOTTLE_WIDTH * 1, 0);
@@ -303,12 +303,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     i = EFalse;
   }
 
-//  delete mPlayfield;
-//
-//  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, aTileMapId);
-//  sprintf(mText, "%s Level %d", aName, aLevel);
-//  mTimer = 1 * FRAMES_PER_SECOND;
-//  Disable();
+  //  delete mPlayfield;
+  //
+  //  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, aTileMapId);
+  //  sprintf(mText, "%s Level %d", aName, aLevel);
+  //  mTimer = 1 * FRAMES_PER_SECOND;
+  //  Disable();
 
   //  AddProcess(new GStartLevelProcess(aName, aLevel));
   RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
@@ -348,17 +348,17 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   TInt eCount = 0;
   for (TInt ip = 0; ip < objectCount; ip++) {
     const TUint16 op = program[ip].mCode & TUint32(0xffff),
-      params = program[ip].mCode >> TUint32(16),
-      row = program[ip].mRow,
-      col = program[ip].mCol;
+                  params = program[ip].mCode >> TUint32(16),
+                  row = program[ip].mRow,
+                  col = program[ip].mCol;
 
     auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
     switch (op) {
 
-      //
-      // ENVIRONMENT
-      //
+        //
+        // ENVIRONMENT
+        //
 
       case ATTR_STONE_STAIRS_UP:
 #ifdef DEBUGME
@@ -549,21 +549,49 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         AddProcess(new GTrollProcess(this, ip, xx - 20, yy + 32, params));
         break;
 
-      case ATTR_MID_BOSS_FIRE:
+        //const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
+        //const TUint16 ATTR_MID_BOSS_FIRE = 1002;
+        //const TUint16 ATTR_MID_BOSS_EARTH= 1003;
+        //const TUint16 ATTR_MID_BOSS_WATER= 1004;
         // mid boss
         // only one mid boss can be available
-
+      case ATTR_MID_BOSS_ENERGY:
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
-
+        // Sprite sheet for enemy
+        RemapSlot(MID_BOSS_ENERGY_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        // Sprite sheet for enemy projectiles
+        RemapSlot(MID_BOSS_ENERGY_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        break;
+      case ATTR_MID_BOSS_FIRE:
+        // always explosion (for any enemy)
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
-
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_FIRE_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        break;
 
-        //
-        AddProcess(new GMidBossFireProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+      case ATTR_MID_BOSS_EARTH:
+        // always explosion (for any enemy)
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
+        // Sprite sheet for enemy
+        RemapSlot(MID_BOSS_EARTH_BROWN_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        // Sprite sheet for enemy projectiles
+        RemapSlot(MID_BOSS_EARTH_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        break;
+
+      case ATTR_MID_BOSS_WATER:
+        // always explosion (for any enemy)
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
+        // Sprite sheet for enemy
+        RemapSlot(MID_BOSS_WATER_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        // Sprite sheet for enemy projectiles
+        RemapSlot(MID_BOSS_WATER_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
         break;
 
       default:
@@ -579,12 +607,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
 void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
   BObjectProgram *program = mGamePlayfield->mObjectProgram,
-    *step = &program[aIp];
+                 *step = &program[aIp];
 
   printf("EndProgram %p]n", program);
   TUint32 code = aCode,
-    attr = aAttr,
-    sCode = step->mCode;
+          attr = aAttr,
+          sCode = step->mCode;
 
   if (aCode == ATTR_KEEP) {
     if (aAttr == ATTR_KEEP) {
@@ -592,9 +620,11 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
       return;
     }
     step->mCode = LOWORD(sCode) | (attr << 16);
-  } else if (aAttr == ATTR_KEEP) {
+  }
+  else if (aAttr == ATTR_KEEP) {
     step->mCode = (sCode & 0xffff0000) | (attr << 16);
-  } else {
+  }
+  else {
     step->mCode = code | (attr << 16);
   }
 }

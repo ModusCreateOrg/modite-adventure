@@ -3,11 +3,11 @@
 
 #include "GMidBossProcess.h"
 
-class GMidBossFireProcess : public GMidBossProcess {
+class GMidBossGenericProcess : public GMidBossProcess {
 public:
-  GMidBossFireProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot);
+  GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot);
 
-  ~GMidBossFireProcess() OVERRIDE;
+  ~GMidBossGenericProcess() OVERRIDE;
 
 protected:
   TBool MaybeAttack() OVERRIDE;

@@ -1,5 +1,5 @@
 #include "BProcess.h"
-#include "GMidBossFireballProcess.h"
+#include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
 
 const TInt EXPLODE_SPEED = 5;
@@ -54,7 +54,7 @@ protected:
 
 const TFloat FRAMES_TO_HIT_PLAYER = 60;
 
-GMidBossFireballProcess::GMidBossFireballProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
+GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
   mGameState = aGameState;
   mSprite = new FireballSprite(mGameState);
   mSprite->type = STYPE_EBULLET;
@@ -74,7 +74,7 @@ GMidBossFireballProcess::GMidBossFireballProcess(GGameState *aGameState, TFloat 
   mState = EFalse;
 }
 
-GMidBossFireballProcess::~GMidBossFireballProcess() {
+GMidBossProjectileProcess::~GMidBossProjectileProcess() {
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -82,14 +82,14 @@ GMidBossFireballProcess::~GMidBossFireballProcess() {
   }
 }
 
-TBool GMidBossFireballProcess::RunBefore() {
+TBool GMidBossProjectileProcess::RunBefore() {
   if (mState && mSprite->AnimDone()) {
     return EFalse;
   }
   return ETrue;
 }
 
-TBool GMidBossFireballProcess::RunAfter() {
+TBool GMidBossProjectileProcess::RunAfter() {
   // when mState is true, it means the fireball explosion is animating
   if (!mState) {
     // these could all be one big if statement, but it's easier to edit this way so we can reorder the tests.
