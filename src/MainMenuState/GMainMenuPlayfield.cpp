@@ -30,9 +30,9 @@ TInt GMainMenuPlayfield::CenterText16(const char *s, TInt aY, TInt aColor, TInt 
   TInt width = aBackground == -1 ? 12 : 16;
   TInt x     = TInt((SCREEN_WIDTH - (strlen(s) * width)) / 2);
   if (aBackground != -1) {
-    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, aBackground);
+    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, TInt16(aBackground));
   } else {
-    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, aBackground, -4);
+    gDisplay.renderBitmap->DrawString(ENull, s, mFont16, x, aY, aColor, TInt16(aBackground), -4);
   }
   return 16;
 }
