@@ -351,9 +351,6 @@ TBool GPlayerProcess::MaybeHit() {
 #ifdef DEBUGME
         printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
 #endif
-        if (!mBlinkProcess) {
-          mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
-        }
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -672,7 +669,10 @@ TBool GPlayerProcess::FallState() {
 }
 
 TBool GPlayerProcess::HitState() {
-  if (mSprite->AnimDone() && !mBlinkProcess) {
+  if (mSprite->AnimDone()) {
+    if (!mBlinkProcess) {
+      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+    }
     mSprite->ClearCType(STYPE_EBULLET);
     if (!MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
