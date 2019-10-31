@@ -1,5 +1,6 @@
 #include "GDoorProcess.h"
 #include "GGamePlayfield.h"
+#include "BSpriteSheet.h"
 
 GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
     : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
@@ -7,17 +8,12 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mHorizontal = aHorizontal;
 
   if (mHorizontal) {
-    mSprite1 = new GAnchorSprite(
-        mGameState,
-        DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
-        STYPE_ENEMY);
+    mSprite1 = new GAnchorSprite( mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H, STYPE_ENEMY);
+    mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
   }
   else {
-    mSprite1 = new GAnchorSprite(
-        mGameState,
-        DOOR_PRIORITY,
-        ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
-        STYPE_ENEMY);
+    mSprite1 = new GAnchorSprite( mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V, STYPE_ENEMY);
+    mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
   }
 
   mSprite1->SetCMask(STYPE_PBULLET);
@@ -25,8 +21,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mSprite1->w = mSprite1->h = 32;
   mSprite1->cx = -16;
   mSprite1->x = aX;
-  mSprite1->y = aY + (mHorizontal ? 2 : 3);
-  mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP);
+  mSprite1->y = aY + (mHorizontal ? 2.0 : 3.0);
   mGameState->AddSprite(mSprite1);
 
   if (!mHorizontal) {
@@ -43,7 +38,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite2->cx = -16;
     mSprite2->x = mSprite1->x;
     mSprite2->y = mSprite1->y - 32;
-  mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP);
+    mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
   }
 }

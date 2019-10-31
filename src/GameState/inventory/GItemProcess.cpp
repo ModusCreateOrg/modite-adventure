@@ -28,7 +28,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     mSprite->cx = -16;
     mSprite->x = aX;
     mSprite->y = aY;
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP);
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
   }

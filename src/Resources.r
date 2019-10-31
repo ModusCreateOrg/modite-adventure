@@ -15,18 +15,18 @@ BITMAP title.bmp
 PALETTE test.pal
 
 #
+### ENVIRONMENT/OBJECTS
+#
+PATH resources/sprites/environment
+SPRITESHEET 32x32 dungeon_tileset_objects.bmp
+
+#
 ### HERO
 #
 PATH resources/sprites/
 SPRITESHEET 64x64 chara_hero.bmp
 SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
-
-#
-### ENVIRONMENT/OBJECTS
-#
-PATH resources/sprites/environment
-SPRITESHEET 32x32  dungeon_tileset_objects.bmp
 
 #
 ### ENEMIES
