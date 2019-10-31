@@ -22,6 +22,7 @@ public:
     type = STYPE_EBULLET;
     SetCMask(STYPE_PLAYER);
     SetFlags(SFLAG_CHECK);
+    mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_PROJECTILE_BMP_SPRITES);
   }
 
 public:

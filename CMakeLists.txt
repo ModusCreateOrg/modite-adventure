@@ -61,7 +61,7 @@ ADD_EXECUTABLE(
   Resources.bin
   ${CREATIVE_ENGINE_SOURCE_FILES}
   ${MODITE_SRC}
-        src/GSpellOverlayProcess.cpp src/GSpellOverlayProcess.h src/GameState/enemies/GEnemyDeathOverlayProcess.cpp src/GameState/enemies/GEnemyDeathOverlayProcess.h)
+        src/GSpellOverlayProcess.cpp src/GSpellOverlayProcess.h src/GameState/enemies/GEnemyDeathOverlayProcess.cpp src/GameState/enemies/GEnemyDeathOverlayProcess.h creative-engine/src/BSpriteSheet.cpp creative-engine/src/BSpriteSheet.h)
 
 ProcessorCount(N)
 if (NOT N EQUAL 0)

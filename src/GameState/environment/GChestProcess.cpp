@@ -20,6 +20,7 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
 
   if (aIsOpen) {
