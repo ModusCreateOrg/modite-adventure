@@ -310,6 +310,7 @@ function get_release_id {
 
 function upload_artifacts {
     echo "Uploading artifacts."
+    echo "TEST_TOKEN=$TEST_TOKEN"
     GITHUB_TOKEN=${GITHUB_TOKEN:-''}
     if [ -z $GITHUB_TOKEN ]; then
         echo "Didn't find GITHUB_TOKEN."
