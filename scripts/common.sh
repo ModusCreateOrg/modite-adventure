@@ -71,7 +71,7 @@ function ensure_cmake {
 
 function ensure_debian_devtools_installed {
     $SUDO apt-get -qq update
-    $SUDO apt-get -qq install --no-install-recommends build-essential git libsdl2-dev libsdl2-image-dev curl doxygen imagemagick ca-certificates openssl
+    $SUDO apt-get -qq install --no-install-recommends build-essential git jq libsdl2-dev libsdl2-image-dev curl doxygen imagemagick ca-certificates openssl
     # Ubuntu 18.04 has an old cmake (3.9) so install a newer one from binaries from cmake
     ensure_cmake
 }
@@ -231,7 +231,7 @@ EOF
             mkdir -p "$APP_RES_DIR"
             cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
 
-            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app"] ] \
+            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
              || echo "Codesign has keychain dependencies, run this on your workstation!"
 
         fi
@@ -239,7 +239,7 @@ EOF
 }
 
 function patch_linux_build {
-    echo "Linux bundling not yet implemented."
+    echo "No patch needed for Linux."
 }
 
 function checkout_creative_engine_branch {
@@ -259,14 +259,89 @@ function checkout_creative_engine_branch {
     cd - || exit 1
 }
 
-
 function archive_app {
+    ARCHIVE_NAME=undefined
     if [[ "$OS" == "Darwin" ]]; then
-        echo "Archiving app"
+        echo "Archiving Darwin"
         cd "$BUILD_DIR" || exit 1
-        # tar czvfp modite.tgz modite-docs modite.app .bin .elf .map
-        tar czvfp modite.app.tgz modite.app
-        # ls -l
+        ARCHIVE_NAME="modite.osx-${ARTIFACT_VERSION:-devel}.tgz"
+        echo "ARCHIVE_NAME = $ARCHIVE_NAME"
+        tar czvfp "./$ARCHIVE_NAME" Modite.app
+        cd - || exit 1
+    elif [[ "$OS" == "Linux" ]]; then
+        echo "Archiving Linux"
+        cd "$BUILD_DIR" || exit 1
+        ARCHIVE_NAME="modite.linux-${ARTIFACT_VERSION:-devel}.tgz"
+        echo "ARCHIVE_NAME = $ARCHIVE_NAME"
+        tar czvfp "./$ARCHIVE_NAME" Modite
         cd - || exit 1
     fi
 }
+
+function add_release {
+
+    # Create release from tag
+    curl POST \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        --data-binary "{\"tag_name\": \"$GITHUB_RELEASE_NAME\"}" \
+        "https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases"
+}
+
+function get_release_id {
+
+    # Query for release ID
+    JSON="$(curl GET \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        "https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases/tags/$GITHUB_RELEASE_NAME" \
+        )"
+
+    MESSAGE="$(cat <<< "$JSON" | jq .message)"
+    if [ -n "$MESSAGE" ]; then
+        echo "Not found"
+        add_release
+        JSON="$(curl GET \
+        -H "Authorization: token $GITHUB_TOKEN" \
+        "https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases/tags/$GITHUB_RELEASE_NAME" \
+        )"
+    fi
+
+    RELEASE_ID="$(cat <<< "$JSON" | jq .id)"
+}
+
+function upload_artifacts {
+    echo "Uploading artifacts."
+    if [ "${GITHUB_TOKEN:-'undefined'}" = 'undefined' ]; then
+        echo "Didn't find GITHUB_TOKEN."
+    else
+        if [ "${TRAVIS_TAG:-undefined}" = undefined ]; then
+            ARTIFACT_VERSION="nightly-$(date +%y-%m-%d)"
+            GITHUB_RELEASE_NAME="nightly"
+        else
+            ARTIFACT_VERSION="$TRAVIS_TAG"
+            GITHUB_RELEASE_NAME="$TRAVIS_TAG"
+        fi
+
+        echo "Artifact version: $ARTIFACT_VERSION"
+        echo "GitHub Release Name: $GITHUB_RELEASE_NAME"
+
+        archive_app
+
+        get_release_id
+
+        if [ "$RELEASE_ID" = "Not Found" ]; then
+            echo "Not able to get release for: $TRAVIS_TAG"
+            exit 6
+        else
+            echo "Found release: $RELEASE_ID"
+        fi
+
+        echo "RELEASE_ID: $RELEASE_ID"
+
+        # Save artifact under the release
+        curl -H "Authorization: token $GITHUB_TOKEN" \
+             -H "Content-Type: $(file -b --mime-type "$ARCHIVE_NAME")" \
+             --data-binary "@$ARCHIVE_NAME" \
+             "https://uploads.github.com/repos/$TRAVIS_REPO_SLUG/releases/$RELEASE_ID/assets?name=$ARCHIVE_NAME"
+    fi
+}
+
