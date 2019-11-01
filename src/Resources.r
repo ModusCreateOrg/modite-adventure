@@ -15,47 +15,47 @@ BITMAP title.bmp
 PALETTE test.pal
 
 #
-### HERO
-#
-PATH resources/sprites/
-BITMAP chara_hero.bmp
-BITMAP chara_hero_heal_effect.bmp
-BITMAP chara_hero_spell_effect.bmp
-
-#
 ### ENVIRONMENT/OBJECTS
 #
 PATH resources/sprites/environment
-BITMAP dungeon_tileset_objects.bmp
+SPRITESHEET 32x32 dungeon_tileset_objects.bmp
+
+#
+### HERO
+#
+PATH resources/sprites/
+SPRITESHEET 64x64 chara_hero.bmp
+SPRITESHEET 32x32 chara_hero_heal_effect.bmp
+SPRITESHEET 32x32 chara_hero_spell_effect.bmp
 
 #
 ### ENEMIES
 #
 PATH resources/sprites/enemies
-BITMAP chara_bat.bmp
-BITMAP chara_goblin.bmp
-BITMAP chara_goblin_sniper.bmp
-BITMAP chara_orc.bmp
-BITMAP chara_rat.bmp
-BITMAP chara_slime.bmp
-BITMAP chara_spider.bmp
-BITMAP chara_troll.bmp
-BITMAP projectile_arrow.bmp
-BITMAP enemy_death.bmp
+SPRITESHEET 64x64 chara_bat.bmp
+SPRITESHEET 64x64 chara_goblin.bmp
+SPRITESHEET 64x64 chara_goblin_sniper.bmp
+SPRITESHEET 64x64 chara_orc.bmp
+SPRITESHEET 64x64 chara_rat.bmp
+SPRITESHEET 64x64 chara_slime.bmp
+SPRITESHEET 64x64 chara_spider.bmp
+SPRITESHEET 64x64 chara_troll.bmp
+SPRITESHEET 64x64 projectile_arrow.bmp
+SPRITESHEET 64x64 enemy_death.bmp
 
 #
 ### MID BOSSES
 #
 PATH resources/sprites/mid_boss
-BITMAP mid_boss_death_explosion.bmp
-BITMAP mid_boss_earth_brown.bmp
-BITMAP mid_boss_earth_projectile.bmp
-BITMAP mid_boss_energy.bmp
-BITMAP mid_boss_energy_projectile.bmp
-BITMAP mid_boss_fire.bmp
-BITMAP mid_boss_fire_projectile.bmp
-BITMAP mid_boss_water.bmp
-BITMAP mid_boss_water_projectile.bmp
+SPRITESHEET 64x64 mid_boss_death_explosion.bmp
+SPRITESHEET 128x128 mid_boss_earth_brown.bmp
+SPRITESHEET 32x32 mid_boss_earth_projectile.bmp
+SPRITESHEET 128x128 mid_boss_energy.bmp
+SPRITESHEET 32x32 mid_boss_energy_projectile.bmp
+SPRITESHEET 128x128 mid_boss_fire.bmp
+SPRITESHEET 32x32 mid_boss_fire_projectile.bmp
+SPRITESHEET 128x128 mid_boss_water.bmp
+SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 
 #
 ### TILEMAPS

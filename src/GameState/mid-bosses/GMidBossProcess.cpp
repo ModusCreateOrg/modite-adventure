@@ -24,6 +24,8 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->cy = 0;
   mSprite->w = 44;
   mSprite->h = 75;
+  // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another 
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->mHitPoints = 45;
   mSprite->mHitStrength = HIT_HARD;
@@ -221,7 +223,8 @@ TBool GMidBossProcess::MaybeHit() {
       if (mSprite->mHitPoints <= 0) {
         printf("MID BOSS DEATH\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
+      }
+      else {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
       }
       NewState(MB_SPELL_STATE, mSprite->mDirection);
@@ -238,7 +241,8 @@ TBool GMidBossProcess::MaybeHit() {
       mSprite->mHitPoints -= other->mHitStrength;
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
+      }
+      else {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
       }
       switch (other->mDirection) {
@@ -359,14 +363,16 @@ TBool GMidBossProcess::MaybeBounce() {
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
-    } else if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2 - 8)) {
+    }
+    else if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
     }
-  } else {
+  }
+  else {
     // check left edge (upper left, lower left corners)
     if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1 + 8)) {
       mSprite->vx = -vx;
@@ -374,7 +380,8 @@ TBool GMidBossProcess::MaybeBounce() {
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
-    } else if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2 - 8)) {
+    }
+    else if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
@@ -393,7 +400,8 @@ TBool GMidBossProcess::MaybeBounce() {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
-  } else {
+  }
+  else {
     // check top edge (upper left, upper right corners)
     if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1)) {
       mSprite->vy = -vy;
@@ -421,7 +429,7 @@ TBool GMidBossProcess::MoveState() {
 
 TBool GMidBossProcess::ReturnState() {
   TFloat dx = (mSprite->x - mStartX),
-    dy = (mSprite->y - mStartY);
+         dy = (mSprite->y - mStartY);
 
   if (SQRT(dx * dx + dy * dy) < 5) {
     mSprite->x = mStartX;
@@ -437,7 +445,8 @@ TBool GMidBossProcess::RevertState() {
   if (mSprite->AnimDone()) {
     if (mSprite->TestCType(STYPE_PLAYER)) {
       mSprite->type = STYPE_EBULLET;
-    } else {
+    }
+    else {
       mSprite->type = STYPE_ENEMY;
     }
     mSprite->SetFlags(SFLAG_CHECK);
@@ -456,7 +465,8 @@ TBool GMidBossProcess::HitState() {
   if (mSprite->AnimDone()) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
-    } else {
+    }
+    else {
       mSprite->mInvulnerable = EFalse;
       mSprite->ClearCType(STYPE_PBULLET);
       NewState(MB_IDLE_STATE, mSprite->mDirection);
@@ -481,7 +491,8 @@ TBool GMidBossProcess::SpellState() {
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
-    } else {
+    }
+    else {
       mSprite->mInvulnerable = EFalse;
       mSprite->ClearCType(STYPE_PBULLET);
       NewState(MB_IDLE_STATE, mSprite->mDirection);

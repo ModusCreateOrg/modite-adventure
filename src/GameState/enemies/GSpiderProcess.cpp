@@ -304,6 +304,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_MEDIUM;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

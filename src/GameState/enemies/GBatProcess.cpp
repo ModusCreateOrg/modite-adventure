@@ -1,4 +1,5 @@
 #include "GBatProcess.h"
+#include "GResources.h"
 
 /*********************************************************************************
  *********************************************************************************
@@ -280,6 +281,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitPoints = mHitPoints;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

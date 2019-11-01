@@ -6,6 +6,9 @@
 #include "GStatProcess.h"
 #include "GResources.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 const TFloat SPELL_DISTANCE = 200.0;
 
 const TUint16 IDLE_STATE = 0;
@@ -19,6 +22,55 @@ const TUint16 HIT_HARD_STATE = 7;
 const TUint16 QUAFF_STATE = 8;
 const TUint16 SPELL_STATE = 9;
 
+// To make the player blink and be invulnerable, a second Process is spawned to
+// countdown the invulnerable time.  At the start, the player's mSprite is set to
+// involunerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
+// cause a blinking effect
+const TInt16 BLINK_TIME = 16; // 267ms
+
+class GPlayerBlinkProcess : public BProcess {
+public:
+  GPlayerBlinkProcess() : BProcess() {
+    GPlayer::mSprite->mInvulnerable = ETrue;
+    mTimer = BLINK_TIME;
+  }
+  ~GPlayerBlinkProcess() {
+    if (GPlayer::mSprite) {
+      GPlayer::mSprite->mInvulnerable = EFalse;
+      GPlayer::mSprite->SetFlags(SFLAG_RENDER);
+    }
+    if (GPlayer::mProcess) {
+      GPlayer::mProcess->mBlinkProcess = ENull;
+    }
+  }
+
+public:
+  void Kill() {
+    mTimer = 1;
+  }
+
+public:
+  TBool RunBefore() {
+    if (--mTimer <= 0 || !GPlayer::mSprite) {
+      return EFalse;
+    }
+    if ((mTimer & 1) == 0) {
+      GPlayer::mSprite->SetFlags(SFLAG_RENDER);
+    }
+    else {
+      GPlayer::mSprite->ClearFlags(SFLAG_RENDER);
+    }
+    return ETrue;
+  }
+
+  TBool RunAfter() {
+    return ETrue;
+  }
+
+private:
+  TInt mTimer;
+};
+
 TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
@@ -28,14 +80,18 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mStep = 0;
   mGameState = aGameState;
   mPlayfield = ENull;
+  mBlinkProcess = ENull;
   GPlayer::mSprite = mSprite = ENull;
+
+  // initialize player sprite
   GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
   mSprite->Name("PLAYER SPRITE");
-  mGameState->AddSprite(mSprite);
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
   mSprite->w = 32;
   mSprite->h = 32;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
+  mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
 
   mSprite2 = ENull;
@@ -44,6 +100,10 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 }
 
 GPlayerProcess::~GPlayerProcess() {
+  if (mBlinkProcess) {
+    mBlinkProcess->Kill();
+    mBlinkProcess = ENull;
+  }
   if (mSprite2) {
     mSprite2->Remove();
     delete mSprite2;
@@ -54,6 +114,7 @@ GPlayerProcess::~GPlayerProcess() {
     mSprite->Remove();
     delete mSprite;
     GPlayer::mSprite = mSprite = ENull;
+    GPlayer::mProcess = ENull;
   }
 }
 
@@ -88,12 +149,12 @@ TBool GPlayerProcess::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       }
       break;
     case DIRECTION_DOWN:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2 , r.y2 + FLOOR_ADJUST_BUFFER)) {
+      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2, r.y2 + FLOOR_ADJUST_BUFFER)) {
         return ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      if (mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y1 ) && mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
+      if (mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y1) && mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
         return ETrue;
       }
       break;
@@ -284,12 +345,15 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->Nudge();
     TInt state = HIT_LIGHT_STATE;
     const GAnchorSprite *other = mSprite->mCollided;
+    // TODO proper combat calulation to deterine which animation and damage
+    // TODO based upon player/enemy levels, strength, armor, magic type, etc.
     switch (other->mHitStrength) {
 
       case HIT_LIGHT:
         GPlayer::mHitPoints -= 1;
+#ifdef DEBUGME
         printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
-        mSprite->mInvulnerable = ETrue;
+#endif
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +1"));
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -309,8 +373,12 @@ TBool GPlayerProcess::MaybeHit() {
 
       case HIT_MEDIUM:
         GPlayer::mHitPoints -= 2;
+#ifdef DEBUGME
         printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
-        mSprite->mInvulnerable = ETrue;
+#endif
+        if (!mBlinkProcess) {
+          mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+        }
         state = HIT_MEDIUM_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +2"));
         switch (other->mDirection) {
@@ -331,9 +399,12 @@ TBool GPlayerProcess::MaybeHit() {
 
       case HIT_HARD:
       default:
-        GPlayer::mHitPoints -= 3;
+#ifdef DEBUGME
         printf("player hit points %d max: %d\n", GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
-        mSprite->mInvulnerable = ETrue;
+#endif
+        if (!mBlinkProcess) {
+          mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+        }
         state = HIT_HARD_STATE;
         mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +3"));
         switch (other->mDirection) {
@@ -602,8 +673,10 @@ TBool GPlayerProcess::FallState() {
 
 TBool GPlayerProcess::HitState() {
   if (mSprite->AnimDone()) {
+    if (!mBlinkProcess) {
+      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+    }
     mSprite->ClearCType(STYPE_EBULLET);
-    mSprite->mInvulnerable = EFalse;
     if (!MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
     }

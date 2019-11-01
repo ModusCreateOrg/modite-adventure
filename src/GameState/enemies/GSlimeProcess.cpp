@@ -315,6 +315,7 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->mHitStrength = HIT_HARD;
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SLIME_BMP_SPRITES);
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
 

@@ -4,10 +4,10 @@
 class GGameState;
 class FireballSprite;
 
-class GMidBossFireballProcess : public BProcess {
+class GMidBossProjectileProcess : public BProcess {
 public:
-  GMidBossFireballProcess(GGameState *agameState, TFloat aX, TFloat aY);
-  ~GMidBossFireballProcess();
+  GMidBossProjectileProcess(GGameState *agameState, TFloat aX, TFloat aY);
+  ~GMidBossProjectileProcess();
 
 public:
   TBool RunBefore();
