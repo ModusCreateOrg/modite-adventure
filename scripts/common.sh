@@ -310,7 +310,7 @@ function get_release_id {
 
 function upload_artifacts {
     echo "Uploading artifacts."
-    if [ "${GITHUB_TOKEN:-'undefined'}" = 'undefined' ]; then
+    if [ -z "$GITHUB_TOKEN" ]; then
         echo "Didn't find GITHUB_TOKEN."
     else
         if [ "${TRAVIS_TAG:-undefined}" = undefined ]; then
