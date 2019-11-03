@@ -31,9 +31,9 @@ enum HIT_STRENGTH {
 const TFloat COLLISION_DELTA_Y = 6;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 2;
+const TFloat FLOOR_ADJUST_LEFT = 4;
 const TFloat FLOOR_ADJUST_TOP = 2;
-const TFloat FLOOR_ADJUST_RIGHT = 2;
+const TFloat FLOOR_ADJUST_RIGHT = 4;
 const TFloat FLOOR_ADJUST_BOTTOM = 2;
 
 class GAnchorSprite : public BAnimSprite {
