@@ -25,8 +25,9 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mDirection = ETrue;
 
   mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
-  mSprite->cMask = STYPE_PBULLET;
-  mSprite->cMask &= ~STYPE_PLAYER;
+  mSprite->SetFlags(SFLAG_BELOW); // render below other sprites
+  mSprite->SetCMask(STYPE_PBULLET);
+  mSprite->ClearCMask(STYPE_PLAYER);
   mSprite->w = mSprite->h = 32;
   mSprite->cx = -16;
   mSprite->x = aX;

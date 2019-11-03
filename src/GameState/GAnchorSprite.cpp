@@ -6,7 +6,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
     : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
   mGameState = aGameState;
-  SetFlags(SFLAG_ANCHOR);
+  SetFlags(SFLAG_ANCHOR | SFLAG_SORTPRI);
   if (aType != STYPE_DEFAULT) {
     SetFlags(SFLAG_CHECK);
   }
@@ -26,7 +26,6 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mLastY = 0;
   mInvulnerable = EFalse;
   mCollided = ENull;
-
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -41,7 +40,7 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
     // already dafe to position here (not on top of other sprite)
     return;
   }
-  x = hisRect.x1 - hisRect.Width() -1;
+  x = hisRect.x1 - hisRect.Width() - 1;
   if (IsFloor(DIRECTION_LEFT, x, y)) {
     return;
   }
@@ -64,22 +63,25 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1, r.y1 - FLOOR_ADJUST_BUFFER) && IsFloorTile(this, r.x2, r.y1 - FLOOR_ADJUST_BUFFER)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - COLLISION_DELTA_Y) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - COLLISION_DELTA_Y)) {
         return ETrue;
       }
       break;
+
     case DIRECTION_DOWN:
-      if (IsFloorTile(this, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && IsFloorTile(this, r.x2 , r.y2 + FLOOR_ADJUST_BUFFER)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
         return ETrue;
       }
       break;
+
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1 - FLOOR_ADJUST_BUFFER, r.y1 ) && IsFloorTile(this, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
+      if (IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
+
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2 + FLOOR_ADJUST_BUFFER, r.y1) && IsFloorTile(this, r.x2 + FLOOR_ADJUST_BUFFER, r.y2)) {
+      if (IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
@@ -92,6 +94,36 @@ void GAnchorSprite::Move() {
   mLastX = x;
   mLastY = y;
   BAnimSprite::Move();
+  if (TestFlags(SFLAG_BELOW)) {
+    pri = 999;
+  }
+  else {
+    pri = y + 1000;
+  }
+}
+
+void GAnchorSprite::Collide(BSprite *aOther) {
+  auto *s = (GAnchorSprite *)aOther;
+  TBool collided = EFalse;
+  if (type == STYPE_PBULLET || type == STYPE_EBULLET || s->type == STYPE_PBULLET || s->type == STYPE_EBULLET) {
+    collided = ETrue;
+  }
+  else if (ABS(s->y - y) < COLLISION_DELTA_Y) {
+    collided = ETrue;
+  }
+
+  if (collided) {
+    mCollided = s;
+    s->mCollided = this;
+    cType |= s->type;
+    s->cType |= type;
+  }
+}
+
+void GAnchorSprite::Nudge() {
+  vx = vy = 0;
+  x = mLastX;
+  y = mLastY;
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
@@ -117,20 +149,6 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
 #endif
 
   return ret;
-}
-
-void GAnchorSprite::Collide(BSprite *aOther) {
-  auto *s = (GAnchorSprite *)aOther;
-  mCollided = s;
-  s->mCollided = this;
-  cType |= aOther->type;
-  aOther->cType |= type;
-}
-
-void GAnchorSprite::Nudge() {
-  vx = vy = 0;
-  x = mLastX;
-  y = mLastY;
 }
 
 DIRECTION GAnchorSprite::RandomDirection() {

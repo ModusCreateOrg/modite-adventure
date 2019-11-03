@@ -8,8 +8,9 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
   mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
-  mSprite->cMask = STYPE_PBULLET;
-  mSprite->cMask &= ~STYPE_PLAYER;
+  mSprite->SetFlags(SFLAG_BELOW);// render below other sprites
+  mSprite->SetCMask(STYPE_PBULLET);
+  mSprite->ClearCMask(STYPE_PLAYER);
   mSprite->w = mSprite->h = 32;
   mSprite->cx = -16;
   mSprite->x = aX;

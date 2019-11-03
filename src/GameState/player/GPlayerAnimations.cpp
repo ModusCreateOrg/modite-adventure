@@ -250,6 +250,7 @@ ANIMSCRIPT hitHardDownAnimation[] = {
  */
 ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(-10, 0),
   AFLIP(1, IMG_WALK_RIGHT),
   AEND,
 };

@@ -16,10 +16,12 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite1->w = mSprite1->h = 32;
     mSprite1->type = STYPE_OBJECT;
     mSprite1->cMask = STYPE_PLAYER;
+    mSprite1->SetFlags(SFLAG_BELOW);
     mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite1);
 
     mSprite2 = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img - 10);
+    mSprite2->SetFlags(SFLAG_BELOW);
     mSprite2->cx = -16;
     mSprite2->w = mSprite2->h = 32;
     mSprite2->x = aX;
@@ -35,6 +37,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite1->w = mSprite1->h = 32;
     mSprite1->x = aX;
     mSprite1->y = aY + 32;
+    mSprite1->SetFlags(SFLAG_BELOW);
     mSprite1->type = STYPE_OBJECT;
     mSprite1->cMask = STYPE_PLAYER;
     mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);

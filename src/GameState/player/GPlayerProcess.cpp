@@ -132,53 +132,18 @@ TBool GPlayerProcess::IsLedge() {
   return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
-TBool GPlayerProcess::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  TRect r;
-  mSprite->GetRect(r);
-  r.Offset(aVx, aVy);
-  r.Set(r.x1 + FLOOR_ADJUST_LEFT, r.y1 + FLOOR_ADJUST_TOP, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - FLOOR_ADJUST_BOTTOM);
-
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
-
-  switch (aDirection) {
-    case DIRECTION_UP:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y1 - FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2, r.y1 - FLOOR_ADJUST_BUFFER)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_DOWN:
-      if (mSprite->IsFloorTile(mSprite, r.x1, r.y2 + FLOOR_ADJUST_BUFFER) && mSprite->IsFloorTile(mSprite, r.x2, r.y2 + FLOOR_ADJUST_BUFFER)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_LEFT:
-      if (mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y1) && mSprite->IsFloorTile(mSprite, r.x1 - FLOOR_ADJUST_BUFFER, r.y2)) {
-        return ETrue;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      if (mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y1) && mSprite->IsFloorTile(mSprite, r.x2 + FLOOR_ADJUST_BUFFER, r.y2)) {
-        return ETrue;
-      }
-      break;
-  }
-
-  return EFalse;
-};
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
-      return IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
     case DIRECTION_DOWN:
-      return IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
     case DIRECTION_LEFT:
-      return IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
     case DIRECTION_RIGHT:
     default:
-      return IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
   }
 }
 
@@ -453,22 +418,22 @@ TBool GPlayerProcess::MaybeSword() {
   TBool is_wall = EFalse;
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
-      if (!mSprite->IsFloor(DIRECTION_UP, 0, 0)) {
+      if (!mSprite->IsFloor(DIRECTION_UP, 0, -2)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_DOWN:
-      if (!mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
+      if (!mSprite->IsFloor(DIRECTION_DOWN, 0, 2)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_LEFT:
-      if (!mSprite->IsFloor(DIRECTION_LEFT, 0, 0)) {
+      if (!mSprite->IsFloor(DIRECTION_LEFT, -2, 0)) {
         is_wall = ETrue;
       }
       break;
     case DIRECTION_RIGHT:
-      if (!mSprite->IsFloor(DIRECTION_RIGHT, 0, 0)) {
+      if (!mSprite->IsFloor(DIRECTION_RIGHT, 2, 0)) {
         is_wall = ETrue;
       }
       break;
