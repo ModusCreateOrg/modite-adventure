@@ -75,13 +75,13 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       break;
 
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1, r.y1) && IsFloorTile(this, r.x1, r.y2)) {
+      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
 
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2, r.y1) && IsFloorTile(this, r.x2, r.y2)) {
+      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;

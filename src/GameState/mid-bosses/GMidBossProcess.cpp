@@ -91,7 +91,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       mStateTimer = Random(15, 180);
@@ -122,7 +122,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = (mStartX - mSprite->x) / 60;
       mSprite->vy = (mStartY - mSprite->y) / 60;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       Return(aDirection);
@@ -133,7 +133,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       Revert(aDirection);
@@ -141,7 +141,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_WALK_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       mStep = 1 - mStep;
@@ -151,7 +151,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_ATTACK_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       mSprite->vx = 0;
@@ -163,7 +163,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_HIT_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       mSprite->vx = 0;
@@ -175,7 +175,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_SPELL_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
       mSprite->vx = 0;
