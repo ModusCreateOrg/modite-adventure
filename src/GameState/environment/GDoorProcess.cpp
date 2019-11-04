@@ -8,16 +8,19 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mHorizontal = aHorizontal;
 
   if (mHorizontal) {
-    mSprite1 = new GAnchorSprite( mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H, STYPE_ENEMY);
-    mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H);
+    mSprite1->Name(aWood ? "HORIZONTAL WOOD DOOR 1" : "HORIZONTAL METAL DOOR 1");
   }
   else {
-    mSprite1 = new GAnchorSprite( mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V, STYPE_ENEMY);
-    mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V);
+    mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
+    mSprite1->SetFlags(SFLAG_COLLIDE2D);
   }
 
-  mSprite1->SetCMask(STYPE_PBULLET);
-  mSprite1->ClearCMask(STYPE_PLAYER);
+  mSprite1->type = STYPE_ENEMY;
+  mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+
   mSprite1->w = mSprite1->h = 32;
   mSprite1->cx = -16;
   mSprite1->x = aX;
@@ -25,15 +28,13 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mGameState->AddSprite(mSprite1);
 
   if (!mHorizontal) {
-    mSprite2 = new GAnchorSprite(
-        mGameState,
-        DOOR_PRIORITY,
-        ENVIRONMENT_SLOT,
-        aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10,
-        STYPE_ENEMY);
+    mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10);
 
-    mSprite2->SetCMask(STYPE_PBULLET);
-    mSprite2->ClearCMask(STYPE_PLAYER);
+    mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
+    mSprite2->type = STYPE_ENEMY;
+    mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+    mSprite2->SetFlags(SFLAG_COLLIDE2D);
+
     mSprite2->w = mSprite2->h = 32;
     mSprite2->cx = -16;
     mSprite2->x = mSprite1->x;
@@ -64,18 +65,13 @@ TBool GDoorProcess::RunAfter() {
   if (mAttribute->group) {
     return ETrue;
   }
-  if (mSprite2) {
-    TInt cType1 = mSprite1->cType;
-    TInt cType2 = mSprite2->cType;
-    if (mSprite1->TestCType(STYPE_PBULLET) && mSprite2->TestCType(STYPE_PBULLET)) {
-      mGameState->EndProgram(mIp);
-      return EFalse;
-    }
+  if (mSprite2 && mSprite2->TestCType(STYPE_PBULLET)) {
+    mGameState->EndProgram(mIp);
+    return EFalse;
   }
-  else {
-    if (mSprite1->TestCType(STYPE_PBULLET)) {
-      return EFalse;
-    }
+  else if (mSprite1->TestCType(STYPE_PBULLET)) {
+    mGameState->EndProgram(mIp);
+    return EFalse;
   }
   return ETrue;
 }
