@@ -21,7 +21,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
   mSprite->w = 32;
-  mSprite->h = 32;
+  mSprite->h = 16;
   mSprite->Name("ENEMY SPRITE");
   mGameState->AddSprite(mSprite);
   mDirection = DIRECTION_DOWN;

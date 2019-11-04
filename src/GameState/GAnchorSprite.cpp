@@ -63,7 +63,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - COLLISION_DELTA_Y) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - COLLISION_DELTA_Y)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
         return ETrue;
       }
       break;
@@ -75,13 +75,13 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       break;
 
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(this, r.x1, r.y1) && IsFloorTile(this, r.x1, r.y2)) {
         return ETrue;
       }
       break;
 
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(this, r.x2, r.y1) && IsFloorTile(this, r.x2, r.y2)) {
         return ETrue;
       }
       break;
@@ -104,24 +104,10 @@ void GAnchorSprite::Move() {
 
 void GAnchorSprite::Collide(BSprite *aOther) {
   auto *s = (GAnchorSprite *)aOther;
-  TBool collided = EFalse;
-  if (type == STYPE_PBULLET || type == STYPE_EBULLET || s->type == STYPE_PBULLET || s->type == STYPE_EBULLET) {
-    collided = ETrue;
-  }
-
-  if (s->TestFlags(SFLAG_COLLIDE2D)) {
-    collided = ETrue;
-  }
-  else if (ABS(s->y - y) < COLLISION_DELTA_Y) {
-    collided = ETrue;
-  }
-
-  if (collided) {
-    mCollided = s;
-    s->mCollided = this;
-    cType |= s->type;
-    s->cType |= type;
-  }
+  mCollided = s;
+  s->mCollided = this;
+  cType |= s->type;
+  s->cType |= type;
 }
 
 void GAnchorSprite::Nudge() {

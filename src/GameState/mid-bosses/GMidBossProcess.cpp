@@ -23,8 +23,8 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->cx = 20;
   mSprite->cy = 0;
   mSprite->w = 44;
-  mSprite->h = 75;
-  // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another 
+  mSprite->h = 24;
+  // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->mHitPoints = 45;
@@ -93,7 +93,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mStateTimer = Random(15, 180);
       Idle(aDirection);
       break;
@@ -124,7 +124,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       Return(aDirection);
       break;
 
@@ -135,7 +135,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       Revert(aDirection);
       break;
 
@@ -143,7 +143,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mStep = 1 - mStep;
       mStateTimer = Random(30, 270);
       Walk(aDirection);
@@ -153,7 +153,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -165,7 +165,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -177,7 +177,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cx = 20;
       mSprite->cy = 0;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
