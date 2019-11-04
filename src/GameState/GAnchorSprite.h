@@ -21,6 +21,8 @@ const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
 const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
 const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
+const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT+2;
+const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
 
 enum HIT_STRENGTH {
   HIT_LIGHT,
@@ -59,6 +61,8 @@ public:
 
   void SafePosition(BSprite *aOther);
 
+  void ResetShadow();
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -83,6 +87,7 @@ public:
   TFloat floorOffsetTop;
   TFloat floorOffsetRight;
   TFloat floorOffsetBottom;
+  TRect mShadow;
 
 protected:
   char mName[64];

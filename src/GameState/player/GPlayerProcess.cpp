@@ -94,7 +94,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->cy = 4;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
-  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
+  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 
   mSprite2 = ENull;
 

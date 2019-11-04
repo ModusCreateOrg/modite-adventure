@@ -31,6 +31,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->mHitStrength = HIT_HARD;
   mDeathCounter = 0;
   mSpellCounter = 0;
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
 
   gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
@@ -418,6 +419,7 @@ TBool GMidBossProcess::MaybeBounce() {
 
 TBool GMidBossProcess::MoveState() {
   mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
+  mSprite->ResetShadow();
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);
@@ -453,6 +455,7 @@ TBool GMidBossProcess::RevertState() {
     mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->SafePosition(GPlayer::mSprite);
     NewState(MB_IDLE_STATE, DIRECTION_DOWN);
+    mSprite->ResetShadow();
   }
   return ETrue;
 }

@@ -26,6 +26,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mLastY = 0;
   mInvulnerable = EFalse;
   mCollided = ENull;
+  mShadow = TRect();
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -116,7 +117,22 @@ void GAnchorSprite::Nudge() {
   y = mLastY;
 }
 
+void GAnchorSprite::ResetShadow() {
+  mShadow.Set(cx, cy - h, cx + w, cy);
+}
+
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
+  if ((flags & SFLAG_RENDER_SHADOW) && !Clipped()) {
+    if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
+      ResetShadow();
+    }
+    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+
+    for (TInt i = mShadow.y1; i < mShadow.y2; i++) {
+      TFloat chord = sqrt(pow(mShadow.Height() / 2, 2) - pow(i - ((mShadow.y1 + mShadow.y2) / 2), 2)) * 2 * mShadow.Width() / mShadow.Height();
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 + mShadow.x1 + mShadow.Width() - chord/2, mRect.y2 + i, chord, COLOR_SHADOW);
+    }
+  }
   TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
