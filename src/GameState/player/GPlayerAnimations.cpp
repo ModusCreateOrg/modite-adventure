@@ -500,7 +500,7 @@ ANIMSCRIPT swordUpAnimation[] = {
 
   ADELTA(4, -2),
   ATYPE(STYPE_PLAYER),
-  ASIZE(7, 2, 26, 16),
+  ASIZE(7, 0, 26, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 2),
 
   ADELTA(-2, -2),
