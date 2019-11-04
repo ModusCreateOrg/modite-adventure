@@ -88,8 +88,9 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->Name("PLAYER SPRITE");
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
-  mSprite->w = 32;
+  mSprite->w = 26;
   mSprite->h = 32;
+  mSprite->cx = 7;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
@@ -454,7 +455,7 @@ TBool GPlayerProcess::MaybeFall() {
 TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_LEFT);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
@@ -465,7 +466,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (!CanWalk(DIRECTION_RIGHT)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_RIGHT);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
@@ -476,7 +477,7 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_JOYUP)) {
     if (!CanWalk(DIRECTION_UP)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_UP);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
@@ -490,7 +491,7 @@ TBool GPlayerProcess::MaybeWalk() {
       return EFalse;
     }
     if (!CanWalk(DIRECTION_DOWN)) {
-      //      NewState(IDLE_STATE, mSprite->mDirection);
+      NewState(IDLE_STATE, DIRECTION_DOWN);
       return EFalse;
     }
     if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
