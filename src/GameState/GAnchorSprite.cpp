@@ -108,6 +108,10 @@ void GAnchorSprite::Collide(BSprite *aOther) {
   if (type == STYPE_PBULLET || type == STYPE_EBULLET || s->type == STYPE_PBULLET || s->type == STYPE_EBULLET) {
     collided = ETrue;
   }
+
+  if (s->TestFlags(SFLAG_COLLIDE2D)) {
+    collided = ETrue;
+  }
   else if (ABS(s->y - y) < COLLISION_DELTA_Y) {
     collided = ETrue;
   }

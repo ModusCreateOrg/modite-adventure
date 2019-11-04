@@ -18,7 +18,9 @@ const TUint32 STYPE_SPELL_BIT = STYPE_OBJECT_BIT + 1;
 const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
 
 const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
-const TUint32 SFLAG_BELOW = 1 << SFLAG_USER_BIT;
+const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
+const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
+const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
 
 enum HIT_STRENGTH {
   HIT_LIGHT,
@@ -59,6 +61,7 @@ public:
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
+  const char *Name() { return mName; }
 
 public:
   static DIRECTION RandomDirection();

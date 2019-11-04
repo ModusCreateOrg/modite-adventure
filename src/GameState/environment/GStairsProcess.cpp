@@ -28,6 +28,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->y = aY + 32;
     mSprite2->w = mSprite2->h = 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+  mSprite1->SetFlags(SFLAG_COLLIDE2D);
     mGameState->AddSprite(mSprite2);
   }
   else {
@@ -43,10 +44,20 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite1);
   }
+  mSprite1->SetFlags(SFLAG_COLLIDE2D);
 }
 
 GStairsProcess::~GStairsProcess() {
-  //
+  if (mSprite2) {
+    mSprite2->Remove();
+    delete mSprite2;
+    mSprite2 = ENull;
+  }
+  if (mSprite1) {
+    mSprite1->Remove();
+    delete mSprite1;
+    mSprite1 = ENull;
+  }
 }
 
 TBool GStairsProcess::RunBefore() {

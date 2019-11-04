@@ -22,6 +22,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber]);
+    mSprite->flags |= SFLAG_COLLIDE2D;
     mSprite->type = STYPE_OBJECT;
     mSprite->cMask = STYPE_PLAYER;
     mSprite->w = mSprite->h = 32;
@@ -30,6 +31,8 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     mSprite->y = aY;
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
+    // TODO: uncomment this if we want to spawn items in the dungeon that can be picked up and want to retain 
+    //       whether already picked up
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
   }
   else {
