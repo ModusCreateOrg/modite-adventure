@@ -139,7 +139,7 @@ TBool GEnemyProcess::MaybeHit() {
 
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
+   mSprite->ClearCType(STYPE_PBULLET);
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
@@ -168,16 +168,16 @@ TBool GEnemyProcess::MaybeHit() {
   }
 
   if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
+//    mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
-    return ETrue;
+    return EFalse;
   }
 
   return EFalse;
 }
 
-static const TFloat DX = 20,
-  DY = 34;
+static const TFloat DX = 2,
+  DY = 30;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
@@ -215,7 +215,6 @@ TBool GEnemyProcess::MaybeAttack() {
       return ETrue;
     }
 
-    // player and enemy overlap in x direction
     if (myRect.y1 >= hisRect.y2) {
       // enemy below player
       if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
@@ -351,13 +350,15 @@ TBool GEnemyProcess::IdleState() {
 }
 
 TBool GEnemyProcess::WalkState() {
-  if (MaybeHit()) {
-    return ETrue;
-  }
-
   if (MaybeAttack()) {
     return ETrue;
   }
+
+  if (MaybeHit()) {
+    mSprite->ClearCType(STYPE_PLAYER);
+    return ETrue;
+  }
+
 
   mAttackTimer = 1;
 
