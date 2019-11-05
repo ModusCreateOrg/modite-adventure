@@ -21,7 +21,8 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
   mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
 
-  mSprite1->w = mSprite1->h = 32;
+  mSprite1->w = 32;
+  mSprite1->h = (mHorizontal ? 32 : 64);
   mSprite1->cx = -16;
   mSprite1->x = aX;
   mSprite1->y = aY + (mHorizontal ? 2.0 : 3.0);
@@ -35,8 +36,10 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
     mSprite2->SetFlags(SFLAG_COLLIDE2D);
 
-    mSprite2->w = mSprite2->h = 32;
+    mSprite2->w = 32;
+    mSprite2->h = 64;
     mSprite2->cx = -16;
+    mSprite2->cy = 32;
     mSprite2->x = mSprite1->x;
     mSprite2->y = mSprite1->y - 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
