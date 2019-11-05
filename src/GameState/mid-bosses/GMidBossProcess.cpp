@@ -23,14 +23,15 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->cx = 20;
   mSprite->cy = 0;
   mSprite->w = 44;
-  mSprite->h = 75;
-  // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another 
+  mSprite->h = 24;
+  // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->mHitPoints = 45;
   mSprite->mHitStrength = HIT_HARD;
   mDeathCounter = 0;
   mSpellCounter = 0;
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
 
   gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
@@ -91,9 +92,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mStateTimer = Random(15, 180);
       Idle(aDirection);
       break;
@@ -122,9 +123,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = (mStartX - mSprite->x) / 60;
       mSprite->vy = (mStartY - mSprite->y) / 60;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       Return(aDirection);
       break;
 
@@ -133,17 +134,17 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       Revert(aDirection);
       break;
 
     case MB_WALK_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mStep = 1 - mStep;
       mStateTimer = Random(30, 270);
       Walk(aDirection);
@@ -151,9 +152,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_ATTACK_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -163,9 +164,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_HIT_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -175,9 +176,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_SPELL_STATE:
       mSprite->cx = 20;
-      mSprite->cy = 0;
+      mSprite->cy = 8;
       mSprite->w = 44;
-      mSprite->h = 75;
+      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -418,6 +419,7 @@ TBool GMidBossProcess::MaybeBounce() {
 
 TBool GMidBossProcess::MoveState() {
   mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
+  mSprite->ResetShadow();
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);
@@ -453,6 +455,7 @@ TBool GMidBossProcess::RevertState() {
     mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->SafePosition(GPlayer::mSprite);
     NewState(MB_IDLE_STATE, DIRECTION_DOWN);
+    mSprite->ResetShadow();
   }
   return ETrue;
 }

@@ -16,7 +16,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
                                  aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V);
     mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
-//    mSprite1->SetFlags(SFLAG_COLLIDE2D);
   }
 
   mSprite1->type = STYPE_ENEMY;
@@ -40,7 +39,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
     mSprite2->type = STYPE_ENEMY;
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
-//    mSprite2->SetFlags(SFLAG_COLLIDE2D);
 
     mSprite2->w = 32;
     mSprite2->h = 64;

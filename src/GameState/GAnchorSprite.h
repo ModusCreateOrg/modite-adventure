@@ -19,8 +19,8 @@ const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
 
 const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
-const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
-const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
+const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT+1;
+const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
 
 const TInt PRIORITY_BELOW = 500;
 
@@ -63,6 +63,8 @@ public:
 
   void SafePosition(BSprite *aOther);
 
+  void ResetShadow();
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -91,6 +93,7 @@ public:
   TFloat floorOffsetRight;
   TFloat floorOffsetBottom;
   TUint mAttributeSave;
+  TRect mShadow;
 
 protected:
   char mName[64];

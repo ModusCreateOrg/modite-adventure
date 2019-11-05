@@ -111,12 +111,12 @@ static ANIMSCRIPT attackLeftAnimation[] = {ABITMAP(TROLL_SLOT),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0),
 
-                                           ATYPE(STYPE_EBULLET), ADELTA(-8, 12), ASIZE(-16, 0, 40, 32),
+                                           ATYPE(STYPE_EBULLET), ADELTA(-8, 12), ASIZE(-16, 4, 40, 16),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-                                           ASIZE(0, 0, 32, 32), ATYPE(STYPE_ENEMY), ADELTA(-4, 4),
+                                           ASIZE(0, 4, 32, 16), ATYPE(STYPE_ENEMY), ADELTA(-4, 4),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
 
-                                           ASIZE(0, 0, 32, 32), ADELTA(0, 0), ATYPE(STYPE_ENEMY), AEND};
+                                           ASIZE(0, 4, 32, 16), ADELTA(0, 0), ATYPE(STYPE_ENEMY), AEND};
 
 static ANIMSCRIPT hitLeftAnimation[] = {ABITMAP(TROLL_SLOT),
                                         AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
