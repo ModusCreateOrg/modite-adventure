@@ -36,8 +36,7 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
     : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mAnimating = EFalse;
   mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
-  mSprite->cMask = STYPE_PBULLET;
-  mSprite->cMask &= ~STYPE_PLAYER;
+  mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->w = mSprite->h = 32;
   mSprite->cx = -16;
   mSprite->x = aX;
@@ -49,7 +48,11 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
 }
 
 GCrateProcess::~GCrateProcess() {
-  //
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
+  }
 }
 
 TBool GCrateProcess::RunBefore() {

@@ -17,19 +17,26 @@ const TUint32 STYPE_OBJECT = 1 << STYPE_OBJECT_BIT;
 const TUint32 STYPE_SPELL_BIT = STYPE_OBJECT_BIT + 1;
 const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
 
+const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
+const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
+const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
+const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
+
 enum HIT_STRENGTH {
   HIT_LIGHT,
   HIT_MEDIUM,
   HIT_HARD
 };
 
-
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
 // this:
-const TFloat COLLISION_DELTA_Y = 16;
+const TFloat COLLISION_DELTA_Y = 6;
 
-// additional distance to look ahead when approaching a wall
-const TFloat FLOOR_ADJUST_BUFFER = 1;
+// Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
+const TFloat FLOOR_ADJUST_LEFT = 4;
+const TFloat FLOOR_ADJUST_TOP = 2;
+const TFloat FLOOR_ADJUST_RIGHT = 4;
+const TFloat FLOOR_ADJUST_BOTTOM = 2;
 
 class GAnchorSprite : public BAnimSprite {
 public:
@@ -54,6 +61,7 @@ public:
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
+  const char *Name() { return mName; }
 
 public:
   static DIRECTION RandomDirection();

@@ -12,12 +12,6 @@ class GPlayerBlinkProcess;
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 
-// Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 6;
-const TFloat FLOOR_ADJUST_TOP = 22;
-const TFloat FLOOR_ADJUST_RIGHT = 8;
-const TFloat FLOOR_ADJUST_BOTTOM = 2;
-
 class GPlayerProcess : public BProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
@@ -42,8 +36,6 @@ protected:
   TBool IsLedge(TFloat aX, TFloat aY);
 
   TBool IsLedge();
-
-  TBool IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
   TBool CanWalk(DIRECTION aDirection);
 

@@ -24,6 +24,7 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mGameState = aGameState;
   mSprite = new GAnchorSprite(mGameState, SPIKES_PRIORITY, ENVIRONMENT_SLOT, IMG_SPIKES);
   mSprite->cMask = STYPE_PLAYER;
+  mSprite->SetFlags(SFLAG_BELOW);// render below other sprites
   mSprite->w = mSprite->h = 24;
   mSprite->cx = -8;
   mSprite->cy = -4;
