@@ -177,8 +177,8 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TFloat DX = 2,
-  DY = 30;
+static const TFloat DX = 20,
+  DY = 26;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
