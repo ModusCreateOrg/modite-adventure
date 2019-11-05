@@ -42,7 +42,7 @@ TBool GChestProcess::RunBefore() {
 TBool GChestProcess::RunAfter() {
   if (mSprite->TestCType(STYPE_PBULLET)) {
 //    mSprite->type = STYPE_DEFAULT;
-    mSprite->cType = 0;
+//    mSprite->cType = 0;
 //    mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->ClearCMask(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
