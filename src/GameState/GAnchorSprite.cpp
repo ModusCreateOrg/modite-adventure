@@ -13,6 +13,9 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mDirection = DIRECTION_DOWN;
   mHitStrength = HIT_LIGHT;
 
+  pri = PRIORITY_BELOW;
+  mAttributeSave = 0xffff;
+  mCollisionDeltaY = DEFAULT_COLLISION_DELTA_Y;
   w = 64;
   h = 64;
   mLevel = 1;
@@ -32,6 +35,14 @@ GAnchorSprite::~GAnchorSprite() {
   //
 }
 
+void GAnchorSprite::SetAttribute(TUint aAttribute) {
+  if (mAttributeSave == 0xffff) {
+    mAttributeSave = mGameState->mGamePlayfield->GetAttribute(x, y);
+  }
+  mGameState->mGamePlayfield->SetAttribute(x, y, aAttribute);
+}
+
+// safely position sprite so it's not on top of player
 void GAnchorSprite::SafePosition(BSprite *aOther) {
   TRect myRect, hisRect;
   aOther->GetRect(hisRect);
@@ -45,6 +56,17 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
     return;
   }
   x = hisRect.x2 + 1;
+}
+
+// set or clear wall bits in playfield depending on aState (true = set, false = clear)
+void GAnchorSprite::SetWall(TBool aState) {
+  TUint16 attribute = mGameState->mGamePlayfield->GetAttribute(x, y);
+  if (aState) {
+    SetAttribute(ATTR_WALL);
+  }
+  else {
+    SetAttribute(mAttributeSave);
+  }
 }
 
 TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
@@ -63,7 +85,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - COLLISION_DELTA_Y) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - COLLISION_DELTA_Y)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - mCollisionDeltaY) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - mCollisionDeltaY)) {
         return ETrue;
       }
       break;
@@ -94,10 +116,7 @@ void GAnchorSprite::Move() {
   mLastX = x;
   mLastY = y;
   BAnimSprite::Move();
-  if (TestFlags(SFLAG_BELOW)) {
-    pri = 999;
-  }
-  else {
+  if (!TestFlags(SFLAG_BELOW)) {
     pri = y + 1000;
   }
 }
@@ -112,7 +131,7 @@ void GAnchorSprite::Collide(BSprite *aOther) {
   if (s->TestFlags(SFLAG_COLLIDE2D)) {
     collided = ETrue;
   }
-  else if (ABS(s->y - y) < COLLISION_DELTA_Y) {
+  else if (ABS(s->y - y) < mCollisionDeltaY) {
     collided = ETrue;
   }
 
