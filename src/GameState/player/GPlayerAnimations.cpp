@@ -173,7 +173,7 @@ ANIMSCRIPT swordDownAnimation[] = {
 
   // after the hit frame, reset type to STYPE_PLAYER
   ADELTA(-3, 22),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
@@ -196,7 +196,7 @@ ANIMSCRIPT swordDownNoBulletAnimation[] = {
 
   // after the hit frame, reset type to STYPE_PLAYER
   ADELTA(-3, 22),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   //  ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
@@ -286,7 +286,7 @@ ANIMSCRIPT swordLeftAnimation[] = {
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(-9, 0),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
@@ -305,7 +305,7 @@ ANIMSCRIPT swordLeftNoBulletAnimation[] = {
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
   ADELTA(-18, 0),
   //  ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(-9, 0),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
@@ -393,7 +393,7 @@ ANIMSCRIPT swordRightAnimation[] = {
 
   ADELTA(20, 0),
   ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(11, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
@@ -413,7 +413,7 @@ ANIMSCRIPT swordRightNoBulletAnimation[] = {
 
   ADELTA(20, 0),
   //  ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
   ADELTA(11, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
@@ -500,7 +500,7 @@ ANIMSCRIPT swordUpAnimation[] = {
 
   ADELTA(4, -2),
   ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 2),
 
   ADELTA(-2, -2),
@@ -521,7 +521,7 @@ ANIMSCRIPT swordUpNoBulletAnimation[] = {
 
   ADELTA(4, -2),
   //  ATYPE(STYPE_PLAYER),
-  ASIZE(0, 0, 32, 32),
+  ASIZE(7, 0, 26, 32),
   ASTEP(SWORDSPEED, IMG_SWORD_UP + 2),
 
   ADELTA(-2, -2),
