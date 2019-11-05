@@ -13,6 +13,8 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mDirection = DIRECTION_DOWN;
   mHitStrength = HIT_LIGHT;
 
+  pri = PRIORITY_BELOW;
+  mAttributeSave = 0xffff;
   w = 64;
   h = 64;
   mLevel = 1;
@@ -33,6 +35,14 @@ GAnchorSprite::~GAnchorSprite() {
   //
 }
 
+void GAnchorSprite::SetAttribute(TUint aAttribute) {
+  if (mAttributeSave == 0xffff) {
+    mAttributeSave = mGameState->mGamePlayfield->GetAttribute(x, y);
+  }
+  mGameState->mGamePlayfield->SetAttribute(x, y, aAttribute);
+}
+
+// safely position sprite so it's not on top of player
 void GAnchorSprite::SafePosition(BSprite *aOther) {
   TRect myRect, hisRect;
   aOther->GetRect(hisRect);
@@ -46,6 +56,17 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
     return;
   }
   x = hisRect.x2 + 1;
+}
+
+// set or clear wall bits in playfield depending on aState (true = set, false = clear)
+void GAnchorSprite::SetWall(TBool aState) {
+  TUint16 attribute = mGameState->mGamePlayfield->GetAttribute(x, y);
+  if (aState) {
+    SetAttribute(ATTR_WALL);
+  }
+  else {
+    SetAttribute(mAttributeSave);
+  }
 }
 
 TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
@@ -95,10 +116,7 @@ void GAnchorSprite::Move() {
   mLastX = x;
   mLastY = y;
   BAnimSprite::Move();
-  if (TestFlags(SFLAG_BELOW)) {
-    pri = 999;
-  }
-  else {
+  if (!TestFlags(SFLAG_BELOW)) {
     pri = y + 1000;
   }
 }

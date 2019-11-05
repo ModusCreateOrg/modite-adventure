@@ -22,6 +22,8 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber]);
+    mSprite->flags |= SFLAG_BELOW;
+    mSprite->pri = PRIORITY_BELOW + 1;
     mSprite->type = STYPE_OBJECT;
     mSprite->cMask = STYPE_PLAYER;
     mSprite->w = mSprite->h = 32;
@@ -53,7 +55,7 @@ TBool GItemProcess::RunBefore() {
 
 TBool GItemProcess::RunAfter() {
   if (mSprite->cType & STYPE_PLAYER) {
-    GStatProcess *p = new GStatProcess(mSprite->x, mSprite->y, itemNames[mItemNumber]);
+    auto *p = new GStatProcess(mSprite->x, mSprite->y, itemNames[mItemNumber]);
     p->SetImageNumber(mSprite->mImageNumber);
     p->SetTimeout(5 * FRAMES_PER_SECOND);
     mGameState->AddProcess(p);

@@ -1,28 +1,21 @@
+env:
+  global:
+  - secure: "brjVVygD8wy65Go3NKyhGKSXYM9xlKhUjlRk/iXV2wayXLkEoYX7AhIueIMsQMM+jsI8J81jwx3qcHui/yF/Z1V/pbesorOHDg2O8NwTv1QH7Te+VVdNkvHRpNnh3Y83eHh0E/A7LaoTnsDHEiuRkGzKtW8wdrkqU6R9ABv22pRl9M25QXhlkpNT1enUTTrmdvspV8AD9Ex5/scm2fzFo0q+nZ/aIwCNtgchbzEJSIZwEuQ3XZYtVbwHhBeNJaj6Ua24xBXkncxlgszXhEerIaVSzpMBQ1tLvSN4d193l/+vxxHt2iiFRD456h7z7Tkq4vyqb2WQiA80LVM9iVT0cDBGoVroWSNEyw+68fj04f3xQJHFNRW3m1/SrkFnRptrc5p6Is1yQxk79GawOehcCfD3ZosJYyvqSVeUV/rEk9fBznpbsgb6B+EKwemtCfOlMMIXj1DVNgNY0iJUi0oriDrqRBohWi3r1d8F6uNEUocRDYeGWh1risobR3YcDeGgDJm5BpmdSKr24b4jfIMZfSKXJZMtcyJtB/kzJO8pvKdl9V+9Kljg5m4FVL5hLMVS3dRi1tWPrBUwRBkpMXRNsNyGl2h05eU8miNk+UcDuJrC2s14iZpJDQoGZPg9SxdxbcWy9CFfWT6lJVP+RZhUXPHhHHvxE3kN9sd3U8DWCqo="
 os:
 - linux
-- osx
+- osx 
 osx_image: xcode11.2
 dist: bionic
 language: cpp
 sudo: enabled
 git:
   depth: 1
-install: "./.ci/travis/install_deps.sh"
+install: 
+  - sudo pip install --upgrade pip
+  - sudo pip install satsuki
+  - "./.ci/travis/install_deps.sh"
 before_script: "./.ci/travis/lint.sh"
 script: "./scripts/build.sh"
-deploy:
-  provider: releases
-  skip_cleanup: true
-  overwrite: true
-  file_glob: true
-  file: build/*.tgz
-  api_key:
-    secure: TbgL7t23TYfzRNfrcounVfXfPddAeyk2yaEIvbORsu98oG6fJCIc2uSNBr6Hnkva51pjSkSsFuTkeubEMQkOIqrlAKVi1Y0g+iwk0ZrGQca+4FWzK7CM2uAwWZcH03ni5q1fruDEdi4w+SUtp1prgkrt2ANyhLnGYjEMrpTInB+Fox2Cy56wrvbZf2SkqqjW4oVVa2wb/XVgA+B+kUBfLUGeRClMIEUpBiQxyzrBsCBSn6o8x7VYhpVL0LcW5POxwZO+MTrGsLInDZ1ErDAaG2x7omIDAvdsi6GL/qyAOFBDMvhawxosI8TF6oRWy4ZcN7Jtp2Oly6ml/7OVjIdWSd9BwulL8r+sGNgnyIuQpfBmpDUmpmgxoMX12p+B+pRdKywTNu9Fvh00zwiTg0Ez2NSq/yr+Km/jXxqc9CT29X9LjER9qX1pnY7F9IDlCeBjtzI8he+930t0Rs88dt6L1lXOFNgbjtC+caqr/WO8aySuy4HpVlcnjqw9idUe6v7Ym0xqr7poPvlaTuQtmAZlMbLJ5Hx3Vmhp38VJm98UtbxwEJNV15j/NphYrMnbeuI9QfhyyQPtEBZxHDqAKllm5SaN+LPnd9FJSz/phOP2E/r37NhL2lOoIGuDDgMSC3v3yrGydwfCOUCKF7lKzsQwtJjYHINHwjwrQouIHGHoRpA=
-  file: build/*.(zip|tgz)
-  on:
-    tags: true
-    repo: ModusCreateOrg/creative-engine-travisci
-    condition: -n $TRAVIS_TAG
 notifications:
   slack:
-    secure: a26dJYv5pdVz2x+VY1sfr8FHa+M9JfR0s8sj2Iah5h/deaR1I4w6ar+d63sPZFOKzczMKcO8GyG+qkpHmh4Y1OdPzKuRGjrDksqSYKHmHsWXqcWYtfXUzS1IzK+fU+B46UiC3byLKIaeHmgRQULndeZoTLQUMcznMFzr2jWGoUsXuI+vIedorcT2hkenwU1ajz9pili/hVEiLCPOCL1MF/7va+4dU8wR9c7A6mHl2pJ3Q+nMS5f9srvHqJiYQ5Fuxn8IaaNb1FYQCu46nFij62P0Wnu+i7Wu/tQeJvUH82BxcqDHW9Dya+IUvJsLVyNz4MZOld5nLW8m2Shc3UlpUTKmmtjlnlNkwnPX5bkHaxx9Og0jJ0lINa8x2//y4iAn7UxdTnni4Txts5Mm0pdfaZzh55C5iitwb0VPoj6hbAhpvnQQhX2efGCGjSp8cuQUa4Z/uKoEx40XOPkSQhdSDrPtFlpM1ZLiwX9k9qqZt5ZJhyad/7G9ZtMMqokRMPu7PYa2hzBBTQePJwIv4R68yUfzmZhq16BR+tSXdj78MX7Dnn958TnphfkXKbaKwERbnYps/MEcAtoBo8c/HQ0/kqFfgGUH/97ExSrl9eTdi67YJ2nAsWK9apn/9/cSYad6uYXe+hWU06/5aeuQ57gqMl7601jhhH6liw+e0uv91CM=
+    secure: "XH59GGO2tpCt8reN1DDiuhVtKc6kMhf692Bf01HDPp2iIclvI9NJnbzyrSRpslYbt/3QBX/KNJkVkZh6HevprrWhBCXnn43vDFayh/84I5x43Qpwy+jAix1nhiw60fFkSze3Kuxqhd1u0vl87ahCmKbNkQrMPyom1D5+Ujyi0fcYwDeOLp7pHq+DexEjzCCqu/XtNLUzwB2pTCYmx3XAh8PTIE4LG1WO1uYF2XV2554BLJRIt6mGciR17x63kkCJy2NrJ2Gkve8CTknI1i/aoQWZYQzoJY8MCnpoU4565yt+bVI3eAYVEmimSqt5bai+SBwMeZ8QIZ0qGUfD53tX6C98XHFSeV+GF7TZjBbsS8m00uuuxMGZzD8dxZp9ga7ki0LeLefTGqFZsrLc++NMO0joAQNT55e6kYu/XC05Gg/fAqskGkJSD+tU5Tzhn3DYvYaGe6fIhbg4kX8u8l+Ddd6IrEwQad5G45qovEOi+AXHzM9lOpwOJ7IcBUOsZSZNAkzvonRaN4fhPE/Y5bGlw/qtc8VRN/W2xdVhEheQ67NzzbTgGzeflLe+b3pnKjNxTSMBVuLrlB9jF9PXKNcY0cuMwcqU2ImVLxe9cxlLA+qGIk866tLRRkkUMI5Kjx4S+PpGGcSVVtheEpR0cB2WsH+l17CYXE/xwuDMGpccv14="

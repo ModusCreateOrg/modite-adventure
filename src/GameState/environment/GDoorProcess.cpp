@@ -2,17 +2,19 @@
 #include "GGamePlayfield.h"
 #include "BSpriteSheet.h"
 
-GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
-    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
+GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood,
+                           TBool aHorizontal)
+  : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
 
   mHorizontal = aHorizontal;
 
   if (mHorizontal) {
-    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H);
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+                                 aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H);
     mSprite1->Name(aWood ? "HORIZONTAL WOOD DOOR 1" : "HORIZONTAL METAL DOOR 1");
-  }
-  else {
-    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V);
+  } else {
+    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+                                 aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V);
     mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
   }
 
@@ -26,9 +28,13 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mSprite1->x = aX;
   mSprite1->y = aY + (mHorizontal ? 2.0 : 3.0);
   mGameState->AddSprite(mSprite1);
+  if (!mHorizontal) {
+    mSprite1->SetWall(ETrue);
+  }
 
   if (!mHorizontal) {
-    mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT, aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10);
+    mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+                                 aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10);
 
     mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
     mSprite2->type = STYPE_ENEMY;
@@ -42,11 +48,31 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite2->y = mSprite1->y - 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
+    if (!mHorizontal) {
+      mSprite2->SetWall(ETrue);
+    }
   }
 }
 
 GDoorProcess::~GDoorProcess() {
-  //
+  ClearWall();
+  if (mSprite1) {
+    mSprite1->Remove();
+    delete mSprite1;
+    mSprite1 = ENull;
+  }
+  if (mSprite2) {
+    mSprite2->Remove();
+    delete mSprite2;
+    mSprite2 = ENull;
+  }
+}
+
+void GDoorProcess::ClearWall() {
+  mSprite1->SetWall(EFalse);
+  if (mSprite2) {
+    mSprite2->SetWall(EFalse);
+  }
 }
 
 TBool GDoorProcess::RunBefore() {
@@ -55,6 +81,7 @@ TBool GDoorProcess::RunBefore() {
   TInt group = mAttribute->group;
   if (group && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
+    ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
   }
@@ -67,11 +94,12 @@ TBool GDoorProcess::RunAfter() {
     return ETrue;
   }
   if (mSprite2 && mSprite2->TestCType(STYPE_PBULLET)) {
+    ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
-  }
-  else if (mSprite1->TestCType(STYPE_PBULLET)) {
-    mGameState->EndProgram(mIp);
+  } else if (mSprite1->TestCType(STYPE_PBULLET)) {
+    mSprite1->SetWall(EFalse);
+    ClearWall();
     return EFalse;
   }
   return ETrue;

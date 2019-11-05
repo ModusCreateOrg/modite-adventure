@@ -22,15 +22,13 @@ const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
 const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT+1;
 const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
 
+const TInt PRIORITY_BELOW = 500;
+
 enum HIT_STRENGTH {
   HIT_LIGHT,
   HIT_MEDIUM,
   HIT_HARD
 };
-
-// collisions occur only if two sprites' abs(delta y) is less than or equal to
-// this:
-const TFloat COLLISION_DELTA_Y = 6;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
 const TFloat FLOOR_ADJUST_LEFT = 4;
@@ -53,6 +51,8 @@ public:
 
   void Nudge();
 
+  void SetWall(TBool aState = ETrue);
+
   TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY);
 
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
@@ -70,6 +70,8 @@ public:
 
   TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
+  // set the BMapPlayfield tile in map attribute
+  void SetAttribute(TUint mAttribute);
 public:
   GGameState *mGameState;
   DIRECTION mDirection;
@@ -86,6 +88,7 @@ public:
   TFloat floorOffsetRight;
   TFloat floorOffsetBottom;
   TRect mShadow;
+  TUint mAttributeSave;
 
 protected:
   char mName[64];

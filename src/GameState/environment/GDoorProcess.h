@@ -6,10 +6,16 @@
 class GDoorProcess : public GEnvironmentProcess {
 public:
   GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal);
-  ~GDoorProcess();
+
+  ~GDoorProcess() FINAL;
+
 public:
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() FINAL;
+
+  TBool RunAfter() FINAL;
+
+protected:
+  void ClearWall();
 
 protected:
   TBool mHorizontal;
