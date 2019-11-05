@@ -13,6 +13,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mDirection = DIRECTION_DOWN;
   mHitStrength = HIT_LIGHT;
 
+  mCollisionDeltaY = DEFAULT_COLLISION_DELTA_Y;
   w = 64;
   h = 64;
   mLevel = 1;
@@ -63,7 +64,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - COLLISION_DELTA_Y) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - COLLISION_DELTA_Y)) {
+      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2 - mCollisionDeltaY) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2 - COLLISION_DELTA_Y)) {
         return ETrue;
       }
       break;

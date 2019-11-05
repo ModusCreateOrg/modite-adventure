@@ -30,7 +30,7 @@ enum HIT_STRENGTH {
 
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
 // this:
-const TFloat COLLISION_DELTA_Y = 6;
+const TFloat DEFAULT_COLLISION_DELTA_Y = 6;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
 const TFloat FLOOR_ADJUST_LEFT = 4;
@@ -77,6 +77,7 @@ public:
   TInt mHitStrength;
   TInt mGold;
   TBool mInvulnerable;   // cannot be attacked
+  TInt16 mCollisionDeltaY;
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
   TFloat floorOffsetLeft;
