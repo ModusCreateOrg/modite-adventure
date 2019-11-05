@@ -22,6 +22,8 @@ const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
 const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
 const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
 
+const TInt PRIORITY_BELOW = 500;
+
 enum HIT_STRENGTH {
   HIT_LIGHT,
   HIT_MEDIUM,
@@ -53,6 +55,8 @@ public:
 
   void Nudge();
 
+  void SetWall(TBool aState = ETrue);
+
   TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY);
 
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
@@ -68,6 +72,8 @@ public:
 
   TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
+  // set the BMapPlayfield tile in map attribute
+  void SetAttribute(TUint mAttribute);
 public:
   GGameState *mGameState;
   DIRECTION mDirection;
@@ -84,6 +90,7 @@ public:
   TFloat floorOffsetTop;
   TFloat floorOffsetRight;
   TFloat floorOffsetBottom;
+  TUint mAttributeSave;
 
 protected:
   char mName[64];
