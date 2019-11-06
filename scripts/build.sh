@@ -24,7 +24,8 @@ BASE_DIR="$DIR/.."
 BUILD_DIR="$BASE_DIR/build"
 TOP_DIR="$BASE_DIR/.."
 CREATIVE_ENGINE_DIR="${CREATIVE_ENGINE_PATH:-$TOP_DIR/creative-engine}"
-export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR
+RESOURCES_DIR="${RESOURCES_PATH:-$TOP_DIR/modite-adventure-resources}"
+export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR RESOURCES_DIR
 # shellcheck disable=SC1090
 source "$DIR/common.sh"
 
@@ -93,6 +94,10 @@ esac
 # Prepare dependencies
 ensure_creative_engine
 checkout_creative_engine_branch
+
+ensure_resources
+checkout_resources_branch
+
 
 # Build the software and documentation
 build
