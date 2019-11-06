@@ -137,50 +137,52 @@ ANIMSCRIPT fallAnimation[] = {
 
 ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(4, 0),
   ASTEP(1, IMG_WALK_DOWN),
   AEND,
 };
 
 ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(4, 0),
   ASTEP(1, IMG_WALK_DOWN + 0),
-  ADELTA(1, 0),
+  ADELTA(5, 0),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
-  ADELTA(-3, 0),
+  ADELTA(1, 0),
   ASTEP(WALKSPEED - 1, IMG_WALK_DOWN + 2),
-  ADELTA(0, 0),
+  ADELTA(4, 0),
   AEND,
 };
 
 ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-3, 0),
+  ADELTA(1, 0),
   ASTEP(1, IMG_WALK_DOWN + 2),
-  ADELTA(-2, 0),
+  ADELTA(2, 0),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 3),
-  ADELTA(0, 0),
+  ADELTA(4, 0),
   ASTEP(WALKSPEED - 1, IMG_WALK_DOWN + 0),
   AEND,
 };
 
 ANIMSCRIPT swordDownAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-2, 0),
+  ADELTA(2, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN),
 
   // this is the frame to collide with enemy to hit it
-  ADELTA(-2, 22),
+  ADELTA(2, 22),
   ATYPE(STYPE_PBULLET),
   ASIZE(0, 22, 32, 34),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER
-  ADELTA(-3, 22),
+  ADELTA(1, 22),
   ASIZE(7, 4, 26, 16),
   ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
-  ADELTA(-2, 7),
+  ADELTA(2, 7),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 3),
   ADELTA(0, 0),
   AEND,
@@ -188,24 +190,24 @@ ANIMSCRIPT swordDownAnimation[] = {
 
 ANIMSCRIPT swordDownNoBulletAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-2, 0),
+  ADELTA(2, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN),
 
   // this is the frame to collide with enemy to hit it
-  ADELTA(-2, 22),
+  ADELTA(2, 22),
   ATYPE(STYPE_PBULLET),
   ASIZE(0, 12, 32, 8),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 1),
 
   // after the hit frame, reset type to STYPE_PLAYER
-  ADELTA(-3, 22),
+  ADELTA(1, 22),
   ASIZE(7, 4, 26, 16),
   ATYPE(STYPE_PLAYER),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 2),
 
-  ADELTA(-2, 7),
+  ADELTA(2, 7),
   ASTEP(SWORDSPEED, IMG_SWORD_DOWN + 3),
-  ADELTA(0, 0),
+  ADELTA(4, 0),
   AEND,
 };
 
@@ -284,7 +286,7 @@ ANIMSCRIPT walkLeftAnimation2[] = {
 
 ANIMSCRIPT swordLeftAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-6, 0),
+  ADELTA(2, 0),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT),
 
   ADELTA(-18, 0),
@@ -303,7 +305,7 @@ ANIMSCRIPT swordLeftAnimation[] = {
 
 ANIMSCRIPT swordLeftNoBulletAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-6, 0),
+  ADELTA(2, 0),
   AFLIP(SWORDSPEED, IMG_SWORD_RIGHT),
 
   ADELTA(-18, 0),
@@ -364,71 +366,72 @@ ANIMSCRIPT hitHardLeftAnimation[] = {
  */
 ANIMSCRIPT idleRightAnimation[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(-2, 0),
   ASTEP(1, IMG_WALK_RIGHT),
   AEND,
 };
 
 ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(0, 0),
+  ADELTA(-2, 0),
   ASTEP(1, IMG_WALK_RIGHT),
-  ADELTA(4, 0),
+  ADELTA(2, 0),
   ASTEP(WALKSPEED, IMG_WALK_RIGHT + 1),
-  ADELTA(6, 0),
+  ADELTA(4, 0),
   ASTEP(WALKSPEED - 1, IMG_WALK_RIGHT + 2),
-  ADELTA(0, 0),
+  ADELTA(-2, 0),
   AEND,
 };
 
 ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(6, 0),
-  ASTEP(1, IMG_WALK_RIGHT + 2),
   ADELTA(4, 0),
+  ASTEP(1, IMG_WALK_RIGHT + 2),
+  ADELTA(2, 0),
   ASTEP(WALKSPEED, IMG_WALK_RIGHT + 3),
-  ADELTA(0, 0),
+  ADELTA(-2, 0),
   ASTEP(WALKSPEED - 1, IMG_WALK_RIGHT),
-  ADELTA(0, 0),
+  ADELTA(-2, 0),
   AEND,
 };
 
 ANIMSCRIPT swordRightAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(8, 0),
+  ADELTA(4, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT),
 
-  ADELTA(20, 0),
+  ADELTA(16, 0),
   ATYPE(STYPE_PBULLET),
   ASIZE(22, 8, 41, 24),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
-  ADELTA(20, 0),
+  ADELTA(16, 0),
   ATYPE(STYPE_PLAYER),
   ASIZE(7, 4, 26, 16),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
-  ADELTA(11, 0),
+  ADELTA(7, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
-  ADELTA(0, 0),
+  ADELTA(7, 0),
   AEND,
 };
 
 ANIMSCRIPT swordRightNoBulletAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(8, 0),
+  ADELTA(4, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT),
 
-  ADELTA(20, 0),
+  ADELTA(16, 0),
   ATYPE(STYPE_PBULLET),
   ASIZE(41, 8, 8, 24),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 1),
 
-  ADELTA(20, 0),
+  ADELTA(16, 0),
   ATYPE(STYPE_PLAYER),
   ASIZE(7, 4, 26, 16),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 2),
-  ADELTA(11, 0),
+  ADELTA(7, 0),
   ASTEP(SWORDSPEED, IMG_SWORD_RIGHT + 3),
-  ADELTA(0, 0),
+  ADELTA(7, 0),
   AEND,
 };
 

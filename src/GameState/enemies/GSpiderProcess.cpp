@@ -302,6 +302,8 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mStateTimer = 0;
   mSprite->Name("SPIDER SPRITE");
   mSprite->h = 24;
+  mSprite->y = 0;
+  mSprite->ResetShadow();
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mHitStrength = HIT_MEDIUM;

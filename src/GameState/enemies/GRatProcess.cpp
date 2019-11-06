@@ -88,14 +88,14 @@ static ANIMSCRIPT deathAnimation[] = {
 
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(RAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 2),
+  ADELTA(0, 8),
+  ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 8),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 1),
   AEND,
@@ -103,6 +103,7 @@ static ANIMSCRIPT walkDownAnimation1[] = {
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 8),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 3),
   AEND,
@@ -110,6 +111,7 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 8),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
@@ -144,14 +146,14 @@ static ANIMSCRIPT hitDownAnimation[] = {
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 2),
+  ADELTA(8, 0),
+  AFLIP(1, IMG_RAT_WALK_RIGHT + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(8, 0),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 0),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 1),
   AEND,
@@ -159,6 +161,7 @@ static ANIMSCRIPT walkLeftAnimation1[] = {
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(8, 0),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 2),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 3),
   AEND,
@@ -166,10 +169,11 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(8, 0),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-16, 4, 48, 24),
+  ASIZE(-24, 4, 48, 24),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
@@ -198,15 +202,16 @@ static ANIMSCRIPT hitLeftAnimation[] = {
  */
 
 static ANIMSCRIPT idleRightAnimation[] = {
-  ABITMAP(RAT_SLOT), ALABEL,
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 2),
+  ABITMAP(RAT_SLOT),
+  ALABEL,
+  ADELTA(-8, 0),
+  ASTEP(1, IMG_RAT_WALK_RIGHT + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(-8, 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 1),
   AEND,
@@ -214,6 +219,7 @@ static ANIMSCRIPT walkRightAnimation1[] = {
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(-8, 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 3),
   AEND,
@@ -221,10 +227,11 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(-8, 0),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(0, 4, 48, 24),
+  ASIZE(-8, 4, 48, 24),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
@@ -255,14 +262,14 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT idleUpAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_RAT_IDLE + 2),
+  ADELTA(0, 12),
+  ASTEP(1, IMG_RAT_WALK_UP + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 12),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 1),
   AEND,
@@ -270,12 +277,14 @@ static ANIMSCRIPT walkUpAnimation1[] = {
 
 static ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 12),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 3),
   AEND,};
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 12),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
@@ -419,6 +428,20 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
 void GRatProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
+  switch (mSprite->mDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(idleUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(idleDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(idleLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(idleRightAnimation);
+      break;
+  }
 }
 
 void GRatProcess::Walk(DIRECTION aDirection) {
