@@ -92,6 +92,7 @@ clion-log.txt
 build
 build.ldk
 genus.app
+src/resources
 src/Resources.bin
 src/Resources.h
 sdkconfig
