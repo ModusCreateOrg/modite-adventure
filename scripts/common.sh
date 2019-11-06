@@ -99,6 +99,9 @@ function build {
     if [[ ! -d creative-engine ]]; then
         ln -sf "$CREATIVE_ENGINE_DIR" .
     fi
+    if [[ ! -d ./src/resources ]]; then
+        ln -sf "$RESOURCES_DIR/resources" ./src
+    fi
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR" || exit 1
     cmake ..
@@ -146,6 +149,10 @@ function build_xtensa {
     if [[ ! -d $CREATIVE_ENGINE_DIR ]]; then
         rm -f creative-engine
         ln -s "$CREATIVE_ENGINE_DIR" .
+    fi
+    if [[ ! -d $RESOURCES_DIR ]]; then
+        rm -f ./src/resources
+        ln -s "$CREATIVE_ENGINE_DIR" ./src
     fi
     mkdir -p "$BUILD_DIR"
     make -j 10
