@@ -23,13 +23,6 @@ const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
 const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
 
 const TInt PRIORITY_BELOW = 500;
-
-enum HIT_STRENGTH {
-  HIT_LIGHT,
-  HIT_MEDIUM,
-  HIT_HARD
-};
-
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
 // this:
 const TFloat DEFAULT_COLLISION_DELTA_Y = 6;

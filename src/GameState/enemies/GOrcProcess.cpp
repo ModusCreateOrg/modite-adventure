@@ -16,6 +16,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
+const TInt ATTACK_STRENGTH = 40;
+
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -322,8 +324,8 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitStrength = HIT_HARD;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_ORC_BMP_SPRITES);
+  mSprite->mHitStrength = ATTACK_STRENGTH;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

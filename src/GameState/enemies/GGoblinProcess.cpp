@@ -18,6 +18,9 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
+const TInt HIT_POINTS = 300;
+const TInt ATTACK_STRENGTH = 40;
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -346,7 +349,8 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitStrength = HIT_MEDIUM;
+  mHitPoints = HIT_POINTS;
+  mSprite->mHitStrength = ATTACK_STRENGTH;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

@@ -16,6 +16,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = (PLAYER_VELOCITY / 4) / FACTOR;
 
+const TInt ATTACK_STRENGTH = 40;
+
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -207,8 +209,8 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mHitStrength = HIT_HARD;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
+  mSprite->mHitStrength = ATTACK_STRENGTH;
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
