@@ -345,7 +345,7 @@ function upload_artifacts {
         echo "Didn't find GITHUB_TOKEN."
     else
         if [ "${TRAVIS_TAG:-undefined}" = undefined ]; then
-            ARTIFACT_VERSION="nightly-$(date +%y-%m-%d)"
+            ARTIFACT_VERSION="nightly-$(date +%y-%m-%d-%H%M%S)"
             GITHUB_RELEASE_NAME="nightly"
         else
             ARTIFACT_VERSION="$TRAVIS_TAG"
