@@ -17,7 +17,7 @@ TBool GStartLevelProcess::RunAfter() {
     return EFalse;
   }
 
-  gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, mX, 32, COLOR_SHMOO_GREY, COLOR_TEXT_TRANSPARENT, -4);
+  gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, mX, 32, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -4);
   return ETrue;
 
 }

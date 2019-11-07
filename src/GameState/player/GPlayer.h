@@ -13,6 +13,7 @@ class GPlayerProcess;
 //#include "GPlayerProcess.h"
 #include "GPlayer.h"
 
+
 struct GInventoryItem : public BNode {
   GInventoryItem(TInt aItemNumber);
 

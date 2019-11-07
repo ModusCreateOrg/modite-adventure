@@ -40,6 +40,6 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
     case STAT_ENEMY_HIT:
     case STAT_INFO:
     default:
-      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_GREY, COLOR_TEXT_TRANSPARENT, -6);
+      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -6);
   }
 }
