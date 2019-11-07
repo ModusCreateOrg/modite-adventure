@@ -11,11 +11,8 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
-  mHitPoints = 200;
   mState = IDLE_STATE;
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
-  mSprite->mHitPoints = mHitPoints;
-  mSprite->mHitStrength = 35;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
@@ -151,7 +148,7 @@ TBool GEnemyProcess::MaybeHit() {
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -298,7 +295,7 @@ TBool GEnemyProcess::DeathState() {
     GAnchorSprite *s = mEnemyDeathOverlayProcess->GetSprite();
     if (s) {
       if (s->AnimDone()) {
-        GPlayer::AddExperience(mSprite->mLevel);
+        GPlayer::AddExperience(mSprite->mExperience);
         // drop a potion
         switch (Random(0, 3)) {
           case 0:

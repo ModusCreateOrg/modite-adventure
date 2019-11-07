@@ -310,8 +310,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mHitPoints = 400;
-  mSprite->mHitStrength = 45;
+  mSprite->SetStatMultipliers(1.8, 0.6, 1.0);
   mStateTimer = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
   NewState(IDLE_STATE, DIRECTION_DOWN);

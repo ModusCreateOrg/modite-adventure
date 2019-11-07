@@ -27,8 +27,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another 
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
-  mSprite->mHitPoints = 1000;
-  mSprite->mHitStrength = 100;
+  mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
 

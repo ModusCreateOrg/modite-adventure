@@ -323,7 +323,7 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_ORC_BMP_SPRITES);
-  mSprite->mHitStrength = 60;
+  mSprite->SetStatMultipliers(1.5, 1.8, 1.5);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
