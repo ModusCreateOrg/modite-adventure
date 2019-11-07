@@ -1,4 +1,5 @@
 #include "GChestProcess.h"
+#include "GPlayer.h"
 #include "inventory/GItemProcess.h"
 
 GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aIsOpen)
@@ -47,7 +48,7 @@ TBool GChestProcess::RunAfter() {
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
     printf("Chest open param = %x %d\n", mParam, mParam);
-    GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
+    GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y-16);
     //0x5611b1dc89d0
     mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
