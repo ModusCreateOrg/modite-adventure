@@ -20,9 +20,6 @@ const TInt16 DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
-const TInt HIT_POINTS = 200;
-const TInt ATTACK_STRENGTH = 20;
-
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -313,8 +310,8 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("RAT SPRITE");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mHitPoints = HIT_POINTS;
-  mSprite->mHitStrength = ATTACK_STRENGTH;
+  mHitPoints = 400;
+  mSprite->mHitStrength = 45;
   mStateTimer = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
   NewState(IDLE_STATE, DIRECTION_DOWN);

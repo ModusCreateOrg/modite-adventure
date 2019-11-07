@@ -7,18 +7,15 @@
 #include "GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-const TInt HIT_POINTS = 200; // default hit points for enemy
-const TInt ATTACK_STRENGTH = 20; // default attack strength
-
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
   : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
-  mHitPoints = HIT_POINTS;
+  mHitPoints = 200;
   mState = IDLE_STATE;
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->mHitPoints = mHitPoints;
-  mSprite->mHitStrength = ATTACK_STRENGTH;
+  mSprite->mHitStrength = 35;
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
@@ -128,12 +125,13 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      TInt hitAmount = GPlayer::mHitStrength + (rand() % (GPlayer::mHitStrength / 2 + 1));
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
       mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
       }
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -146,12 +144,14 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      TInt hitAmount = other->mHitStrength + (rand() % (other->mHitStrength / 2 + 1));
+      // random variation from 100% to 150% base damage
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
       mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:

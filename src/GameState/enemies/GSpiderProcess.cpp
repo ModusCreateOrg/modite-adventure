@@ -16,8 +16,6 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
-const TInt ATTACK_STRENGTH = 30;
-
 // region  ANIMATIONS {{{
 
 /*********************************************************************************
@@ -306,7 +304,6 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
-  mSprite->mHitStrength = ATTACK_STRENGTH;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }

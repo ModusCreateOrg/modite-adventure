@@ -5,6 +5,11 @@
 #include <BFont.h>
 #include <BBitmap.h>
 
+enum STAT_TYPE {
+  STAT_PLAYER_HIT,
+  STAT_ENEMY_HIT,
+  STAT_INFO,
+};
 
 const TInt STAT_SIZE_8x8 = 0;
 const TInt STAT_SIZE_16x16 = 1;
@@ -13,6 +18,7 @@ class GStatSprite : public BSprite {
 public:
   GStatSprite(TInt aSize, const char *aMessage, TInt aImage = 0);
   ~GStatSprite() OVERRIDE;
+  STAT_TYPE mMessageType;
 
 public:
   TBool Render(BViewPort *aViewPort) OVERRIDE;

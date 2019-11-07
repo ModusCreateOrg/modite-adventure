@@ -148,7 +148,7 @@ void GGameState::PostRender() {
     TInt len = strlen(mText);
     TInt x = gViewPort->mRect.Width() / 2 - len * 12 / 2;
     gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -4);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO_GREY, COLOR_TEXT_TRANSPARENT, -4);
     if (--mTimer < 0) {
       mText[0] = '\0';
       gControls.Reset();

@@ -94,7 +94,6 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK); // SFLAG_SORTY
-  mSprite->mHitStrength = 25;
 
   mSprite2 = ENull;
 
@@ -314,10 +313,12 @@ TBool GPlayerProcess::MaybeHit() {
     const GAnchorSprite *other = mSprite->mCollided;
 
     // random variation from 100% to 150% base damage
-    TInt hitAmount = other->mHitStrength + (rand() % (other->mHitStrength / 2 + 1));
+    TInt hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
     GPlayer::mHitPoints -= hitAmount;
     mSprite->mInvulnerable = ETrue;
-    mGameState->AddProcess(new GStatProcess(mSprite->x + 64, mSprite->y, "HIT +%d", hitAmount));
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
+    p->SetMessageType(STAT_PLAYER_HIT);
+    mGameState->AddProcess(p);
 
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.05) {
       switch (other->mDirection) {

@@ -5,6 +5,7 @@ GStatSprite::GStatSprite(TInt aSize, const char *aMessage, TInt aImage)
   : mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
 
   mImageNumber = aImage;
+  mMessageType = STAT_INFO;
 
   switch (aSize) {
     case STAT_SIZE_8x8:
@@ -33,5 +34,12 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
   }
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -6);
+  switch (mMessageType) {
+    case STAT_PLAYER_HIT:
+      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_RED, COLOR_TEXT_TRANSPARENT, -6);
+    case STAT_ENEMY_HIT:
+    case STAT_INFO:
+    default:
+      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_GREY, COLOR_TEXT_TRANSPARENT, -6);
+  }
 }
