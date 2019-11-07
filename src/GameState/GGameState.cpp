@@ -222,7 +222,7 @@ void GGameState::PostRender() {
 
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, COLOR_HEALTH);
+  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
   x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge
