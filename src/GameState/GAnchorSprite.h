@@ -79,7 +79,7 @@ public:
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
   TInt16 mLevel, mExperience;
-  TInt16 mHitPoints;
+  TInt16 mHitPoints, mMaxHitPoints;
   TInt mHitStrength;
   TInt mBaseHitPoints, mBaseStrength, mBaseExperience;
   TBool mInvulnerable;   // cannot be attacked

@@ -199,7 +199,8 @@ void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength
 
 void GAnchorSprite::SetLevel(TInt aLevel) {
   mLevel = aLevel;
-  mHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
+  mMaxHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
+  mHitPoints = mMaxHitPoints;
   mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
 }

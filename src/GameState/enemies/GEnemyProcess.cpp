@@ -7,12 +7,27 @@
 #include "GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
+GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(
+        aGameState, aPri, aBM, aImg, aType) {}
+
+TBool GEnemySprite::Render(BViewPort *aViewPort) {
+  TBool ret = GAnchorSprite::Render(aViewPort);
+  if (mHitPoints < mMaxHitPoints && mMaxHitPoints > 0 && !Clipped()) {
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40, 20, COLOR_TEXT);
+    if (mHitPoints > 0) {
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40,
+                                           mHitPoints * 20 / mMaxHitPoints + 1, COLOR_HEALTH);
+    }
+  }
+  return ret;
+}
+
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
   : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
   mState = IDLE_STATE;
-  mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
+  mSprite = new GEnemySprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
