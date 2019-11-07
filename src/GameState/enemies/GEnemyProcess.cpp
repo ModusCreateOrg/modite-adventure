@@ -128,7 +128,9 @@ TBool GEnemyProcess::MaybeHit() {
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+        p->SetMessageType(STAT_EXPERIENCE);
+        mGameState->AddProcess(p);
       }
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -148,7 +150,9 @@ TBool GEnemyProcess::MaybeHit() {
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience));
+        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+        p->SetMessageType(STAT_EXPERIENCE);
+        mGameState->AddProcess(p);
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:

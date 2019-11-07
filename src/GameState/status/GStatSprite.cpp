@@ -37,6 +37,9 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
   switch (mMessageType) {
     case STAT_PLAYER_HIT:
       return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_RED, COLOR_TEXT_TRANSPARENT, -6);
+    case STAT_EXPERIENCE:
+    case STAT_HEAL:
+      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_GREEN, COLOR_TEXT_TRANSPARENT, -6);
     case STAT_ENEMY_HIT:
     case STAT_INFO:
     default:
