@@ -48,7 +48,7 @@ TBool GChestProcess::RunAfter() {
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
     printf("Chest open param = %x %d\n", mParam, mParam);
-    GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y-16);
+    GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y);
     //0x5611b1dc89d0
     mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
