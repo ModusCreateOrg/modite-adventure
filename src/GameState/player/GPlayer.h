@@ -93,10 +93,10 @@ struct GPlayer {
     while (mExperience >= mNextLevel) {
       mLevel++;
       mExperience -= mNextLevel;
-      mNextLevel += (mLevel + 1) * 50;
-      mMaxHitPoints += 25;
+      mNextLevel += 100 + (mLevel - 1) * 50;
+      mMaxHitPoints += 40;
       mHitPoints = mMaxHitPoints;
-      mHitStrength += 10;
+      mHitStrength += 7;
     }
   }
 

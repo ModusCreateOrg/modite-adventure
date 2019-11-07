@@ -318,7 +318,7 @@ TBool GPlayerProcess::MaybeHit() {
     p->SetMessageType(STAT_PLAYER_HIT);
     mGameState->AddProcess(p);
 
-    if (hitAmount <= GPlayer::mMaxHitPoints * 0.05) {
+    if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
       switch (other->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitLightDownAnimation);
@@ -333,7 +333,7 @@ TBool GPlayerProcess::MaybeHit() {
           mSprite->StartAnimation(hitLightLeftAnimation);
           break;
       }
-    } else if (hitAmount <= GPlayer::mMaxHitPoints * 0.10) {
+    } else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
       switch (other->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitMediumDownAnimation);
