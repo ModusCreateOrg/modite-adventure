@@ -88,10 +88,19 @@ function ensure_creative_engine {
     fi
 }
 
+function ensure_resources {
+    if [[ ! -d "$RESOURCES_DIR" ]]; then
+        git clone https://github.com/ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
+    fi
+}
+
 function build {
     cd "$BASE_DIR" || exit 1
     if [[ ! -d creative-engine ]]; then
         ln -sf "$CREATIVE_ENGINE_DIR" .
+    fi
+    if [[ ! -d ./src/resources ]]; then
+        ln -sf "$RESOURCES_DIR/resources" ./src
     fi
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR" || exit 1
@@ -140,6 +149,10 @@ function build_xtensa {
     if [[ ! -d $CREATIVE_ENGINE_DIR ]]; then
         rm -f creative-engine
         ln -s "$CREATIVE_ENGINE_DIR" .
+    fi
+    if [[ ! -d $RESOURCES_DIR ]]; then
+        rm -f ./src/resources
+        ln -s "$CREATIVE_ENGINE_DIR" ./src
     fi
     mkdir -p "$BUILD_DIR"
     make -j 10
@@ -259,6 +272,23 @@ function checkout_creative_engine_branch {
     cd - || exit 1
 }
 
+function checkout_resources_branch {
+    DEFAULT_BRANCH="master"
+    MODITE_BRANCH="develop"
+    #MODITE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    cd "$BASE_DIR" || exit 1
+    echo "The current modite branch is: $MODITE_BRANCH"
+    if (cd "$RESOURCES_DIR" && git checkout "$MODITE_BRANCH"); then
+        echo "Checked out ma-resources branch: $MODITE_BRANCH"
+    elif (cd "$RESOURCES_DIR" && git checkout "$DEFAULT_BRANCH"); then
+        echo "Checked out ma-resources branch: $DEFAULT_BRANCH"
+    else
+        echo "Faied to checkout a branch for ma-resources!"
+        exit 1
+    fi
+    cd - || exit 1
+}
+
 function archive_app {
     ARCHIVE_NAME=undefined
     if [[ "$OS" == "Darwin" ]]; then
@@ -315,7 +345,7 @@ function upload_artifacts {
         echo "Didn't find GITHUB_TOKEN."
     else
         if [ "${TRAVIS_TAG:-undefined}" = undefined ]; then
-            ARTIFACT_VERSION="nightly-$(date +%y-%m-%d)"
+            ARTIFACT_VERSION="nightly-$(date +%y-%m-%d-%H%M%S)"
             GITHUB_RELEASE_NAME="nightly"
         else
             ARTIFACT_VERSION="$TRAVIS_TAG"
