@@ -15,6 +15,7 @@ public:
 private:
   BFont *mFont16;
   GGameMenuContainer *mContainer;
+  TRGB mSavedPalette[256];
 };
 
 #endif //GENUS_GGAMEMENUSTATE_H

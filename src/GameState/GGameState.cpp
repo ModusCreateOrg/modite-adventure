@@ -3,6 +3,7 @@
 #include "GGamePlayfield.h"
 #include "GResources.h"
 #include "GameState/player/GPlayerProcess.h"
+#include "GameState/player/GGameOver.h"
 #include "GameState/enemies/GSpiderProcess.h"
 #include "GameState/enemies/GBatProcess.h"
 #include "GameState/enemies/GGoblinProcess.h"
@@ -24,6 +25,12 @@
 
 #define DEBUGME
 //#undef DEBUGME
+
+// scope local to this file.  If the value for the slot is ETrue, then the slot
+// has already been remapped. We don't want to remap twice or the color range
+// ends up in the wrong place.
+
+static TBool slotRemapState[SLOT_MAX];
 
 const TInt GAUGE_WIDTH = 90;
 
@@ -48,39 +55,6 @@ const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
  *******************************************************************************
  *******************************************************************************/
 
-// scope local to this file.  If the value for the slot is ETrue, then the slot
-// has already been remapped. We don't want to remap twice or the color range
-// ends up in the wrong place.
-
-static TBool slotRemapState[SLOT_MAX];
-
-// Load aBMP, and remap it to playfield's tilemap palette
-void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
-
-  if (!slotRemapState[aSlot]) {
-    gResourceManager.ReleaseBitmapSlot(aSlot);
-    gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
-  }
-  BBitmap *screen = mGamePlayfield->GetTilesBitmap();
-  BBitmap *bm = gResourceManager.GetBitmap(aSlot);
-  if (!slotRemapState[aSlot]) {
-    bm->Remap(screen);
-    slotRemapState[aSlot] = ETrue;
-#ifdef DEBUGME
-    printf("Remapped bitmap %d, screen colors used %d\n", aBMP, screen->CountUsedColors());
-#endif
-  }
-  gDisplay.SetPalette(screen->GetPalette());
-
-#ifdef ENABLE_AUDIO
-  gSoundPlayer.PlayMusic(UNDER_WATER_XM);
-#endif
-}
-
-/*******************************************************************************
- *******************************************************************************
- *******************************************************************************/
-
 // Constructor
 GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0),
                            mNextTileMapId(0) {
@@ -88,6 +62,7 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
       MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
+  mGameOver = ENull;
 
   mGamePlayfield = mPreviousPlayfield = ENull;
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
@@ -99,6 +74,16 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
 }
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
+
+void GGameState::TryAgain() {
+  if (mGameOver) {
+    delete mGameOver;
+    mGameOver = ENull;
+  }
+  GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
+  mLevel = -1;
+  NextLevel(DUNGEON_DEV, 2);
+}
 
 /*******************************************************************************
  *******************************************************************************
@@ -237,6 +222,15 @@ void GGameState::PostRender() {
   const TInt l_width = 48 + 2; // 2 px padding right
   sprintf(output, "L%-3d", GPlayer::mLevel);
   screen->DrawString(&vp, output, gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
+
+  if (mGameOver) {
+    mGameOver->Run();
+    if (gControls.WasPressed(BUTTON_SELECT)) {
+      TryAgain();
+    }
+    return;
+  }
+
 }
 
 /*******************************************************************************
@@ -605,6 +599,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   }
 }
 
+/**
+  * modify BObjectProgram, like when a door or chest has opened.
+  *
+  * aCode is the code to change the program step to, OR ATTR_KEEP to leave the code in the BObjectProgram unchanged.
+  * aAttr is the attribute to change the program step to, OR ATTR_KEEP
+  */
 void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
   BObjectProgram *program = mGamePlayfield->mObjectProgram,
                  *step = &program[aIp];
@@ -628,3 +628,41 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
     step->mCode = code | (attr << 16);
   }
 }
+
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
+void GGameState::GameOver() {
+  mGameOver = new GGameOver();
+  gControls.Reset();
+  GPlayer::mGameOver = ETrue;
+}
+
+/*******************************************************************************
+ *******************************************************************************
+ *******************************************************************************/
+
+// Load aBMP, and remap it to playfield's tilemap palette
+void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
+
+  if (!slotRemapState[aSlot]) {
+    gResourceManager.ReleaseBitmapSlot(aSlot);
+    gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
+  }
+  BBitmap *screen = mGamePlayfield->GetTilesBitmap();
+  BBitmap *bm = gResourceManager.GetBitmap(aSlot);
+  if (!slotRemapState[aSlot]) {
+    bm->Remap(screen);
+    slotRemapState[aSlot] = ETrue;
+#ifdef DEBUGME
+    printf("Remapped bitmap %d, screen colors used %d\n", aBMP, screen->CountUsedColors());
+#endif
+  }
+  gDisplay.SetPalette(screen->GetPalette());
+
+#ifdef ENABLE_AUDIO
+  gSoundPlayer.PlayMusic(UNDER_WATER_XM);
+#endif
+}
+
