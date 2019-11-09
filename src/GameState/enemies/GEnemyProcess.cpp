@@ -91,7 +91,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
-      mAttackTimer = ATTACK_TIME;
+      mAttackTimer = GPlayer::mGameOver ? (1 * FRAMES_PER_SECOND) : ATTACK_TIME;
       Attack(aDirection);
       break;
 

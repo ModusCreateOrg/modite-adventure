@@ -55,8 +55,12 @@ TInt GPlayer::mGold;
 TInt GPlayer::mHealthPotion;
 TInt GPlayer::mManaPotion;
 
+TBool GPlayer::mGameOver;
+
 GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
 GAnchorSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
+
+

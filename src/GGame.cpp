@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "GGame.h"
+#include "GPlayer.h"
 #include "inventory/GInventory.h"
 
 static TUint32 start;
@@ -80,6 +81,9 @@ GGame::~GGame() {
 void GGame::ToggleInGameMenu() {
   // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
   // need be)
+  if (GPlayer::mGameOver) {
+    return;
+  }
   if (mGameMenu) {
     delete mGameMenu;
     mGameMenu = ENull;
