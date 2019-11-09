@@ -64,6 +64,8 @@ SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 # TILEMAP DevDungeon_0.filelist.txt
 PATH resources/tilemaps-new/DevDungeon_0
 TMX DevDungeo_0.txt
+PATH resources/tilemaps-new/Dungeon_1
+TMX Dungeon_1.txt
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
