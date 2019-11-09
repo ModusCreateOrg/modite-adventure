@@ -2,6 +2,7 @@
 #define GSTAT_PROCESS
 
 #include "BProcess.h"
+#include "GStatSprite.h"
 
 class GStatSprite;
 
@@ -13,6 +14,7 @@ public:
 
 public:
   void SetImageNumber(TInt aImageNumber);
+  void SetMessageType(STAT_TYPE aType);
   void SetTimeout(TInt aTime) { mTimeout = aTime; };
 
   TBool RunBefore();

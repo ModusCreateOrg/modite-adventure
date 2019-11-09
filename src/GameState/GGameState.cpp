@@ -35,11 +35,11 @@ static struct DUNGEON_DEF {
   // DUNGEON_DEV
   { "DEV DUNGEON",
       {
-          DEVDUNGEON_0_LEVEL1_MAP,
-          DEVDUNGEON_0_LEVEL1_MAP,
-          DEVDUNGEON_0_LEVEL2_MAP,
-          DEVDUNGEON_0_LEVEL3_MAP,
-          DEVDUNGEON_0_LEVEL4_MAP,
+          DEVDUNGEON_0_LEVEL_1_MAP,
+          DEVDUNGEON_0_LEVEL_1_MAP,
+          DEVDUNGEON_0_LEVEL_2_MAP,
+          DEVDUNGEON_0_LEVEL_3_MAP,
+          DEVDUNGEON_0_LEVEL_4_MAP,
       } },
 };
 const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
@@ -222,7 +222,7 @@ void GGameState::PostRender() {
 
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, COLOR_HEALTH);
+  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
   x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge

@@ -93,14 +93,12 @@ TBool GDoorProcess::RunAfter() {
   if (mAttribute->group) {
     return ETrue;
   }
-  if (mSprite2 && mSprite2->TestCType(STYPE_PBULLET)) {
+
+  if (mSprite1->TestCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestCType(STYPE_PBULLET))) {
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
-  } else if (mSprite1->TestCType(STYPE_PBULLET)) {
-    mSprite1->SetWall(EFalse);
-    ClearWall();
-    return EFalse;
   }
+
   return ETrue;
 }

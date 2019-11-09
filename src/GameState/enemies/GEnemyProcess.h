@@ -29,6 +29,14 @@ static const char *stateMessages[] = {
   "SPELL STATE",
 };
 
+class GEnemySprite : public GAnchorSprite {
+public:
+  GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
+
+public:
+  TBool Render(BViewPort *aViewPort) OVERRIDE;
+};
+
 class GEnemyProcess : public BProcess {
 public:
   GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity);

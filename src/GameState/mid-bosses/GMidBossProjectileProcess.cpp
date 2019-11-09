@@ -59,6 +59,7 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFl
   mGameState = aGameState;
   mSprite = new FireballSprite(mGameState);
   mSprite->type = STYPE_EBULLET;
+  mSprite->mHitStrength = 55;
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->w = 16;
