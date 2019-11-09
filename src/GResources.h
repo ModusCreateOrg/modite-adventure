@@ -280,6 +280,8 @@ const TUint16 IMG_GREEN_BOTTLE3 = 126;  // 75% full
 const TUint16 IMG_GREEN_BOTTLE4 = 127;  // 100% full
 
 //// RESERVED COLORS
+const TUint8 COLOR_SHMOO_RED = 247;
+const TUint8 COLOR_SHMOO_GREEN = 249;
 const TUint8 COLOR_EXPERIENCE = 250; // experience bar
 const TUint8 COLOR_HEALTH = 251;     // health bar
 const TUint8 COLOR_SHMOO = 252;

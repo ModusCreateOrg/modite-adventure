@@ -11,20 +11,17 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
     SetFlags(SFLAG_CHECK);
   }
   mDirection = DIRECTION_DOWN;
-  mHitStrength = HIT_LIGHT;
 
   pri = PRIORITY_BELOW;
   mAttributeSave = 0xffff;
   mCollisionDeltaY = DEFAULT_COLLISION_DELTA_Y;
   w = 64;
   h = 64;
+  mBaseHitPoints = BASE_HIT_POINTS;
+  mBaseStrength = BASE_STRENGTH;
+  mBaseExperience = BASE_EXPERIENCE;
   mLevel = 1;
-  mNextLevel = 0;
-  mExperience = 0;
-  mHitPoints = 5;
-  mStrength = 10;
-  mDexterity = 10;
-  mGold = 0;
+  SetStatMultipliers();
   mLastX = 0;
   mLastY = 0;
   mInvulnerable = EFalse;
@@ -191,4 +188,19 @@ DIRECTION GAnchorSprite::RandomDirection() {
 
 TBool GAnchorSprite::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   return IsFloor(aDirection, aVx, aVy);
+}
+
+void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength, TFloat aModExperience) {
+  mBaseHitPoints = round(aModHitPoints * BASE_HIT_POINTS);
+  mBaseStrength = round(aModStrength * BASE_STRENGTH);
+  mBaseExperience = round(aModExperience * BASE_EXPERIENCE);
+  SetLevel(mLevel);
+}
+
+void GAnchorSprite::SetLevel(TInt aLevel) {
+  mLevel = aLevel;
+  mMaxHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
+  mHitPoints = mMaxHitPoints;
+  mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
+  mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
 }
