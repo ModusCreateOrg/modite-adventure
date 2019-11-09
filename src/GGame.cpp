@@ -135,6 +135,8 @@ void GGame::Run() {
     Random(); // randomize
     mShmoo.Set(TUint8(mShmoo.r + 16), TUint8(mShmoo.g + 16), TUint8(mShmoo.b + 16));
     gDisplay.displayBitmap->SetColor(COLOR_SHMOO, mShmoo);
+    gDisplay.displayBitmap->SetColor(COLOR_SHMOO_RED, mShmoo.r, 20, 20);
+    gDisplay.displayBitmap->SetColor(COLOR_SHMOO_GREEN, 20, mShmoo.g, 20);
 
     if (mNextState != mState) {
       switch (mNextState) {

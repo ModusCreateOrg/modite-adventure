@@ -7,16 +7,27 @@
 #include "GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-const TInt HIT_POINTS = 5; // default hit points for enemy
+GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(
+        aGameState, aPri, aBM, aImg, aType) {}
+
+TBool GEnemySprite::Render(BViewPort *aViewPort) {
+  TBool ret = GAnchorSprite::Render(aViewPort);
+  if (mHitPoints < mMaxHitPoints && mMaxHitPoints > 0 && !Clipped()) {
+    gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40, 20, COLOR_TEXT);
+    if (mHitPoints > 0) {
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40,
+                                           mHitPoints * 20 / mMaxHitPoints + 1, COLOR_HEALTH);
+    }
+  }
+  return ret;
+}
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
   : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mVelocity = aVelocity;
   mStateTimer = 0;
-  mHitPoints = HIT_POINTS;
   mState = IDLE_STATE;
-  mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot);
-  mSprite->mHitPoints = mHitPoints;
+  mSprite = new GEnemySprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->SetFlags(SFLAG_CHECK);
@@ -126,11 +137,15 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      mSprite->mHitPoints -= GPlayer::mHitStrength;
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
+        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+        p->SetMessageType(STAT_EXPERIENCE);
+        mGameState->AddProcess(p);
       }
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -143,11 +158,16 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->mHitPoints -= other->mHitStrength;
+      // random variation from 100% to 150% base damage
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      } else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
+        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+        p->SetMessageType(STAT_EXPERIENCE);
+        mGameState->AddProcess(p);
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -294,7 +314,7 @@ TBool GEnemyProcess::DeathState() {
     GAnchorSprite *s = mEnemyDeathOverlayProcess->GetSprite();
     if (s) {
       if (s->AnimDone()) {
-        GPlayer::AddExperience(mSprite->mLevel);
+        GPlayer::AddExperience(mSprite->mExperience);
         // drop a potion
         switch (Random(0, 3)) {
           case 0:

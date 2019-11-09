@@ -23,13 +23,6 @@ const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
 const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
 
 const TInt PRIORITY_BELOW = 500;
-
-enum HIT_STRENGTH {
-  HIT_LIGHT,
-  HIT_MEDIUM,
-  HIT_HARD
-};
-
 // collisions occur only if two sprites' abs(delta y) is less than or equal to
 // this:
 const TFloat DEFAULT_COLLISION_DELTA_Y = 6;
@@ -39,6 +32,10 @@ const TFloat FLOOR_ADJUST_LEFT = 4;
 const TFloat FLOOR_ADJUST_TOP = 2;
 const TFloat FLOOR_ADJUST_RIGHT = 4;
 const TFloat FLOOR_ADJUST_BOTTOM = 2;
+
+const TInt BASE_HIT_POINTS = 100;
+const TInt BASE_STRENGTH = 25;
+const TInt BASE_EXPERIENCE = 20;
 
 class GAnchorSprite : public BAnimSprite {
 public:
@@ -63,6 +60,10 @@ public:
 
   void SafePosition(BSprite *aOther);
 
+  void SetLevel(TInt aLevel);
+
+  void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -71,25 +72,20 @@ public:
   static DIRECTION RandomDirection();
 
   TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
-
   // set the BMapPlayfield tile in map attribute
   void SetAttribute(TUint mAttribute);
 public:
   GGameState *mGameState;
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
-  TInt16 mLevel, mNextLevel, mExperience;
-  TInt16 mHitPoints, mStrength, mDexterity;
+  TInt16 mLevel, mExperience;
+  TInt16 mHitPoints, mMaxHitPoints;
   TInt mHitStrength;
-  TInt mGold;
+  TInt mBaseHitPoints, mBaseStrength, mBaseExperience;
   TBool mInvulnerable;   // cannot be attacked
   TInt16 mCollisionDeltaY;
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
-  TFloat floorOffsetLeft;
-  TFloat floorOffsetTop;
-  TFloat floorOffsetRight;
-  TFloat floorOffsetBottom;
   TUint mAttributeSave;
 
 protected:

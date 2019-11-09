@@ -13,8 +13,8 @@ GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : BProce
   mImageNumber = 0;
 //  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
   mSprite = new GStatSprite(STAT_SIZE_16x16, msg, mImageNumber);
-  mSprite->x = aX - 64;
-  mSprite->y = aY - 64;
+  mSprite->x = aX - 56 + Random() % 16; // slight random deviation
+  mSprite->y = aY - 60 + Random() % 8;
   mSprite->vy = -.8;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
   gGameEngine->AddSprite(mSprite);
@@ -29,6 +29,10 @@ GStatProcess::~GStatProcess() {
 
 void GStatProcess::SetImageNumber(TInt aImageNumber) {
   mSprite->mImageNumber = aImageNumber;
+}
+
+void GStatProcess::SetMessageType(STAT_TYPE aType) {
+  mSprite->mMessageType = aType;
 }
 
 TBool GStatProcess::RunBefore() { return ETrue; }

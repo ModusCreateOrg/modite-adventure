@@ -27,8 +27,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another 
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
-  mSprite->mHitPoints = 45;
-  mSprite->mHitStrength = HIT_HARD;
+  mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
 
@@ -219,13 +218,15 @@ TBool GMidBossProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      mSprite->mHitPoints -= GPlayer::mHitStrength;
+      // random variation from 100% to 150% base damage
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         printf("MID BOSS DEATH\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
-      else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", GPlayer::mHitStrength));
       }
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -238,12 +239,14 @@ TBool GMidBossProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->mHitPoints -= other->mHitStrength;
+      // random variation from 100% to 150% base damage
+      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      mSprite->mHitPoints -= hitAmount;
+      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_ENEMY_HIT);
+      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
-      else {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "HIT +%d", other->mHitStrength));
       }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:

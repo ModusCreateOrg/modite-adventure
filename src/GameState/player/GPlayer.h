@@ -13,7 +13,7 @@ class GPlayerProcess;
 //#include "GPlayerProcess.h"
 #include "GPlayer.h"
 
-const TInt DEFAULT_PLAYER_HITPOINTS = 30;
+const TInt DEFAULT_PLAYER_HITPOINTS = 200;
 
 struct GInventoryItem : public BNode {
   GInventoryItem(TInt aItemNumber);
@@ -71,13 +71,13 @@ struct GPlayer {
   static void Init() {
     printf("Construct GPlayer\n");
     mLevel = 1;
-    mNextLevel = 10;
+    mNextLevel = 100;
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
     mStrength = 10;
     mDexterity = 10;
-    mHitStrength = 1;
+    mHitStrength = 35;
     mHealthPotion = mManaPotion = 100;
     mGold = 0;
     //
@@ -93,13 +93,13 @@ struct GPlayer {
 
   static void AddExperience(TInt aExperience) {
     mExperience += aExperience;
-    if (mExperience >= mNextLevel) {
+    while (mExperience >= mNextLevel) {
       mLevel++;
       mExperience -= mNextLevel;
-      mNextLevel += mLevel * 2;
-      mMaxHitPoints += 2;
+      mNextLevel += 100 + (mLevel - 1) * 50;
+      mMaxHitPoints += 40;
       mHitPoints = mMaxHitPoints;
-      mHitStrength++;
+      mHitStrength += 7;
     }
   }
 
