@@ -37,7 +37,8 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mAnimating = EFalse;
   mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
-  mSprite->w = mSprite->h = 32;
+  mSprite->w = 32;
+  mSprite->h = 24;
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;
@@ -82,5 +83,7 @@ TBool GCrateProcess::RunAfter() {
       mSprite->StartAnimation(breakAnimation);
     }
   }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
+
   return ETrue;
 }

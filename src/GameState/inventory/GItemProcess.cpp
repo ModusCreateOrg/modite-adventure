@@ -22,8 +22,8 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber], STYPE_OBJECT);
-    mSprite->flags |= SFLAG_COLLIDE2D; //  | SFLAG_BELOW;
-//    mSprite->pri = PRIORITY_BELOW + 1;
+    mSprite->SetFlags(SFLAG_BELOW);
+    mSprite->pri = PRIORITY_BELOW + 1;
     mSprite->cMask = STYPE_PLAYER;
     mSprite->w = mSprite->h = 32;
     mSprite->cx = -16;

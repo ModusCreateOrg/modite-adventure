@@ -9,8 +9,6 @@
 #include "GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-const TFloat SEEK_Y = DEFAULT_COLLISION_DELTA_Y;  // seek to player Y within this many pixels
-const TFloat SEEK_X = 40; // seek to player X within this many pixels
 const TInt16 ATTACK_TIME = 3 * FRAMES_PER_SECOND;
 
 enum {

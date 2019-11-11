@@ -30,9 +30,10 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mSprite = new GEnemySprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->type = STYPE_ENEMY;
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
-  mSprite->SetFlags(SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->w = 32;
-  mSprite->h = 32;
+  mSprite->h = 16;
+  mSprite->cy = 4;
   mSprite->Name("ENEMY SPRITE");
   mGameState->AddSprite(mSprite);
   mDirection = DIRECTION_DOWN;
@@ -197,8 +198,8 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TFloat DX = 2,
-  DY = 30;
+static const TFloat DX = 20,
+  DY = 26;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
@@ -423,5 +424,7 @@ TBool GEnemyProcess::RunBefore() {
 }
 
 TBool GEnemyProcess::RunAfter() {
+  mSprite->TestAndClearCType(STYPE_PLAYER);
+
   return ETrue;
 }

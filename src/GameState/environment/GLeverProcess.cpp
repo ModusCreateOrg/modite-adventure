@@ -24,11 +24,10 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mAnimating = EFalse;
   mDirection = ETrue;
 
-  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
-  mSprite->SetFlags(SFLAG_BELOW); // render below other sprites
-  mSprite->SetCMask(STYPE_PBULLET);
-  mSprite->ClearCMask(STYPE_PLAYER);
-  mSprite->w = mSprite->h = 32;
+  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_ENEMY);
+  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite->w = 32;
+  mSprite->h = 24;
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 3;
@@ -66,7 +65,6 @@ TBool GLeverProcess::RunAfter() {
   if (mAnimating) {
     if (mSprite->AnimDone()) {
       mAnimating = EFalse;
-      mSprite->type = STYPE_OBJECT;
       mSprite->cType = 0;
       return ETrue;
     }
@@ -101,6 +99,7 @@ TBool GLeverProcess::RunAfter() {
         break;
     }
   }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
 
   return ETrue;
 }

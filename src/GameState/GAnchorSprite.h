@@ -19,13 +19,10 @@ const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
 
 const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
-const TUint32 SFLAG_COLLIDE2D_BIT = SFLAG_BELOW_BIT+1;
-const TUint32 SFLAG_COLLIDE2D = 1 << SFLAG_COLLIDE2D_BIT;
+const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT+1;
+const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
 
 const TInt PRIORITY_BELOW = 500;
-// collisions occur only if two sprites' abs(delta y) is less than or equal to
-// this:
-const TFloat DEFAULT_COLLISION_DELTA_Y = 6;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
 const TFloat FLOOR_ADJUST_LEFT = 4;
@@ -64,6 +61,8 @@ public:
 
   void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
 
+  void ResetShadow();
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -83,9 +82,9 @@ public:
   TInt mHitStrength;
   TInt mBaseHitPoints, mBaseStrength, mBaseExperience;
   TBool mInvulnerable;   // cannot be attacked
-  TInt16 mCollisionDeltaY;
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
+  TRect mShadow;
   TUint mAttributeSave;
 
 protected:

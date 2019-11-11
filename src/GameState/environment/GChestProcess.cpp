@@ -14,8 +14,8 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST, STYPE_ENEMY);
   }
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
-//  mSprite->SetFlags(SFLAG_COLLIDE2D);
-  mSprite->w = mSprite->h = 32;
+  mSprite->w = 32;
+  mSprite->h = 24;
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;
@@ -48,10 +48,11 @@ TBool GChestProcess::RunAfter() {
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
     printf("Chest open param = %x %d\n", mParam, mParam);
-    GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y-16);
+    GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y);
     //0x5611b1dc89d0
     mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
 
   return ETrue;
 }

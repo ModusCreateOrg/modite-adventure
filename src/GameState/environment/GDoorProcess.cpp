@@ -18,7 +18,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
                                  aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
                                  STYPE_ENEMY);
     mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
-//    mSprite1->SetFlags(SFLAG_COLLIDE2D);
   }
 
   mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
@@ -40,7 +39,6 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
     mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
-//    mSprite2->SetFlags(SFLAG_COLLIDE2D);
 
     mSprite2->w = 32;
     mSprite2->h = 64;
@@ -100,6 +98,10 @@ TBool GDoorProcess::RunAfter() {
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
+  }
+  mSprite1->TestAndClearCType(STYPE_PLAYER);
+  if (mSprite2) {
+    mSprite2->TestAndClearCType(STYPE_PLAYER);
   }
 
   return ETrue;
