@@ -10,16 +10,17 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
   if (mHorizontal) {
     mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H);
+                                 aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
+                                 STYPE_ENEMY);
     mSprite1->Name(aWood ? "HORIZONTAL WOOD DOOR 1" : "HORIZONTAL METAL DOOR 1");
   } else {
     mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V);
+                                 aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
+                                 STYPE_ENEMY);
     mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
 //    mSprite1->SetFlags(SFLAG_COLLIDE2D);
   }
 
-  mSprite1->type = STYPE_ENEMY;
   mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
   mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
 
@@ -35,10 +36,9 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
   if (!mHorizontal) {
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10);
+                                 aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_ENEMY);
 
     mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
-    mSprite2->type = STYPE_ENEMY;
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
 //    mSprite2->SetFlags(SFLAG_COLLIDE2D);
 
