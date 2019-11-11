@@ -52,7 +52,7 @@ TBool GChestProcess::RunAfter() {
     //0x5611b1dc89d0
     mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
-  mSprite->cType = 0;
+  mSprite->TestAndClearCType(STYPE_PLAYER);
 
   return ETrue;
 }

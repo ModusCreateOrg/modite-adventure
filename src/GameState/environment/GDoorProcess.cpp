@@ -99,9 +99,9 @@ TBool GDoorProcess::RunAfter() {
     mGameState->EndProgram(mIp);
     return EFalse;
   }
-  mSprite1->cType = 0;
+  mSprite1->TestAndClearCType(STYPE_PLAYER);
   if (mSprite2) {
-    mSprite2->cType = 0;
+    mSprite2->TestAndClearCType(STYPE_PLAYER);
   }
 
   return ETrue;
