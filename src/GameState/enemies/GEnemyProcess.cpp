@@ -188,8 +188,9 @@ TBool GEnemyProcess::MaybeHit() {
   }
 
   if (mSprite->TestCType(STYPE_PLAYER)) {
-//    mSprite->ClearCType(STYPE_PLAYER);
+    mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
+    NewState(IDLE_STATE, mSprite->mDirection);
     return EFalse;
   }
 
@@ -375,10 +376,8 @@ TBool GEnemyProcess::WalkState() {
   }
 
   if (MaybeHit()) {
-    mSprite->ClearCType(STYPE_PLAYER);
     return ETrue;
   }
-
 
   mAttackTimer = 1;
 
@@ -388,12 +387,6 @@ TBool GEnemyProcess::WalkState() {
   }
 
   if (!CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
