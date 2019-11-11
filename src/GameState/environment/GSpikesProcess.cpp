@@ -27,10 +27,10 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->flags = SFLAG_CHECK;
   mSprite->SetFlags(SFLAG_BELOW);// render below other sprites
   mSprite->w = mSprite->h = 24;
-  mSprite->cx = -8;
-  mSprite->cy = -4;
+  mSprite->cx = 4;
+  mSprite->cy = 4;
   mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->y = aY - 32;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mState = EFalse;
