@@ -101,6 +101,10 @@ TBool GDoorProcess::RunAfter() {
     mGameState->EndProgram(mIp);
     return EFalse;
   }
+  mSprite1->cType = 0;
+  if (mSprite2) {
+    mSprite2->cType = 0;
+  }
 
   return ETrue;
 }
