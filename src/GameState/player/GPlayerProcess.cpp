@@ -382,7 +382,9 @@ TBool GPlayerProcess::MaybeHit() {
 //      printf("Player dead\n");
       // TO RESUME:
       //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-      mGameState->GameOver();
+      if (!GPlayer::mGameOver) {
+        mGameState->GameOver();
+      }
     }
 
     mSprite->cType = 0;
