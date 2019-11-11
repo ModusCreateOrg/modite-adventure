@@ -82,8 +82,7 @@ TBool GCrateProcess::RunAfter() {
       mSprite->StartAnimation(breakAnimation);
     }
   }
-  if (mSprite->cType & STYPE_PLAYER) {
-    mSprite->cType = 0;
-  }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
+
   return ETrue;
 }
