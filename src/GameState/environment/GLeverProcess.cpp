@@ -68,14 +68,12 @@ TBool GLeverProcess::RunAfter() {
       mAnimating = EFalse;
       mSprite->type = STYPE_OBJECT;
       mSprite->cType = 0;
-      mSprite->SetFlags(SFLAG_CHECK);
       return ETrue;
     }
   }
 
   if (mSprite->cType & STYPE_PBULLET) {
     mSprite->cType = 0;
-    mSprite->ClearFlags(SFLAG_CHECK);
     if (mDirection) {
       mState++;
       if (mState > 2) {
