@@ -19,6 +19,8 @@ static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 const TInt16 DUNGEON_DEV = 0;
 const TInt16 DUNGEON_LIVE = 1;
 
+class GGameOver;
+
 class GGameState : public BGameEngine {
 public:
   GGameState();
@@ -32,6 +34,13 @@ public:
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
 
+public:
+  // call this to resume game after death
+  void TryAgain();
+
+  // call this when player is dead
+  void GameOver();
+  
   // store code and attr into ObjectProgram at aIp
   void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE, TUint16 aAttr = 0);
 
@@ -58,6 +67,7 @@ protected:
   char mName[128];
   TInt16 mNextLevel, mLevel;
   TUint16 mNextDungeon, mNextTileMapId, mTileMapId;
+  GGameOver *mGameOver;
 
 public:
   GAnchorSprite *PlayerSprite();

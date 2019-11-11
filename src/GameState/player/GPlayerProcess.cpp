@@ -134,7 +134,6 @@ TBool GPlayerProcess::IsLedge() {
   return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
 }
 
-
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
@@ -275,6 +274,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  */
 
 TBool GPlayerProcess::MaybeQuaff() {
+  if (GPlayer::mGameOver) {
+    return EFalse;
+  }
   if (gControls.WasPressed(CONTROL_QUAFF)) {
     if (GPlayer::mHealthPotion > 0) {
       GPlayer::mHealthPotion -= 25;
@@ -286,6 +288,9 @@ TBool GPlayerProcess::MaybeQuaff() {
 }
 
 TBool GPlayerProcess::MaybeSpell() {
+  if (GPlayer::mGameOver) {
+    return EFalse;
+  }
   if (gControls.WasPressed(CONTROL_SPELL)) {
     if (ETrue || (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook)) {
       if (GPlayer::mManaPotion >= 25) {
@@ -318,6 +323,10 @@ TBool GPlayerProcess::MaybeHit() {
     auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
     p->SetMessageType(STAT_PLAYER_HIT);
     mGameState->AddProcess(p);
+
+    if (!mBlinkProcess) {
+      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+    }
 
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
       switch (other->mDirection) {
@@ -368,9 +377,12 @@ TBool GPlayerProcess::MaybeHit() {
     mState = state;
 
     if (GPlayer::mHitPoints <= 0) {
-      // GAME OVER!
-      printf("Player dead\n");
-      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
+      // PLAYER DEAD
+      GPlayer::mHitPoints = 0;
+//      printf("Player dead\n");
+      // TO RESUME:
+      //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
+      mGameState->GameOver();
     }
 
     mSprite->cType = 0;
@@ -388,6 +400,9 @@ TBool GPlayerProcess::MaybeHit() {
 }
 
 TBool GPlayerProcess::MaybeSword() {
+  if (GPlayer::mGameOver) {
+    return ETrue;
+  }
   if (!gControls.WasPressed(CONTROL_FIRE)) {
     return EFalse;
   }
@@ -429,6 +444,9 @@ TBool GPlayerProcess::MaybeFall() {
 }
 
 TBool GPlayerProcess::MaybeWalk() {
+  if (GPlayer::mGameOver) {
+    return ETrue;
+  }
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (!CanWalk(DIRECTION_LEFT)) {
       NewState(IDLE_STATE, DIRECTION_LEFT);
@@ -615,11 +633,11 @@ TBool GPlayerProcess::FallState() {
 
 TBool GPlayerProcess::HitState() {
   if (mSprite->AnimDone()) {
-    if (!mBlinkProcess) {
+    if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
     mSprite->ClearCType(STYPE_EBULLET);
-    if (!MaybeWalk()) {
+    if (GPlayer::mGameOver || !MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
     }
   }

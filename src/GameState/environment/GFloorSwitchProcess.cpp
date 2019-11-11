@@ -47,13 +47,11 @@ TBool GFloorSwitchProcess::RunAfter() {
   if (mAnimating) {
     if (mSprite->AnimDone()) {
       mSprite->cType = 0;
-      mSprite->SetFlags(SFLAG_CHECK);
       return ETrue;
     }
   }
 
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-    mSprite->ClearFlags(SFLAG_CHECK);
     mState = !mState;
     OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
     mAnimating = ETrue;

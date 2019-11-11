@@ -62,37 +62,43 @@ TBool GLeverProcess::RunBefore() {
 }
 
 TBool GLeverProcess::RunAfter() {
-  if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-    if (!mAnimating) {
-      mAnimating = ETrue;
-      if (mDirection) {
-        mState++;
-        if (mState > 2) {
-          mState = 1;
-          mDirection = EFalse;
-        }
-      }
-      else {
-        mState--;
-        if (mState < 0) {
-          mState = 1;
-          mDirection = ETrue;
-        }
-      }
-      switch (mState) {
-        case 0:
-          mSprite->StartAnimation(leverLeftAnimation);
-          break;
-        case 1:
-          mSprite->StartAnimation(leverCenterAnimation);
-          break;
-        case 2:
-          mSprite->StartAnimation(leverRightAnimation);
-          break;
+  if (mAnimating) {
+    if (mSprite->AnimDone()) {
+      mAnimating = EFalse;
+      mSprite->type = STYPE_OBJECT;
+      mSprite->cType = 0;
+      return ETrue;
+    }
+  }
+
+  if (mSprite->cType & STYPE_PBULLET) {
+    mSprite->cType = 0;
+    if (mDirection) {
+      mState++;
+      if (mState > 2) {
+        mState = 1;
+        mDirection = EFalse;
       }
     }
-  } else {
-    mAnimating = EFalse;
+    else {
+      mState--;
+      if (mState < 0) {
+        mState = 1;
+        mDirection = ETrue;
+      }
+    }
+    mAnimating = ETrue;
+    switch (mState) {
+      case 0:
+        mSprite->StartAnimation(leverLeftAnimation);
+        break;
+      case 1:
+        mSprite->StartAnimation(leverCenterAnimation);
+        break;
+      case 2:
+        mSprite->StartAnimation(leverRightAnimation);
+        break;
+    }
   }
 
   return ETrue;
