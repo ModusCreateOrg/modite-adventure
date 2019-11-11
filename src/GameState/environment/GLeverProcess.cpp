@@ -65,7 +65,6 @@ TBool GLeverProcess::RunAfter() {
   if (mAnimating) {
     if (mSprite->AnimDone()) {
       mAnimating = EFalse;
-      mSprite->type = STYPE_OBJECT;
       mSprite->cType = 0;
       return ETrue;
     }
@@ -100,6 +99,7 @@ TBool GLeverProcess::RunAfter() {
         break;
     }
   }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
 
   return ETrue;
 }
