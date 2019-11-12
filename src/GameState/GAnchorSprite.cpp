@@ -137,15 +137,17 @@ void GAnchorSprite::ResetShadow() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  if ((flags & SFLAG_RENDER_SHADOW) && !Clipped()) {
+  if ((flags & SFLAG_RENDER_SHADOW) && (flags & SFLAG_RENDER) && !Clipped()) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
     }
     gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
+    TFloat screenX = x - aViewPort->mWorldX;
+    TFloat screenY = y - aViewPort->mWorldY;
     for (TInt i = mShadow.y1; i < mShadow.y2; i++) {
       TFloat chord = sqrt(pow(mShadow.Height() / 2, 2) - pow(i - ((mShadow.y1 + mShadow.y2) / 2), 2)) * 2 * mShadow.Width() / mShadow.Height();
-      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 + mShadow.x1 + mShadow.Width() - chord/2, mRect.y2 + i, chord, COLOR_SHADOW);
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, screenX + mShadow.x1 + mShadow.Width() - chord/2, screenY + i, chord, COLOR_SHADOW);
     }
   }
   TBool ret = BAnimSprite::Render(aViewPort);
