@@ -4,7 +4,7 @@
 #include "GGameState.h"
 #include "inventory/GItemProcess.h"
 #include "Items.h"
-#include "GSpellOverlayProcess.h"
+#include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
 GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(

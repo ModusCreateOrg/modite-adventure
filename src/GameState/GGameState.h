@@ -34,6 +34,9 @@ public:
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
 
+  TBool SaveState();
+  TBool LoadState();
+
 public:
   // call this to resume game after death
   void TryAgain();

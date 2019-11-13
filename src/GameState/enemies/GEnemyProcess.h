@@ -6,7 +6,7 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
-#include "GSpellOverlayProcess.h"
+#include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
 const TInt16 ATTACK_TIME = 3 * FRAMES_PER_SECOND;

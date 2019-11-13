@@ -24,10 +24,12 @@
 
 #include <CreativeEngine.h>
 
+const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
+
 #include "GResources.h"
 #include "GGame.h"
-#include "GDialogWidget.h"
-#include "GButtonWidget.h"
+#include "common/GDialogWidget.h"
+#include "common/GButtonWidget.h"
 #include "TOptions.h"
 #include "GSoundPlayer.h"
 
@@ -35,6 +37,7 @@
 #include "GSplashState.h"
 #include "GGameState.h"
 #include "GMainMenuState.h"
+#include "GLoadGameState.h"
 #include "GMainOptionsState.h"
 #include "GResetOptionsState.h"
 #include "GCreditsState.h"
@@ -62,5 +65,6 @@ const TUint16 CONTROL_FIRE = BUTTONA;
 const TUint16 CONTROL_SPELL = BUTTONB;
 const TUint16 CONTROL_INVENTORY = BUTTONR;
 const TUint16 CONTROL_QUAFF = BUTTONL;
+
 
 #endif //MODITE_GAME_H

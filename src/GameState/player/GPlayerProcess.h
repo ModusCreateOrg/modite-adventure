@@ -7,8 +7,8 @@ class GGameState;
 class GPlayerBlinkProcess;
 //class GAnchorSprite;
 
-#include "GGame.h"
 #include "GAnchorSprite.h"
+#include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 

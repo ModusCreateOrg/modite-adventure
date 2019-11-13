@@ -2,7 +2,7 @@
 #include "GPlayer.h"
 #include "GStatProcess.h"
 #include "GMidBossDeathProcess.h"
-#include "GSpellOverlayProcess.h"
+#include "common/GSpellOverlayProcess.h"
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 

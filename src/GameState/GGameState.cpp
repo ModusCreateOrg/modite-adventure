@@ -41,13 +41,13 @@ static struct DUNGEON_DEF {
 } dungeon_defs[] = {
   // DUNGEON_DEV
   { "DEV DUNGEON",
-      {
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_2_MAP,
-          DEVDUNGEON_0_LEVEL_3_MAP,
-          DEVDUNGEON_0_LEVEL_4_MAP,
-      } },
+    {
+      DEVDUNGEON_0_LEVEL_1_MAP,
+      DEVDUNGEON_0_LEVEL_1_MAP,
+      DEVDUNGEON_0_LEVEL_2_MAP,
+      DEVDUNGEON_0_LEVEL_3_MAP,
+      DEVDUNGEON_0_LEVEL_4_MAP,
+    } },
 };
 const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
 
@@ -59,7 +59,7 @@ const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
 GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0),
                            mNextTileMapId(0) {
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
-      MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
+    MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
   mGameOver = ENull;
@@ -181,7 +181,7 @@ void GGameState::PostRender() {
 
   // render mana potion
   TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-      BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+    BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
   switch (GPlayer::mManaPotion) {
     case 75:
       mana.Offset(BOTTLE_WIDTH * 1, 0);
@@ -230,7 +230,6 @@ void GGameState::PostRender() {
     }
     return;
   }
-
 }
 
 /*******************************************************************************
@@ -666,3 +665,13 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
 #endif
 }
 
+TBool GGameState::SaveState() {
+  BStore store(SAVED_GAME_STORE);
+  // TODO: collect saved game state data
+  store.Set("FOO", (void *)"BAR", 4);
+  return ETrue;
+}
+
+TBool GGameState::LoadState() {
+  return ETrue;
+}

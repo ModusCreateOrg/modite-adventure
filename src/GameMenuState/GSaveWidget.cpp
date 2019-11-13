@@ -1,6 +1,8 @@
 #include "GSaveWidget.h"
 
-GSaveWidget::GSaveWidget() : GButtonWidget("SAVE GAME") {}
+GSaveWidget::GSaveWidget(GGameState *aGameState) : GButtonWidget("SAVE GAME") {
+  mGameState = aGameState;
+}
 
 GSaveWidget::~GSaveWidget() {}
 
@@ -15,6 +17,8 @@ void GSaveWidget::Select() {
   }
 
   // TODO: save gGameEngine state
+  mGameState->SaveState();
+
 
   // Simulate start button press to exit menu
   gControls.dKeys |= BUTTON_START;

@@ -90,7 +90,7 @@ void GGame::ToggleInGameMenu() {
     gGameEngine->Resume();
   }
   else {
-    mGameMenu = new GGameMenuState();
+    mGameMenu = new GGameMenuState((GGameState *)gGameEngine);
     gGameEngine->Pause();
   }
   gControls.dKeys = 0;
@@ -147,6 +147,10 @@ void GGame::Run() {
         case GAME_STATE_MAIN_MENU:
           delete gGameEngine;
           gGameEngine = new GMainMenuState();
+          break;
+        case GAME_STATE_LOAD_GAME:
+          delete gGameEngine;
+          gGameEngine = new GLoadGameState();
           break;
         case GAME_STATE_MAIN_OPTIONS:
           delete gGameEngine;
