@@ -34,23 +34,6 @@ static TBool slotRemapState[SLOT_MAX];
 
 const TInt GAUGE_WIDTH = 90;
 
-// info about the dungeons
-static struct DUNGEON_DEF {
-  const char *name;
-  TUint16 map[10];
-} dungeon_defs[] = {
-  // DUNGEON_DEV
-  { "DEV DUNGEON",
-      {
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_2_MAP,
-          DEVDUNGEON_0_LEVEL_3_MAP,
-          DEVDUNGEON_0_LEVEL_4_MAP,
-      } },
-};
-const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
-
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
