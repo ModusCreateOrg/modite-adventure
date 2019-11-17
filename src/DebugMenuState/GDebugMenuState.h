@@ -13,9 +13,7 @@ public:
   void PostRender();
 
 private:
-  BFont *mFont16;
   GDebugMenuContainer *mContainer;
-  TRGB mSavedPalette[256];
 };
 
 #endif //GENUS_GDEBUGMENUSTATE_H

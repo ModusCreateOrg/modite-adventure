@@ -214,9 +214,6 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      mDebug = !mDebug;
-      printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
-
       if (mState == GAME_STATE_GAME) {
         ToggleDebugMenu();
       }
