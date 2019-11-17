@@ -96,6 +96,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->h = 24;
       mStateTimer = Random(15, 180);
       Idle(aDirection);
+      mSprite->ResetShadow();
       break;
 
     case MB_BALL_STATE:
@@ -113,6 +114,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->type = STYPE_EBULLET;
       mSprite->SetFlags(SFLAG_CHECK);
       Move(aDirection);
+      mSprite->ResetShadow();
       break;
 
     case MB_RETURN_STATE:
@@ -422,7 +424,6 @@ TBool GMidBossProcess::MaybeBounce() {
 
 TBool GMidBossProcess::MoveState() {
   mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
-  mSprite->ResetShadow();
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);
@@ -458,7 +459,6 @@ TBool GMidBossProcess::RevertState() {
     mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->SafePosition(GPlayer::mSprite);
     NewState(MB_IDLE_STATE, DIRECTION_DOWN);
-    mSprite->ResetShadow();
   }
   return ETrue;
 }
