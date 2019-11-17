@@ -4,9 +4,14 @@
 GLevelWidget::GLevelWidget(TInt aLevel, TInt aDepth) : GButtonWidget("") {
   mLevel = aLevel;
   mDepth = aDepth;
+  char s[256];
+  sprintf(s, "%s - Level %d", dungeon_defs[mLevel].name, mDepth);
+  mText = strdup(s);
 }
 
-GLevelWidget::~GLevelWidget() {}
+GLevelWidget::~GLevelWidget() {
+  delete mText;
+}
 
 TInt GLevelWidget::Render(TInt aX, TInt aY) {
 #ifdef __XTENSA__
@@ -15,9 +20,6 @@ TInt GLevelWidget::Render(TInt aX, TInt aY) {
   aY += 20;
 #endif
   // @TODO move the below to constructor (causes SEGFAULT - couldn't figure out)
-  char s[128];
-  snprintf(s, sizeof(s), "%s - Level %d", dungeon_defs[mLevel].name, mDepth);
-  mText = s;
   // end todo
   GButtonWidget::Render(aX, aY);
   return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
