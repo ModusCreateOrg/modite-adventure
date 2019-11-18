@@ -1,7 +1,7 @@
 
 #include "../test.h"
 
-// Teet Label
+// Test Label
 bool test_001(){
 
     return ETrue;
