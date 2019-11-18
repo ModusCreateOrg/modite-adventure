@@ -23,4 +23,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR="$DIR/.."
 BUILD_DIR="$BASE_DIR/build"
 
-"$BUILD_DIR/test"
+if [[ "${TRAVIS:-}" == "true" ]]; then
+  if [[ "${TRAVIS_OS_NAME:-}" == "osx" ]];then
+    "$BUILD_DIR/test"
+  else
+    echo "TBD - make test work on headless (Travis) linux."
+  fi
+else
+  "$BUILD_DIR/test"
+fi
+
+
