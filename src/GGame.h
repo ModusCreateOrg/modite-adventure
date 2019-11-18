@@ -12,6 +12,7 @@ enum {
   GAME_STATE_RESET_OPTIONS,
   GAME_STATE_CREDITS,
   GAME_STATE_GAME,
+  GAME_STATE_RESUME_GAME,
 };
 
 class GGame : public BApplication {
@@ -24,7 +25,8 @@ public:
   void Run();
 
 public:
-  void SetState(TInt aNewState);
+  void SetState(TInt aNewState, TAny *aLocalData = ENull, TUint32 aSize = 0);
+  void StartGame(char *aGameName);
 
   TInt GetState();
 
@@ -36,11 +38,13 @@ public:
 #endif
 
 protected:
-  TInt        mState;
-  TInt        mNextState;
+  TInt mState;
+  TInt mNextState;
+  TAny *mLocalData;   // arbitrary local data that is passed to SetState.
+  TUint32 mLocalDataSize;
   BGameEngine *mGameMenu;
   BGameEngine *mInventory;
-  TRGB        mShmoo;
+  TRGB mShmoo;
 };
 
 extern GGame *gGame;

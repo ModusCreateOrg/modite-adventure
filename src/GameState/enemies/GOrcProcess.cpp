@@ -318,8 +318,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, ORC_SLOT, aParams, VELOCITY) {
-  mSprite->Name("ORC SPRITE");
+    : GEnemyProcess(aGameState, aIp, ORC_SLOT, aParams, VELOCITY, ATTR_ORC) {
+  mSprite->Name("ENEMY ORC");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;

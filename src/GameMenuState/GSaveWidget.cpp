@@ -12,7 +12,7 @@ TInt GSaveWidget::Render(TInt aX, TInt aY) {
 }
 
 void GSaveWidget::Select() {
-  if (gGame->GetState() != GAME_STATE_GAME) {
+  if (gGame->GetState() != GAME_STATE_GAME && gGame->GetState() != GAME_STATE_RESUME_GAME) {
     return;
   }
 

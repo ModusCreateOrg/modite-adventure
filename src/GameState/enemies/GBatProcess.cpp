@@ -35,7 +35,8 @@ const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
  */
 
 ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(40, IMG_BAT_IDLE),
   ASTEP(4, IMG_BAT_IDLE + 1),
   ASTEP(40, IMG_BAT_IDLE + 2),
@@ -44,7 +45,8 @@ ANIMSCRIPT idleAnimation[] = {
 };
 
 static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 1),
   ASTEP(SELECT_SPEED, IMG_BAT_SELECTED + 2),
@@ -73,7 +75,8 @@ static ANIMSCRIPT deathAnimation[] = {
 */
 
 static ANIMSCRIPT idleDownAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
@@ -125,10 +128,13 @@ static ANIMSCRIPT hitDownAnimation[] = {
  */
 
 static ANIMSCRIPT idleLeftAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ALOOP,
+};
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(BAT_SLOT),
@@ -175,10 +181,13 @@ static ANIMSCRIPT hitLeftAnimation[] = {
  */
 
 static ANIMSCRIPT idleRightAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ALOOP,
+};
 
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(BAT_SLOT),
@@ -225,10 +234,13 @@ static ANIMSCRIPT hitRightAnimation[] = {
  */
 
 static ANIMSCRIPT idleUpAnimation[] = {
-  ABITMAP(BAT_SLOT), ALABEL,
+  ABITMAP(BAT_SLOT),
+  ALABEL,
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
   ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2), ALOOP,};
+  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ALOOP,
+};
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(BAT_SLOT),
@@ -273,9 +285,9 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY) {
+    : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
   mStateTimer = 0;
-  mSprite->Name("BAT SPRITE");
+  mSprite->Name("ENEMY BAT");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
@@ -296,7 +308,6 @@ GBatProcess::~GBatProcess() {
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
-
 
 void GBatProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
@@ -367,4 +378,3 @@ void GBatProcess::Hit(DIRECTION aDirection) {
 void GBatProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-

@@ -3,17 +3,26 @@
 
 #include <BTypes.h>
 #include <BList.h>
+#include <BMemoryStream.h>
 
 static const char *SAVED_GAME_STORE = "saved_game";
 
 class GSavedGameNode : public BNodePri {
 public:
   char *mFilename;
-  TInt32 mDate;
+  char mDisplayName[128];
+  TInt32 mOrdinal;
 
 public:
-  GSavedGameNode(const char *aFilename, TInt32 aDate);
-  ~GSavedGameNode();
+  GSavedGameNode(const char *aFilename, TInt32 aOrdinal);
+  ~GSavedGameNode() OVERRIDE;
+
+   static void GameName(char *aOut, TUint32 aOrdinal) {
+    sprintf(aOut, "SavedGame%07d", aOrdinal);
+  }
+   void GameName(char *aOut) {
+    sprintf(aOut, "SavedGame%07d", mOrdinal);
+  }
 
 public:
   void Dump();
@@ -26,8 +35,16 @@ public:
 
 public:
   TInt mNumSavedGames;
+  TInt mMaxGameNumber;
   //
   void LoadSavedGameList();
+
+public:
+  void SaveGame(TUint8 *aData, TUint32 aSize, char *aSavedName = ENull);
+  BMemoryStream *LoadSavedGame(const char *aName);
+  BMemoryStream *LoadSavedGame(GSavedGameNode *aNode);
+  void RemoveGame(const char *aGameName);
+  void RemoveGame(GSavedGameNode *aGameNode);
 
   void Dump();
 

@@ -1,4 +1,4 @@
-#include "BProcess.h"
+#include "GProcess.h"
 #include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
 
@@ -13,10 +13,10 @@ static ANIMSCRIPT fireballExplodeAnimation[] = {
   AEND
 };
 
-class FireballSprite : public GAnchorSprite {
+class ProjectileSprite : public GAnchorSprite {
 public:
-  FireballSprite(GGameState *aGameState) : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, MID_BOSS_PROJECTILE_SLOT, 0,
-                                                         STYPE_EBULLET) {
+  ProjectileSprite(GGameState *aGameState) : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, MID_BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
+    Name("PROJECTILE");
     mExploding = EFalse;
     mTimer = 128;
     type = STYPE_EBULLET;
@@ -37,7 +37,8 @@ public:
   void Animate() OVERRIDE {
     if (mExploding) {
       BAnimSprite::Animate();
-    } else {
+    }
+    else {
       mTimer--;
       // instead of anim script, we just randomly choose an animation frame (for variety)
       mImageNumber = IMG_FIREBALL + Random(0, 4);
@@ -55,9 +56,10 @@ protected:
 
 const TFloat FRAMES_TO_HIT_PLAYER = 60;
 
-GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
+GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY) : GProcess(ATTR_GONE) {
   mGameState = aGameState;
-  mSprite = new FireballSprite(mGameState);
+  mSprite = new ProjectileSprite(mGameState);
+  mSprite->Name("IGNORE MID BOSS PROJECTILE");
   mSprite->type = STYPE_EBULLET;
   mSprite->mHitStrength = 55;
   mSprite->x = aX;
@@ -66,9 +68,9 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFl
   mSprite->h = 16;
   // aim fireball at player
   const TFloat x1 = GPlayer::mSprite->x + 16 + (GPlayer::mSprite->vx * FRAMES_TO_HIT_PLAYER) + 16,
-    x2 = mSprite->x + 12,
-    y1 = GPlayer::mSprite->y - 16 + GPlayer::mSprite->vy * FRAMES_TO_HIT_PLAYER,
-    y2 = mSprite->y - 24;
+               x2 = mSprite->x + 12,
+               y1 = GPlayer::mSprite->y - 16 + GPlayer::mSprite->vy * FRAMES_TO_HIT_PLAYER,
+               y2 = mSprite->y - 24;
 
   mSprite->vx = (x1 - x2) / FRAMES_TO_HIT_PLAYER;
   mSprite->vy = (y1 - y2) / FRAMES_TO_HIT_PLAYER;

@@ -22,7 +22,9 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
     : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mParam = aParam;
   mGameState = aGameState;
+  mAttribute = ATTR_SPIKES;
   mSprite = new GAnchorSprite(mGameState, SPIKES_PRIORITY, ENVIRONMENT_SLOT, IMG_SPIKES);
+  mSprite->Name("ENVIRONMENT SPIKES");
   mSprite->cMask = STYPE_PLAYER;
   mSprite->flags = SFLAG_CHECK;
   mSprite->SetFlags(SFLAG_BELOW);// render below other sprites

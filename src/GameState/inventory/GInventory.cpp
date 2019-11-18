@@ -1,7 +1,10 @@
 #include "GInventory.h"
 #include "GInventoryPlayfield.h"
 #include "GPlayer.h"
+#include "GResources.h"
 #include "Items.h"
+#include "GGameState.h"
+#include <Display.h>
 
 // How many items to render in the list view (e.g. the height of the list view in rows)
 const TInt RENDER_ITEM_MAX = 8;

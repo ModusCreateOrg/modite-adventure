@@ -10,8 +10,12 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
     //    mSprite->SetCType(STYPE_OBJECT);
     //    mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->type = STYPE_DEFAULT;
+    mSprite->Name("ENVIRONMENT CHEST OPEN");
+    mAttribute = ATTR_CHEST_OPEN;
   } else {
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST, STYPE_ENEMY);
+    mSprite->Name("ITEM CHEST CLOSED");
+    mAttribute = ATTR_CHEST;
   }
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->w = 32;
@@ -47,10 +51,10 @@ TBool GChestProcess::RunAfter() {
     mSprite->ClearCMask(STYPE_PBULLET);
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image
-    printf("Chest open param = %x %d\n", mParam, mParam);
+    printf("OPEN CHEST at %d,%d %x %d\n", TInt(mSprite->x), TInt(mSprite->y), mParam, mParam);
+    mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
     GItemProcess::SpawnItem(mGameState, mIp, mParam, GPlayer::mSprite->x+32, GPlayer::mSprite->y);
     //0x5611b1dc89d0
-    mGameState->EndProgram(mIp, ATTR_CHEST_OPEN, mParam);
   }
   mSprite->TestAndClearCType(STYPE_PLAYER);
 

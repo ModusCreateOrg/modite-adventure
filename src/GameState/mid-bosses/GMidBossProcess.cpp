@@ -9,14 +9,17 @@
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot) : BProcess() {
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute) 
+  : GProcess(aAttribute) {
   mSprite = ENull;
+  mSaveToStream = ETrue;
   mGameState = aGameState;
   mPlayfield = mGameState->mGamePlayfield;
   mStartX = aX;
   mStartY = aY;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
+  mSprite->Name("ENEMY");
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->x = aX;
   mSprite->y = aY;

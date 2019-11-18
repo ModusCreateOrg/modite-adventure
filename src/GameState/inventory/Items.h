@@ -2,6 +2,7 @@
 #define MODITE_ITEMS_H
 
 #include "GGamePlayfield.h"
+#include "GResources.h"
 
 const TUint16 ITEM_EMPTY = ATTR_EMPTY;
 const TUint16 ITEM_BLUE_SPELLBOOK = ATTR_BLUE_SPELLBOOK;

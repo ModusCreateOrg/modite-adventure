@@ -7,23 +7,11 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(
-        aGameState, aPri, aBM, aImg, aType) {}
+TInt16 GEnemyProcess::mCount = 0;
 
-TBool GEnemySprite::Render(BViewPort *aViewPort) {
-  TBool ret = GAnchorSprite::Render(aViewPort);
-  if (mHitPoints < mMaxHitPoints && mMaxHitPoints > 0 && !Clipped()) {
-    gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40, 20, COLOR_TEXT);
-    if (mHitPoints > 0) {
-      gDisplay.renderBitmap->DrawFastHLine(aViewPort, (mRect.x1 + mRect.x2) / 2 - 10, mRect.y2 - 40,
-                                           mHitPoints * 20 / mMaxHitPoints + 1, COLOR_HEALTH);
-    }
-  }
-  return ret;
-}
-
-GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity)
-  : mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
+    : GProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+  mSaveToStream = ETrue;
   mVelocity = aVelocity;
   mStateTimer = 0;
   mState = IDLE_STATE;
@@ -34,7 +22,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mSprite->w = 32;
   mSprite->h = 16;
   mSprite->cy = 4;
-  mSprite->Name("ENEMY SPRITE");
+  mSprite->Name("ENEMY");
   mGameState->AddSprite(mSprite);
   mDirection = DIRECTION_DOWN;
   mState = IDLE_STATE;
@@ -46,6 +34,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
 
   mEnemyDeathOverlayProcess = ENull;
   mSpellOverlayProcess = ENull;
+  mCount++;
 }
 
 GEnemyProcess::~GEnemyProcess() {
@@ -54,6 +43,7 @@ GEnemyProcess::~GEnemyProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+  mCount--;
 }
 
 TBool GEnemyProcess::IsWall(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
@@ -113,12 +103,11 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case DEATH_STATE: {
-//      Death(aDirection);
+      //      Death(aDirection);
       auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
-    }
-      break;
+    } break;
 
     default:
       break;
@@ -155,7 +144,7 @@ TBool GEnemyProcess::MaybeHit() {
 
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
-   mSprite->ClearCType(STYPE_PBULLET);
+    mSprite->ClearCType(STYPE_PBULLET);
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
@@ -199,7 +188,7 @@ TBool GEnemyProcess::MaybeHit() {
 }
 
 static const TFloat DX = 20,
-  DY = 26;
+                    DY = 26;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
@@ -221,7 +210,8 @@ TBool GEnemyProcess::MaybeAttack() {
         NewState(ATTACK_STATE, DIRECTION_LEFT);
       }
       return ETrue;
-    } else if (myRect.x2 <= hisRect.x1) {
+    }
+    else if (myRect.x2 <= hisRect.x1) {
       // to left of player
       if (ABS(hisRect.x1 - myRect.x2) > DX) {
         mAttackTimer = 1;
@@ -248,7 +238,8 @@ TBool GEnemyProcess::MaybeAttack() {
         NewState(ATTACK_STATE, DIRECTION_UP);
       }
       return ETrue;
-    } else if (myRect.y2 <= hisRect.y1) {
+    }
+    else if (myRect.y2 <= hisRect.y1) {
       // enemy above player
       if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
         // too far away
@@ -264,7 +255,8 @@ TBool GEnemyProcess::MaybeAttack() {
     // player not near us
     mAttackTimer = 1;
     return EFalse;
-  } else {
+  }
+  else {
     //    printf("Player Invulnerable\n");
   }
 
@@ -333,7 +325,8 @@ TBool GEnemyProcess::DeathState() {
             break;
         }
         return EFalse;
-      } else {
+      }
+      else {
         return ETrue;
       }
     }
@@ -356,7 +349,7 @@ TBool GEnemyProcess::IdleState() {
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = GAnchorSprite::RandomDirection();
       TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
-        vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
+             vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
 
       if (CanWalk(direction, vx, vy)) {
         NewState(WALK_STATE, direction);
@@ -424,7 +417,37 @@ TBool GEnemyProcess::RunBefore() {
 }
 
 TBool GEnemyProcess::RunAfter() {
-  mSprite->TestAndClearCType(STYPE_PLAYER);
+  mSprite->ClearCType(STYPE_PLAYER);
 
   return ETrue;
+}
+
+void GEnemyProcess::WriteToStream(BMemoryStream &aStream) {
+  aStream.Write(&mIp, sizeof(mIp));
+  aStream.Write(&mParams, sizeof(mParams));
+  aStream.Write(&mStartX, sizeof(mStartX));
+  aStream.Write(&mStartY, sizeof(mStartY));
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mDirection, sizeof(mDirection));
+  aStream.Write(&mStep, sizeof(mStep));
+  aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
+  aStream.Write(&mStateTimer, sizeof(mStateTimer));
+  aStream.Write(&mHitPoints, sizeof(mHitPoints));
+  aStream.Write(&mVelocity, sizeof(mVelocity));
+  mSprite->WriteToStream(aStream);
+}
+
+void GEnemyProcess::ReadFromStream(BMemoryStream &aStream) {
+  aStream.Read(&mIp, sizeof(mIp));
+  aStream.Read(&mParams, sizeof(mParams));
+  aStream.Read(&mStartX, sizeof(mStartX));
+  aStream.Read(&mStartY, sizeof(mStartY));
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mDirection, sizeof(mDirection));
+  aStream.Read(&mStep, sizeof(mStep));
+  aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
+  aStream.Read(&mStateTimer, sizeof(mStateTimer));
+  aStream.Read(&mHitPoints, sizeof(mHitPoints));
+  aStream.Read(&mVelocity, sizeof(mVelocity));
+  mSprite->ReadFromStream(aStream);
 }

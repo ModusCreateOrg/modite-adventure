@@ -1,13 +1,9 @@
 #ifndef GMIDBOSSDEATHPROCESS_H
 #define GMIDBOSSDEATHPROCESS_H
 
-//#include <BProcess.h>
-//#include <BAnimSpite.h>
 #include "GMidBossProcess.h"
 
-//class GGameState;
-
-class GMidBossDeathProcess : public BProcess {
+class GMidBossDeathProcess : public GProcess {
 public:
   GMidBossDeathProcess(GGameState *aGameState, GMidBossProcess *aMidBoss, TFloat aX, TFloat aY, TInt aDelay);
   ~GMidBossDeathProcess() OVERRIDE;

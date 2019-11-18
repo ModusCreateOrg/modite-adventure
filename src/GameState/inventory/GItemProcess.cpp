@@ -16,12 +16,17 @@ GItemProcess *GItemProcess::SpawnItem(GGameState *aGameState, TInt aIp, TInt aIt
   }
 }
 
-GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) : BProcess() {
+GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) 
+  : GProcess(aItemNumber) {
   mGameState = aGameState;
+  mSaveToStream = EFalse;
   mIp = aIp;
   mItemNumber = aItemNumber;
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber], STYPE_OBJECT);
+    char work[2048];
+    sprintf(work, "ITEM %s(%d)", itemNames[mItemNumber], mItemNumber);
+    mSprite->Name(work);
     mSprite->SetFlags(SFLAG_BELOW);
     mSprite->pri = PRIORITY_BELOW + 1;
     mSprite->cMask = STYPE_PLAYER;

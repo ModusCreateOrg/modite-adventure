@@ -50,6 +50,9 @@ enum {
   MID_BOSS_SLOT,
   MID_BOSS_PROJECTILE_SLOT,
 
+  // temporary slot
+  TEMP_SLOT,
+
   SLOT_MAX,
 };
 

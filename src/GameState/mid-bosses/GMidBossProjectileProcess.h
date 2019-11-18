@@ -1,10 +1,12 @@
 #ifndef GMIDBOSSFIREBALLPROCESS_H
 #define GMIDBOSSFIREBALLPROCESS_H
 
-class GGameState;
-class FireballSprite;
+#include "GProcess.h"
 
-class GMidBossProjectileProcess : public BProcess {
+class GGameState;
+class ProjectileSprite;
+
+class GMidBossProjectileProcess : public GProcess {
 public:
   GMidBossProjectileProcess(GGameState *agameState, TFloat aX, TFloat aY);
   ~GMidBossProjectileProcess();
@@ -15,7 +17,7 @@ public:
 
 protected:
   GGameState *mGameState;
-  FireballSprite *mSprite;
+  ProjectileSprite *mSprite;
   TBool mState;   // false = flying, true = exploding
 };
 

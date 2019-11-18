@@ -53,8 +53,8 @@ const TUint16 ATTR_CRATE_GONE = 26;
 // mid bosses
 const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
 const TUint16 ATTR_MID_BOSS_FIRE = 1002;
-const TUint16 ATTR_MID_BOSS_EARTH= 1003;
-const TUint16 ATTR_MID_BOSS_WATER= 1004;
+const TUint16 ATTR_MID_BOSS_EARTH = 1003;
+const TUint16 ATTR_MID_BOSS_WATER = 1004;
 //
 const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OBJECT_LAYER value
 
@@ -125,6 +125,14 @@ public:
   ~GGamePlayfield() OVERRIDE;
 
 public:
+  void Restore();
+
+  void DumpObjectProgram() {
+    for (TInt i=0; i<mObjectCount; i++) {
+      mObjectProgram[i].Dump(i);
+    }
+  }
+public:
   TUint16 GetAttribute(TFloat aWorldX, TFloat aWorldY) {
     return TUint16(GetCell(aWorldX, aWorldY) >> 16);
   }
@@ -140,8 +148,14 @@ public:
 public:
   TBool mGroupState[16], mGroupDone[16];
 
+public:
+  void WriteToStream(BMemoryStream &aStream);
+
+  void ReadFromStream(BMemoryStream &aStream);
+
 protected:
   GGameState *mGameState;
+  TUint32 mTileMapId;
 };
 
 #endif //MODITE_GGAMEPLAYFIELD_H
