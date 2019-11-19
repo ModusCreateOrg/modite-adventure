@@ -80,6 +80,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
+  mMomentum = 0.0;
   mGameState = aGameState;
   mPlayfield = ENull;
   mBlinkProcess = ENull;
@@ -161,28 +162,28 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          if (mSprite->vy < -PLAYER_VELOCITY * 1.5) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidUpAnimation);
           } else {
             mSprite->StartAnimation(idleUpAnimation);
           }
           break;
         case DIRECTION_DOWN:
-          if (mSprite->vy > PLAYER_VELOCITY * 1.5) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidDownAnimation);
           } else {
             mSprite->StartAnimation(idleDownAnimation);
           }
           break;
         case DIRECTION_LEFT:
-          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidLeftAnimation);
           } else {
             mSprite->StartAnimation(idleLeftAnimation);
           }
           break;
         case DIRECTION_RIGHT:
-          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidRightAnimation);
           } else {
             mSprite->StartAnimation(idleRightAnimation);
@@ -494,22 +495,6 @@ TBool GPlayerProcess::MaybeWalk() {
     return EFalse;
   }
 
-  // apply speed modifier
-  if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
-    if (gControls.IsPressed(CONTROL_RUN)) {
-      newVx *= 2.3;
-      newVy *= 2.3;
-    } else {
-      newVx *= 1.3;
-      newVy *= 1.3;
-    }
-  } else {
-    if (gControls.IsPressed(CONTROL_RUN)) {
-      newVx *= 1.5;
-      newVy *= 1.5;
-    }
-  }
-
   if (((mSprite->vy < 0 || newVy < 0) && !CanWalk(DIRECTION_UP)) ||
       ((mSprite->vy > 0 || newVy > 0) && !CanWalk(DIRECTION_DOWN))) {
     mSprite->vy = 0;
@@ -521,33 +506,54 @@ TBool GPlayerProcess::MaybeWalk() {
     newVx = 0;
   }
 
-  if (newVx == 0 && newVy == 0) {
-    if (mSprite->vy > PLAYER_VELOCITY * 1.3) {
-      mSprite->vy -= PLAYER_FRICTION;
-    } else if (mSprite->vy < -PLAYER_VELOCITY * 1.3) {
-      mSprite->vy += PLAYER_FRICTION;
+  if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
+    if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
+      if (mMomentum < 1.3) {
+        mMomentum += PLAYER_FRICTION / 4;
+      }
     } else {
-      mSprite->vy = 0;
+      if (mMomentum < 0.3) {
+        mMomentum += PLAYER_FRICTION / 4;
+      }
     }
-    if (mSprite->vx > PLAYER_VELOCITY * 1.3) {
-      mSprite->vx -= PLAYER_FRICTION;
-    } else if (mSprite->vx < -PLAYER_VELOCITY * 1.3) {
-      mSprite->vx += PLAYER_FRICTION;
-    } else {
-      mSprite->vx = 0;
+  } else {
+    if (mMomentum > 0) {
+      mMomentum -= PLAYER_FRICTION;
+    }
+    if (mMomentum < 0) {
+      mMomentum = 0;
+    }
+  }
+
+  newVy *= (1 + mMomentum);
+  newVx *= (1 + mMomentum);
+  if (newVx == 0 && newVy == 0) {
+    if (mMomentum > 0) {
+      if (mSprite->vy > PLAYER_VELOCITY) {
+        newVy = mSprite->vy - PLAYER_FRICTION;
+      } else if (mSprite->vy < -PLAYER_VELOCITY) {
+        newVy = mSprite->vy + PLAYER_FRICTION;
+      }
+      if (mSprite->vx > PLAYER_VELOCITY) {
+        newVx = mSprite->vx - PLAYER_FRICTION;
+      } else if (mSprite->vx < -PLAYER_VELOCITY) {
+        newVx = mSprite->vx + PLAYER_FRICTION;
+      }
     }
     if (mState != IDLE_STATE || mSprite->mDirection != newDirection) {
       NewState(IDLE_STATE, newDirection);
     }
   } else {
-    mSprite->vy = newVy;
-    mSprite->vx = newVx;
     if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
       NewState(WALK_STATE, newDirection);
     }
   }
 
+  mSprite->vy = newVy;
+  mSprite->vx = newVx;
+
   if (mSprite->vx == 0 && mSprite->vy == 0) {
+    mMomentum = 0;
     NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
@@ -605,7 +611,7 @@ TBool GPlayerProcess::WalkState() {
   }
 
   mStepFrame++;
-  if (mSprite->AnimDone() || mStepFrame >= (WALKSPEED * 2) * PLAYER_VELOCITY / sqrt(pow(mSprite->vx, 2) + pow(mSprite->vy, 2))) {
+  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame >= (WALKSPEED * 2) / (1 + mMomentum))) {
     mStepFrame = 0;
     NewState(WALK_STATE, mSprite->mDirection);
   }
