@@ -30,6 +30,7 @@ public:
 
   void ToggleInGameMenu();
   void ToggleInventory();
+  void ToggleDebugMenu();
 
 #ifdef DEBUG_MODE
   static TBool mDebug;
@@ -40,6 +41,7 @@ protected:
   TInt        mNextState;
   BGameEngine *mGameMenu;
   BGameEngine *mInventory;
+  BGameEngine *mDebugMenu;
   TRGB        mShmoo;
 };
 
