@@ -5,7 +5,7 @@ GLevelWidget::GLevelWidget(TInt aLevel, TInt aDepth) : GButtonWidget("") {
   mLevel = aLevel;
   mDepth = aDepth;
   char s[128];
-  sprintf(s, "%s - Level %d", dungeon_defs[mLevel].name, mDepth);
+  sprintf(s, "%s - Level %d", gDungeonDefs[mLevel].name, mDepth);
   mText = strdup(s);
 }
 

@@ -9,11 +9,11 @@ GDebugMenuContainer::GDebugMenuContainer(TInt aX, TInt aY) : GDialogWidget("DEBU
   AddWidget((BWidget &) *new GHealthWidget());
 
   for (TUint8 i = 0; i < NUM_DUNGEONS; i++) {
-    const TDungeonInfo d = gDungeonDefs[i];
-    const TUint8 levels = sizeof(d.mInfo.map) / sizeof(TInt16);
+    const TDungeonInfo *d = &gDungeonDefs[i];
+    const TUint8 levels = sizeof(d->mInfo.map) / sizeof(TInt16);
 
     for (TInt16 j = 0; j < levels; j++) {
-      if (d.mInfo.map[j] == -1) {
+      if (d->mInfo.map[j] == -1) {
         break;
       }
       AddWidget((BWidget &) *new GLevelWidget(i, j));
