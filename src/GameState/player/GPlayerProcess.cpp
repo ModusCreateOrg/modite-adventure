@@ -5,6 +5,7 @@
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
 #include "GResources.h"
+#include "Items.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -157,20 +158,34 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case IDLE_STATE:
       mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(idleUpAnimation);
+          if (mSprite->vy < -PLAYER_VELOCITY * 1.5) {
+            mSprite->StartAnimation(skidUpAnimation);
+          } else {
+            mSprite->StartAnimation(idleUpAnimation);
+          }
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(idleDownAnimation);
+          if (mSprite->vy > PLAYER_VELOCITY * 1.5) {
+            mSprite->StartAnimation(skidDownAnimation);
+          } else {
+            mSprite->StartAnimation(idleDownAnimation);
+          }
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(idleLeftAnimation);
+          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+            mSprite->StartAnimation(skidLeftAnimation);
+          } else {
+            mSprite->StartAnimation(idleLeftAnimation);
+          }
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(idleRightAnimation);
+          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+            mSprite->StartAnimation(skidRightAnimation);
+          } else {
+            mSprite->StartAnimation(idleRightAnimation);
+          }
           break;
       }
       break;
@@ -446,36 +461,28 @@ TBool GPlayerProcess::MaybeWalk() {
   TFloat newVx = 0.0, newVy = 0.0;
   DIRECTION newDirection = mSprite->mDirection;
   if (gControls.IsPressed(CONTROL_JOYUP)) {
-    if (CanWalk(DIRECTION_UP)) {
-      newVy = -PLAYER_VELOCITY;
-    }
+    newVy = -PLAYER_VELOCITY;
     newDirection = DIRECTION_UP;
   } else if (gControls.IsPressed(CONTROL_JOYDOWN)) {
-    if (CanWalk(DIRECTION_DOWN)) {
-      newVy = PLAYER_VELOCITY;
-    }
+    newVy = PLAYER_VELOCITY;
     newDirection = DIRECTION_DOWN;
   }
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
-    if (CanWalk(DIRECTION_LEFT)) {
-      if (ABS(newVy) > 0) {
-        newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
-        newVy = newVy * sqrt(2) / 2;
-      } else {
-        newVx = -PLAYER_VELOCITY;
-      }
+    if (ABS(newVy) > 0) {
+      newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
+      newVy = newVy * sqrt(2) / 2;
+    } else {
+      newVx = -PLAYER_VELOCITY;
     }
     if (newVy == 0 || newVx != 0) {
       newDirection = DIRECTION_LEFT;
     }
   } else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
-    if (CanWalk(DIRECTION_RIGHT)) {
-      if (ABS(newVy) > 0) {
-        newVx = PLAYER_VELOCITY * sqrt(2) / 2;
-        newVy = newVy * sqrt(2) / 2;
-      } else {
-        newVx = PLAYER_VELOCITY;
-      }
+    if (ABS(newVy) > 0) {
+      newVx = PLAYER_VELOCITY * sqrt(2) / 2;
+      newVy = newVy * sqrt(2) / 2;
+    } else {
+      newVx = PLAYER_VELOCITY;
     }
     if (newVy == 0 || newVx != 0) {
       newDirection = DIRECTION_RIGHT;
@@ -486,14 +493,61 @@ TBool GPlayerProcess::MaybeWalk() {
     return EFalse;
   }
 
-  mSprite->vx = newVx;
-  mSprite->vy = newVy;
-  if (newVy == 0.0 && newVx == 0.0) {
-    NewState(IDLE_STATE, newDirection);
-    return EFalse;
+  // apply speed modifier
+  if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
+    if (gControls.IsPressed(CONTROL_RUN)) {
+      newVx *= 2.3;
+      newVy *= 2.3;
+    } else {
+      newVx *= 1.3;
+      newVy *= 1.3;
+    }
+  } else {
+    if (gControls.IsPressed(CONTROL_RUN)) {
+      newVx *= 1.5;
+      newVy *= 1.5;
+    }
   }
-  if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
-    NewState(WALK_STATE, newDirection);
+
+  if (((mSprite->vy < 0 || newVy < 0) && !CanWalk(DIRECTION_UP)) ||
+      ((mSprite->vy > 0 || newVy > 0) && !CanWalk(DIRECTION_DOWN))) {
+    mSprite->vy = 0;
+    newVy = 0;
+  }
+  if (((mSprite->vx < 0 || newVx < 0) && !CanWalk(DIRECTION_LEFT)) ||
+      ((mSprite->vx > 0 || newVx > 0) && !CanWalk(DIRECTION_RIGHT))) {
+    mSprite->vx = 0;
+    newVx = 0;
+  }
+
+  if (newVx == 0 && newVy == 0) {
+    if (mSprite->vy > PLAYER_VELOCITY * 1.3) {
+      mSprite->vy -= PLAYER_FRICTION;
+    } else if (mSprite->vy < -PLAYER_VELOCITY * 1.3) {
+      mSprite->vy += PLAYER_FRICTION;
+    } else {
+      mSprite->vy = 0;
+    }
+    if (mSprite->vx > PLAYER_VELOCITY * 1.3) {
+      mSprite->vx -= PLAYER_FRICTION;
+    } else if (mSprite->vx < -PLAYER_VELOCITY * 1.3) {
+      mSprite->vx += PLAYER_FRICTION;
+    } else {
+      mSprite->vx = 0;
+    }
+    if (mState != IDLE_STATE || mSprite->mDirection != newDirection) {
+      NewState(IDLE_STATE, newDirection);
+    }
+  } else {
+    mSprite->vy = newVy;
+    mSprite->vx = newVx;
+    if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
+      NewState(WALK_STATE, newDirection);
+    }
+  }
+
+  if (mSprite->vx == 0 && mSprite->vy == 0) {
+    NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
   return ETrue;

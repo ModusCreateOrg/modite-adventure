@@ -11,6 +11,7 @@ class GPlayerBlinkProcess;
 #include "GAnchorSprite.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
+const TFloat PLAYER_FRICTION = 0.1 / TFloat(FACTOR);
 
 class GPlayerProcess : public BProcess {
 public:
