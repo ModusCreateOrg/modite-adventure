@@ -301,9 +301,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mLevel = mNextLevel = aLevel;
   mTileMapId = aTileMapId;
 
+  Reset(); // remove sprites and processes
   delete mPreviousPlayfield;
   mPreviousPlayfield = ENull;
-  Reset(); // remove sprites and processes
   GPlayer::mProcess = ENull;
   for (TBool &i : slotRemapState) {
     i = EFalse;
