@@ -22,13 +22,9 @@ static TBool slotRemapState[SLOT_MAX];
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
-#if 0
-static struct DUNGEON_DEF {
-  const char *name;
-  TInt16 map[10];
-} dungeon_defs[] = {
+struct TDungeonInfo dungeon_defs[] = {
   // DUNGEON_DEV
-  { "DEV DUNGEON",
+  "DEV DUNGEON",
     {
       DEVDUNGEON_0_LEVEL_1_MAP,
       DEVDUNGEON_0_LEVEL_1_MAP,
@@ -36,10 +32,9 @@ static struct DUNGEON_DEF {
       DEVDUNGEON_0_LEVEL_3_MAP,
       DEVDUNGEON_0_LEVEL_4_MAP,
       -1,
-    } },
+    },
 };
-const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
-#endif
+const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(TDungeonInfo);
 
 /*******************************************************************************
  *******************************************************************************
@@ -283,7 +278,7 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   mNextDungeon = aDungeon;
   mNextLevel = aLevel;
   strcpy(mName, dungeon_defs[aDungeon].name);
-  mNextTileMapId = dungeon_defs[aDungeon].map[aLevel];
+  mNextTileMapId = dungeon_defs[aDungeon].mInfo.map[aLevel];
 
   mPreviousPlayfield = ENull;
   mPlayfield = ENull;

@@ -2,19 +2,21 @@
 #include "GLevelWidget.h"
 #include "GDebugWidget.h"
 #include "GHealthWidget.h"
+#include "GGameState.h"
 
 GDebugMenuContainer::GDebugMenuContainer(TInt aX, TInt aY) : GDialogWidget("DEBUG MODE", aX, aY) {
   AddWidget((BWidget &) *new GDebugWidget());
   AddWidget((BWidget &) *new GHealthWidget());
 
   for (TUint8 i = 0; i < NUM_DUNGEONS; i++) {
-    const DUNGEON_DEF d = dungeon_defs[i];
-    const TUint8 levels = sizeof(d.map) / sizeof(TUint16);
+    const TDungeonInfo d = dungeon_defs[i];
+    const TUint8 levels = sizeof(d.mInfo.map) / sizeof(TUint16);
 
     for (TInt16 j = 0; j < levels; j++) {
-      if (d.map[j]) {
-        AddWidget((BWidget &) *new GLevelWidget(i, j));
+      if (d.mInfo.map[j] == -1) {
+        break;
       }
+      AddWidget((BWidget &) *new GLevelWidget(i, j));
     }
   }
   mTimer = 30;
