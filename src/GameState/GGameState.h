@@ -28,8 +28,8 @@ public:
   ~GGameState();
 
   void GameLoop() OVERRIDE;
-  void PreRender();
-  void PostRender();
+  void PreRender() OVERRIDE;
+  void PostRender() OVERRIDE;
 
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
