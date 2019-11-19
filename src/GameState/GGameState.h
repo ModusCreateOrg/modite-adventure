@@ -87,7 +87,7 @@ protected:
   void RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize = IMAGE_64x64);
 
 public:
-  GGamePlayfield *mGamePlayfield, *mPreviousPlayfield;
+  GGamePlayfield *mGamePlayfield, *mNextGamePlayfield;
 
 protected:
   TInt mTimer;
@@ -96,9 +96,6 @@ protected:
   TInt16 mNextLevel, mLevel;
   TUint16 mNextDungeon, mNextTileMapId, mTileMapId;
   GGameOver *mGameOver;
-
-public:
-  GAnchorSprite *PlayerSprite();
 };
 
 #endif //MODITE_GGAMESTATE_H

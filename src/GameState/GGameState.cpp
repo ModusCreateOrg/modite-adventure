@@ -58,7 +58,7 @@ void GGameState::Init() {
   mTimer = FRAMES_PER_SECOND * 1;
   mGameOver = ENull;
 
-  mGamePlayfield = mPreviousPlayfield = ENull;
+  mGamePlayfield = mNextGamePlayfield = ENull;
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
@@ -253,11 +253,9 @@ TUint16 GGameState::MapHeight() {
   return (mGamePlayfield->MapHeightTiles() - gViewPort->mRect.Height() / 32) * 32;
 }
 
-GAnchorSprite *GGameState::PlayerSprite() { return GPlayer::mSprite; }
-
 void GGameState::GameLoop() {
-  for (TInt s = 0; s < 16; s++) {
-    mGamePlayfield->mGroupState[s] = ETrue;
+  for (bool & s : mGamePlayfield->mGroupState) {
+    s = ETrue;
   }
 
   BGameEngine::GameLoop();
@@ -285,9 +283,10 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   strcpy(mName, dungeon_defs[aDungeon].name);
   mNextTileMapId = dungeon_defs[aDungeon].map[aLevel];
 
-  mPreviousPlayfield = ENull;
-  mPlayfield = ENull;
-  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+  if (!mGamePlayfield) {
+    mPlayfield = mGamePlayfield =  mNextGamePlayfield;
+  }
   sprintf(mText, "%s Level %d", mName, aLevel);
   mTimer = 1 * FRAMES_PER_SECOND;
   Disable();
@@ -302,8 +301,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mTileMapId = aTileMapId;
 
   Reset(); // remove sprites and processes
-  delete mPreviousPlayfield;
-  mPreviousPlayfield = ENull;
+  mPlayfield = mGamePlayfield = mNextGamePlayfield;
+  mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
   for (TBool &i : slotRemapState) {
     i = EFalse;
