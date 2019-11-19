@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "GHealthWidget.h"
-#include "GPlayer.h";
+#include "GPlayer.h"
 
 static const TRange health_options = {
   0, DEFAULT_PLAYER_HITPOINTS, DEFAULT_PLAYER_HITPOINTS / 8
