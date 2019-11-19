@@ -25,14 +25,14 @@ const TInt GAUGE_WIDTH = 90;
 struct TDungeonInfo gDungeonDefs[] = {
   // DUNGEON_DEV
   "DEV DUNGEON",
-    {
-      DEVDUNGEON_0_LEVEL_1_MAP,
-      DEVDUNGEON_0_LEVEL_1_MAP,
-      DEVDUNGEON_0_LEVEL_2_MAP,
-      DEVDUNGEON_0_LEVEL_3_MAP,
-      DEVDUNGEON_0_LEVEL_4_MAP,
-      -1,
-    },
+  {
+    DEVDUNGEON_0_LEVEL_1_MAP,
+    DEVDUNGEON_0_LEVEL_1_MAP,
+    DEVDUNGEON_0_LEVEL_2_MAP,
+    DEVDUNGEON_0_LEVEL_3_MAP,
+    DEVDUNGEON_0_LEVEL_4_MAP,
+    -1,
+  },
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
