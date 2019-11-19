@@ -19,6 +19,24 @@ static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 const TInt16 DUNGEON_DEV = 0;
 const TInt16 DUNGEON_LIVE = 1;
 
+// info about the dungeons
+static struct DUNGEON_DEF {
+  const char *name;
+  TUint16 map[10];
+} dungeon_defs[] = {
+  // DUNGEON_DEV
+  { "DEV DUNGEON",
+      {
+          DEVDUNGEON_0_LEVEL_1_MAP,
+          DEVDUNGEON_0_LEVEL_1_MAP,
+          DEVDUNGEON_0_LEVEL_2_MAP,
+          DEVDUNGEON_0_LEVEL_3_MAP,
+          DEVDUNGEON_0_LEVEL_4_MAP,
+      } },
+};
+const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
+
+
 class GGameOver;
 
 class GGameState : public BGameEngine {
@@ -34,8 +52,8 @@ public:
 
 public:
   void GameLoop() OVERRIDE;
-  void PreRender();
-  void PostRender();
+  void PreRender() OVERRIDE;
+  void PostRender() OVERRIDE;
 
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);

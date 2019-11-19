@@ -39,6 +39,7 @@ SET(MODITE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/src/GameState/enemies
   ${CMAKE_SOURCE_DIR}/src/GameState/status
   ${CMAKE_SOURCE_DIR}/src/GameMenuState
+  ${CMAKE_SOURCE_DIR}/src/DebugMenuState
   ${CMAKE_SOURCE_DIR}/src/GameOverState
   ${CMAKE_SOURCE_DIR}/src/MainMenuState
   ${CMAKE_SOURCE_DIR}/src/MainOptionsState
@@ -82,3 +83,5 @@ if (APPLE)
 endif (APPLE)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${CREATIVE_ENGINE_LINK_LIBRARIES})
+
+INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cmake )

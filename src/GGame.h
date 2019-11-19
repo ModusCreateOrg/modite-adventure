@@ -32,6 +32,7 @@ public:
 
   void ToggleInGameMenu();
   void ToggleInventory();
+  void ToggleDebugMenu();
 
 #ifdef DEBUG_MODE
   static TBool mDebug;
@@ -44,7 +45,8 @@ protected:
   TUint32 mLocalDataSize;
   BGameEngine *mGameMenu;
   BGameEngine *mInventory;
-  TRGB mShmoo;
+  BGameEngine *mDebugMenu;
+  TRGB        mShmoo;
 };
 
 extern GGame *gGame;

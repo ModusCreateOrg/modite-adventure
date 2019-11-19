@@ -38,6 +38,7 @@ GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) 
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
 }
 
 GGameMenuState::~GGameMenuState() {

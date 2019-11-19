@@ -56,13 +56,13 @@ GGame::GGame() {
   gFont16x16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
   gViewPort = new BViewPort();
-  // TODO @michaeltintiuc - the sprites are clipped at the bottom SCREEN_HEIGHT-16  (BUG)
   gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 0);
 
   mState = mNextState = -1;
   gGameEngine = ENull;
   mGameMenu = ENull;
+  mDebugMenu = ENull;
   mInventory = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
@@ -85,7 +85,7 @@ GGame::~GGame() {
 void GGame::ToggleInGameMenu() {
   // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
   // need be)
-  if (GPlayer::mGameOver) {
+  if (GPlayer::mGameOver || mDebugMenu) {
     return;
   }
   if (mGameMenu) {
@@ -95,6 +95,22 @@ void GGame::ToggleInGameMenu() {
   }
   else {
     mGameMenu = new GGameMenuState((GGameState *)gGameEngine);
+    gGameEngine->Pause();
+  }
+  gControls.dKeys = 0;
+}
+
+void GGame::ToggleDebugMenu() {
+  if (GPlayer::mGameOver || mGameMenu) {
+    return;
+  }
+  if (mDebugMenu) {
+    delete mDebugMenu;
+    mDebugMenu = ENull;
+    gGameEngine->Resume();
+  }
+  else {
+    mDebugMenu = new GDebugMenuState();
     gGameEngine->Pause();
   }
   gControls.dKeys = 0;
@@ -211,6 +227,10 @@ void GGame::Run() {
 //      gGameEngine->GameLoop();
       mGameMenu->GameLoop();
     }
+    else if (mDebugMenu) {
+      gGameEngine->GameLoop();
+      mDebugMenu->GameLoop();
+    }
     else {
       gGameEngine->GameLoop();
     }
@@ -226,8 +246,9 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      mDebug = !mDebug;
-      printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
+      if (mState == GAME_STATE_GAME) {
+        ToggleDebugMenu();
+      }
     }
 #endif
 

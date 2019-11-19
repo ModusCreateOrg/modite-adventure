@@ -42,6 +42,7 @@ const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
 #include "GResetOptionsState.h"
 #include "GCreditsState.h"
 #include "GGameMenuState.h"
+#include "GDebugMenuState.h"
 //#include "GInventory.h"
 
 extern BViewPort   *gViewPort;
