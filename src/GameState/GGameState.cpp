@@ -22,13 +22,11 @@ static TBool slotRemapState[SLOT_MAX];
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
-#if 0
-static struct DUNGEON_DEF {
-  const char *name;
-  TInt16 map[10];
-} dungeon_defs[] = {
+struct TDungeonInfo gDungeonDefs[] = {
   // DUNGEON_DEV
-  { "DEV DUNGEON",
+  "DEV DUNGEON",
+  {
+    DUNGEON_TILESET_OBJECTS_BMP,
     {
       DEVDUNGEON_0_LEVEL_1_MAP,
       DEVDUNGEON_0_LEVEL_1_MAP,
@@ -36,10 +34,10 @@ static struct DUNGEON_DEF {
       DEVDUNGEON_0_LEVEL_3_MAP,
       DEVDUNGEON_0_LEVEL_4_MAP,
       -1,
-    } },
+    },
+  },
 };
-const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
-#endif
+const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
 /*******************************************************************************
  *******************************************************************************
@@ -276,14 +274,14 @@ void GGameState::GameLoop() {
 /**
  * This is safe to call from BProcess context.
  *
- * @param aDungeon  ID of dungeon (in dungeon_defs)
+ * @param aDungeon  ID of dungeon (in gDungeonDefs)
  * @param aLevel    Level in dungeon
  */
 void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   mNextDungeon = aDungeon;
   mNextLevel = aLevel;
-  strcpy(mName, dungeon_defs[aDungeon].name);
-  mNextTileMapId = dungeon_defs[aDungeon].map[aLevel];
+  strcpy(mName, gDungeonDefs[aDungeon].name);
+  mNextTileMapId = gDungeonDefs[aDungeon].mInfo.map[aLevel];
 
   mPreviousPlayfield = ENull;
   mPlayfield = ENull;
