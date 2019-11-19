@@ -23,7 +23,7 @@ struct TDungeonInfo {
   const char *name;
   struct { TInt16 map[10]; } mInfo;
 };
-extern TDungeonInfo dungeon_defs[];
+extern TDungeonInfo gDungeonDefs[];
 extern const TInt NUM_DUNGEONS;
 
 class GGameOver;
