@@ -18,8 +18,14 @@ public:
 public:
   GAnchorSprite *GetSprite() { return mSprite; }
 
+public:
+  void KeepAlive(TBool aBool) {
+    mKeepAlive = aBool;
+  }
+
 protected:
   GAnchorSprite *mSprite;
+  TBool mKeepAlive = EFalse;
 };
 
 #endif //MODITE_GSPELLOVERLAYPROCESS_H

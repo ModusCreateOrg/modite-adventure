@@ -39,7 +39,7 @@ TBool GSpellOverlayProcess::RunBefore() {
 }
 
 TBool GSpellOverlayProcess::RunAfter() {
-  if (mSprite->AnimDone()) {
+  if (!mKeepAlive && mSprite->AnimDone()) {
     gEventEmitter.FireEvent(this, EVENT_SPELL_PROCESS_EXIT, ENull );
     return EFalse;
   }
