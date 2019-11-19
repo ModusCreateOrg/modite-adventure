@@ -1,5 +1,5 @@
 #include "GLevelWidget.h"
-#include "GPlayer.h";
+#include "GPlayer.h"
 
 GLevelWidget::GLevelWidget(TInt aLevel, TInt aDepth) : GButtonWidget("") {
   mLevel = aLevel;

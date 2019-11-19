@@ -24,7 +24,7 @@ static struct DUNGEON_DEF {
   const char *name;
   TUint16 map[10];
 } dungeon_defs[] = {
-  // DUNGEON_DEV
+//   DUNGEON_DEV
   { "DEV DUNGEON",
       {
           DEVDUNGEON_0_LEVEL_1_MAP,

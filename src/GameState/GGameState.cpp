@@ -22,6 +22,7 @@ static TBool slotRemapState[SLOT_MAX];
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
+#if 0
 static struct DUNGEON_DEF {
   const char *name;
   TInt16 map[10];
@@ -38,6 +39,7 @@ static struct DUNGEON_DEF {
     } },
 };
 const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
+#endif
 
 /*******************************************************************************
  *******************************************************************************
