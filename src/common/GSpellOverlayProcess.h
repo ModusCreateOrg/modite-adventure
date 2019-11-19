@@ -1,10 +1,10 @@
 #ifndef MODITE_GSPELLOVERLAYPROCESS_H
 #define MODITE_GSPELLOVERLAYPROCESS_H
 
-#include <BProcess.h>
 #include "GAnchorSprite.h"
+#include "GProcess.h"
 
-class GSpellOverlayProcess : public BProcess {
+class GSpellOverlayProcess : public GProcess {
 public:
   GSpellOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY);
 

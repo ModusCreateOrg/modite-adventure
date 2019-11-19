@@ -31,6 +31,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/CreativeEngine.cmake)
 SET(MODITE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/src/resources
+  ${CMAKE_SOURCE_DIR}/src/LoadGameState
   ${CMAKE_SOURCE_DIR}/src/GameState
   ${CMAKE_SOURCE_DIR}/src/GameState/Playfields
   ${CMAKE_SOURCE_DIR}/src/GameState/player
@@ -62,7 +63,7 @@ ADD_EXECUTABLE(
   Resources.bin
   ${CREATIVE_ENGINE_SOURCE_FILES}
   ${MODITE_SRC}
-        src/GSpellOverlayProcess.cpp src/GSpellOverlayProcess.h src/GameState/enemies/GEnemyDeathOverlayProcess.cpp src/GameState/enemies/GEnemyDeathOverlayProcess.h creative-engine/src/BSpriteSheet.cpp creative-engine/src/BSpriteSheet.h)
+)
 
 ProcessorCount(N)
 if (NOT N EQUAL 0)

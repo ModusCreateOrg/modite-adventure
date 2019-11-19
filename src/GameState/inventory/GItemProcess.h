@@ -1,11 +1,11 @@
 #ifndef MODITE_GITEMPROCESS_H
 #define MODITE_GITEMPROCESS_H
 
-#include <BProcess.h>
 #include "GGameState.h"
 #include "GAnchorSprite.h"
+#include "GProcess.h"
 
-class GItemProcess : public BProcess {
+class GItemProcess : public GProcess {
 public:
   GItemProcess(GGameState *aGameState, TInt aIp, TInt mItemNumber, TFloat aX, TFloat aY);
 

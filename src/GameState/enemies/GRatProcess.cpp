@@ -39,7 +39,8 @@ const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
  */
 
 ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(RAT_SLOT), ALABEL,
+  ABITMAP(RAT_SLOT),
+  ALABEL,
   ASTEP(40, IMG_RAT_IDLE),
   ASTEP(4, IMG_RAT_IDLE + 1),
   ASTEP(40, IMG_RAT_IDLE + 2),
@@ -48,7 +49,8 @@ ANIMSCRIPT idleAnimation[] = {
 };
 
 static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(RAT_SLOT), ALABEL,
+  ABITMAP(RAT_SLOT),
+  ALABEL,
   ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 1),
   ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 2),
@@ -87,7 +89,8 @@ static ANIMSCRIPT deathAnimation[] = {
 */
 
 static ANIMSCRIPT idleDownAnimation[] = {
-  ABITMAP(RAT_SLOT), ALABEL,
+  ABITMAP(RAT_SLOT),
+  ALABEL,
   ADELTA(0, 8),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 0),
   ALOOP,
@@ -280,7 +283,8 @@ static ANIMSCRIPT walkUpAnimation2[] = {
   ADELTA(0, 12),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 3),
-  AEND,};
+  AEND,
+};
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(RAT_SLOT),
@@ -315,8 +319,8 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, RAT_SLOT, aParams, VELOCITY) {
-  mSprite->Name("RAT SPRITE");
+    : GEnemyProcess(aGameState, aIp, RAT_SLOT, aParams, VELOCITY, ATTR_RAT) {
+  mSprite->Name("ENEMY RAT");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->SetStatMultipliers(1.8, 0.6, 1.0);
@@ -508,4 +512,3 @@ void GRatProcess::Hit(DIRECTION aDirection) {
 void GRatProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-

@@ -2,26 +2,13 @@
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GResources.h"
-#include "GameState/player/GPlayerProcess.h"
 #include "GameState/player/GGameOver.h"
-#include "GameState/enemies/GSpiderProcess.h"
-#include "GameState/enemies/GBatProcess.h"
-#include "GameState/enemies/GGoblinProcess.h"
-#include "GameState/enemies/GGoblinSniperProcess.h"
-#include "GameState/enemies/GOrcProcess.h"
-#include "GameState/enemies/GRatProcess.h"
-#include "GameState/enemies/GSlimeProcess.h"
-#include "GameState/enemies/GTrollProcess.h"
-#include "GameState/environment/GStairsProcess.h"
-#include "GameState/environment/GCrateProcess.h"
-#include "GameState/environment/GChestProcess.h"
 #include "GameState/environment/GSpikesProcess.h"
-#include "GameState/environment/GDoorProcess.h"
-#include "GameState/environment/GLeverProcess.h"
-#include "GameState/environment/GFloorSwitchProcess.h"
-#include "GameState/mid-bosses/GMidBossGenericProcess.h"
+#include "GameState/player/GPlayerProcess.h"
 
 #include "GPlayer.h"
+
+#include <BMemoryStream.h>
 
 #define DEBUGME
 //#undef DEBUGME
@@ -34,15 +21,37 @@ static TBool slotRemapState[SLOT_MAX];
 
 const TInt GAUGE_WIDTH = 90;
 
+// info about the dungeons
+static struct DUNGEON_DEF {
+  const char *name;
+  TInt16 map[10];
+} dungeon_defs[] = {
+  // DUNGEON_DEV
+  { "DEV DUNGEON",
+    {
+      DEVDUNGEON_0_LEVEL_1_MAP,
+      DEVDUNGEON_0_LEVEL_1_MAP,
+      DEVDUNGEON_0_LEVEL_2_MAP,
+      DEVDUNGEON_0_LEVEL_3_MAP,
+      DEVDUNGEON_0_LEVEL_4_MAP,
+      -1,
+    } },
+};
+const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
+
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
 
-// Constructor
-GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(0), mNextLevel(0), mTileMapId(0),
-                           mNextTileMapId(0) {
-  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1,
-      MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
+void GGameState::Init() {
+  strcpy(mText, "");
+  strcpy(mName, "");
+  mLevel = 0;
+  mNextLevel = 0;
+  mTileMapId = 0;
+  mNextTileMapId = 0;
+
+  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1, MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
   mGameOver = ENull;
@@ -53,11 +62,26 @@ GGameState::GGameState() : BGameEngine(gViewPort), mText(""), mName(""), mLevel(
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   GPlayer::Init();
+}
+
+// Constructor
+GGameState::GGameState() : BGameEngine(gViewPort) {
+  Init();
   NextLevel(DUNGEON_DEV, 2);
+}
+
+// Constructor
+GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
+  Init();
+  LoadState(aName);
 }
 
 GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
 
+GProcess *GGameState::AddProcess(GProcess *p) {
+  mProcessList.AddProcess(p);
+  return p;
+}
 void GGameState::TryAgain() {
   if (mGameOver) {
     delete mGameOver;
@@ -164,7 +188,7 @@ void GGameState::PostRender() {
 
   // render mana potion
   TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-      BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+    BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
   switch (GPlayer::mManaPotion) {
     case 75:
       mana.Offset(BOTTLE_WIDTH * 1, 0);
@@ -213,7 +237,6 @@ void GGameState::PostRender() {
     }
     return;
   }
-
 }
 
 /*******************************************************************************
@@ -268,26 +291,22 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   Disable();
 }
 
-void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId) {
+/**
+  * This is NOT safe to call from BProcess context
+  */
+void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
   strcpy(mName, aName);
   mLevel = mNextLevel = aLevel;
   mTileMapId = aTileMapId;
 
   delete mPreviousPlayfield;
+  mPreviousPlayfield = ENull;
   Reset(); // remove sprites and processes
   GPlayer::mProcess = ENull;
   for (TBool &i : slotRemapState) {
     i = EFalse;
   }
 
-  //  delete mPlayfield;
-  //
-  //  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, aTileMapId);
-  //  sprintf(mText, "%s Level %d", aName, aLevel);
-  //  mTimer = 1 * FRAMES_PER_SECOND;
-  //  Disable();
-
-  //  AddProcess(new GStartLevelProcess(aName, aLevel));
   RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
@@ -305,7 +324,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
 
+#ifdef DEBUGME
   printf("Level loaded, colors used %d\n", mGamePlayfield->GetTilesBitmap()->CountUsedColors());
+#endif
 
   TInt objectCount = mGamePlayfield->mObjectCount;
   BObjectProgram *program = mGamePlayfield->mObjectProgram;
@@ -324,6 +345,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   TInt16 spikes_number = GSpikesProcess::mNumber;
   TInt eCount = 0;
   for (TInt ip = 0; ip < objectCount; ip++) {
+#ifdef DEBUGME
+    printf("%5d: ", ip);
+#endif
     const TUint16 op = program[ip].mCode & TUint32(0xffff),
                   params = program[ip].mCode >> TUint32(16),
                   row = program[ip].mRow,
@@ -339,42 +363,42 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_STONE_STAIRS_UP:
 #ifdef DEBUGME
-        printf("STONE STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("STONE STAIRS UP at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GStairsProcess(this, ip, DIRECTION_UP, params, xx, yy, "STONE"));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_UP, "STONE");
         break;
 
       case ATTR_STONE_STAIRS_DOWN:
 #ifdef DEBUGME
-        printf("STONE STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GStairsProcess(this, ip, DIRECTION_DOWN, params, xx, yy, "STONE"));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "STONE");
         break;
 
       case ATTR_WOOD_STAIRS_UP:
 #ifdef DEBUGME
-        printf("WOOD STAIRS UP at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("WOOD STAIRS UP at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GStairsProcess(this, ip, DIRECTION_UP, params, xx, yy, "WOOD"));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_UP, "WOOD");
         break;
 
       case ATTR_WOOD_STAIRS_DOWN:
 #ifdef DEBUGME
-        printf("WOOD STAIRS DOWN at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("WOOD STAIRS DOWN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GStairsProcess(this, ip, DIRECTION_DOWN, params, xx, yy, "WOOD"));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "WOOD");
         break;
 
       case ATTR_CRATE:
 #ifdef DEBUGME
-        printf("CRATE at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("CRATE at %.2f,%.2f %d, %d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GCrateProcess(this, ip, params, xx, yy));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "CRATE");
         break;
 
       case ATTR_CRATE_GONE:
 #ifdef DEBUGME
-        printf("CRATE GONE at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("CRATE GONE at %.2f,%.2f %d, %d\n", xx, yy, row, col);
 #endif
         if (params) {
           GItemProcess::SpawnItem(this, ip, params, xx, yy + 32);
@@ -383,72 +407,72 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_CHEST:
 #ifdef DEBUGME
-        printf("CHEST CLOSED at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("CHEST CLOSED at %.2f,%.2f %d, %d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GChestProcess(this, ip, params, xx, yy, EFalse));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "CHEST");
         break;
 
       case ATTR_CHEST_OPEN:
 #ifdef DEBUGME
-        printf("CHEST OPEN at %.2f,%.2f %d %d ATTR: %d\n", xx, yy, row, col, params);
+        printf("CHEST OPEN at %.2f,%.2f %d,%d ATTR: %d\n", xx, yy, row, col, params);
 #endif
-        AddProcess(new GChestProcess(this, ip, params, xx, yy, ETrue));
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "CHEST");
         break;
 
       case ATTR_SPIKES:
 #ifdef DEBUGME
-        printf("SPIKES at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("SPIKES at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GSpikesProcess(this, ip, xx, yy + 30, spikes_number--));
+        GProcess::Spawn(this, op, ip, xx, yy, spikes_number--, DIRECTION_DOWN, "SPIKES");
         break;
 
       case ATTR_METAL_DOOR_H:
 #ifdef DEBUGME
-        printf("METAL DOOR H at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("METAL DOOR H at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, EFalse, ETrue));
+        GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "METAL DOOR HORIZONTAL");
         break;
 
       case ATTR_METAL_DOOR_V:
 #ifdef DEBUGME
-        printf("METAL DOOR V at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("METAL DOOR V at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, EFalse, EFalse));
+        GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "METAL DOOR VERTICAL");
         break;
 
       case ATTR_WOOD_DOOR_H:
 #ifdef DEBUGME
-        printf("WOOD DOOR H at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("WOOD DOOR H at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, ETrue, ETrue));
+        GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "WOOD DOOR HORIZONTAL");
         break;
 
       case ATTR_WOOD_DOOR_V:
 #ifdef DEBUGME
-        printf("WOOD DOOR V at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("WOOD DOOR V at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GDoorProcess(this, ip, params, xx, yy + 30, ETrue, EFalse));
+        GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "WOOD DOOR VERTICAL");
         break;
 
       case ATTR_LEVER:
 #ifdef DEBUGME
-        printf("LEVER at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("LEVER at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GLeverProcess(this, ip, params, xx, yy + 32));
+        GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "LEVER");
         break;
 
       case ATTR_FLOOR_SWITCH:
 #ifdef DEBUGME
-        printf("FLOOR_SWITCH at %.2f,%.2f %d %d params: %x\n", xx, yy, row, col, params);
+        printf("FLOOR_SWITCH at %.2f,%.2f %d,%d params: %x\n", xx, yy, row, col, params);
 #endif
-        AddProcess(new GFloorSwitchProcess(this, ip, params, xx, yy + 32, EFalse));
+        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "STONE FLOOR SWITCH");
         break;
 
       case ATTR_FLOOR_SWITCH_WOOD:
 #ifdef DEBUGME
-        printf("FLOOR_SWITCH at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("FLOOR_SWITCH at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GFloorSwitchProcess(this, ip, params, xx, yy + 32, ETrue));
+        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "WOOD FLOOR SWITCH");
         break;
 
         //
@@ -456,6 +480,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //
 
       case ATTR_PLAYER:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
         printf("PLAYER at %.2f,%.2f\n", xx, yy);
 #endif
@@ -468,111 +495,145 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //
 
       case ATTR_SPIDER:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("SPIDER at %.2f,%.2f %d %d\n", xx - 32, yy, row, col);
+        printf("SPIDER at %.2f,%.2f %d,%d\n", xx - 32, yy, row, col);
 #endif
-        AddProcess(new GSpiderProcess(this, ip, xx - 32, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY SPIDER");
+        //        AddProcess(new GSpiderProcess(this, ip, xx - 32, yy + 32, params));
         break;
 
       case ATTR_BAT:
 #ifdef DEBUGME
-        printf("BAT at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("BAT at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GBatProcess(this, ip, xx - 32, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY BAT");
         break;
 
       case ATTR_GOBLIN:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("GOBLIN at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("GOBLIN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GGoblinProcess(this, ip, xx, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN");
         break;
 
       case ATTR_GOBLIN_SNIPER:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("GOBLIN_SNIPER at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("GOBLIN_SNIPER at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GGoblinSniperProcess(this, ip, xx - 32, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN SNIPER");
         break;
 
       case ATTR_ORC:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
         // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
         // to test other enemy logic, comment out spawning the Orc and instead spawn the enemy we want to see/test
-        printf("ORC at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
-        AddProcess(new GOrcProcess(this, ip, xx, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY ORC");
         break;
 
       case ATTR_RAT:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("RAT at %.2f,%.2f %d %d %d\n", xx, yy, row, col, eCount);
+        printf("RAT at %.2f,%.2f %d,%d,%d\n", xx, yy, row, col, eCount);
 #endif
-        AddProcess(new GRatProcess(this, ip, xx - 18, yy + 31, params));
+        GProcess::Spawn(this, op, ip, xx - 18, yy + 32, params, DIRECTION_DOWN, "ENEMY RAT");
         break;
 
       case ATTR_SLIME:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("SLIME at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("SLIME at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GSlimeProcess(this, ip, xx - 18, yy + 31, params));
+        GProcess::Spawn(this, op, ip, xx - 18, yy + 31, params, DIRECTION_DOWN, "ENEMY SLIME");
         break;
 
       case ATTR_TROLL:
+        if (!aNewLevel) {
+          break;
+        }
 #ifdef DEBUGME
-        printf("TROLL at %.2f,%.2f %d %d\n", xx, yy, row, col);
+        printf("TROLL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        AddProcess(new GTrollProcess(this, ip, xx - 20, yy + 32, params));
+        GProcess::Spawn(this, op, ip, xx - 20, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
         break;
 
-        //const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
-        //const TUint16 ATTR_MID_BOSS_FIRE = 1002;
-        //const TUint16 ATTR_MID_BOSS_EARTH= 1003;
-        //const TUint16 ATTR_MID_BOSS_WATER= 1004;
         // mid boss
         // only one mid boss can be available
       case ATTR_MID_BOSS_ENERGY:
+        if (!aNewLevel) {
+          break;
+        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_ENERGY_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_ENERGY_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS ENERGY");
+        //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_ENERGY));
         break;
       case ATTR_MID_BOSS_FIRE:
+        if (!aNewLevel) {
+          break;
+        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_FIRE_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS FIRE");
+        //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_FIRE));
         break;
 
       case ATTR_MID_BOSS_EARTH:
+        if (!aNewLevel) {
+          break;
+        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_EARTH_BROWN_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_EARTH_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
+        //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_EARTH));
         break;
 
       case ATTR_MID_BOSS_WATER:
+        if (!aNewLevel) {
+          break;
+        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_WATER_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_WATER_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT));
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS WATER");
+        //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_WATER));
         break;
 
       default:
-        printf("Invalid op code in Object Program: $%0x at col,row %d,%d\n", program[ip].mCode, col, row);
+        printf("======== > Invalid op code in Object Program: $%0x at col,row %d,%d\n", program[ip].mCode, col, row);
         break;
     }
   }
@@ -592,7 +653,6 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
   BObjectProgram *program = mGamePlayfield->mObjectProgram,
                  *step = &program[aIp];
 
-  printf("EndProgram %p]n", program);
   TUint32 code = aCode,
           attr = aAttr,
           sCode = step->mCode;
@@ -608,8 +668,10 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
     step->mCode = (sCode & 0xffff0000) | (attr << 16);
   }
   else {
-    step->mCode = code | (attr << 16);
+    TUint32 new_code = code | (attr << 16);
+    step->mCode = new_code;
   }
+  printf("EndProgram %p (%08x -> %08x)\n", program, sCode, step->mCode);
 }
 
 /*******************************************************************************
@@ -628,7 +690,6 @@ void GGameState::GameOver() {
 
 // Load aBMP, and remap it to playfield's tilemap palette
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
-
   if (!slotRemapState[aSlot]) {
     gResourceManager.ReleaseBitmapSlot(aSlot);
     gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
@@ -649,3 +710,73 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
 #endif
 }
 
+TBool GGameState::SaveState() {
+  BMemoryStream stream;
+
+  TUint32 seed = GetRandomSeed();
+  stream.Write(&seed, sizeof(TUint32));
+
+  BMapPlayfield::WriteToStream(&stream, NUM_RESOURCES);
+  stream.Write(&mTileMapId, sizeof(mTileMapId));
+  stream.Write(&mNextDungeon, sizeof(mNextDungeon));
+  stream.Write(&mLevel, sizeof(mLevel));
+
+  //  mGamePlayfield->Restore();
+  GPlayer::WriteToStream(stream);
+
+  // walk through process list and save enemies states
+  for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
+    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER) {
+      if (p->mSaveToStream) {
+        p->WriteToStream(stream);
+      }
+    }
+  }
+
+  // write attribute of -1 to signify end of list in the stream
+  TInt16 attr = -1;
+  stream.Write(&attr, sizeof(attr));
+
+  GAnchorSprite *s = GPlayer::mSprite;
+  s->WriteToStream(stream);
+
+  gSavedGameList.SaveGame(stream.Data(), stream.Size(), mText);
+  mTimer = FRAMES_PER_SECOND * 1;
+  return ETrue;
+}
+
+TBool GGameState::LoadState(const char *aGameName) {
+  BMemoryStream stream = *gSavedGameList.LoadSavedGame(aGameName);
+
+  TUint32 seed;
+  stream.Read(&seed, sizeof(TUint32));
+  SeedRandom(seed);
+
+  BMapPlayfield::ReadFromStream(&stream, NUM_RESOURCES);
+  stream.Read(&mTileMapId, sizeof(mTileMapId));
+  stream.Read(&mNextDungeon, sizeof(mNextDungeon));
+  stream.Read(&mLevel, sizeof(mLevel));
+
+  // spawn it all
+
+  NextLevel(mNextDungeon, mLevel);
+  LoadLevel(mName, mLevel, mNextTileMapId, EFalse);
+  //  mGamePlayfield->DumpObjectProgram();
+  GPlayer::ReadFromStream(stream);
+  GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
+
+  TInt16 attr = 0;
+  while (attr != -1) {
+    stream.Read(&attr, sizeof(attr));
+    if (attr != -1) {
+      GProcess *p = GProcess::Spawn(this, attr, 0, 0, 0, 0, DIRECTION_DOWN);
+      p->ReadFromStream(stream);
+      //      p->mSprite->Dump();
+    }
+  }
+
+  GAnchorSprite *s = GPlayer::mSprite;
+  s->ReadFromStream(stream);
+
+  return ETrue;
+}

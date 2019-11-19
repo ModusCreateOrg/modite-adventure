@@ -4,7 +4,7 @@
 
 const TInt TIMEOUT = FRAMES_PER_SECOND * 2;
 
-GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : BProcess() {
+GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
   char msg[4096];
   va_list args;
   va_start(args, aFmt);

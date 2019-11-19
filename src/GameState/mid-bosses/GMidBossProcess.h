@@ -3,11 +3,11 @@
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
-#include <BProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
-#include "GSpellOverlayProcess.h"
+#include "GProcess.h"
+#include "common/GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
 
@@ -24,9 +24,9 @@ enum {
   MB_SPELL_STATE, // hit with magic spell
 };
 
-class GMidBossProcess : public BProcess {
+class GMidBossProcess : public GProcess {
 public:
-  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot);
+  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute);
 
   ~GMidBossProcess() OVERRIDE;
 

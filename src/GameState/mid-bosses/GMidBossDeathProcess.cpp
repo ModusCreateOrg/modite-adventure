@@ -16,11 +16,12 @@ static ANIMSCRIPT deathAnimation[] = {
   AEND,
 };
 
-GMidBossDeathProcess::GMidBossDeathProcess(GGameState *aGameState, GMidBossProcess *aMidBoss, TFloat aX, TFloat aY, TInt aDelay) {
+GMidBossDeathProcess::GMidBossDeathProcess(GGameState *aGameState, GMidBossProcess *aMidBoss, TFloat aX, TFloat aY, TInt aDelay)
+    : GProcess(ATTR_GONE) {
   mGameState = aGameState;
   mMidBoss = aMidBoss;
-  mX = aX -16 + Random(0, 44/2);
-  mY = aY + Random(0, 75/2);
+  mX = aX - 16 + Random(0, 44 / 2);
+  mY = aY + Random(0, 75 / 2);
   mTimer = aDelay * DEATH_SPEED * 3;
   mSprite = ENull;
 }

@@ -5,11 +5,13 @@
 
 class GSaveWidget : public GButtonWidget {
 public:
-    GSaveWidget();
+    GSaveWidget(GGameState *aGameState);
     ~GSaveWidget();
 public:
     TInt Render(TInt aX, TInt aY);
     void Select();
+protected:
+    GGameState *mGameState;
 };
 
 #endif //GENUS_GSAVEWIDGET_H

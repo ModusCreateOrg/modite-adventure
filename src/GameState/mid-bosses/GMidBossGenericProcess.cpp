@@ -125,8 +125,8 @@ static ANIMSCRIPT revertAnimation[] = {
 
 /* endregion }}} */
 
-GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot)
-    : GMidBossProcess(aGameState, aX, aY, aSlot) {
+GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute)
+    : GMidBossProcess(aGameState, aX, aY, aSlot, aAttribute) {
   //
   NewState(MB_IDLE_STATE, DIRECTION_DOWN);
 }
@@ -169,7 +169,7 @@ TBool GMidBossGenericProcess::MaybeAttack() {
     return EFalse;
   }
   mAttackTimer = MID_BOSS_ATTACK_TIME;
-  BProcess *p = new GMidBossProjectileProcess(mGameState, mSprite->x + 32, mSprite->y - 32);
+  GProcess *p = (GProcess *)new GMidBossProjectileProcess(mGameState, mSprite->x + 32, mSprite->y - 32);
   mGameState->AddProcess(p);
   return ETrue;
 }

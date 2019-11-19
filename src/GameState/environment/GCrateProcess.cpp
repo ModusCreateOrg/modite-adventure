@@ -35,7 +35,9 @@ static ANIMSCRIPT breakAnimation[] = {
 GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY)
     : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY) {
   mAnimating = EFalse;
+  mAttribute = ATTR_CRATE;
   mSprite = new GAnchorSprite(mGameState, CRATE_PRIORITY, ENVIRONMENT_SLOT, IMG_CRATE, STYPE_ENEMY);
+  mSprite->Name("ENVIRONMENT CRATE");
   mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
   mSprite->w = 32;
   mSprite->h = 24;

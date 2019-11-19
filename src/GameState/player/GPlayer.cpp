@@ -1,57 +1,12 @@
 #include "GPlayer.h"
-#include "Items.h"
 
-GInventoryList::GInventoryList() : BList() {
-  Reset();
-  //
-}
-
-void GInventoryList::DropItem(GInventoryItem *aItem) {
-  if (--aItem->mCount <= 0) {
-    aItem->Remove();
-  }
-  GItemProcess::SpawnItem(GPlayer::mGameState, -1, aItem->mItemNumber, GPlayer::mSprite->x, GPlayer::mSprite->y);
-}
-
-void GInventoryList::PickupItem(TInt aItemNumber) {
-  // item already in inventory?  If so, increment count
-  for (GInventoryItem *i = First(); !End(i); i = Next(i)) {
-    if (i->mItemNumber == aItemNumber) {
-      i->mCount++;
-      return;
-    }
-  }
-  AddItem(new GInventoryItem(aItemNumber));
-}
-
-void GInventoryList::Dump() {
-  // print inventory list to console
-  printf("\n\nInventory\n");
-  printf("=========\n");
-  for (GInventoryItem *i = First(); !End(i); i = Next(i)) {
-    printf(" item #: %3d %-32s img: %3d count: %3d\n", i->mItemNumber, itemNames[i->mItemNumber], i->mImage, i->mCount);
-  }
-}
-GInventoryItem::GInventoryItem(TInt aItemNumber) : BNode() {
-  mItemNumber = aItemNumber;
-  mImage = items[aItemNumber];
-  mCount = 1;
-}
-
-void GInventoryItem::Render() {
-  printf("GInventoryItem: item: %d image: %d count: %d\n", mItemNumber, mImage, mCount);
-}
-
-TInt16 GPlayer::mLevel;
-TInt16 GPlayer::mNextLevel;
-TInt16 GPlayer::mExperience;
+TUint32 GPlayer::mLevel;
+TUint32 GPlayer::mNextLevel;
+TUint32 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
-TInt16 GPlayer::mStrength;
-TInt16 GPlayer::mDexterity;
 
 TInt GPlayer::mHitStrength;
-TInt GPlayer::mGold;
 TInt GPlayer::mHealthPotion;
 TInt GPlayer::mManaPotion;
 
@@ -63,4 +18,63 @@ GAnchorSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
 
+void GPlayer::WriteToStream(BMemoryStream &stream) {
+  stream.Write(&mLevel, sizeof(mLevel));
+  stream.Write(&mNextLevel, sizeof(mNextLevel));
+  stream.Write(&mExperience, sizeof(mExperience));
+  stream.Write(&mHitPoints, sizeof(mHitPoints));
+  stream.Write(&mMaxHitPoints, sizeof(mMaxHitPoints));
+  stream.Write(&mHealthPotion, sizeof(mHealthPotion));
+  stream.Write(&mManaPotion, sizeof(mManaPotion));
+  mInventoryList.WriteToStream(stream);
 
+  // Equipped
+  TUint16 v;
+  v = mEquipped.mAmulet ? mEquipped.mAmulet->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mRing ? mEquipped.mRing->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mGloves ? mEquipped.mGloves->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mBoots ? mEquipped.mBoots->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mWeapon ? mEquipped.mWeapon->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mSpellbook ? mEquipped.mSpellbook->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+
+}
+
+void GPlayer::ReadFromStream(BMemoryStream &stream) {
+  stream.Read(&mLevel, sizeof(mLevel));
+  stream.Read(&mNextLevel, sizeof(mNextLevel));
+  stream.Read(&mExperience, sizeof(mExperience));
+  stream.Read(&mHitPoints, sizeof(mHitPoints));
+  stream.Read(&mMaxHitPoints, sizeof(mMaxHitPoints));
+  stream.Read(&mHealthPotion, sizeof(mHealthPotion));
+  stream.Read(&mManaPotion, sizeof(mManaPotion));
+  mInventoryList.ReadFromStream(stream);
+
+  // Equipped
+  TUint16 v;
+  stream.Read(&v, sizeof(v));
+  mEquipped.mAmulet = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mRing = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mGloves = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mBoots = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mWeapon = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mSpellbook = mInventoryList.FindItem(v);
+}
+
+void GPlayer::Dump() {
+  printf("GPlayer\n");
+  printf("%-32.32s: %d,%d/%d\n", "mLevel,mNextLevel, mExperience", mLevel, mNextLevel, mExperience);
+  printf("%-32.32s: %d,%d/%d\n", "mHitPoints, mMaxHitPoints, mHitStrength", mHitPoints, mMaxHitPoints, mHitStrength);
+  printf("%-32.32s: %d,%d\n", "mHealthPotion, mManaPotion", mHealthPotion, mManaPotion);
+  mInventoryList.Dump();
+}

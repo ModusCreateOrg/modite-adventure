@@ -5,13 +5,14 @@
 #include "GSaveWidget.h"
 #include "GResumeWidget.h"
 
-GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY) : GDialogWidget("GAME PAUSED", aX, aY) {
+GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("GAME PAUSED", aX, aY) {
+  mGameState = aGameState;
 #ifdef __XTENSA__
   AddWidget((BWidget &) *new GBrightnessWidget());
 #endif
   AddWidget((BWidget &) *new GMusicWidget());
   AddWidget((BWidget &) *new GSfxWidget());
-  AddWidget((BWidget &) *new GSaveWidget());
+  AddWidget((BWidget &) *new GSaveWidget(mGameState));
   AddWidget((BWidget &) *new GResumeWidget());
 
   mTimer = 30;

@@ -19,7 +19,8 @@ static ANIMSCRIPT deathAnimation[] = {
   AEND,
 };
 
-GEnemyDeathOverlayProcess::GEnemyDeathOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY) {
+GEnemyDeathOverlayProcess::GEnemyDeathOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY) 
+: GProcess(ATTR_GONE) {
   mSprite = new GAnchorSprite(aGameState, ENEMY_DEATH_PRIORITY, ENEMY_DEATH_SLOT);
   mSprite->x = aX;
   mSprite->y = aY;

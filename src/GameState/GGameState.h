@@ -41,24 +41,34 @@ class GGameOver;
 
 class GGameState : public BGameEngine {
 public:
+  // game engine
   GGameState();
+  // game engine loads saved game
+  GGameState(const char *aName);
 
   ~GGameState();
 
+  void Init();
+
+public:
   void GameLoop() OVERRIDE;
   void PreRender() OVERRIDE;
   void PostRender() OVERRIDE;
 
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
-  void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId);
+  void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);
+
+  TBool SaveState();
+  TBool LoadState(const char *aGameName);
 
 public:
+  GProcess *AddProcess(GProcess *p);
   // call this to resume game after death
   void TryAgain();
 
   // call this when player is dead
   void GameOver();
-  
+
   // store code and attr into ObjectProgram at aIp
   void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE, TUint16 aAttr = 0);
 

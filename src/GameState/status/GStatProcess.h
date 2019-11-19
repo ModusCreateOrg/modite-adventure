@@ -1,12 +1,12 @@
 #ifndef GSTAT_PROCESS
 #define GSTAT_PROCESS
 
-#include "BProcess.h"
 #include "GStatSprite.h"
+#include "GProcess.h"
 
 class GStatSprite;
 
-class GStatProcess : public BProcess {
+class GStatProcess : public GProcess {
 public:
   GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...);
 

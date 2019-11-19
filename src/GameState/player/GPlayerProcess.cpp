@@ -29,9 +29,9 @@ const TUint16 SPELL_STATE = 9;
 // cause a blinking effect
 const TInt16 BLINK_TIME = 16; // 267ms
 
-class GPlayerBlinkProcess : public BProcess {
+class GPlayerBlinkProcess : public GProcess {
 public:
-  GPlayerBlinkProcess() : BProcess() {
+  GPlayerBlinkProcess() : GProcess(ATTR_GONE) {
     GPlayer::mSprite->mInvulnerable = ETrue;
     mTimer = BLINK_TIME;
   }
@@ -76,7 +76,7 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mState = IDLE_STATE;
   mStep = 0;
   mGameState = aGameState;
@@ -86,7 +86,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 
   // initialize player sprite
   GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
-  mSprite->Name("PLAYER SPRITE");
+  mSprite->Name("PLAYER");
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
   mSprite->w = 26;
@@ -750,4 +750,30 @@ TBool GPlayerProcess::RunAfter() {
   }
 
   return ETrue;
+}
+
+void GPlayerProcess::WriteToStream(BMemoryStream &aStream) {
+  // process vars
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mStep, sizeof(mStep));
+}
+
+void GPlayerProcess::WriteCustomToStream(BMemoryStream &aStream) {
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mStep, sizeof(mStep));
+//  TBool v = mBlinkProcess ? ETrue : EFalse;
+//  aStream.Write(&v, sizeof(v));
+}
+
+void GPlayerProcess::ReadFromStream(BMemoryStream &aStream) {
+  // process vars
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mStep, sizeof(mStep));
+}
+
+void GPlayerProcess::ReadCustomFromStream(BMemoryStream &aStream) {
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mStep, sizeof(mStep));
+//  TBool v = mBlinkProcess ? ETrue : EFalse;
+//  aStream.Read(&v, sizeof(v));
 }

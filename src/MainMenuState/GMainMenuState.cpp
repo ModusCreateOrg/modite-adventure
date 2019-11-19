@@ -1,8 +1,10 @@
 #include "Game.h"
 #include "GMainMenuProcess.h"
 #include "GMainMenuPlayfield.h"
+#include "common/GSavedGameList.h"
 
 GMainMenuState::GMainMenuState() : BGameEngine(gViewPort) {
+  gSavedGameList.LoadSavedGameList();
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
   mPlayfield = new GMainMenuPlayfield();
   AddProcess(new GMainMenuProcess());
