@@ -21,7 +21,7 @@ public:
     mTimer = 128;
     type = STYPE_EBULLET;
     SetCMask(STYPE_PLAYER);
-    SetFlags(SFLAG_CHECK);
+    SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
     mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_PROJECTILE_BMP_SPRITES);
   }
 
@@ -65,7 +65,8 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFl
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->w = 16;
-  mSprite->h = 16;
+  mSprite->h = 8;
+  mSprite->cy = 4;
   // aim fireball at player
   const TFloat x1 = GPlayer::mSprite->x + 16 + (GPlayer::mSprite->vx * FRAMES_TO_HIT_PLAYER) + 16,
                x2 = mSprite->x + 12,

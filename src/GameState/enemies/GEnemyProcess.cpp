@@ -234,8 +234,12 @@ TBool GEnemyProcess::MaybeAttack() {
         mAttackTimer = 1;
         return EFalse;
       }
-      if (--mAttackTimer <= 0) {
-        NewState(ATTACK_STATE, DIRECTION_UP);
+      if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < DX) {
+        // to left of player
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_RIGHT);
+        }
+        return ETrue;
       }
       return ETrue;
     }
@@ -246,10 +250,13 @@ TBool GEnemyProcess::MaybeAttack() {
         mAttackTimer = 1;
         return EFalse;
       }
-      if (--mAttackTimer <= 0) {
-        NewState(ATTACK_STATE, DIRECTION_DOWN);
+      if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < DY) {
+        // above player
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_DOWN);
+        }
+        return ETrue;
       }
-      return ETrue;
     }
 
     // player not near us
