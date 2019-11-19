@@ -21,7 +21,10 @@ const TInt16 DUNGEON_LIVE = 1;
 
 struct TDungeonInfo {
   const char *name;
-  struct { TInt16 map[11]; } mInfo;
+  struct {
+    TInt16 objectsId;
+    TInt16 map[11];
+  } mInfo;
 };
 extern TDungeonInfo gDungeonDefs[];
 extern const TInt NUM_DUNGEONS;
