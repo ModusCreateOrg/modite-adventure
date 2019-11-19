@@ -79,6 +79,7 @@ TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mState = IDLE_STATE;
   mStep = 0;
+  mStepFrame = 0;
   mGameState = aGameState;
   mPlayfield = ENull;
   mBlinkProcess = ENull;
@@ -603,7 +604,9 @@ TBool GPlayerProcess::WalkState() {
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
+  mStepFrame++;
+  if (mSprite->AnimDone() || mStepFrame >= (WALKSPEED * 2) * PLAYER_VELOCITY / sqrt(pow(mSprite->vx, 2) + pow(mSprite->vy, 2))) {
+    mStepFrame = 0;
     NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;

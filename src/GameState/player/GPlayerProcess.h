@@ -88,6 +88,7 @@ protected:
 //  GAnchorSprite *mSprite, *mSprite2;
   TUint16 mState;
   TUint16 mStep;
+  TUint16 mStepFrame;
 };
 
 #endif // MODITE_GPLAYERPROCESS_H
