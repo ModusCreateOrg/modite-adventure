@@ -24,7 +24,10 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mAnimating = EFalse;
   mDirection = ETrue;
 
+  mAttribute = ATTR_LEVER;
+
   mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_ENEMY);
+  mSprite->Name("ENVIRONMENT LEVER");
   mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
   mSprite->w = 32;
   mSprite->h = 24;
@@ -44,12 +47,12 @@ GLeverProcess::~GLeverProcess() {
 TBool GLeverProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
-  TInt group = mAttribute->group,
-       state = mAttribute->state;
+  TInt group = mObjectAttribute->group,
+       state = mObjectAttribute->state;
 
   if (group) {
     if (mState == state) {
-      if (mAttribute->order != OA_ORDER_ANY) {
+      if (mObjectAttribute->order != OA_ORDER_ANY) {
         p->mGroupState[group] = EFalse;
       }
     }

@@ -15,7 +15,7 @@ public:
 protected:
   TInt16 mState;
   TBool mAnimating,
-      mDirection; // which direction next activation moves the switch (e.g. left/right)
+    mDirection; // which direction next activation moves the switch (e.g. left/right)
 };
 
 #endif //MODITE_GLEVERPROCESS_H

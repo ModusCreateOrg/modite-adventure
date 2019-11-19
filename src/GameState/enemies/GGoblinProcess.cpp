@@ -18,6 +18,7 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
+// region  ANIMATIONS {{{
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -173,7 +174,7 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(0, 0),//
+  ADELTA(0, 0), //
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   ADELTA(-10, 0),
   ATYPE(STYPE_EBULLET),
@@ -240,7 +241,7 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(0, 0),//
+  ADELTA(0, 0), //
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   ADELTA(0, 0),
   ATYPE(STYPE_EBULLET),
@@ -284,7 +285,6 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ASTEP(IDLE_SPEED, IMG_GOBLIN_IDLE + 2),
   ALOOP
 };
-
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(GOBLIN_SLOT),
@@ -334,14 +334,16 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+/* endregion }}} */
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
 GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, GOBLIN_SLOT, aParams, VELOCITY) {
-  mSprite->Name("GOBLIN SPRITE");
+    : GEnemyProcess(aGameState, aIp, GOBLIN_SLOT, aParams, VELOCITY, ATTR_GOBLIN) {
+  mSprite->Name("ENEMY GOBLIN");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
@@ -432,4 +434,3 @@ void GGoblinProcess::Hit(DIRECTION aDirection) {
 void GGoblinProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-

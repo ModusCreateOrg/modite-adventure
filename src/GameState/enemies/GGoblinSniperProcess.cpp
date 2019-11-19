@@ -18,6 +18,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
+// region  ANIMATIONS {{{
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
@@ -242,7 +244,6 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ALOOP
 };
 
-
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(GOBLIN_SNIPER_SLOT),
   ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
@@ -278,13 +279,16 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+/* endregion }}} */
+
 /*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
-  : GEnemyProcess(aGameState, aIp, GOBLIN_SNIPER_SLOT, aParam, VELOCITY) {
+    : GEnemyProcess(aGameState, aIp, GOBLIN_SNIPER_SLOT, aParam, VELOCITY, ATTR_GOBLIN_SNIPER) {
+  mSprite->Name("ENEMY GOBLIN SNIPER");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
@@ -373,5 +377,3 @@ void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
 void GGoblinSniperProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }
-
-

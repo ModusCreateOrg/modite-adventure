@@ -309,9 +309,9 @@ static ANIMSCRIPT hitUpAnimation[] = {
 
 // constructor
 GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, SLIME_SLOT, aParams, VELOCITY) {
+    : GEnemyProcess(aGameState, aIp, SLIME_SLOT, aParams, VELOCITY, ATTR_SLIME) {
   mStateTimer = 0;
-  mSprite->Name("SLIME SPRITE");
+  mSprite->Name("ENEMY SLIME");
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SLIME_BMP_SPRITES);

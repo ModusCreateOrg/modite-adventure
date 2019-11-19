@@ -1,18 +1,22 @@
 #ifndef MODITE_GPLAYERPROCESS_H
 #define MODITE_GPLAYERPROCESS_H
 
-class GGameState ;
+class GGameState;
 class GGamePlayfield;
 class GGameState;
 class GPlayerBlinkProcess;
+class BMemoryStream;
+
 //class GAnchorSprite;
 
-#include "GGame.h"
 #include "GAnchorSprite.h"
+#include "GProcess.h"
+#include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
+const TFloat PLAYER_FRICTION = 0.1 / TFloat(FACTOR);
 
-class GPlayerProcess : public BProcess {
+class GPlayerProcess : public GProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
 
@@ -69,11 +73,19 @@ protected:
   TBool HitState();
 
 public:
+  void WriteToStream(BMemoryStream &aStream);
+  void WriteCustomToStream(BMemoryStream &aStream);
+
+  void ReadFromStream(BMemoryStream &aStream);
+  void ReadCustomFromStream(BMemoryStream &aStream);
+
+public:
   GPlayerBlinkProcess *mBlinkProcess;
+
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
-  GAnchorSprite *mSprite, *mSprite2;
+//  GAnchorSprite *mSprite, *mSprite2;
   TUint16 mState;
   TUint16 mStep;
 };

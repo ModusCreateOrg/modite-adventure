@@ -8,7 +8,6 @@ GButtonWidget::~GButtonWidget() {}
 
 TInt GButtonWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
-
   if (mActive) {
     gDisplay.renderBitmap->DrawStringShadow(
       ENull,

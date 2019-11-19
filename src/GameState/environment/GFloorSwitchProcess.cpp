@@ -7,7 +7,9 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint
   mSprite = ENull;
   mImage = IMG_FLOOR_SWITCH + (aWooden ? 2 : 0);
 
+  mAttribute = aWooden ? ATTR_FLOOR_SWITCH_WOOD : ATTR_FLOOR_SWITCH;
   mSprite = new GAnchorSprite(mGameState, FLOOR_SWITCH_PRIORITY, ENVIRONMENT_SLOT, mImage, STYPE_OBJECT);
+  mSprite->Name("ENVIRONMENT FLOOR SWITCH");
   mSprite->SetFlags(SFLAG_BELOW);// render below other sprites
   mSprite->SetCMask(STYPE_PBULLET);
   mSprite->ClearCMask(STYPE_PLAYER);
@@ -27,10 +29,10 @@ GFloorSwitchProcess::~GFloorSwitchProcess() {
 TBool GFloorSwitchProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
-  TInt group = mAttribute->group;
+  TInt group = mObjectAttribute->group;
   if (group) {
     if (mState) {
-      if (mAttribute->order != OA_ORDER_ANY) {
+      if (mObjectAttribute->order != OA_ORDER_ANY) {
         p->mGroupState[group] = EFalse;
       }
     }

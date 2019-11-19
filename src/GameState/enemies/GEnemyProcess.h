@@ -1,12 +1,13 @@
 #ifndef MODITE_GENEMYPROCESS_H
 #define MODITE_GENEMYPROCESS_H
 
-#include <BProcess.h>
+#include <BMemoryStream.h>
 #include "GResources.h"
+#include "GProcess.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
-#include "GAnchorSprite.h"
-#include "GSpellOverlayProcess.h"
+#include "GEnemySprite.h"
+#include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
 const TInt16 ATTACK_TIME = 3 * FRAMES_PER_SECOND;
@@ -17,7 +18,7 @@ enum {
   ATTACK_STATE,
   HIT_STATE,
   DEATH_STATE,
-  SPELL_STATE,  // hit with magic spell
+  SPELL_STATE, // hit with magic spell
 };
 
 static const char *stateMessages[] = {
@@ -29,17 +30,9 @@ static const char *stateMessages[] = {
   "SPELL STATE",
 };
 
-class GEnemySprite : public GAnchorSprite {
+class GEnemyProcess : public GProcess {
 public:
-  GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
-
-public:
-  TBool Render(BViewPort *aViewPort) OVERRIDE;
-};
-
-class GEnemyProcess : public BProcess {
-public:
-  GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity);
+  GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute);
 
   ~GEnemyProcess() OVERRIDE;
 
@@ -50,7 +43,6 @@ protected:
   TUint16 mParams;
   GSpellOverlayProcess *mSpellOverlayProcess;
   GEnemyDeathOverlayProcess *mEnemyDeathOverlayProcess;
-  GAnchorSprite *mSprite;
   TFloat mStartX, mStartY;
   TUint16 mState;
   TUint16 mDirection;
@@ -100,7 +92,13 @@ protected:
 
   void Spell(DIRECTION aDirection);
   TBool SpellState();
-};
 
+public:
+  static TInt16 mCount; // number of enemy processes
+
+public:
+  void WriteToStream(BMemoryStream &aStream);
+  void ReadFromStream(BMemoryStream &aStream);
+};
 
 #endif //MODITE_GENEMYPROCESS_H

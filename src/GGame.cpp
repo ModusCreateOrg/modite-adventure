@@ -18,8 +18,12 @@ TBool GGame::mDebug = ETrue;
  *******************************************************************************/
 
 GGame::GGame() {
-  TRect r(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
-  gFullViewPort.SetRect(r);
+  mLocalData = ENull;
+  mLocalDataSize = 0;
+
+//  TRect r(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
+//  gFullViewPort.SetRect(r);
+  gFullViewPort.SetRect(TRect (0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
 
   // Load Game Options
 #ifdef ENABLE_OPTIONS
@@ -29,7 +33,7 @@ GGame::GGame() {
 #ifdef __XTENSA__
 #ifdef ENABLE_OPTIONS
   gDisplay.SetBrightness(
-      MAX(MIN_BRIGHTNESS, MAX_BRIGHTNESS * gOptions->brightness));
+    MAX(MIN_BRIGHTNESS, MAX_BRIGHTNESS * gOptions->brightness));
 #endif
 #endif
 
@@ -52,13 +56,13 @@ GGame::GGame() {
   gFont16x16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
   gViewPort = new BViewPort();
-  // TODO @michaeltintiuc - the sprites are clipped at the bottom SCREEN_HEIGHT-16  (BUG)
   gViewPort->SetRect(TRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 0);
 
   mState = mNextState = -1;
   gGameEngine = ENull;
   mGameMenu = ENull;
+  mDebugMenu = ENull;
   mInventory = ENull;
   SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
@@ -81,7 +85,7 @@ GGame::~GGame() {
 void GGame::ToggleInGameMenu() {
   // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
   // need be)
-  if (GPlayer::mGameOver) {
+  if (GPlayer::mGameOver || mDebugMenu) {
     return;
   }
   if (mGameMenu) {
@@ -90,7 +94,23 @@ void GGame::ToggleInGameMenu() {
     gGameEngine->Resume();
   }
   else {
-    mGameMenu = new GGameMenuState();
+    mGameMenu = new GGameMenuState((GGameState *)gGameEngine);
+    gGameEngine->Pause();
+  }
+  gControls.dKeys = 0;
+}
+
+void GGame::ToggleDebugMenu() {
+  if (GPlayer::mGameOver || mGameMenu) {
+    return;
+  }
+  if (mDebugMenu) {
+    delete mDebugMenu;
+    mDebugMenu = ENull;
+    gGameEngine->Resume();
+  }
+  else {
+    mDebugMenu = new GDebugMenuState();
     gGameEngine->Pause();
   }
   gControls.dKeys = 0;
@@ -117,9 +137,29 @@ void GGame::ToggleInventory() {
  *******************************************************************************
  *******************************************************************************/
 
-void GGame::SetState(TInt aNewState) { mNextState = aNewState; }
+void GGame::SetState(TInt aNewState, TAny *aLocalData, TUint32 aSize) {
+  mNextState = aNewState;
+  if (aLocalData) {
+    delete (TUint8 *)mLocalData;
+    mLocalDataSize = aSize;
+    mLocalData = new TUint8[mLocalDataSize];
+    memcpy((TUint8 *)mLocalData, (TUint8 *)aLocalData, mLocalDataSize);
+  }
+  else {
+    delete (TUint8 *)mLocalData;
+    mLocalData = ENull;
+    mLocalDataSize = 0;
+  }
+}
 
-TInt GGame::GetState() { return mState; }
+TInt GGame::GetState() {
+  return mState;
+}
+
+void GGame::StartGame( char *aGameName) {
+  printf("START GAME (%s)\n", aGameName);
+  SetState(GAME_STATE_RESUME_GAME, aGameName, strlen(aGameName)+1);
+}
 
 /*******************************************************************************
  *******************************************************************************
@@ -148,6 +188,10 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GMainMenuState();
           break;
+        case GAME_STATE_LOAD_GAME:
+          delete gGameEngine;
+          gGameEngine = new GLoadGameState();
+          break;
         case GAME_STATE_MAIN_OPTIONS:
           delete gGameEngine;
           gGameEngine = new GMainOptionsState();
@@ -159,6 +203,10 @@ void GGame::Run() {
         case GAME_STATE_GAME:
           delete gGameEngine;
           gGameEngine = new GGameState();
+          break;
+        case GAME_STATE_RESUME_GAME:
+          delete gGameEngine;
+          gGameEngine = new GGameState((char *)mLocalData);
           break;
         case GAME_STATE_CREDITS:
           delete gGameEngine;
@@ -176,8 +224,12 @@ void GGame::Run() {
       mInventory->GameLoop();
     }
     else if (mGameMenu) {
-      gGameEngine->GameLoop();
+//      gGameEngine->GameLoop();
       mGameMenu->GameLoop();
+    }
+    else if (mDebugMenu) {
+      gGameEngine->GameLoop();
+      mDebugMenu->GameLoop();
     }
     else {
       gGameEngine->GameLoop();
@@ -194,12 +246,13 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      mDebug = !mDebug;
-      printf("DEBUGING %s\n", mDebug ? "ENABLED" : "DISABLED");
+      if (mState == GAME_STATE_GAME) {
+        ToggleDebugMenu();
+      }
     }
 #endif
 
-    if (gControls.WasPressed(BUTTON_START) && mState == GAME_STATE_GAME) {
+    if (gControls.WasPressed(BUTTON_START) && (mState == GAME_STATE_GAME || mState == GAME_STATE_RESUME_GAME)) {
       ToggleInGameMenu();
     }
 

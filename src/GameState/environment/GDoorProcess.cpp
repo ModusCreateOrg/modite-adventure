@@ -2,50 +2,52 @@
 #include "GGamePlayfield.h"
 #include "BSpriteSheet.h"
 
-GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood,
-                           TBool aHorizontal)
-  : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
+GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
+    : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
 
   mHorizontal = aHorizontal;
 
   if (mHorizontal) {
-    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
-                                 STYPE_ENEMY);
-    mSprite1->Name(aWood ? "HORIZONTAL WOOD DOOR 1" : "HORIZONTAL METAL DOOR 1");
-  } else {
-    mSprite1 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
-                                 STYPE_ENEMY);
-    mSprite1->Name(aWood ? "VERTICAL WOOD DOOR 1" : "VERTICAL METAL DOOR 1");
+    mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+      aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
+      STYPE_ENEMY);
+    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR 1" : "ENVIRONMENT HORIZONTAL METAL DOOR 1");
+    mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_DOOR_H;
+  }
+  else {
+    mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+      aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
+      STYPE_ENEMY);
+    mSprite->Name(aWood ? "ENVIRONMENT VERTICAL WOOD DOOR 1" : "ENVIRONMENT VERTICAL METAL DOOR 1");
+    mAttribute = aWood ? ATTR_WOOD_DOOR_V : ATTR_METAL_DOOR_V;
   }
 
-  mSprite1->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
-  mSprite1->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
 
-  mSprite1->w = 32;
-  mSprite1->h = (mHorizontal ? 32 : 64);
-  mSprite1->cx = -16;
-  mSprite1->x = aX;
-  mSprite1->y = aY + (mHorizontal ? 2.0 : 3.0);
-  mGameState->AddSprite(mSprite1);
+  mSprite->w = 32;
+  mSprite->h = (mHorizontal ? 32 : 64);
+  mSprite->cx = -16;
+  mSprite->x = aX;
+  mSprite->y = aY + (mHorizontal ? 2.0 : 3.0);
+  mGameState->AddSprite(mSprite);
   if (!mHorizontal) {
-    mSprite1->SetWall(ETrue);
+    mSprite->SetWall(ETrue);
   }
 
   if (!mHorizontal) {
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_ENEMY);
+      aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_ENEMY);
 
-    mSprite2->Name(aWood ? "VERTICAL WOOD DOOR 2" : "VERTICAL METAL DOOR 2");
+    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL DOOR 2");
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
 
     mSprite2->w = 32;
     mSprite2->h = 64;
     mSprite2->cx = -16;
     mSprite2->cy = 32;
-    mSprite2->x = mSprite1->x;
-    mSprite2->y = mSprite1->y - 32;
+    mSprite2->x = mSprite->x;
+    mSprite2->y = mSprite->y - 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
     if (!mHorizontal) {
@@ -56,10 +58,10 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
 GDoorProcess::~GDoorProcess() {
   ClearWall();
-  if (mSprite1) {
-    mSprite1->Remove();
-    delete mSprite1;
-    mSprite1 = ENull;
+  if (mSprite) {
+    mSprite->Remove();
+    delete mSprite;
+    mSprite = ENull;
   }
   if (mSprite2) {
     mSprite2->Remove();
@@ -69,7 +71,7 @@ GDoorProcess::~GDoorProcess() {
 }
 
 void GDoorProcess::ClearWall() {
-  mSprite1->SetWall(EFalse);
+  mSprite->SetWall(EFalse);
   if (mSprite2) {
     mSprite2->SetWall(EFalse);
   }
@@ -78,7 +80,7 @@ void GDoorProcess::ClearWall() {
 TBool GDoorProcess::RunBefore() {
   // if door is in a group (realted to switches, etc.), open when the group is "done"
   // "done" means player has successfully thrown the switchs in the right order.
-  TInt group = mAttribute->group;
+  TInt group = mObjectAttribute->group;
   if (group && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
     ClearWall();
@@ -90,16 +92,16 @@ TBool GDoorProcess::RunBefore() {
 
 TBool GDoorProcess::RunAfter() {
   // if is in a group, we don't open on collisions.
-  if (mAttribute->group) {
+  if (mObjectAttribute->group) {
     return ETrue;
   }
 
-  if (mSprite1->TestCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestCType(STYPE_PBULLET))) {
+  if (mSprite->TestCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestCType(STYPE_PBULLET))) {
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
   }
-  mSprite1->TestAndClearCType(STYPE_PLAYER);
+  mSprite->TestAndClearCType(STYPE_PLAYER);
   if (mSprite2) {
     mSprite2->TestAndClearCType(STYPE_PLAYER);
   }

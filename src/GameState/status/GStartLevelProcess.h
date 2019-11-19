@@ -1,9 +1,9 @@
 #ifndef MODITE_GSTARTLEVELPROCESS_H
 #define MODITE_GSTARTLEVELPROCESS_H
 
-#include "BProcess.h"
+#include "GProcess.h"
 
-class GStartLevelProcess : public BProcess {
+class GStartLevelProcess : public GProcess {
 public:
   GStartLevelProcess(const char *aName, TInt aLevel);
   ~GStartLevelProcess();
