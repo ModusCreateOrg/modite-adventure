@@ -161,6 +161,15 @@ void GGame::StartGame( char *aGameName) {
   SetState(GAME_STATE_RESUME_GAME, aGameName, strlen(aGameName)+1);
 }
 
+TBool GGame::IsGameState() {
+  TBool state = mState == GAME_STATE_RESUME_GAME || mState == GAME_STATE_GAME;
+  if (!state) {
+    return EFalse;
+  }
+  GGameState *s = (GGameState *)gGameEngine;
+  return !s->IsGameOver();
+}
+
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
@@ -246,18 +255,18 @@ void GGame::Run() {
 
 #ifdef DEBUG_MODE
     if (gControls.WasPressed(BUTTON_MENU)) {
-      if (mState == GAME_STATE_GAME) {
+      if (IsGameState()) {
         ToggleDebugMenu();
       }
     }
 #endif
 
-    if (gControls.WasPressed(BUTTON_START) && (mState == GAME_STATE_GAME || mState == GAME_STATE_RESUME_GAME)) {
+    if (IsGameState() && gControls.WasPressed(BUTTON_START)) {
       ToggleInGameMenu();
     }
 
     // right shoulder button brings up inventory
-    if (gControls.WasPressed(CONTROL_INVENTORY) && mState == GAME_STATE_GAME) {
+    if (IsGameState() && gControls.WasPressed(CONTROL_INVENTORY)) {
       ToggleInventory();
     }
 

@@ -84,14 +84,16 @@ GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
   return p;
 }
+
 void GGameState::TryAgain() {
   if (mGameOver) {
     delete mGameOver;
     mGameOver = ENull;
   }
+  GPlayer::mGameOver = EFalse;
   GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-  mLevel = -1;
-  NextLevel(DUNGEON_DEV, 2);
+//  mLevel = -1;
+//  NextLevel(DUNGEON_DEV, 2);
 }
 
 /*******************************************************************************
@@ -234,9 +236,6 @@ void GGameState::PostRender() {
 
   if (mGameOver) {
     mGameOver->Run();
-    if (gControls.WasPressed(BUTTON_SELECT)) {
-      TryAgain();
-    }
     return;
   }
 }
@@ -681,7 +680,7 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
  *******************************************************************************/
 
 void GGameState::GameOver() {
-  mGameOver = new GGameOver();
+  mGameOver = new GGameOver(this);
   gControls.Reset();
   GPlayer::mGameOver = ETrue;
 }

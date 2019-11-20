@@ -4,7 +4,8 @@
 // grayscale algorithms:
 // https://www.programminghomeworkhelp.com/c-programming/
 
-GGameOver::GGameOver() {
+GGameOver::GGameOver(GGameState *aGameState) {
+  mGameState = aGameState;
   // save palette
   TRGB *source = gDisplay.renderBitmap->GetPalette();
   for (TInt color = 0; color < COLOR_TEXT; color++) {
@@ -65,6 +66,8 @@ TBool GGameOver::Run() {
   center("Save Game and Exit", y, mState == 1);
   y += line_height;
   center("Exit", y, mState == 2);
+  y += line_height * 3;
+  center("A to select", y);
   y += line_height;
 
   if (gControls.WasPressed(JOYUP)) {
@@ -75,6 +78,25 @@ TBool GGameOver::Run() {
     mState = CLAMP(mState + 1, 0, 2);
   }
 
+  if (gControls.WasPressed(BUTTON_SELECT | BUTTON_START | BUTTONA)) {
+    // restore palette
+    for (TInt color = 0; color < COLOR_TEXT; color++) {
+      TRGB c = mSavedPalette[color];
+      gDisplay.SetColor(color, c);
+    }
+    switch (mState) {
+      case 0:
+        mGameState->TryAgain();
+        gControls.Reset();
+        break;
+      case 1:
+        mGameState->SaveState();
+      case 2:
+      default:
+        gGame->SetState(GAME_STATE_MAIN_MENU);
+        break;
+    }
+  }
 
   return ETrue;
 }

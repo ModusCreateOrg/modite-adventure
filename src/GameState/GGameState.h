@@ -89,6 +89,9 @@ protected:
 public:
   GGamePlayfield *mGamePlayfield, *mPreviousPlayfield;
 
+public:
+  TBool IsGameOver() { return mGameOver != ENull; }
+
 protected:
   TInt mTimer;
   char mText[128];
