@@ -93,6 +93,8 @@ protected:
   void Spell(DIRECTION aDirection);
   TBool SpellState();
 
+  void OverlayAnimationComplete();
+
 public:
   static TInt16 mCount; // number of enemy processes
 

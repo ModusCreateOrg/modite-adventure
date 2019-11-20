@@ -115,11 +115,14 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y);
   mSpellOverlayProcess = p;
-  mSpellOverlayProcess->KeepAlive(ETrue);
   mGameState->AddProcess(p);
   Hit(mSprite->mDirection);
+}
+
+void GEnemyProcess::OverlayAnimationComplete() {
+  mSpellOverlayProcess = ENull;
 }
 
 TBool GEnemyProcess::MaybeHit() {
@@ -293,12 +296,7 @@ TBool GEnemyProcess::HitState() {
 
 TBool GEnemyProcess::SpellState() {
   auto *p = mSpellOverlayProcess;
-  if (!p) {
-    return ETrue;
-  }
-  GAnchorSprite *s = mSpellOverlayProcess->GetSprite();
-  if (mSprite->AnimDone() && s && s->AnimDone()) {
-    mSpellOverlayProcess->KeepAlive(EFalse);
+  if (mSprite->AnimDone() && !p) {
     if (mSprite->mHitPoints <= 0) {
       mSpellOverlayProcess = ENull;
       NewState(DEATH_STATE, mSprite->mDirection);
