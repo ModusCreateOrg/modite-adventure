@@ -241,7 +241,7 @@ void GAnchorSprite::Dump() {
     return;
   }
   printf("%-16.16s: %f(%f),%f(%f)\n", "x(vx),y(vy)", x, vx, y, vy);
-  printf("%-16.16s: %f,%f,%f,%f\n", "cx,cy,w,h", cx, cy, w, h);
+  printf("%-16.16s: %d,%d,%d,%d\n", "cx,cy,w,h", cx, cy, w, h);
   printf("%-16.16s: %d\n", "pri", pri);
   printf("%-16.16s: %d\n", "flags", flags);
   printf("\n");

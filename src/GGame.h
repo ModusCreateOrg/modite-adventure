@@ -37,7 +37,8 @@ public:
 #ifdef DEBUG_MODE
   static TBool mDebug;
 #endif
-
+protected:
+  TBool IsGameState();
 protected:
   TInt mState;
   TInt mNextState;
