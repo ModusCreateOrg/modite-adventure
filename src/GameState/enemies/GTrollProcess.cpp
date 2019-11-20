@@ -201,8 +201,8 @@ static ANIMSCRIPT hitUpAnimation[] = {ABITMAP(TROLL_SLOT),
 
 // constructor
 GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, TROLL_SLOT, aParams, VELOCITY) {
-  mSprite->Name("TROLL SPRITE");
+  : GEnemyProcess(aGameState, aIp, TROLL_SLOT, aParams, VELOCITY, ATTR_TROLL) {
+  mSprite->Name("ENEMY TROLL");
   mSprite->x = aX;
   mSprite->y = aY;
   mStartX = mSprite->x = aX;

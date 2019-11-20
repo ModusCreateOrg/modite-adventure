@@ -2,6 +2,8 @@
 #define MODITE_GANCHORSPRITE_H
 
 #include <BAnimSprite.h>
+#include <BMemoryStream.h>
+
 class GGameState;
 //#include "GGameState.h"
 
@@ -19,7 +21,7 @@ const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
 
 const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
-const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT+1;
+const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT + 1;
 const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
 
 const TInt PRIORITY_BELOW = 500;
@@ -66,6 +68,8 @@ public:
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
+public:
+  void Dump();
 
 public:
   static DIRECTION RandomDirection();
@@ -73,19 +77,26 @@ public:
   TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
   // set the BMapPlayfield tile in map attribute
   void SetAttribute(TUint mAttribute);
+
 public:
   GGameState *mGameState;
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
   TInt16 mLevel, mExperience;
   TInt16 mHitPoints, mMaxHitPoints;
-  TInt mHitStrength;
-  TInt mBaseHitPoints, mBaseStrength, mBaseExperience;
+  TInt32 mHitStrength;
+  TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
   TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame
   TFloat mVelocity;
   TRect mShadow;
   TUint mAttributeSave;
+
+public:
+  void WriteToStream(BMemoryStream &aStream);
+  void WriteCustomToStream(BMemoryStream &aStream);
+  virtual void ReadFromStream(BMemoryStream &aStream);
+  virtual void ReadCustomFromStream(BMemoryStream &aStream) {}
 
 protected:
   char mName[64];

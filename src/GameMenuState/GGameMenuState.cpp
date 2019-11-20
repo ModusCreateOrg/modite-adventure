@@ -7,9 +7,10 @@
 #define PAUSE_MODAL_Y 60
 #endif
 
-GGameMenuState::GGameMenuState() : BGameEngine(gViewPort) {
+GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) {
+  mGameState = aGameState;
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
-  mContainer = new GGameMenuContainer(20, PAUSE_MODAL_Y);
+  mContainer = new GGameMenuContainer(20, PAUSE_MODAL_Y, mGameState);
 
   gWidgetTheme.Configure(
       WIDGET_TEXT_FONT, mFont16,
@@ -37,6 +38,7 @@ GGameMenuState::GGameMenuState() : BGameEngine(gViewPort) {
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
 }
 
 GGameMenuState::~GGameMenuState() {

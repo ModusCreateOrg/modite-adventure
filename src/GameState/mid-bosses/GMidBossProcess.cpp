@@ -2,21 +2,24 @@
 #include "GPlayer.h"
 #include "GStatProcess.h"
 #include "GMidBossDeathProcess.h"
-#include "GSpellOverlayProcess.h"
+#include "common/GSpellOverlayProcess.h"
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot) : BProcess() {
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute) 
+  : GProcess(aAttribute) {
   mSprite = ENull;
+  mSaveToStream = ETrue;
   mGameState = aGameState;
   mPlayfield = mGameState->mGamePlayfield;
   mStartX = aX;
   mStartY = aY;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
+  mSprite->Name("ENEMY");
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->x = aX;
   mSprite->y = aY;
@@ -96,6 +99,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->h = 24;
       mStateTimer = Random(15, 180);
       Idle(aDirection);
+      mSprite->ResetShadow();
       break;
 
     case MB_BALL_STATE:
@@ -113,6 +117,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->type = STYPE_EBULLET;
       mSprite->SetFlags(SFLAG_CHECK);
       Move(aDirection);
+      mSprite->ResetShadow();
       break;
 
     case MB_RETURN_STATE:
@@ -422,7 +427,6 @@ TBool GMidBossProcess::MaybeBounce() {
 
 TBool GMidBossProcess::MoveState() {
   mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
-  mSprite->ResetShadow();
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);
@@ -458,7 +462,6 @@ TBool GMidBossProcess::RevertState() {
     mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
     mSprite->SafePosition(GPlayer::mSprite);
     NewState(MB_IDLE_STATE, DIRECTION_DOWN);
-    mSprite->ResetShadow();
   }
   return ETrue;
 }

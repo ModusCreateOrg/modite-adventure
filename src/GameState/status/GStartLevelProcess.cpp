@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "GStartLevelProcess.h"
 
-GStartLevelProcess::GStartLevelProcess(const char *aName, TInt aLevel) : BProcess() {
+GStartLevelProcess::GStartLevelProcess(const char *aName, TInt aLevel) : GProcess(ATTR_GONE) {
   mTimer = 5 * FRAMES_PER_SECOND;
   sprintf(mText, "%s level %2d", aName, aLevel);
   TInt len = strlen(mText);

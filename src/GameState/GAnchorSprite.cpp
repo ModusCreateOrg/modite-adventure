@@ -207,3 +207,42 @@ void GAnchorSprite::SetLevel(TInt aLevel) {
   mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
 }
+
+void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
+  aStream.Write(&x, sizeof(x));
+  aStream.Write(&y, sizeof(y));
+  aStream.Write(&vx, sizeof(vx));
+  aStream.Write(&vy, sizeof(vy));
+  aStream.Write(&cx, sizeof(cx));
+  aStream.Write(&cy, sizeof(cy));
+  aStream.Write(&w, sizeof(w));
+  aStream.Write(&h, sizeof(h));
+  aStream.Write(&pri, sizeof(pri));
+  aStream.Write(&flags, sizeof(flags));
+}
+
+void GAnchorSprite::ReadFromStream(BMemoryStream &aStream) {
+  aStream.Read(&x, sizeof(x));
+  aStream.Read(&y, sizeof(y));
+  aStream.Read(&vx, sizeof(vx));
+  aStream.Read(&vy, sizeof(vy));
+  aStream.Read(&cx, sizeof(cx));
+  aStream.Read(&cy, sizeof(cy));
+  aStream.Read(&w, sizeof(w));
+  aStream.Read(&h, sizeof(h));
+  aStream.Read(&pri, sizeof(pri));
+  aStream.Read(&flags, sizeof(flags));
+}
+
+void GAnchorSprite::Dump() {
+  printf("\nSPRITE @ %p\n", this);
+  if (this == NULL) {
+    printf("WE ARE NULL!!!\n");
+    return;
+  }
+  printf("%-16.16s: %f(%f),%f(%f)\n", "x(vx),y(vy)", x, vx, y, vy);
+  printf("%-16.16s: %f,%f,%f,%f\n", "cx,cy,w,h", cx, cy, w, h);
+  printf("%-16.16s: %d\n", "pri", pri);
+  printf("%-16.16s: %d\n", "flags", flags);
+  printf("\n");
+}

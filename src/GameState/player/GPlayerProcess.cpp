@@ -5,6 +5,7 @@
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
 #include "GResources.h"
+#include "Items.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -28,9 +29,9 @@ const TUint16 SPELL_STATE = 9;
 // cause a blinking effect
 const TInt16 BLINK_TIME = 16; // 267ms
 
-class GPlayerBlinkProcess : public BProcess {
+class GPlayerBlinkProcess : public GProcess {
 public:
-  GPlayerBlinkProcess() : BProcess() {
+  GPlayerBlinkProcess() : GProcess(ATTR_GONE) {
     GPlayer::mSprite->mInvulnerable = ETrue;
     mTimer = BLINK_TIME;
   }
@@ -75,7 +76,7 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mState = IDLE_STATE;
   mStep = 0;
   mGameState = aGameState;
@@ -85,7 +86,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) {
 
   // initialize player sprite
   GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
-  mSprite->Name("PLAYER SPRITE");
+  mSprite->Name("PLAYER");
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
   mSprite->w = 26;
@@ -157,46 +158,54 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case IDLE_STATE:
       mStep = 0;
-      mSprite->vx = 0;
-      mSprite->vy = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(idleUpAnimation);
+          if (mSprite->vy < -PLAYER_VELOCITY * 1.5) {
+            mSprite->StartAnimation(skidUpAnimation);
+          } else {
+            mSprite->StartAnimation(idleUpAnimation);
+          }
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(idleDownAnimation);
+          if (mSprite->vy > PLAYER_VELOCITY * 1.5) {
+            mSprite->StartAnimation(skidDownAnimation);
+          } else {
+            mSprite->StartAnimation(idleDownAnimation);
+          }
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(idleLeftAnimation);
+          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+            mSprite->StartAnimation(skidLeftAnimation);
+          } else {
+            mSprite->StartAnimation(idleLeftAnimation);
+          }
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(idleRightAnimation);
+          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+            mSprite->StartAnimation(skidRightAnimation);
+          } else {
+            mSprite->StartAnimation(idleRightAnimation);
+          }
           break;
       }
       break;
 
     case WALK_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mStep = 1 - mStep;
           mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          mSprite->vy = -PLAYER_VELOCITY;
           break;
         case DIRECTION_DOWN:
           mStep = 1 - mStep;
-          mSprite->vy = PLAYER_VELOCITY;
           mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
           break;
         case DIRECTION_LEFT:
           mStep = 1 - mStep;
-          mSprite->vx = -PLAYER_VELOCITY;
           mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
           break;
         case DIRECTION_RIGHT:
           mStep = 1 - mStep;
-          mSprite->vx = PLAYER_VELOCITY;
           mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
           break;
       }
@@ -449,54 +458,99 @@ TBool GPlayerProcess::MaybeWalk() {
   if (GPlayer::mGameOver) {
     return ETrue;
   }
-  if (gControls.IsPressed(CONTROL_JOYLEFT)) {
-    if (!CanWalk(DIRECTION_LEFT)) {
-      NewState(IDLE_STATE, DIRECTION_LEFT);
-      return EFalse;
-    }
-    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_LEFT) {
-      NewState(WALK_STATE, DIRECTION_LEFT);
-    }
-    return ETrue;
-  }
-
-  if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
-    if (!CanWalk(DIRECTION_RIGHT)) {
-      NewState(IDLE_STATE, DIRECTION_RIGHT);
-      return EFalse;
-    }
-    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_RIGHT) {
-      NewState(WALK_STATE, DIRECTION_RIGHT);
-    }
-    return ETrue;
-  }
-
+  TFloat newVx = 0.0, newVy = 0.0;
+  DIRECTION newDirection = mSprite->mDirection;
   if (gControls.IsPressed(CONTROL_JOYUP)) {
-    if (!CanWalk(DIRECTION_UP)) {
-      NewState(IDLE_STATE, DIRECTION_UP);
-      return EFalse;
+    newVy = -PLAYER_VELOCITY;
+    newDirection = DIRECTION_UP;
+  } else if (gControls.IsPressed(CONTROL_JOYDOWN)) {
+    newVy = PLAYER_VELOCITY;
+    newDirection = DIRECTION_DOWN;
+  }
+  if (gControls.IsPressed(CONTROL_JOYLEFT)) {
+    if (ABS(newVy) > 0) {
+      newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
+      newVy = newVy * sqrt(2) / 2;
+    } else {
+      newVx = -PLAYER_VELOCITY;
     }
-    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_UP) {
-      NewState(WALK_STATE, DIRECTION_UP);
+    if (newVy == 0 || newVx != 0) {
+      newDirection = DIRECTION_LEFT;
     }
-    return ETrue;
+  } else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
+    if (ABS(newVy) > 0) {
+      newVx = PLAYER_VELOCITY * sqrt(2) / 2;
+      newVy = newVy * sqrt(2) / 2;
+    } else {
+      newVx = PLAYER_VELOCITY;
+    }
+    if (newVy == 0 || newVx != 0) {
+      newDirection = DIRECTION_RIGHT;
+    }
   }
 
-  if (gControls.IsPressed(CONTROL_JOYDOWN)) {
-    if (MaybeFall()) {
-      return EFalse;
-    }
-    if (!CanWalk(DIRECTION_DOWN)) {
-      NewState(IDLE_STATE, DIRECTION_DOWN);
-      return EFalse;
-    }
-    if (mState != WALK_STATE || mSprite->mDirection != DIRECTION_DOWN) {
-      NewState(WALK_STATE, DIRECTION_DOWN);
-    }
-    return ETrue;
+  if (newVy > 0.0 && MaybeFall()) {
+    return EFalse;
   }
 
-  return EFalse;
+  // apply speed modifier
+  if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
+    if (gControls.IsPressed(CONTROL_RUN)) {
+      newVx *= 2.3;
+      newVy *= 2.3;
+    } else {
+      newVx *= 1.3;
+      newVy *= 1.3;
+    }
+  } else {
+    if (gControls.IsPressed(CONTROL_RUN)) {
+      newVx *= 1.5;
+      newVy *= 1.5;
+    }
+  }
+
+  if (((mSprite->vy < 0 || newVy < 0) && !CanWalk(DIRECTION_UP)) ||
+      ((mSprite->vy > 0 || newVy > 0) && !CanWalk(DIRECTION_DOWN))) {
+    mSprite->vy = 0;
+    newVy = 0;
+  }
+  if (((mSprite->vx < 0 || newVx < 0) && !CanWalk(DIRECTION_LEFT)) ||
+      ((mSprite->vx > 0 || newVx > 0) && !CanWalk(DIRECTION_RIGHT))) {
+    mSprite->vx = 0;
+    newVx = 0;
+  }
+
+  if (newVx == 0 && newVy == 0) {
+    if (mSprite->vy > PLAYER_VELOCITY * 1.3) {
+      mSprite->vy -= PLAYER_FRICTION;
+    } else if (mSprite->vy < -PLAYER_VELOCITY * 1.3) {
+      mSprite->vy += PLAYER_FRICTION;
+    } else {
+      mSprite->vy = 0;
+    }
+    if (mSprite->vx > PLAYER_VELOCITY * 1.3) {
+      mSprite->vx -= PLAYER_FRICTION;
+    } else if (mSprite->vx < -PLAYER_VELOCITY * 1.3) {
+      mSprite->vx += PLAYER_FRICTION;
+    } else {
+      mSprite->vx = 0;
+    }
+    if (mState != IDLE_STATE || mSprite->mDirection != newDirection) {
+      NewState(IDLE_STATE, newDirection);
+    }
+  } else {
+    mSprite->vy = newVy;
+    mSprite->vx = newVx;
+    if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
+      NewState(WALK_STATE, newDirection);
+    }
+  }
+
+  if (mSprite->vx == 0 && mSprite->vy == 0) {
+    NewState(IDLE_STATE, newDirection);
+    return EFalse;
+  }
+  return ETrue;
 }
 
 /*____ _____  _  _____ _____ ____
@@ -696,4 +750,30 @@ TBool GPlayerProcess::RunAfter() {
   }
 
   return ETrue;
+}
+
+void GPlayerProcess::WriteToStream(BMemoryStream &aStream) {
+  // process vars
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mStep, sizeof(mStep));
+}
+
+void GPlayerProcess::WriteCustomToStream(BMemoryStream &aStream) {
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mStep, sizeof(mStep));
+//  TBool v = mBlinkProcess ? ETrue : EFalse;
+//  aStream.Write(&v, sizeof(v));
+}
+
+void GPlayerProcess::ReadFromStream(BMemoryStream &aStream) {
+  // process vars
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mStep, sizeof(mStep));
+}
+
+void GPlayerProcess::ReadCustomFromStream(BMemoryStream &aStream) {
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mStep, sizeof(mStep));
+//  TBool v = mBlinkProcess ? ETrue : EFalse;
+//  aStream.Read(&v, sizeof(v));
 }

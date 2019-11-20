@@ -2,16 +2,17 @@
 #define BRICKOUT_GGAME_H
 
 #include "Game.h"
-
-const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
+#include "common/GSavedGameList.h"
 
 enum {
   GAME_STATE_SPLASH,
   GAME_STATE_MAIN_MENU,
+  GAME_STATE_LOAD_GAME,
   GAME_STATE_MAIN_OPTIONS,
   GAME_STATE_RESET_OPTIONS,
   GAME_STATE_CREDITS,
   GAME_STATE_GAME,
+  GAME_STATE_RESUME_GAME,
 };
 
 class GGame : public BApplication {
@@ -24,22 +25,27 @@ public:
   void Run();
 
 public:
-  void SetState(TInt aNewState);
+  void SetState(TInt aNewState, TAny *aLocalData = ENull, TUint32 aSize = 0);
+  void StartGame(char *aGameName);
 
   TInt GetState();
 
   void ToggleInGameMenu();
   void ToggleInventory();
+  void ToggleDebugMenu();
 
 #ifdef DEBUG_MODE
   static TBool mDebug;
 #endif
 
 protected:
-  TInt        mState;
-  TInt        mNextState;
+  TInt mState;
+  TInt mNextState;
+  TAny *mLocalData;   // arbitrary local data that is passed to SetState.
+  TUint32 mLocalDataSize;
   BGameEngine *mGameMenu;
   BGameEngine *mInventory;
+  BGameEngine *mDebugMenu;
   TRGB        mShmoo;
 };
 
