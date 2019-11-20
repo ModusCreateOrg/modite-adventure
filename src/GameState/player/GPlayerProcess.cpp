@@ -14,6 +14,7 @@ const TFloat SPELL_DISTANCE = 200.0;
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
+const TUint16 WALK_DELAY_STATE = 10;
 const TUint16 SWORD_STATE = 2;
 const TUint16 SWORD_NO_BULLET_STATE = 3;
 const TUint16 FALL_STATE = 4;
@@ -159,6 +160,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   switch (mState) {
 
     case IDLE_STATE:
+    case WALK_DELAY_STATE:
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -405,6 +407,7 @@ TBool GPlayerProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_ENEMY)) {
     mSprite->ClearCType(STYPE_ENEMY);
     mSprite->Nudge();
+    mMomentum = 0;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -544,8 +547,10 @@ TBool GPlayerProcess::MaybeWalk() {
       NewState(IDLE_STATE, newDirection);
     }
   } else {
-    if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
+    if (mState == WALK_DELAY_STATE || mSprite->mDirection != newDirection) {
       NewState(WALK_STATE, newDirection);
+    } else if (mState != WALK_STATE) {
+      NewState(WALK_DELAY_STATE, newDirection);
     }
   }
 
@@ -714,6 +719,7 @@ TBool GPlayerProcess::RunBefore() {
     case IDLE_STATE:
       return IdleState();
     case WALK_STATE:
+    case WALK_DELAY_STATE:
       return WalkState();
     case SWORD_STATE:
       return SwordState();
