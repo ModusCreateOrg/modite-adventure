@@ -2,7 +2,7 @@
 #define GENUS_TOPTIONS_H
 
 #include "BTypes.h"
-#include "BStore.h"
+#include "DesktopStore.h"
 #include "Panic.h"
 
 struct GameProgress {
