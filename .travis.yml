@@ -10,8 +10,6 @@ sudo: enabled
 git:
   depth: 1
 install: 
-  - sudo pip install --upgrade pip
-  - sudo pip install satsuki
   - "./.ci/travis/install_deps.sh"
 before_script: "./.ci/travis/lint.sh"
 script:
