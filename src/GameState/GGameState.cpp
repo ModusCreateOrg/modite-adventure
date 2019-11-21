@@ -101,6 +101,7 @@ void GGameState::TryAgain() {
 void GGameState::PreRender() {
   if (mNextLevel != mLevel) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
+    gViewPort->mWorldX = gViewPort->mWorldY = 0;
   }
 }
 
