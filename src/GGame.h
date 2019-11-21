@@ -33,6 +33,7 @@ public:
   void ToggleInGameMenu();
   void ToggleInventory();
   void ToggleDebugMenu();
+  BGameEngine *CurrentState();
 
 #ifdef DEBUG_MODE
   static TBool mDebug;
