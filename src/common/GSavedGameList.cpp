@@ -1,5 +1,5 @@
 #include "GSavedGameList.h"
-#include <BStore.h>
+#include <Store.h>
 #include <Panic.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -36,15 +36,15 @@ void GSavedGameList::LoadSavedGameList() {
   mNumSavedGames = 0;
   mMaxGameNumber = 0;
   char name[4096];
-  BStore store(SAVED_GAME_STORE);
-  DIR *dir = opendir(store.mTargetDir);
+  gGameStore.Initialize(SAVED_GAME_STORE);
+  DIR *dir = opendir(gGameStore.mTargetDir);
   if (dir == ENull) {
-    Panic("Can't read saved games directory (%s)\n", store.mTargetDir);
+    Panic("Can't read saved games directory (%s)\n", gGameStore.mTargetDir);
   }
   while (struct dirent *d = readdir(dir)) {
     if (strstr(d->d_name, SAVED_GAME_STORE) != ENull) {
       struct stat statbuf;
-      sprintf(name, "%s/%s", store.mTargetDir, d->d_name);
+      sprintf(name, "%s/%s", gGameStore.mTargetDir, d->d_name);
       stat(name, &statbuf);
       TInt32 game_number = 0;
       char *ptr = strchr(d->d_name, '0');
@@ -70,8 +70,8 @@ void GSavedGameList::SaveGame(TUint8 *aData, TUint32 aSize, char *aSavedName) {
   TInt game_number = mMaxGameNumber + 1;
   LoadSavedGameList();
   GSavedGameNode::GameName(game_name, game_number);
-  BStore store(SAVED_GAME_STORE);
-  store.Set(game_name, aData, aSize);
+  gGameStore.Initialize(SAVED_GAME_STORE);
+  gGameStore.Set(game_name, aData, aSize);
   if (aSavedName != ENull) {
     sprintf(aSavedName, "Saved Game #%d", game_number);
   }
@@ -79,10 +79,10 @@ void GSavedGameList::SaveGame(TUint8 *aData, TUint32 aSize, char *aSavedName) {
 }
 
 BMemoryStream *GSavedGameList::LoadSavedGame(const char *aName) {
-  BStore store(SAVED_GAME_STORE);
-  TUint32 size = store.Size(aName);
+  gGameStore.Initialize(SAVED_GAME_STORE);
+  TUint32 size = gGameStore.Size(aName);
   TUint8 data[size];
-  store.Get(aName, data, size);
+  gGameStore.Get(aName, data, size);
 
   return new BMemoryStream(data, size);
 }
@@ -94,8 +94,8 @@ BMemoryStream *GSavedGameList::LoadSavedGame(GSavedGameNode *aNode) {
 }
 
 void GSavedGameList::RemoveGame(const char *aGameName) {
-  BStore store(SAVED_GAME_STORE);
-  store.Remove(aGameName);
+  gGameStore.Initialize(SAVED_GAME_STORE);
+  gGameStore.Remove(aGameName);
 }
 
 
@@ -105,8 +105,8 @@ void GSavedGameList::RemoveGame(GSavedGameNode *aGameNode){
   LoadSavedGameList();
   GSavedGameNode::GameName(game_name, aGameNode->mOrdinal);
 
-  BStore store(SAVED_GAME_STORE);
-  store.Remove(game_name);
+  gGameStore.Initialize(SAVED_GAME_STORE);
+  gGameStore.Remove(game_name);
   LoadSavedGameList();
 }
 

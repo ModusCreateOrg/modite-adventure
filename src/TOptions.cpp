@@ -31,13 +31,13 @@ void TOptions::ResetGameProgress() {
 
 void TOptions::Save() {
   version = VERSION;
-  BStore f("ModditeAdventure");
-  f.Set("options", this, sizeof(TOptions));
+  gOptionsStore.Initialize("ModditeAdventure");
+  gOptionsStore.Set("options", this, sizeof(TOptions));
 }
 
 void TOptions::Load() {
-  BStore f("ModditeAdventure");
-  if (!f.Get("options", this, sizeof(TOptions)) || version != VERSION) {
+  gOptionsStore.Initialize("ModditeAdventure");
+  if (!gOptionsStore.Get("options", this, sizeof(TOptions)) || version != VERSION) {
     Reset();
   }
 }
