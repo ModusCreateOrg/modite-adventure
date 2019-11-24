@@ -82,10 +82,20 @@ GGame::~GGame() {
  *******************************************************************************
  *******************************************************************************/
 
+BGameEngine *GGame::CurrentState() {
+  if (gGameEngine->IsPaused()) {
+    if (mGameMenu) return mGameMenu;
+    else if (mInventory) return mInventory;
+    else if (mDebugMenu) return mDebugMenu;
+  }
+
+  return gGameEngine;
+}
+
 void GGame::ToggleInGameMenu() {
   // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
   // need be)
-  if (GPlayer::mGameOver || mDebugMenu) {
+  if (GPlayer::mGameOver || mDebugMenu || mInventory) {
     return;
   }
   if (mGameMenu) {
@@ -101,7 +111,7 @@ void GGame::ToggleInGameMenu() {
 }
 
 void GGame::ToggleDebugMenu() {
-  if (GPlayer::mGameOver || mGameMenu) {
+  if (GPlayer::mGameOver || mGameMenu || mInventory) {
     return;
   }
   if (mDebugMenu) {
@@ -121,10 +131,15 @@ void GGame::ToggleDebugMenu() {
  *******************************************************************************/
 
 void GGame::ToggleInventory() {
+  if (GPlayer::mGameOver || mGameMenu) {
+    return;
+  }
   if (mInventory) {
     delete mInventory;
     mInventory = ENull;
-    gGameEngine->Resume();
+    if (!mDebugMenu) {
+      gGameEngine->Resume();
+    }
   }
   else {
     mInventory = new GInventory(&gFullViewPort);

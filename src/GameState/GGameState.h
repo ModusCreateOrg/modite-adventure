@@ -83,6 +83,7 @@ public:
 
 public:
   TBool IsGameOver() { return mGameOver != ENull; }
+  TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
 
 protected:
   TInt mTimer;
