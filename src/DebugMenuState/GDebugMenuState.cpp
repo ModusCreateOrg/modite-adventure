@@ -2,7 +2,7 @@
 #include "GDebugMenuContainer.h"
 
 GDebugMenuState::GDebugMenuState() : BGameEngine(gViewPort) {
-  mContainer = new GDebugMenuContainer(20, 60, this);
+  mContainer = new GDebugMenuContainer(20, 20, this);
 
   gWidgetTheme.Configure(
       WIDGET_TEXT_FONT, gFont16x16,
@@ -31,5 +31,5 @@ void GDebugMenuState::PreRender() {
 }
 
 void GDebugMenuState::PostRender() {
-  mContainer->Render(30, 20);
+  mContainer->Render(30, 10);
 }

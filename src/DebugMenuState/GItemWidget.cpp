@@ -8,10 +8,13 @@ GItemWidget::GItemWidget(TInt aItem, BGameEngine *aState) : GButtonWidget("") {
   mState = aState;
 
   char s[128];
-  sprintf(s, "%-18s", itemNames[mItem]);
+  GInventoryItem *i = GPlayer::mInventoryList.FindItem(mItem);
+  if (i) {
+    sprintf(s, "%02d %-18s", i->mCount, itemNames[mItem]);
+  } else {
+    sprintf(s, "00 %-18s", itemNames[mItem]);
+  }
   mText = strdup(s);
-
-  GPlayer::mInventoryList.Dump();
 }
 
 GItemWidget::~GItemWidget() {
@@ -47,10 +50,13 @@ void GItemWidget::Run() {
 
       if (i->mCount > 1) {
         i->mCount--;
+        sprintf(s, "%02d %-18s", i->mCount, itemNames[mItem]);
       } else {
         GPlayer::mInventoryList.RemoveNode(i);
         GPlayer::mInventoryList.mCount--;
+        sprintf(s, "00 %-18s", itemNames[mItem]);
       }
+      mText = strdup(s);
     }
     GPlayer::mInventoryList.Dump();
 #ifdef ENABLE_AUDIO
@@ -65,6 +71,12 @@ void GItemWidget::Select() {
   p->SetTimeout(5 * FRAMES_PER_SECOND);
   mState->AddProcess(p);
   GPlayer::mInventoryList.PickupItem(mItem);
+
+  char s[128];
+  GInventoryItem *i = GPlayer::mInventoryList.FindItem(mItem);
+  sprintf(s,  "%02d %-18s", i->mCount, itemNames[mItem]);
+  mText = strdup(s);
+
   GPlayer::mInventoryList.Dump();
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();

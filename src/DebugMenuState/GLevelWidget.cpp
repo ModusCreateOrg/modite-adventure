@@ -5,7 +5,10 @@ GLevelWidget::GLevelWidget(TInt aLevel, TInt aDepth) : GButtonWidget("") {
   mLevel = aLevel;
   mDepth = aDepth;
   char s[128];
-  sprintf(s, "%s - Level %d", gDungeonDefs[mLevel].name, mDepth);
+  const char *f = ((GGameState*) gGameEngine)->IsCurrentLevel(aLevel, aDepth)
+    ? "* %s - Level %d"
+    : "  %s - Level %d";
+  sprintf(s, f, gDungeonDefs[mLevel].name, mDepth);
   mText = strdup(s);
 }
 
@@ -15,11 +18,18 @@ GLevelWidget::~GLevelWidget() {
 
 TInt GLevelWidget::Render(TInt aX, TInt aY) {
   aY += 20;
+  aX -= 20;
   GButtonWidget::Render(aX, aY);
   return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
 }
 
 void GLevelWidget::Select() {
+  if (((GGameState*) gGameEngine)->IsCurrentLevel(mLevel, mDepth)) {
+#ifdef ENABLE_AUDIO
+    gSoundPlayer.SfxMenuCancel();
+#endif
+    return;
+  }
   // Simulate start button press to exit menu
   gControls.dKeys |= BUTTON_MENU;
   ((GGameState*) gGameEngine)->NextLevel(mLevel, mDepth);
