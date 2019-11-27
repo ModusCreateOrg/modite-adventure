@@ -623,7 +623,7 @@ TBool GPlayerProcess::QuaffState() {
         mStep++;
         mSprite2 = new GAnchorSprite(mGameState, PLAYER_HEAL_PRIORITY, PLAYER_HEAL_SLOT);
         mSprite2->x = mSprite->x + 16;
-        mSprite2->y = mSprite->y;
+        mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(quaffOverlayAnimation);
         mGameState->AddSprite(mSprite2);
       }
@@ -653,7 +653,7 @@ TBool GPlayerProcess::SpellState() {
         mStep++;
         mSprite2 = new GAnchorSprite(mGameState, PLAYER_SPELL_PRIORITY, PLAYER_SPELL_SLOT);
         mSprite2->x = mSprite->x + 16;
-        mSprite2->y = mSprite->y;
+        mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(spellOverlayAnimation);
         mGameState->AddSprite(mSprite2);
       }

@@ -319,6 +319,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
   RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
   RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
+  RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);

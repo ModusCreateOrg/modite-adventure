@@ -115,7 +115,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x, mSprite->y);
   mSpellOverlayProcess = p;
   mGameState->AddProcess(p);
   Hit(mSprite->mDirection);

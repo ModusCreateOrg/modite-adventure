@@ -13,7 +13,7 @@ TInt GDebugWidget::Render(TInt aX, TInt aY) {
 
 void GDebugWidget::Select() {
   // Simulate start button press to exit menu
-  // gControls.dKeys |= BUTTON_MENU;
+  // gControls.dKeys |= CONTROL_DEBUG;
   GGame::mDebug = !GGame::mDebug;
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuAccept();
