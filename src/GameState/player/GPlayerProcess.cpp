@@ -255,18 +255,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
 
-      // affect nearby enemies
-      for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
-        if (!s->Clipped() && s->type == STYPE_ENEMY) {
-          TFloat dx = s->x - mSprite->x,
-                 dy = s->y - mSprite->y,
-                 distance = SQRT((dx * dx + dy * dy));
-          if (distance < SPELL_DISTANCE) {
-            s->SetCType(STYPE_SPELL);
-          }
-        }
-      }
-
       mSprite->mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
@@ -301,7 +289,7 @@ TBool GPlayerProcess::MaybeSpell() {
     return EFalse;
   }
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (ETrue || (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook)) {
+    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook) {
       if (GPlayer::mManaPotion >= 25) {
         GPlayer::mManaPotion -= 25;
       }
@@ -671,6 +659,18 @@ TBool GPlayerProcess::SpellState() {
       if (mSprite->AnimDone()) {
         mSprite->mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
+
+        // affect nearby enemies
+        for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
+          if (!s->Clipped() && s->type == STYPE_ENEMY) {
+            TFloat dx = s->x - mSprite->x,
+                   dy = s->y - mSprite->y,
+                   distance = SQRT((dx * dx + dy * dy));
+            if (distance < SPELL_DISTANCE) {
+              s->SetCType(STYPE_SPELL);
+            }
+          }
+        }
       }
       break;
   }

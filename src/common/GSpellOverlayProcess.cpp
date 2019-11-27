@@ -1,12 +1,18 @@
 #include "GSpellOverlayProcess.h"
 #include "GGameState.h"
 #include "GResources.h"
+#include "GPlayer.h"
 
 static TInt16 SPELL_SPEED = 2;
 
 static ANIMSCRIPT spellOverlayAnimation[] = {
-  ABITMAP(SPELL_WATER_SLOT),
   ASTEP(SPELL_SPEED, IMG_SPELL + 0),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 1),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 2),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 3),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 1),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 2),
+  ASTEP(SPELL_SPEED, IMG_SPELL + 3),
   ASTEP(SPELL_SPEED, IMG_SPELL + 1),
   ASTEP(SPELL_SPEED, IMG_SPELL + 2),
   ASTEP(SPELL_SPEED, IMG_SPELL + 3),
@@ -17,9 +23,9 @@ static ANIMSCRIPT spellOverlayAnimation[] = {
 
 GSpellOverlayProcess::GSpellOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY)
     : GProcess(ATTR_GONE) {
-  mSprite = new GAnchorSprite(aGameState, ENEMY_SPELL_PRIORITY, SPELL_WATER_SLOT);
+  mSprite = new GAnchorSprite(aGameState, ENEMY_SPELL_PRIORITY, GPlayer::GetSpellSlot());
   mSprite->x = aX;
-  mSprite->y = aY + 1;
+  mSprite->y = aY;
   mSprite->StartAnimation(spellOverlayAnimation);
   aGameState->AddSprite(mSprite);
 }
