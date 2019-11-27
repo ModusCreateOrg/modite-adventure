@@ -42,6 +42,10 @@ git lfs pull
 rm -rf "$HOME/ldk"
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
+
+exit 0
+#TODO Wget for the archive
+
 tar -zxf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
 cd mipsel-linux-uclibc
 ./relocate-sdk.sh
