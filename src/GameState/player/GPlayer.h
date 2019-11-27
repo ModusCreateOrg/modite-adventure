@@ -62,6 +62,7 @@ struct GPlayer {
 
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);
+  static TUint16 GetSpellSlot();
 
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;

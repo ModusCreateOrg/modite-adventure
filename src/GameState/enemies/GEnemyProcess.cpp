@@ -7,6 +7,7 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
+static const TFloat SPELL_HIT_BONUS = 1.1;
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
@@ -104,7 +105,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case DEATH_STATE: {
       //      Death(aDirection);
-      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
     } break;
@@ -115,10 +116,11 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x, mSprite->y + 1);
   mSpellOverlayProcess = p;
   mGameState->AddProcess(p);
-  Hit(mSprite->mDirection);
+  mSprite->mDirection = DIRECTION_DOWN;
+  Hit(DIRECTION_SPELL);
 }
 
 TBool GEnemyProcess::MaybeHit() {
@@ -127,7 +129,8 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      // use GPlayer::mEquipped.mSpellbook
+      TInt hitAmount = SPELL_HIT_BONUS * GPlayer::mHitStrength;
       mSprite->mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);

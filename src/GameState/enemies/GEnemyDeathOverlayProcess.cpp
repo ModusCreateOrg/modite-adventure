@@ -23,7 +23,7 @@ GEnemyDeathOverlayProcess::GEnemyDeathOverlayProcess(GGameState *aGameState, TFl
 : GProcess(ATTR_GONE) {
   mSprite = new GAnchorSprite(aGameState, ENEMY_DEATH_PRIORITY, ENEMY_DEATH_SLOT);
   mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->y = aY + 1;
   mSprite->Name("ENEMY DEATH SPRITE");
   mSprite->ClearFlags(SFLAG_CHECK);
   aGameState->AddSprite(mSprite);
