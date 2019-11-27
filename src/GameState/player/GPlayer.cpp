@@ -93,4 +93,5 @@ TUint16 GPlayer::GetSpellSlot() {
     default:
       Panic("Invalid spell");
   }
+  return 0;
 }
