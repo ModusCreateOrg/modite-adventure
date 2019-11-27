@@ -311,9 +311,25 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 // endregion }}}
 
-/************************************************************i*********************
+/*********************************************************************************
  *********************************************************************************
  *********************************************************************************/
 
@@ -493,7 +509,7 @@ void GRatProcess::Attack(DIRECTION aDirection) {
 }
 
 void GRatProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -505,6 +521,9 @@ void GRatProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }

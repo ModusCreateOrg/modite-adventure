@@ -334,6 +334,22 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(GOBLIN_SLOT),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -415,7 +431,7 @@ void GGoblinProcess::Attack(DIRECTION aDirection) {
 }
 
 void GGoblinProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -427,6 +443,9 @@ void GGoblinProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }

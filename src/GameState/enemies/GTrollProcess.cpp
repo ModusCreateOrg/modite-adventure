@@ -193,6 +193,22 @@ static ANIMSCRIPT hitUpAnimation[] = {ABITMAP(TROLL_SLOT),
                                       ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
                                       ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3), AEND};
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 // endregion }}}
 
 /*********************************************************************************
@@ -271,7 +287,7 @@ void GTrollProcess::Attack(DIRECTION aDirection) {
 }
 
 void GTrollProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -283,6 +299,9 @@ void GTrollProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }

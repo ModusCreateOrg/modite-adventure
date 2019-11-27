@@ -82,10 +82,20 @@ GGame::~GGame() {
  *******************************************************************************
  *******************************************************************************/
 
+BGameEngine *GGame::CurrentState() {
+  if (gGameEngine->IsPaused()) {
+    if (mGameMenu) return mGameMenu;
+    else if (mInventory) return mInventory;
+    else if (mDebugMenu) return mDebugMenu;
+  }
+
+  return gGameEngine;
+}
+
 void GGame::ToggleInGameMenu() {
   // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
   // need be)
-  if (GPlayer::mGameOver || mDebugMenu) {
+  if (GPlayer::mGameOver || mDebugMenu || mInventory) {
     return;
   }
   if (mGameMenu) {
@@ -101,7 +111,7 @@ void GGame::ToggleInGameMenu() {
 }
 
 void GGame::ToggleDebugMenu() {
-  if (GPlayer::mGameOver || mGameMenu) {
+  if (GPlayer::mGameOver || mGameMenu || mInventory) {
     return;
   }
   if (mDebugMenu) {
@@ -121,10 +131,15 @@ void GGame::ToggleDebugMenu() {
  *******************************************************************************/
 
 void GGame::ToggleInventory() {
+  if (GPlayer::mGameOver || mGameMenu) {
+    return;
+  }
   if (mInventory) {
     delete mInventory;
     mInventory = ENull;
-    gGameEngine->Resume();
+    if (!mDebugMenu) {
+      gGameEngine->Resume();
+    }
   }
   else {
     mInventory = new GInventory(&gFullViewPort);
@@ -159,6 +174,15 @@ TInt GGame::GetState() {
 void GGame::StartGame( char *aGameName) {
   printf("START GAME (%s)\n", aGameName);
   SetState(GAME_STATE_RESUME_GAME, aGameName, strlen(aGameName)+1);
+}
+
+TBool GGame::IsGameState() {
+  TBool state = mState == GAME_STATE_RESUME_GAME || mState == GAME_STATE_GAME;
+  if (!state) {
+    return EFalse;
+  }
+  GGameState *s = (GGameState *)gGameEngine;
+  return !s->IsGameOver();
 }
 
 /*******************************************************************************
@@ -245,19 +269,19 @@ void GGame::Run() {
 #endif
 
 #ifdef DEBUG_MODE
-    if (gControls.WasPressed(BUTTON_MENU)) {
-      if (mState == GAME_STATE_GAME) {
+    if (gControls.WasPressed(CONTROL_DEBUG)) {
+      if (IsGameState()) {
         ToggleDebugMenu();
       }
     }
 #endif
 
-    if (gControls.WasPressed(BUTTON_START) && (mState == GAME_STATE_GAME || mState == GAME_STATE_RESUME_GAME)) {
+    if (IsGameState() && gControls.WasPressed(BUTTON_START)) {
       ToggleInGameMenu();
     }
 
     // right shoulder button brings up inventory
-    if (gControls.WasPressed(CONTROL_INVENTORY) && mState == GAME_STATE_GAME) {
+    if (IsGameState() && gControls.WasPressed(CONTROL_INVENTORY)) {
       ToggleInventory();
     }
 

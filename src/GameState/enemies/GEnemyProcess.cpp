@@ -7,6 +7,7 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
+static const TFloat SPELL_HIT_BONUS = 1.1;
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
@@ -104,7 +105,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case DEATH_STATE: {
       //      Death(aDirection);
-      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
     } break;
@@ -115,10 +116,11 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x + 16, mSprite->y);
+  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x, mSprite->y + 1);
   mSpellOverlayProcess = p;
   mGameState->AddProcess(p);
-  Hit(mSprite->mDirection);
+  mSprite->mDirection = DIRECTION_DOWN;
+  Hit(DIRECTION_SPELL);
 }
 
 TBool GEnemyProcess::MaybeHit() {
@@ -127,7 +129,8 @@ TBool GEnemyProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      // use GPlayer::mEquipped.mSpellbook
+      TInt hitAmount = SPELL_HIT_BONUS * GPlayer::mHitStrength;
       mSprite->mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);
@@ -187,8 +190,8 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TFloat DX = 20,
-                    DY = 26;
+static const TInt DX = 8,
+  DY = 8;
 
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
@@ -196,43 +199,14 @@ TBool GEnemyProcess::MaybeAttack() {
   mPlayerSprite->GetRect(hisRect);
 
   if (!mPlayerSprite->mInvulnerable) {
-    if (myRect.x1 >= hisRect.x2) {
-      // to right of player
-      if (ABS(hisRect.x2 - myRect.x1) > DX) {
-        mAttackTimer = 1;
-        return EFalse;
-      }
-      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
-        mAttackTimer = 1;
-        return EFalse;
-      }
-      if (--mAttackTimer <= 0) {
-        NewState(ATTACK_STATE, DIRECTION_LEFT);
-      }
-      return ETrue;
-    }
-    else if (myRect.x2 <= hisRect.x1) {
-      // to left of player
-      if (ABS(hisRect.x1 - myRect.x2) > DX) {
-        mAttackTimer = 1;
-        return EFalse;
-      }
-      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
-        mAttackTimer = 1;
-        return EFalse;
-      }
-      if (--mAttackTimer <= 0) {
-        NewState(ATTACK_STATE, DIRECTION_RIGHT);
-      }
-      return ETrue;
-    }
-
-    if (myRect.y1 >= hisRect.y2) {
-      // enemy below player
-      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
-        // too far away
-        mAttackTimer = 1;
-        return EFalse;
+    if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
+      // vertical overlap
+      if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < DX) {
+        // to right of player
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_LEFT);
+        }
+        return ETrue;
       }
       if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < DX) {
         // to left of player
@@ -241,14 +215,14 @@ TBool GEnemyProcess::MaybeAttack() {
         }
         return ETrue;
       }
-      return ETrue;
-    }
-    else if (myRect.y2 <= hisRect.y1) {
-      // enemy above player
-      if (ABS(mPlayerSprite->y - mSprite->y) > DY) {
-        // too far away
-        mAttackTimer = 1;
-        return EFalse;
+    } else if (myRect.x1 <= hisRect.x2 && myRect.x2 >= hisRect.x1) {
+      // horizontal overlap
+      if (myRect.y1 >= hisRect.y2 && myRect.y1 - hisRect.y2 < DY) {
+        // below player
+        if (--mAttackTimer <= 0) {
+          NewState(ATTACK_STATE, DIRECTION_UP);
+        }
+        return ETrue;
       }
       if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < DY) {
         // above player
