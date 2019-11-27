@@ -38,6 +38,6 @@ fi
 
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
-tar -zxvf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
+tar -zxf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
 cd mipsel-linux-uclibc
 ./relocate-sdk.sh
