@@ -30,7 +30,7 @@ export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR RESOURCES_DIR
 source "$DIR/common.sh"
 
 ######################### Main CI LDK build ##################################
-uname
+echo "Starting LDK build."
 if [[ "$(uname)" != "Linux" ]]; then
   echo "LDK can only builds in Linux, skipping!"
   exit 0;
@@ -47,3 +47,6 @@ cd mipsel-linux-uclibc
 ./relocate-sdk.sh
 cd "BASE_DIR"
 make
+
+echo "Finished LDK build."
+
