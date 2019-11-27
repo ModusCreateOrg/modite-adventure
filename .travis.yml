@@ -15,6 +15,7 @@ before_script: "./.ci/travis/lint.sh"
 script:
   - "./scripts/build.sh"
   - "./scripts/test.sh"
+  - "./scripts/build-ldk.sh"
 notifications:
   slack:
     secure: "XH59GGO2tpCt8reN1DDiuhVtKc6kMhf692Bf01HDPp2iIclvI9NJnbzyrSRpslYbt/3QBX/KNJkVkZh6HevprrWhBCXnn43vDFayh/84I5x43Qpwy+jAix1nhiw60fFkSze3Kuxqhd1u0vl87ahCmKbNkQrMPyom1D5+Ujyi0fcYwDeOLp7pHq+DexEjzCCqu/XtNLUzwB2pTCYmx3XAh8PTIE4LG1WO1uYF2XV2554BLJRIt6mGciR17x63kkCJy2NrJ2Gkve8CTknI1i/aoQWZYQzoJY8MCnpoU4565yt+bVI3eAYVEmimSqt5bai+SBwMeZ8QIZ0qGUfD53tX6C98XHFSeV+GF7TZjBbsS8m00uuuxMGZzD8dxZp9ga7ki0LeLefTGqFZsrLc++NMO0joAQNT55e6kYu/XC05Gg/fAqskGkJSD+tU5Tzhn3DYvYaGe6fIhbg4kX8u8l+Ddd6IrEwQad5G45qovEOi+AXHzM9lOpwOJ7IcBUOsZSZNAkzvonRaN4fhPE/Y5bGlw/qtc8VRN/W2xdVhEheQ67NzzbTgGzeflLe+b3pnKjNxTSMBVuLrlB9jF9PXKNcY0cuMwcqU2ImVLxe9cxlLA+qGIk866tLRRkkUMI5Kjx4S+PpGGcSVVtheEpR0cB2WsH+l17CYXE/xwuDMGpccv14="
