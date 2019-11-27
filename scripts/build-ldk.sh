@@ -39,7 +39,7 @@ fi
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
 pwd
-wget https://www.dropbox.com/s/dng3cq2uabv4yvl/RetroFW-Modus-compact.img.7z?dl=1
+wget -O img.7z "https://www.dropbox.com/s/dng3cq2uabv4yvl/RetroFW-Modus-compact.img.7z?dl=1"
 ls -lrt
-sudo apt-get install p7zip-full
-7z e RetroFW-Modus-compact.img.7z
+sudo apt-get install -y p7zip-full
+7z e img.7z
