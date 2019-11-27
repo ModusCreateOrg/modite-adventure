@@ -279,6 +279,22 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(GOBLIN_SNIPER_SLOT),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -358,7 +374,7 @@ void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
 }
 
 void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -370,6 +386,9 @@ void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }

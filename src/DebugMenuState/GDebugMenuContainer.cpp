@@ -2,6 +2,7 @@
 #include "GLevelWidget.h"
 #include "GDebugWidget.h"
 #include "GHealthWidget.h"
+#include "GManaWidget.h"
 #include "GItemWidget.h"
 #include "GDebugButtonWidget.h"
 #include "GGameState.h"
@@ -35,6 +36,7 @@ void GDebugMenuContainer::SetState(TInt aState) {
     mTitle = (char*)"DEBUG MODE";
     AddWidget((BWidget &) *new GDebugWidget());
     AddWidget((BWidget &) *new GHealthWidget());
+    AddWidget((BWidget &) *new GManaWidget());
     AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG LEVELS", DEBUG_LEVEL, this));
     AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG INVENTORY", DEBUG_INV, this));
   } else if (mState == DEBUG_LEVEL) {
@@ -69,7 +71,35 @@ void GDebugMenuContainer::AddWidget(BWidget &aWidget) {
 }
 
 void GDebugMenuContainer::Run() {
-  GDialogWidget::Run();
+  for (BWidget *w = (BWidget *) mList.First(); !mList.End(w); w = (BWidget *) mList.Next(w)) {
+    w->Run();
+  }
+
+  if (gControls.WasPressed(JOYUP) && OnNavigate(JOYUP) && mCurrentWidget->OnNavigate(JOYUP)) {
+    mCurrentWidget->Deactivate();
+    if (mCurrentWidget == mList.First()) {
+      mCurrentWidget = (BWidget *) mList.Last();
+    } else {
+      mCurrentWidget = (BWidget *) mList.Prev(mCurrentWidget);
+    }
+    mCurrentWidget->Activate();
+
+    // reset dKeys so next state doesn't react to any keys already pressed
+    gControls.dKeys = 0;
+  }
+
+  if (gControls.WasPressed(JOYDOWN) && OnNavigate(JOYDOWN) && mCurrentWidget->OnNavigate(JOYDOWN)) {
+    mCurrentWidget->Deactivate();
+    if (mCurrentWidget == mList.Last()) {
+      mCurrentWidget = (BWidget *) mList.First();
+    } else {
+      mCurrentWidget = (BWidget *) mList.Next(mCurrentWidget);
+    }
+    mCurrentWidget->Activate();
+
+    // reset dKeys so next state doesn't react to any keys already pressed
+    gControls.dKeys = 0;
+  }
 
   if (gControls.WasPressed(JOYLEFT) && OnNavigate(JOYLEFT) && mCurrentWidget->OnNavigate(JOYLEFT)) {
     mCurrentWidget->Deactivate();

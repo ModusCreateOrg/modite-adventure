@@ -31,7 +31,7 @@ void GLevelWidget::Select() {
     return;
   }
   // Simulate start button press to exit menu
-  gControls.dKeys |= BUTTON_MENU;
+  gControls.dKeys |= CONTROL_DEBUG;
   ((GGameState*) gGameEngine)->NextLevel(mLevel, mDepth);
   gViewPort->mWorldX = 0;
   gViewPort->mWorldY = 0;

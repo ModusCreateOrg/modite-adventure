@@ -269,7 +269,7 @@ void GGame::Run() {
 #endif
 
 #ifdef DEBUG_MODE
-    if (gControls.WasPressed(BUTTON_MENU)) {
+    if (gControls.WasPressed(CONTROL_DEBUG)) {
       if (IsGameState()) {
         ToggleDebugMenu();
       }

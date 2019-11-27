@@ -290,6 +290,22 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(SPIDER_SLOT),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 // endregion }}}
 
 /*********************************************************************************
@@ -373,7 +389,7 @@ void GSpiderProcess::Attack(DIRECTION aDirection) {
 }
 
 void GSpiderProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -385,6 +401,9 @@ void GSpiderProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }
