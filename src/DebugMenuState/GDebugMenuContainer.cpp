@@ -2,6 +2,7 @@
 #include "GLevelWidget.h"
 #include "GDebugWidget.h"
 #include "GHealthWidget.h"
+#include "GManaWidget.h"
 #include "GItemWidget.h"
 #include "GDebugButtonWidget.h"
 #include "GGameState.h"
@@ -35,6 +36,7 @@ void GDebugMenuContainer::SetState(TInt aState) {
     mTitle = (char*)"DEBUG MODE";
     AddWidget((BWidget &) *new GDebugWidget());
     AddWidget((BWidget &) *new GHealthWidget());
+    AddWidget((BWidget &) *new GManaWidget());
     AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG LEVELS", DEBUG_LEVEL, this));
     AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG INVENTORY", DEBUG_INV, this));
   } else if (mState == DEBUG_LEVEL) {
