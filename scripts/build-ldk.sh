@@ -36,10 +36,14 @@ if [[ "$(uname)" != "Linux" ]]; then
   exit 0;
 fi
 
+sudo apt-get install git-lfs
+git lfs pull
+
+rm -rf "$HOME/ldk"
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
 tar -zxf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
 cd mipsel-linux-uclibc
-./config
 ./relocate-sdk.sh
+make
 cd --
