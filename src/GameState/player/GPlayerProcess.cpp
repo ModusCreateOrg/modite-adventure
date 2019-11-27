@@ -14,7 +14,6 @@ const TFloat SPELL_DISTANCE = 200.0;
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
-const TUint16 WALK_DELAY_STATE = 10;
 const TUint16 SWORD_STATE = 2;
 const TUint16 SWORD_NO_BULLET_STATE = 3;
 const TUint16 FALL_STATE = 4;
@@ -159,8 +158,29 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDy = 0;
   switch (mState) {
 
+    case WALK_STATE:
+      if (mStepFrame > 0) {
+        switch (mSprite->mDirection) {
+          case DIRECTION_UP:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+            break;
+          case DIRECTION_DOWN:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+            break;
+          case DIRECTION_LEFT:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+            break;
+          case DIRECTION_RIGHT:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+            break;
+        }
+        break;
+      }
     case IDLE_STATE:
-    case WALK_DELAY_STATE:
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
@@ -193,28 +213,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
-
-    case WALK_STATE:
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
-      break;
-
     case SWORD_STATE:
     case SWORD_NO_BULLET_STATE:
       mStep = 0;
@@ -535,10 +533,8 @@ TBool GPlayerProcess::MaybeWalk() {
       NewState(IDLE_STATE, newDirection);
     }
   } else {
-    if (mState == WALK_DELAY_STATE || mSprite->mDirection != newDirection) {
+    if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
       NewState(WALK_STATE, newDirection);
-    } else if (mState != WALK_STATE) {
-      NewState(WALK_DELAY_STATE, newDirection);
     }
   }
 
@@ -561,6 +557,7 @@ TBool GPlayerProcess::MaybeWalk() {
 */
 TBool GPlayerProcess::IdleState() {
   // collision?
+  mStepFrame = 0;
   if (MaybeHit()) {
     return ETrue;
   }
@@ -604,8 +601,8 @@ TBool GPlayerProcess::WalkState() {
   }
 
   mStepFrame++;
-  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame >= (WALKSPEED * 2) / (1 + mMomentum))) {
-    mStepFrame = 0;
+  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >= (WALKSPEED * 2) / (1 + mMomentum))) {
+    mStepFrame = 1;
     NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;
@@ -719,7 +716,6 @@ TBool GPlayerProcess::RunBefore() {
     case IDLE_STATE:
       return IdleState();
     case WALK_STATE:
-    case WALK_DELAY_STATE:
       return WalkState();
     case SWORD_STATE:
       return SwordState();
