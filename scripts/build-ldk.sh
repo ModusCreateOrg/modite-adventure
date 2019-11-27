@@ -30,3 +30,9 @@ export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR RESOURCES_DIR
 source "$DIR/common.sh"
 
 ######################### Main CI LDK build ##################################
+mkdir "$HOME/ldk"
+cd "$HOME/ldk"
+pwd
+wget https://www.dropbox.com/s/dng3cq2uabv4yvl/RetroFW-Modus-compact.img.7z?dl=1
+ls -lrt
+unzip RetroFW-Modus-compact.img.7z
