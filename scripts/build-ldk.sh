@@ -38,8 +38,6 @@ fi
 
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
-pwd
-wget -O img.7z "https://www.dropbox.com/s/dng3cq2uabv4yvl/RetroFW-Modus-compact.img.7z?dl=1"
-ls -lrt
-sudo apt-get install -y p7zip-full
-7z e img.7z
+tar -zxvf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
+cd mipsel-linux-uclibc
+./relocate-sdk.sh
