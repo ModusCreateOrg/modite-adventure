@@ -31,7 +31,7 @@ source "$DIR/common.sh"
 
 ######################### Main CI LDK build ##################################
 uname
-if [[ "$(uname)" != "linux" ]]; then
+if [[ "$(uname)" != "Linux" ]]; then
   echo "LDK can only builds in Linux, skipping!"
   exit 0;
 fi
@@ -41,4 +41,5 @@ cd "$HOME/ldk"
 pwd
 wget https://www.dropbox.com/s/dng3cq2uabv4yvl/RetroFW-Modus-compact.img.7z?dl=1
 ls -lrt
-unzip RetroFW-Modus-compact.img.7z
+sudo apt-get install p7zip-full
+7z e RetroFW-Modus-compact.img.7z
