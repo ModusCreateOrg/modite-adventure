@@ -30,6 +30,12 @@ export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR RESOURCES_DIR
 source "$DIR/common.sh"
 
 ######################### Main CI LDK build ##################################
+uname
+if [[ "$(uname)" != "linux" ]]; then
+  echo "LDK can only builds in Linux, skipping!"
+  exit 0;
+fi
+
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
 pwd
