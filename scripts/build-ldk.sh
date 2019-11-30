@@ -36,9 +36,6 @@ if [[ "$(uname)" != "Linux" ]]; then
   exit 0;
 fi
 
-sudo apt-get install git-lfs
-git lfs pull
-
 rm -rf "$HOME/ldk"
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
@@ -49,7 +46,9 @@ tar -zxf mipsel-linux-uclibc_x64.tar.gz
 cd mipsel-linux-uclibc
 ./relocate-sdk.sh
 cd "$BASE_DIR"
-make
+
+rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
+./scripts/make-ldk.sh
 
 echo "Finished LDK build."
 
