@@ -43,10 +43,9 @@ rm -rf "$HOME/ldk"
 mkdir "$HOME/ldk"
 cd "$HOME/ldk"
 
-exit 0
-#TODO Wget for the archive
+wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-linux-uclibc_x64.tar.gz
 
-tar -zxf "$BASE_DIR/LDK/mipsel-linux-uclibc_x64.tar.gz"
+tar -zxf mipsel-linux-uclibc_x64.tar.gz
 cd mipsel-linux-uclibc
 ./relocate-sdk.sh
 cd "BASE_DIR"
