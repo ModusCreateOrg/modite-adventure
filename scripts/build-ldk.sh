@@ -48,7 +48,7 @@ wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-li
 tar -zxf mipsel-linux-uclibc_x64.tar.gz
 cd mipsel-linux-uclibc
 ./relocate-sdk.sh
-cd "BASE_DIR"
+cd "$BASE_DIR"
 make
 
 echo "Finished LDK build."
