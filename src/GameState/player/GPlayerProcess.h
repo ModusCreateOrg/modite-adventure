@@ -14,7 +14,7 @@ class BMemoryStream;
 #include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
-const TFloat PLAYER_FRICTION = 0.1 / TFloat(FACTOR);
+const TFloat PLAYER_FRICTION = 0.05 / TFloat(FACTOR);
 
 class GPlayerProcess : public GProcess {
 public:
@@ -88,6 +88,8 @@ protected:
 //  GAnchorSprite *mSprite, *mSprite2;
   TUint16 mState;
   TUint16 mStep;
+  TUint16 mStepFrame;
+  TFloat mMomentum;
 };
 
 #endif // MODITE_GPLAYERPROCESS_H

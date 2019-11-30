@@ -79,6 +79,8 @@ TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mState = IDLE_STATE;
   mStep = 0;
+  mStepFrame = 0;
+  mMomentum = 0.0;
   mGameState = aGameState;
   mPlayfield = ENull;
   mBlinkProcess = ENull;
@@ -156,32 +158,54 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDy = 0;
   switch (mState) {
 
+    case WALK_STATE:
+      if (mStepFrame > 0) {
+        switch (mSprite->mDirection) {
+          case DIRECTION_UP:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+            break;
+          case DIRECTION_DOWN:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+            break;
+          case DIRECTION_LEFT:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+            break;
+          case DIRECTION_RIGHT:
+            mStep = 1 - mStep;
+            mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+            break;
+        }
+        break;
+      }
     case IDLE_STATE:
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          if (mSprite->vy < -PLAYER_VELOCITY * 1.5) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidUpAnimation);
           } else {
             mSprite->StartAnimation(idleUpAnimation);
           }
           break;
         case DIRECTION_DOWN:
-          if (mSprite->vy > PLAYER_VELOCITY * 1.5) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidDownAnimation);
           } else {
             mSprite->StartAnimation(idleDownAnimation);
           }
           break;
         case DIRECTION_LEFT:
-          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidLeftAnimation);
           } else {
             mSprite->StartAnimation(idleLeftAnimation);
           }
           break;
         case DIRECTION_RIGHT:
-          if (POW(mSprite->vx, 2) + POW(mSprite->vy, 2) > POW(PLAYER_VELOCITY * 1.5, 2)) {
+          if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidRightAnimation);
           } else {
             mSprite->StartAnimation(idleRightAnimation);
@@ -189,28 +213,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
       }
       break;
-
-    case WALK_STATE:
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-          break;
-        case DIRECTION_DOWN:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-          break;
-        case DIRECTION_LEFT:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-        case DIRECTION_RIGHT:
-          mStep = 1 - mStep;
-          mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-          break;
-      }
-      break;
-
     case SWORD_STATE:
     case SWORD_NO_BULLET_STATE:
       mStep = 0;
@@ -391,6 +393,7 @@ TBool GPlayerProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_ENEMY)) {
     mSprite->ClearCType(STYPE_ENEMY);
     mSprite->Nudge();
+    mMomentum = 0;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -481,22 +484,6 @@ TBool GPlayerProcess::MaybeWalk() {
     return EFalse;
   }
 
-  // apply speed modifier
-  if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
-    if (gControls.IsPressed(CONTROL_RUN)) {
-      newVx *= 2.3;
-      newVy *= 2.3;
-    } else {
-      newVx *= 1.3;
-      newVy *= 1.3;
-    }
-  } else {
-    if (gControls.IsPressed(CONTROL_RUN)) {
-      newVx *= 1.5;
-      newVy *= 1.5;
-    }
-  }
-
   if (((mSprite->vy < 0 || newVy < 0) && !CanWalk(DIRECTION_UP)) ||
       ((mSprite->vy > 0 || newVy > 0) && !CanWalk(DIRECTION_DOWN))) {
     mSprite->vy = 0;
@@ -508,33 +495,54 @@ TBool GPlayerProcess::MaybeWalk() {
     newVx = 0;
   }
 
-  if (newVx == 0 && newVy == 0) {
-    if (mSprite->vy > PLAYER_VELOCITY * 1.3) {
-      mSprite->vy -= PLAYER_FRICTION;
-    } else if (mSprite->vy < -PLAYER_VELOCITY * 1.3) {
-      mSprite->vy += PLAYER_FRICTION;
+  if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
+    if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
+      if (mMomentum < 1.3) {
+        mMomentum += PLAYER_FRICTION / 4;
+      }
     } else {
-      mSprite->vy = 0;
+      if (mMomentum < 0.3) {
+        mMomentum += PLAYER_FRICTION / 4;
+      }
     }
-    if (mSprite->vx > PLAYER_VELOCITY * 1.3) {
-      mSprite->vx -= PLAYER_FRICTION;
-    } else if (mSprite->vx < -PLAYER_VELOCITY * 1.3) {
-      mSprite->vx += PLAYER_FRICTION;
-    } else {
-      mSprite->vx = 0;
+  } else {
+    if (mMomentum > 0) {
+      mMomentum -= PLAYER_FRICTION;
+    }
+    if (mMomentum < 0) {
+      mMomentum = 0;
+    }
+  }
+
+  newVy *= (1 + mMomentum);
+  newVx *= (1 + mMomentum);
+  if (newVx == 0 && newVy == 0) {
+    if (mMomentum > 0) {
+      if (mSprite->vy > PLAYER_VELOCITY) {
+        newVy = mSprite->vy - PLAYER_FRICTION;
+      } else if (mSprite->vy < -PLAYER_VELOCITY) {
+        newVy = mSprite->vy + PLAYER_FRICTION;
+      }
+      if (mSprite->vx > PLAYER_VELOCITY) {
+        newVx = mSprite->vx - PLAYER_FRICTION;
+      } else if (mSprite->vx < -PLAYER_VELOCITY) {
+        newVx = mSprite->vx + PLAYER_FRICTION;
+      }
     }
     if (mState != IDLE_STATE || mSprite->mDirection != newDirection) {
       NewState(IDLE_STATE, newDirection);
     }
   } else {
-    mSprite->vy = newVy;
-    mSprite->vx = newVx;
     if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
       NewState(WALK_STATE, newDirection);
     }
   }
 
+  mSprite->vy = newVy;
+  mSprite->vx = newVx;
+
   if (mSprite->vx == 0 && mSprite->vy == 0) {
+    mMomentum = 0;
     NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
@@ -549,6 +557,7 @@ TBool GPlayerProcess::MaybeWalk() {
 */
 TBool GPlayerProcess::IdleState() {
   // collision?
+  mStepFrame = 0;
   if (MaybeHit()) {
     return ETrue;
   }
@@ -591,7 +600,9 @@ TBool GPlayerProcess::WalkState() {
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
+  mStepFrame++;
+  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >= (WALKSPEED * 2) / (1 + mMomentum))) {
+    mStepFrame = 1;
     NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;
