@@ -38,6 +38,8 @@ SKIP_TOOLS_INSTALL=false
 SUDO="sudo"
 export SUDO
 
+rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
+
 # This remains a case for future expansion.
 case "$op" in
     clean)
