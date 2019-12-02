@@ -76,7 +76,7 @@ protected:
 
 // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-      gSoundPlayer.SfxMenuCancel();
+      gSoundPlayer.SfxMenuOut();
 #endif
       return EFalse;
     }

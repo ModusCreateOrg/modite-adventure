@@ -18,6 +18,6 @@ void GExitWidget::Select() {
   gGame->SetState(GAME_STATE_MAIN_MENU);
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuCancel();
+  gSoundPlayer.SfxMenuOut();
 #endif
 }

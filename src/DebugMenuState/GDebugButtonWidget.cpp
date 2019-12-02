@@ -16,6 +16,6 @@ TInt GDebugButtonWidget::Render(TInt aX, TInt aY) {
 void GDebugButtonWidget::Select() {
   mContainer->SetState(mState);
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

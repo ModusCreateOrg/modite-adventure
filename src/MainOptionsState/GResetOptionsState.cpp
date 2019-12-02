@@ -34,7 +34,7 @@ public:
         gGame->SetState(GAME_STATE_MAIN_OPTIONS);
         // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
-        gSoundPlayer.SfxMenuCancel();
+        gSoundPlayer.SfxMenuOut();
 #endif
         return EFalse;
       }

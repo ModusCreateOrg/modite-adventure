@@ -5,7 +5,7 @@
 #undef FRAME_RATE_INFO
 
 #define ENABLE_AUDIO
-#undef ENABLE_AUDIO
+//#undef ENABLE_AUDIO
 
 #define ENABLE_OPTIONS
 // #undef ENABLE_OPTIONS
