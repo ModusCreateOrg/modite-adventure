@@ -29,6 +29,15 @@ SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
 
 #
+### SPELLS
+#
+PATH resources/sprites/spells/
+SPRITESHEET 64x64 spell_earth.bmp
+SPRITESHEET 64x64 spell_electricity.bmp
+SPRITESHEET 64x64 spell_fire.bmp
+SPRITESHEET 64x64 spell_water.bmp
+
+#
 ### ENEMIES
 #
 PATH resources/sprites/enemies

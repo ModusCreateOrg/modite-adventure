@@ -22,13 +22,11 @@ static TBool slotRemapState[SLOT_MAX];
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
-#if 0
-static struct DUNGEON_DEF {
-  const char *name;
-  TInt16 map[10];
-} dungeon_defs[] = {
+struct TDungeonInfo gDungeonDefs[] = {
   // DUNGEON_DEV
-  { "DEV DUNGEON",
+  "DEV DUNGEON",
+  {
+    DUNGEON_TILESET_OBJECTS_BMP,
     {
       DEVDUNGEON_0_LEVEL_1_MAP,
       DEVDUNGEON_0_LEVEL_1_MAP,
@@ -36,10 +34,10 @@ static struct DUNGEON_DEF {
       DEVDUNGEON_0_LEVEL_3_MAP,
       DEVDUNGEON_0_LEVEL_4_MAP,
       -1,
-    } },
+    },
+  },
 };
-const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
-#endif
+const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
 /*******************************************************************************
  *******************************************************************************
@@ -58,7 +56,7 @@ void GGameState::Init() {
   mTimer = FRAMES_PER_SECOND * 1;
   mGameOver = ENull;
 
-  mGamePlayfield = mPreviousPlayfield = ENull;
+  mGamePlayfield = mNextGamePlayfield = ENull;
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
@@ -84,14 +82,16 @@ GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
   return p;
 }
+
 void GGameState::TryAgain() {
   if (mGameOver) {
     delete mGameOver;
     mGameOver = ENull;
   }
+  GPlayer::mGameOver = EFalse;
   GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-  mLevel = -1;
-  NextLevel(DUNGEON_DEV, 2);
+//  mLevel = -1;
+//  NextLevel(DUNGEON_DEV, 2);
 }
 
 /*******************************************************************************
@@ -101,6 +101,7 @@ void GGameState::TryAgain() {
 void GGameState::PreRender() {
   if (mNextLevel != mLevel) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
+    gViewPort->mWorldX = gViewPort->mWorldY = 0;
   }
 }
 
@@ -234,9 +235,6 @@ void GGameState::PostRender() {
 
   if (mGameOver) {
     mGameOver->Run();
-    if (gControls.WasPressed(BUTTON_SELECT)) {
-      TryAgain();
-    }
     return;
   }
 }
@@ -253,11 +251,9 @@ TUint16 GGameState::MapHeight() {
   return (mGamePlayfield->MapHeightTiles() - gViewPort->mRect.Height() / 32) * 32;
 }
 
-GAnchorSprite *GGameState::PlayerSprite() { return GPlayer::mSprite; }
-
 void GGameState::GameLoop() {
-  for (TInt s = 0; s < 16; s++) {
-    mGamePlayfield->mGroupState[s] = ETrue;
+  for (bool & s : mGamePlayfield->mGroupState) {
+    s = ETrue;
   }
 
   BGameEngine::GameLoop();
@@ -276,18 +272,19 @@ void GGameState::GameLoop() {
 /**
  * This is safe to call from BProcess context.
  *
- * @param aDungeon  ID of dungeon (in dungeon_defs)
+ * @param aDungeon  ID of dungeon (in gDungeonDefs)
  * @param aLevel    Level in dungeon
  */
 void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   mNextDungeon = aDungeon;
   mNextLevel = aLevel;
-  strcpy(mName, dungeon_defs[aDungeon].name);
-  mNextTileMapId = dungeon_defs[aDungeon].map[aLevel];
+  strcpy(mName, gDungeonDefs[aDungeon].name);
+  mNextTileMapId = gDungeonDefs[aDungeon].mInfo.map[aLevel];
 
-  mPreviousPlayfield = ENull;
-  mPlayfield = ENull;
-  mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+  if (!mGamePlayfield) {
+    mPlayfield = mGamePlayfield =  mNextGamePlayfield;
+  }
   sprintf(mText, "%s Level %d", mName, aLevel);
   mTimer = 1 * FRAMES_PER_SECOND;
   Disable();
@@ -301,9 +298,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mLevel = mNextLevel = aLevel;
   mTileMapId = aTileMapId;
 
-  delete mPreviousPlayfield;
-  mPreviousPlayfield = ENull;
   Reset(); // remove sprites and processes
+  mPlayfield = mGamePlayfield = mNextGamePlayfield;
+  mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
   for (TBool &i : slotRemapState) {
     i = EFalse;
@@ -322,6 +319,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
   RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
   RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
+  RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
@@ -681,7 +682,7 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
  *******************************************************************************/
 
 void GGameState::GameOver() {
-  mGameOver = new GGameOver();
+  mGameOver = new GGameOver(this);
   gControls.Reset();
   GPlayer::mGameOver = ETrue;
 }

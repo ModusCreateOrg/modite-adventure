@@ -10,7 +10,7 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 3;
-const TInt HIT_SPEED = 2 * FACTOR;
+const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
@@ -301,6 +301,22 @@ static ANIMSCRIPT hitUpAnimation[] = {
   AEND
 };
 
+static ANIMSCRIPT hitSpellAnimation[] = {
+  ABITMAP(SLIME_SLOT),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_SLIME_DAMAGE_DOWN + 3),
+  AEND,
+};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -381,7 +397,7 @@ void GSlimeProcess::Attack(DIRECTION aDirection) {
 }
 
 void GSlimeProcess::Hit(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(hitUpAnimation);
       break;
@@ -393,6 +409,9 @@ void GSlimeProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(hitRightAnimation);
+      break;
+    case DIRECTION_SPELL:
+      mSprite->StartAnimation(hitSpellAnimation);
       break;
   }
 }

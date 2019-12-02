@@ -4,6 +4,7 @@
 GStatSprite::GStatSprite(TInt aSize, const char *aMessage, TInt aImage)
     : mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
 
+  SetFlags(SFLAG_BELOW);
   mImageNumber = aImage;
   mMessageType = STAT_INFO;
 

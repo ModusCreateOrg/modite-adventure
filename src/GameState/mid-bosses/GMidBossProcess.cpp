@@ -190,10 +190,10 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Spell(aDirection);
       {
         mSpellCounter += 2;
-        auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y - 75 + 32);
+        auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
         mSpellOverlayProcess = p;
         mGameState->AddProcess(p);
-        p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y - 75 + 64);
+        p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
         mGameState->AddProcess(p);
       }
       Hit(mSprite->mDirection);
@@ -317,7 +317,7 @@ TBool GMidBossProcess::IdleState() {
 
 TBool GMidBossProcess::WalkState() {
   if (MaybeHit()) {
-    NewState(MB_IDLE_STATE, mSprite->mDirection);
+    // NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
 

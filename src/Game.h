@@ -37,12 +37,12 @@ const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
 #include "GSplashState.h"
 #include "GGameState.h"
 #include "GMainMenuState.h"
-#include "GLoadGameState.h"
+#include "LoadGameState/GLoadGameState.h"
 #include "GMainOptionsState.h"
 #include "GResetOptionsState.h"
 #include "GCreditsState.h"
 #include "GGameMenuState.h"
-#include "GDebugMenuState.h"
+#include "DebugMenuState/GDebugMenuState.h"
 //#include "GInventory.h"
 
 extern BViewPort   *gViewPort;
@@ -67,6 +67,7 @@ const TUint16 CONTROL_RUN = BUTTONB;
 const TUint16 CONTROL_SPELL = BUTTONX;
 const TUint16 CONTROL_INVENTORY = BUTTONR;
 const TUint16 CONTROL_QUAFF = BUTTONL;
+const TUint16 CONTROL_DEBUG = BUTTON_SELECT;
 
 
 #endif //MODITE_GAME_H

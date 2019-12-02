@@ -19,23 +19,15 @@ static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 const TInt16 DUNGEON_DEV = 0;
 const TInt16 DUNGEON_LIVE = 1;
 
-// info about the dungeons
-static struct DUNGEON_DEF {
+struct TDungeonInfo {
   const char *name;
-  TUint16 map[10];
-} dungeon_defs[] = {
-//   DUNGEON_DEV
-  { "DEV DUNGEON",
-      {
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_1_MAP,
-          DEVDUNGEON_0_LEVEL_2_MAP,
-          DEVDUNGEON_0_LEVEL_3_MAP,
-          DEVDUNGEON_0_LEVEL_4_MAP,
-      } },
+  struct {
+    TInt16 objectsId;
+    TInt16 map[11];
+  } mInfo;
 };
-const TInt NUM_DUNGEONS = sizeof(dungeon_defs) / sizeof(DUNGEON_DEF);
-
+extern TDungeonInfo gDungeonDefs[];
+extern const TInt NUM_DUNGEONS;
 
 class GGameOver;
 
@@ -87,7 +79,11 @@ protected:
   void RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize = IMAGE_64x64);
 
 public:
-  GGamePlayfield *mGamePlayfield, *mPreviousPlayfield;
+  GGamePlayfield *mGamePlayfield, *mNextGamePlayfield;
+
+public:
+  TBool IsGameOver() { return mGameOver != ENull; }
+  TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
 
 protected:
   TInt mTimer;
@@ -96,9 +92,6 @@ protected:
   TInt16 mNextLevel, mLevel;
   TUint16 mNextDungeon, mNextTileMapId, mTileMapId;
   GGameOver *mGameOver;
-
-public:
-  GAnchorSprite *PlayerSprite();
 };
 
 #endif //MODITE_GGAMESTATE_H

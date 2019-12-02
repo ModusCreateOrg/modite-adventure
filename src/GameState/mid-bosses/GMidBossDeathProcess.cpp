@@ -40,6 +40,7 @@ TBool GMidBossDeathProcess::RunBefore() {
     mSprite = new BAnimSprite(ENEMY_DEATH_PRIORITY, ENEMY_DEATH_SLOT, 0, STYPE_DEFAULT);
     mSprite->x = mX;
     mSprite->y = mY;
+    mSprite->SetFlags(SFLAG_SORTPRI);
     mGameState->AddSprite(mSprite);
     mSprite->StartAnimation(deathAnimation);
   }

@@ -17,7 +17,7 @@ GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProce
   mSprite->y = aY - 60 + Random() % 8;
   mSprite->vy = -.8;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
-  gGameEngine->AddSprite(mSprite);
+  gGame->CurrentState()->AddSprite(mSprite);
   mTimeout = TIMEOUT;
 }
 

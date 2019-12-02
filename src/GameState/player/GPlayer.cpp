@@ -1,4 +1,5 @@
 #include "GPlayer.h"
+#include "Items.h"
 
 TUint32 GPlayer::mLevel;
 TUint32 GPlayer::mNextLevel;
@@ -77,4 +78,20 @@ void GPlayer::Dump() {
   printf("%-32.32s: %d,%d/%d\n", "mHitPoints, mMaxHitPoints, mHitStrength", mHitPoints, mMaxHitPoints, mHitStrength);
   printf("%-32.32s: %d,%d\n", "mHealthPotion, mManaPotion", mHealthPotion, mManaPotion);
   mInventoryList.Dump();
+}
+
+TUint16 GPlayer::GetSpellSlot() {
+  switch (GPlayer::mEquipped.mSpellbook->mItemNumber) {
+    case ITEM_BLUE_SPELLBOOK:
+      return SPELL_WATER_SLOT;
+    case ITEM_RED_SPELLBOOK:
+      return SPELL_FIRE_SLOT;
+    case ITEM_GREEN_SPELLBOOK:
+      return SPELL_EARTH_SLOT;
+    case ITEM_YELLOW_SPELLBOOK:
+      return SPELL_ELECTRICITY_SLOT;
+    default:
+      Panic("Invalid spell");
+  }
+  return 0;
 }

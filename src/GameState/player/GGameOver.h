@@ -5,13 +5,14 @@
 
 class GGameOver {
 public:
-  GGameOver();
+  GGameOver(GGameState *aGameState);
   ~GGameOver();
 
 public:
   TBool Run();
 
 protected:
+  GGameState *mGameState;
   TRGB mSavedPalette[256];
   TInt mState;
 };
