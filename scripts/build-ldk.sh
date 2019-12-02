@@ -49,6 +49,6 @@ cd "$BASE_DIR"
 
 echo "Starting LDK build: $(pwd)"
 rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
-./scripts/make-ldk.sh
+./scripts/make-ldk-ci.sh
 echo "Finished LDK build."
 
