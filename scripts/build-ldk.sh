@@ -36,15 +36,18 @@ if [[ "$(uname)" != "Linux" ]]; then
   exit 0;
 fi
 
-rm -rf "$HOME/ldk"
-mkdir "$HOME/ldk"
-cd "$HOME/ldk"
+if [ -d "$HOME/ldk" ]; then
+  echo "Previously Installed: mipsel-linux-uclibc_x64.tar.gz"
+else
+  echo "Installing: mipsel-linux-uclibc_x64.tar.gz"
+  mkdir "$HOME/ldk"
+  cd "$HOME/ldk"
+  wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-linux-uclibc_x64.tar.gz
+  tar -zxf mipsel-linux-uclibc_x64.tar.gz
+  cd mipsel-linux-uclibc
+  ./relocate-sdk.sh
+fi
 
-wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-linux-uclibc_x64.tar.gz
-
-tar -zxf mipsel-linux-uclibc_x64.tar.gz
-cd mipsel-linux-uclibc
-./relocate-sdk.sh
 cd "$BASE_DIR"
 
 echo "Starting LDK build: $(pwd)"
