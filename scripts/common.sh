@@ -291,20 +291,22 @@ function checkout_resources_branch {
 
 function archive_app {
     ARCHIVE_NAME=undefined
-    if [[ "$OS" == "Darwin" ]]; then
+    if [[ "${OS:-}" == "Darwin" ]]; then
         echo "Archiving Darwin"
         cd "$BUILD_DIR" || exit 1
         ARCHIVE_NAME="modite.osx-${ARTIFACT_VERSION:-devel}.tgz"
         echo "ARCHIVE_NAME = $ARCHIVE_NAME"
         tar czvfp "./$ARCHIVE_NAME" Modite.app
         cd - || exit 1
-    elif [[ "$OS" == "Linux" ]]; then
+    elif [[ "${OS:-}" == "Linux" ]]; then
         echo "Archiving Linux"
         cd "$BUILD_DIR" || exit 1
         ARCHIVE_NAME="modite.linux-${ARTIFACT_VERSION:-devel}.tgz"
         echo "ARCHIVE_NAME = $ARCHIVE_NAME"
         tar czvfp "./$ARCHIVE_NAME" Modite
         cd - || exit 1
+     else
+       echo "Not Archiving App."
     fi
 }
 
