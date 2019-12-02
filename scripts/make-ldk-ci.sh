@@ -43,6 +43,7 @@ ping 169.254.1.1 -c 1 -W 1 -i 200
 md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
 md5=${md5: -6}
 
-make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
+#make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
+make -f Makefile-ldk.mk cleanall
 
 
