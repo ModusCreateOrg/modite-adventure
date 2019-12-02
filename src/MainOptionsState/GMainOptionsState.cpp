@@ -45,7 +45,7 @@ public:
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_MENU);
 #ifdef ENABLE_AUDIO
-        gSoundPlayer.SfxMenuCancel();
+        gSoundPlayer.SfxMenuOut();
 #endif
         return EFalse;
       }

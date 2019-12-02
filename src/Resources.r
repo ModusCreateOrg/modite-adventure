@@ -91,14 +91,21 @@ RAW EnterCredits.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/
-RAW SFX_rotate_block_right.wav
-RAW SFX_rotate_block_left.wav
-RAW SFX_good_drop_block.wav
-RAW SFX_bad_drop_block.wav
-RAW SFX_move_block.wav
-RAW SFX_score_combo.wav
-RAW SFX_option_select.wav
-RAW SFX_explode_block.wav
-RAW SFX_next_level.wav
-RAW SFX_next_stage.wav
+RAW SFX_empty.wav
+RAW SFX_menu_nav_down.wav
+RAW SFX_menu_nav_up.wav
+RAW SFX_menu_in.wav
+RAW SFX_menu_out.wav
+RAW SFX_menu_option_select.wav
 RAW SFX_save_game.wav
+RAW SFX_player_slash.wav
+RAW SFX_player_quaff_health_potion.wav
+RAW SFX_player_quaff_water_spell.wav
+RAW SFX_player_quaff_earth_spell.wav
+RAW SFX_player_quaff_fire_spell.wav
+RAW SFX_player_quaff_energy_spell.wav
+RAW SFX_player_take_damage.wav
+RAW SFX_enemy_death.wav
+RAW SFX_enemy_take_damage.wav
+RAW SFX_playfield_spike_raise.wav
+

@@ -92,6 +92,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
+      gSoundPlayer.SfxEnemyTakeDamage();
       Hit(aDirection);
       break;
 
@@ -105,6 +106,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case DEATH_STATE: {
       //      Death(aDirection);
+      gSoundPlayer.SfxEnemyDeath();
       auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);

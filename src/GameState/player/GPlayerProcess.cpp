@@ -218,7 +218,8 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      gSoundPlayer.SfxBadDrop();
+
+      gSoundPlayer.SfxPlayerSlash();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordUpNoBulletAnimation : swordUpAnimation);
@@ -245,6 +246,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case QUAFF_STATE:
+      gSoundPlayer.SfxPlayerQuaffHealthPotion();
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -326,6 +328,8 @@ TBool GPlayerProcess::MaybeHit() {
     if (!mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
+
+    gSoundPlayer.SfxPlayerTakeDamage();
 
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
       switch (other->mDirection) {

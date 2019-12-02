@@ -13,10 +13,11 @@ GDialogWidget::~GDialogWidget() {
 TBool GDialogWidget::OnNavigate(TUint16 bits) {
 
 #ifdef ENABLE_AUDIO
+  //TODO: @Jgarcia
   if (bits & JOYUP) {
-    gSoundPlayer.SfxMenuNavUp();
-  } else if (bits & JOYDOWN) {
     gSoundPlayer.SfxMenuNavDown();
+  } else if (bits & JOYDOWN) {
+    gSoundPlayer.SfxMenuNavUp();
   }
 #endif
   return ETrue;
