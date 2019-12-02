@@ -26,7 +26,7 @@ TInt GLevelWidget::Render(TInt aX, TInt aY) {
 void GLevelWidget::Select() {
   if (((GGameState*) gGameEngine)->IsCurrentLevel(mLevel, mDepth)) {
 #ifdef ENABLE_AUDIO
-    gSoundPlayer.SfxMenuCancel();
+    gSoundPlayer.SfxMenuOut();
 #endif
     return;
   }
@@ -36,6 +36,6 @@ void GLevelWidget::Select() {
   gViewPort->mWorldX = 0;
   gViewPort->mWorldY = 0;
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

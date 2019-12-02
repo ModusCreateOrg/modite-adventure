@@ -10,18 +10,35 @@
 GSoundPlayer gSoundPlayer;
 
 static const TUint16 effectsList[] = {
-  SFX_GOOD_DROP_BLOCK_WAV,
-  SFX_BAD_DROP_BLOCK_WAV,
-  SFX_MOVE_BLOCK_WAV,
-  SFX_ROTATE_BLOCK_LEFT_WAV,
-  SFX_ROTATE_BLOCK_RIGHT_WAV,
-  SFX_SCORE_COMBO_WAV,
-  SFX_OPTION_SELECT_WAV,
-  SFX_EXPLODE_BLOCK_WAV,
-  SFX_NEXT_LEVEL_WAV,
-  SFX_NEXT_STAGE_WAV,
-  SFX_SAVE_GAME_WAV
+  SFX_EMPTY_WAV,
+  SFX_MENU_NAV_UP_WAV,
+  SFX_MENU_NAV_DOWN_WAV,
+  SFX_MENU_IN_WAV,
+  SFX_MENU_OUT_WAV,
+  SFX_MENU_OPTION_SELECT_WAV,
+  SFX_SAVE_GAME_WAV,
+  SFX_PLAYER_SLASH_WAV,
+  SFX_PLAYER_QUAFF_HEALTH_POTION_WAV,
+  SFX_PLAYER_QUAFF_WATER_SPELL_WAV,
+  SFX_PLAYER_QUAFF_EARTH_SPELL_WAV,
+  SFX_PLAYER_QUAFF_FIRE_SPELL_WAV,
+  SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV,
+  SFX_PLAYER_TAKE_DAMAGE_WAV,
+  SFX_ENEMY_DEATH_WAV,
+  SFX_ENEMY_TAKE_DAMAGE_WAV,
+  SFX_PLAYFIELD_SPIKE_RAISE_WAV,
 };
+
+static TUint16 FindSfxNumber(TUint16 aSfxFile) {
+
+  for (size_t i = 0; i < sizeof(effectsList); i++) {
+    if (aSfxFile == effectsList[i]) {
+      return (TUint16) i; // Should not go above UINT16_MAX
+    }
+  }
+
+  return UINT16_MAX;
+}
 
 static const TUint16 allSongs[] = {
   EMPTYSONG_XM,
@@ -33,7 +50,6 @@ static const TUint16 allSongs[] = {
   GLACIAL_MOUNTAINS_XM,
   GAMEOVER_XM,
   UNDERWATERFANTASY_XM,
-  GAMEOVER_XM,
   ENTERCREDITS_XM
 };
 
@@ -62,25 +78,21 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 
   PlayMusic(EMPTYSONG_XM);
 
-// TODO @mtintiuc
-//  SetMusicVolume(gOptions->music);
-//  SetEffectsVolume(gOptions->sfx);
-//  MuteMusic(gOptions->muted);
-
-  SetMusicVolume(.5);
-  SetEffectsVolume(.5);
-  MuteMusic(false);
+  SetMusicVolume(gOptions->music);
+  SetEffectsVolume(gOptions->sfx);
+  MuteMusic(gOptions->muted);
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
+  aResourceId = EMPTYSONG_XM;
   TBool music = BSoundPlayer::PlayMusic(aResourceId);
 //  printf("%s %i\n", __PRETTY_FUNCTION__, aResourceId);
   // BSoundPlayer::PlayMusic un-mutes the music
   // We have to re-mute it in case of mute == true
-//TODO: @mtintiuc
-  MuteMusic(false);
-  SetMusicVolume(.5);
-  SetEffectsVolume(.5);
+
+  SetMusicVolume(gOptions->music);
+  SetEffectsVolume(gOptions->sfx);
+  MuteMusic(gOptions->muted);
 
   return music;
 }
@@ -107,8 +119,8 @@ TBool GSoundPlayer::LoadEffects() {
 // TODO: @mtintiuc
 //  SetMusicVolume(gOptions->music);
 //  SetEffectsVolume(gOptions->sfx);
-  SetMusicVolume(.5);
-  SetEffectsVolume(.5);
+  SetMusicVolume(.15);
+  SetEffectsVolume(.15);
   return ETrue;
 }
 
@@ -122,66 +134,75 @@ BRaw *GSoundPlayer::LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) 
 
 
 
-void GSoundPlayer::SfxGoodDrop() {
-  PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/0);
-}
 
-void GSoundPlayer::SfxRotateRight() {
-  PlaySfx(/*SFX_ROTATE_BLOCK_RIGHT_WAV*/4);
-}
 
-void GSoundPlayer::SfxRotateLeft() {
-  PlaySfx(/*SFX_ROTATE_BLOCK_LEFT_WAV*/3);
-}
-
-void GSoundPlayer::SfxBadDrop() {
-  gSoundPlayer.PlaySfx(/*SFX_BAD_DROP_BLOCK_WAV*/1);
-}
-
-void GSoundPlayer::SfxCombo() {
-  PlaySfx(/*SFX_SCORE_COMBO_WAV*/5);
-}
-
-void GSoundPlayer::SfxMoveBlock() {
-  PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/2);
-}
-
-void GSoundPlayer::SfxExplodeBlock() {
-  PlaySfx(/*SFX_EXPLODE_BLOCK_WAV*/7);
-}
 
 void GSoundPlayer::SfxOptionSelect() {
-  PlaySfx(/*SFX_OPTION_SELECT_WAV*/6);
-}
-
-void GSoundPlayer::SfxMenuNavUp() {
-  PlaySfx(/*SFX_ROTATE_BLOCK_LEFT_WAV*/3);
+  PlaySfx(FindSfxNumber(SFX_MENU_OPTION_SELECT_WAV));
 }
 
 void GSoundPlayer::SfxMenuNavDown() {
-  PlaySfx(/*SFX_ROTATE_BLOCK_RIGHT_WAV*/4);
+  PlaySfx(FindSfxNumber(SFX_MENU_NAV_DOWN_WAV));
 }
 
-void GSoundPlayer::SfxMenuAccept() {
-  gSoundPlayer.PlaySfx(/*SFX_BAD_DROP_BLOCK_WAV*/1);
+void GSoundPlayer::SfxMenuNavUp() {
+  PlaySfx(FindSfxNumber(SFX_MENU_NAV_UP_WAV));
 }
 
-void GSoundPlayer::SfxMenuCancel() {
-  gSoundPlayer.PlaySfx(/*SFX_GOOD_DROP_BLOCK_WAV*/0);
+void GSoundPlayer::SfxMenuIn() {
+  PlaySfx(FindSfxNumber(SFX_MENU_IN_WAV));
 }
 
-void GSoundPlayer::SfxNextLevel() {
-  gSoundPlayer.PlaySfx(/*SFX_NEXT_LEVEL*/8);
+void GSoundPlayer::SfxMenuOut() {
+  PlaySfx(FindSfxNumber(SFX_MENU_OUT_WAV));
 }
 
-void GSoundPlayer::SfxNextStage() {
-  gSoundPlayer.PlaySfx(/*SFX_NEXT_LEVEL*/9);
-}
 
 void GSoundPlayer::SfxSaveGame() {
-  gSoundPlayer.PlaySfx(/*SFX_SAVE_GAME*/10);
+  PlaySfx(FindSfxNumber(SFX_SAVE_GAME_WAV));
 }
 
 void GSoundPlayer::SfxStartGame() {
   SfxSaveGame();
+}
+
+// SFX Player //
+void GSoundPlayer::SfxPlayerSlash(){
+  PlaySfx(FindSfxNumber(SFX_PLAYER_SLASH_WAV));
+}
+
+void GSoundPlayer::SfxPlayerQuaffHealthPotion() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV));
+}
+void GSoundPlayer::SfxPlayerQuaffWaterSpell() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_WATER_SPELL_WAV));
+}
+
+void GSoundPlayer::SfxPlayerQuaffEarthSpell() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_EARTH_SPELL_WAV));
+}
+void GSoundPlayer::SfxPlayerQuaffFireSpell() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_FIRE_SPELL_WAV));
+}
+void GSoundPlayer::SfxPlayerQuaffEnergySpell() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV));
+}
+
+void GSoundPlayer::SfxPlayerTakeDamage() {
+  PlaySfx(FindSfxNumber(SFX_PLAYER_TAKE_DAMAGE_WAV));
+}
+
+
+// SFX Enemy (general)
+void GSoundPlayer::SfxEnemyDeath() {
+  PlaySfx(FindSfxNumber(SFX_ENEMY_DEATH_WAV));
+}
+void GSoundPlayer::SfxEnemyTakeDamage() {
+  PlaySfx(FindSfxNumber(SFX_ENEMY_TAKE_DAMAGE_WAV));
+}
+
+// SFX Playfield
+
+void GSoundPlayer::SfxPlayfieldSpikeRaise() {
+  PlaySfx(FindSfxNumber(SFX_PLAYFIELD_SPIKE_RAISE_WAV));
 }

@@ -60,7 +60,7 @@ void GItemWidget::Run() {
     }
     GPlayer::mInventoryList.Dump();
 #ifdef ENABLE_AUDIO
-    gSoundPlayer.SfxMenuAccept();
+    gSoundPlayer.SfxMenuIn();
 #endif
   }
 }
@@ -79,6 +79,6 @@ void GItemWidget::Select() {
 
   GPlayer::mInventoryList.Dump();
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

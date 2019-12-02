@@ -16,6 +16,6 @@ void GDebugWidget::Select() {
   // gControls.dKeys |= CONTROL_DEBUG;
   GGame::mDebug = !GGame::mDebug;
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

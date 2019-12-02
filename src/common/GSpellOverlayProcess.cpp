@@ -21,9 +21,10 @@ static ANIMSCRIPT spellOverlayAnimation[] = {
   AEND,
 };
 
-GSpellOverlayProcess::GSpellOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY)
+GSpellOverlayProcess::GSpellOverlayProcess(GGameState *aGameState, GProcess *aProcess, TFloat aX, TFloat aY)
     : GProcess(ATTR_GONE) {
   mSprite = new GAnchorSprite(aGameState, ENEMY_SPELL_PRIORITY, GPlayer::GetSpellSlot());
+  mParent = aProcess;
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->StartAnimation(spellOverlayAnimation);
@@ -44,7 +45,8 @@ TBool GSpellOverlayProcess::RunBefore() {
 
 TBool GSpellOverlayProcess::RunAfter() {
   if (mSprite->AnimDone()) {
-    gEventEmitter.FireEvent(this, EVENT_SPELL_PROCESS_EXIT, ENull);
+    gEventEmitter.FireEvent(this, EVENT_SPELL_PROCESS_EXIT, ENull );
+    mParent->OverlayAnimationComplete();
     return EFalse;
   }
   return ETrue;

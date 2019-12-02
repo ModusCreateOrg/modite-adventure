@@ -39,6 +39,6 @@ void GButtonWidget::Select() {
     gGame->SetState(mState);
   }
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

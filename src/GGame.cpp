@@ -248,7 +248,7 @@ void GGame::Run() {
       mInventory->GameLoop();
     }
     else if (mGameMenu) {
-//      gGameEngine->GameLoop();
+      gGameEngine->GameLoop();
       mGameMenu->GameLoop();
     }
     else if (mDebugMenu) {

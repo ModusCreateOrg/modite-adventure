@@ -53,6 +53,8 @@ TBool GSpikesProcess::RunBefore() {
   else {
     if (--mTimer <= 0) {
       mState = ETrue;
+      //TODO: @jgarcia do clipping to see if we can use mSprite->flags has SFLAG_CLIPPED in it.
+//      gSoundPlayer.SfxPlayfieldSpikeRaise();
       mSprite->StartAnimation(spikesAnimation);
     }
   }

@@ -40,7 +40,7 @@ void GResetOptionsWidget::Select() {
   // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   // Play notification sound
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 
   // Make sure we hear the reset in music volume immediately
   gSoundPlayer.SetMusicVolume(gOptions->music);

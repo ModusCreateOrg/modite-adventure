@@ -92,6 +92,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
+      gSoundPlayer.SfxEnemyTakeDamage();
       Hit(aDirection);
       break;
 
@@ -105,6 +106,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case DEATH_STATE: {
       //      Death(aDirection);
+      gSoundPlayer.SfxEnemyDeath();
       auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
@@ -116,11 +118,15 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, mSprite->x, mSprite->y + 1);
+  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
   mSpellOverlayProcess = p;
   mGameState->AddProcess(p);
   mSprite->mDirection = DIRECTION_DOWN;
   Hit(DIRECTION_SPELL);
+}
+
+void GEnemyProcess::OverlayAnimationComplete() {
+  mSpellOverlayProcess = ENull;
 }
 
 TBool GEnemyProcess::MaybeHit() {
@@ -266,11 +272,7 @@ TBool GEnemyProcess::HitState() {
 
 TBool GEnemyProcess::SpellState() {
   auto *p = mSpellOverlayProcess;
-  if (!p) {
-    return ETrue;
-  }
-  GAnchorSprite *s = mSpellOverlayProcess->GetSprite();
-  if (mSprite->AnimDone() && s && s->AnimDone()) {
+  if (mSprite->AnimDone() && !p) {
     if (mSprite->mHitPoints <= 0) {
       mSpellOverlayProcess = ENull;
       NewState(DEATH_STATE, mSprite->mDirection);

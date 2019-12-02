@@ -6,7 +6,7 @@
 
 class GSpellOverlayProcess : public GProcess {
 public:
-  GSpellOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY);
+  GSpellOverlayProcess(GGameState *aGameState, GProcess *aProcess, TFloat aX, TFloat aY);
 
   ~GSpellOverlayProcess() OVERRIDE;
 
@@ -15,11 +15,9 @@ public:
 
   TBool RunAfter() OVERRIDE;
 
-public:
-  GAnchorSprite *GetSprite() { return mSprite; }
-
 protected:
   GAnchorSprite *mSprite;
+  GProcess *mParent;
 };
 
 #endif //MODITE_GSPELLOVERLAYPROCESS_H

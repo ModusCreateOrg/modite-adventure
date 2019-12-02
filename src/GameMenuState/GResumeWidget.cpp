@@ -19,6 +19,6 @@ void GResumeWidget::Select() {
   gControls.dKeys |= BUTTON_START;
 
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxMenuAccept();
+  gSoundPlayer.SfxMenuIn();
 #endif
 }

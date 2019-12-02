@@ -21,22 +21,32 @@ public:
   TBool PlayMusic(TInt16 aResourceId);
 
   // SFX Methods //
-  void SfxGoodDrop();
-  void SfxRotateRight();
-  void SfxRotateLeft();
-  void SfxBadDrop();
-  void SfxCombo();
-  void SfxMoveBlock();
-  void SfxExplodeBlock();
-  void SfxOptionSelect();
-  void SfxMenuNavUp();
-  void SfxMenuNavDown();
-  void SfxMenuAccept();
-  void SfxMenuCancel();
-  void SfxNextLevel();
-  void SfxNextStage();
+
   void SfxSaveGame();
   void SfxStartGame();
+  void SfxMenuNavDown();
+  void SfxMenuNavUp();
+  void SfxMenuIn();
+  void SfxMenuOut();
+
+  void SfxOptionSelect();
+
+  // SFX PLAYER //
+
+  void SfxPlayerSlash();
+  void SfxPlayerQuaffHealthPotion();
+  void SfxPlayerQuaffWaterSpell();
+  void SfxPlayerQuaffEarthSpell();
+  void SfxPlayerQuaffFireSpell();
+  void SfxPlayerQuaffEnergySpell();
+  void SfxPlayerTakeDamage();
+
+  // SFX Enemy (general)
+  void SfxEnemyDeath();
+  void SfxEnemyTakeDamage();
+
+  // SFX Playfield
+  void SfxPlayfieldSpikeRaise();
 };
 
 
