@@ -38,7 +38,7 @@ if [ "${TRAVIS:-undefined}" = 'undefined' ]; then
     archive_app
 else
     echo "This is a CI buid, so uploading the artifacts."
-    upload_artifacts_LDK
+    upload_artifacts
 fi
 
 
