@@ -58,6 +58,8 @@ INCLUDE = -I $(CREATIVE_ENGINE_SOURCE_DIR) \
           -I $(GAME_SOURCE_DIR)/GameState/status \
           -I $(GAME_SOURCE_DIR)/ResetState \
           -I $(GAME_SOURCE_DIR)/MainOptionsState \
+          -I $(GAME_SOURCE_DIR)/LoadGameState \
+          -I $(GAME_SOURCE_DIR)/DebugMenuState \
           -I $(GAME_SOURCE_DIR)/
 
 
