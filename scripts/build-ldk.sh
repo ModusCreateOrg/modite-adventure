@@ -52,13 +52,3 @@ rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
 
 echo "Finished LDK build."
 
-# Archive the artifacts and upload
-if [ "${TRAVIS:-undefined}" = 'undefined' ]; then
-    echo "This is a development buid, so not uploading the artifacts."
-    archive_app
-else
-    echo "This is a CI buid, so uploading the artifacts."
-    upload_artifacts_LDK
-fi
-
-
