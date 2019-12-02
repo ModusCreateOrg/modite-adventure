@@ -47,8 +47,8 @@ cd mipsel-linux-uclibc
 ./relocate-sdk.sh
 cd "$BASE_DIR"
 
+echo "Starting LDK build: $(pwd)"
 rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
 ./scripts/make-ldk.sh
-
 echo "Finished LDK build."
 
