@@ -190,10 +190,10 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Spell(aDirection);
       {
         mSpellCounter += 2;
-        auto *p = new GSpellOverlayProcess(mGameState, mSprite->x, mSprite->y + 1);
+        auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
         mSpellOverlayProcess = p;
         mGameState->AddProcess(p);
-        p = new GSpellOverlayProcess(mGameState, mSprite->x + 44, mSprite->y + 1);
+        p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
         mGameState->AddProcess(p);
       }
       Hit(mSprite->mDirection);
