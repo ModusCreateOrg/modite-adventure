@@ -29,28 +29,8 @@ export DIR BUILD_DIR TOP_DIR CREATIVE_ENGINE_DIR RESOURCES_DIR
 # shellcheck disable=SC1090
 source "$DIR/common.sh"
 
-######################### Main CI LDK build ##################################
-echo "Starting LDK build."
-if [[ "$(uname)" != "Linux" ]]; then
-  echo "LDK can only builds in Linux, skipping!"
-  exit 0;
-fi
-
-rm -rf "$HOME/ldk"
-mkdir "$HOME/ldk"
-cd "$HOME/ldk"
-
-wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-linux-uclibc_x64.tar.gz
-
-tar -zxf mipsel-linux-uclibc_x64.tar.gz
-cd mipsel-linux-uclibc
-./relocate-sdk.sh
-cd "$BASE_DIR"
-
-rm -f "$CREATIVE_ENGINE_DIR"/src/*.o
-./scripts/make-ldk.sh
-
-echo "Finished LDK build."
+######################### Main CI Artifact Upload ##################################
+echo "Starting Artifact Upload."
 
 # Archive the artifacts and upload
 if [ "${TRAVIS:-undefined}" = 'undefined' ]; then
@@ -60,5 +40,6 @@ else
     echo "This is a CI buid, so uploading the artifacts."
     upload_artifacts_LDK
 fi
+
 
 
