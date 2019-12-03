@@ -110,14 +110,5 @@ elif [ "$OS" == "Linux" ]; then
     patch_linux_build
 fi
 
-
 # "$BASE_DIR/doxygen/build.sh" #GEN-275
 
-# Archive the artifacts and upload
-if [ "${TRAVIS:-undefined}" = 'undefined' ]; then
-    echo "This is a development buid, so not uploading the artifacts."
-    archive_app
-else
-    echo "This is a CI buid, so uploading the artifacts."
-    upload_artifacts
-fi
