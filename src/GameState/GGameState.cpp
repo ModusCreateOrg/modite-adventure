@@ -139,18 +139,12 @@ static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, 
 }
 
 void GGameState::PostRender() {
+#ifdef DEBUG_MODE
   if (mText[0]) {
     TInt len = strlen(mText);
-    TInt x = gViewPort->mRect.Width() / 2 - len * 12 / 2;
-    gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont16x16, x, 32, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -4);
-    if (--mTimer < 0) {
-      mText[0] = '\0';
-      gControls.Reset();
-      Enable();
-    }
-    return;
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
   }
+#endif
 
   BViewPort vp;
   TRect rect(0, 0, SCREEN_WIDTH - 1, 15);
@@ -286,8 +280,6 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
     mPlayfield = mGamePlayfield =  mNextGamePlayfield;
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
-  mTimer = 1 * FRAMES_PER_SECOND;
-  Disable();
 }
 
 /**
