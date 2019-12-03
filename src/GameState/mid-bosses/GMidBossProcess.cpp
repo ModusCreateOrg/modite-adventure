@@ -98,6 +98,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->w = 44;
       mSprite->h = 24;
       mStateTimer = Random(15, 180);
+      mSprite->type = STYPE_ENEMY;
       Idle(aDirection);
       mSprite->ResetShadow();
       break;
@@ -426,7 +427,7 @@ TBool GMidBossProcess::MaybeBounce() {
 }
 
 TBool GMidBossProcess::MoveState() {
-  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET | STYPE_SPELL); // invulnerable
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);
@@ -446,7 +447,7 @@ TBool GMidBossProcess::ReturnState() {
     mSprite->vx = mSprite->vy = 0.0;
     NewState(MB_REVERT_STATE, DIRECTION_DOWN);
   }
-  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET); // invulnerable
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET | STYPE_SPELL); // invulnerable
   return ETrue;
 }
 
@@ -459,7 +460,7 @@ TBool GMidBossProcess::RevertState() {
       mSprite->type = STYPE_ENEMY;
     }
     mSprite->SetFlags(SFLAG_CHECK);
-    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
+    mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET | STYPE_SPELL); // invulnerable
     mSprite->SafePosition(GPlayer::mSprite);
     NewState(MB_IDLE_STATE, DIRECTION_DOWN);
   }
