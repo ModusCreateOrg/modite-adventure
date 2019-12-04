@@ -11,6 +11,8 @@ BViewPort gFullViewPort;
 
 #ifdef DEBUG_MODE
 TBool GGame::mDebug = ETrue;
+#else
+TBool GGame::mDebug = EFalse;
 #endif
 
 /*******************************************************************************

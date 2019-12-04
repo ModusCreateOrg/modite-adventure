@@ -35,9 +35,7 @@ public:
   void ToggleDebugMenu();
   BGameEngine *CurrentState();
 
-#ifdef DEBUG_MODE
   static TBool mDebug;
-#endif
 protected:
   TBool IsGameState();
 protected:
