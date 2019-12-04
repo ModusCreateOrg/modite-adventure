@@ -45,6 +45,7 @@ public:
 public:
   void GameLoop() OVERRIDE;
   void PreRender() OVERRIDE;
+  void PositionCamera() OVERRIDE;
   void PostRender() OVERRIDE;
 
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
