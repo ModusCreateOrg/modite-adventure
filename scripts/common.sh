@@ -303,10 +303,12 @@ function archive_app {
         cd "$BUILD_DIR" || exit 1
         ARCHIVE_NAME="modite.linux-${ARTIFACT_VERSION:-devel}.tgz"
         echo "ARCHIVE_NAME = $ARCHIVE_NAME"
-        tar czvfp "./$ARCHIVE_NAME" Modite
+        cp ../ldk/modite-adventure.dge .
+        cp ../ldk/modite-adventure.ipk .
+        tar czvfp "./$ARCHIVE_NAME" Modite modite-adventure.dge modite-adventure.ipk
         cd - || exit 1
      else
-       echo "Not Archiving App."
+       echo "Not Archiving App. OS: ${OS:-undefined}"
     fi
 }
 

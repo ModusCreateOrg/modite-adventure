@@ -32,6 +32,8 @@ source "$DIR/common.sh"
 ######################### Main CI Artifact Upload ##################################
 echo "Starting Artifact Upload."
 
+echo "OS: ${OS:-undefined}"
+
 # Archive the artifacts and upload
 if [ "${TRAVIS:-undefined}" = 'undefined' ]; then
     echo "This is a development buid, so not uploading the artifacts."
