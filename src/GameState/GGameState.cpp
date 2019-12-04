@@ -17,7 +17,7 @@ const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
 struct TDungeonInfo gDungeonDefs[] = {
-  { "OVERWORLD",
+  {"OVERWORLD",
     {
       VILLAGE_TILESET_ALL_BMP,
       {
@@ -25,8 +25,8 @@ struct TDungeonInfo gDungeonDefs[] = {
         P256_OVERWORLD_MAP,
         -1,
       },
-    } },
-  { "DUNGEON 257",
+    }},
+  {"DUNGEON 257",
     { DUNGEON_TILESET_OBJECTS_BMP,
       {
         P257_LEVEL_1_MAP,
@@ -36,8 +36,8 @@ struct TDungeonInfo gDungeonDefs[] = {
         P257_LEVEL_4_MAP,
         P257_LEVEL_5_MAP,
         -1,
-      } } },
-  { "DUNGEON 258",
+      }}},
+  {"DUNGEON 258",
     { DUNGEON_TILESET_OBJECTS_BMP,
       {
         P258_LEVEL_1_MAP,
@@ -47,14 +47,14 @@ struct TDungeonInfo gDungeonDefs[] = {
         P258_LEVEL_4_MAP,
         P258_LEVEL_5_MAP,
         -1,
-      } } },
-  { "DUNGEON 259",
+      }}},
+  {"DUNGEON 259",
     { DUNGEON_TILESET_OBJECTS_BMP,
       {
         P259_LEVEL_1_MAP,
         P259_LEVEL_1_MAP,
         -1,
-      } } },
+      }}},
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
@@ -97,7 +97,7 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
+GGameState::~GGameState() { }
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -163,7 +163,8 @@ void GGameState::PostRender() {
 #ifdef DEBUG_MODE
   if (mText[0]) {
     TInt len = strlen(mText);
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT,
+                                      COLOR_TEXT_TRANSPARENT);
   }
 #endif
 
@@ -175,12 +176,12 @@ void GGameState::PostRender() {
   gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_TEXT_BG);
 
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
-          *screen = gDisplay.renderBitmap;
+    *screen = gDisplay.renderBitmap;
 
   const TInt BOTTLE_X = 64 * 3,
-             BOTTLE_Y = 14,
-             BOTTLE_WIDTH = 12,
-             BOTTLE_HEIGHT = 15;
+    BOTTLE_Y = 14,
+    BOTTLE_WIDTH = 12,
+    BOTTLE_HEIGHT = 15;
 
   TInt x = 2;
 
@@ -206,7 +207,7 @@ void GGameState::PostRender() {
 
   // render mana potion
   TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-    BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+             BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
   switch (GPlayer::mManaPotion) {
     case 75:
       mana.Offset(BOTTLE_WIDTH * 1, 0);
@@ -233,7 +234,7 @@ void GGameState::PostRender() {
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
   fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints,
-    GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
+             GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
   x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge
@@ -325,13 +326,13 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
   RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
-  //  RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
-  //  RemapSlot(CHARA_HERO_SPELL_EFFECT_BMP, PLAYER_SPELL_SLOT, IMAGE_32x32);
-  //  RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
-  //  RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
-  //  RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
-  //  RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
-  //  RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
+  RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
+  RemapSlot(CHARA_HERO_SPELL_EFFECT_BMP, PLAYER_SPELL_SLOT, IMAGE_32x32);
+  RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
+  RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
+  RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
@@ -361,17 +362,17 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("%5d: ", ip);
 #endif
     const TUint16 op = program[ip].mCode & TUint32(0xffff),
-                  params = program[ip].mCode >> TUint32(16),
-                  row = program[ip].mRow,
-                  col = program[ip].mCol;
+      params = program[ip].mCode >> TUint32(16),
+      row = program[ip].mRow,
+      col = program[ip].mCol;
 
     auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
     switch (op) {
 
-        //
-        // ENVIRONMENT
-        //
+      //
+      // ENVIRONMENT
+      //
 
       case ATTR_STONE_STAIRS_UP:
 #ifdef DEBUGME
@@ -386,8 +387,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #endif
         if (mDungeon == OVERWORLD_DUNGEON) {
           GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "DUNGEON");
-        }
-        else {
+        } else {
           GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "STONE");
         }
         break;
@@ -676,11 +676,11 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   */
 void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
   BObjectProgram *program = mGamePlayfield->mObjectProgram,
-                 *step = &program[aIp];
+    *step = &program[aIp];
 
   TUint32 code = aCode,
-          attr = aAttr,
-          sCode = step->mCode;
+    attr = aAttr,
+    sCode = step->mCode;
 
   if (aCode == ATTR_KEEP) {
     if (aAttr == ATTR_KEEP) {
@@ -688,11 +688,9 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
       return;
     }
     step->mCode = LOWORD(sCode) | (attr << 16);
-  }
-  else if (aAttr == ATTR_KEEP) {
+  } else if (aAttr == ATTR_KEEP) {
     step->mCode = (sCode & 0xffff0000) | (attr << 16);
-  }
-  else {
+  } else {
     TUint32 new_code = code | (attr << 16);
     step->mCode = new_code;
   }
@@ -714,11 +712,10 @@ void GGameState::GameOver() {
  *******************************************************************************/
 
 void GGameState::InitRemapSlots() {
-  printf("INIT\n");
   for (TInt i = 0; i < SLOT_MAX; i++) {
     if (mSlotRemapState[i]) {
-      printf("releasing slot %d\n", i);
       if (gResourceManager.GetBitmap(i)) {
+        printf("Releasing slot %d\n");
         gResourceManager.ReleaseBitmapSlot(i);
       }
     }
@@ -765,7 +762,7 @@ TBool GGameState::SaveState() {
   GPlayer::WriteToStream(stream);
 
   // walk through process list and save enemies states
-  for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
+  for (GProcess *p = (GProcess *) mProcessList.First(); !mProcessList.End(p); p = (GProcess *) mProcessList.Next(p)) {
     if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER) {
       if (p->mSaveToStream) {
         p->WriteToStream(stream);
