@@ -1,7 +1,8 @@
 #include "GStairsProcess.h"
 
-GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aParams, TFloat aX, TFloat aY, const char *aKind)
-    : GEnvironmentProcess(aGameState, aIp, aParams, aX, aY) {
+GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aParams, TFloat aX,
+                               TFloat aY, const char *aKind)
+  : GEnvironmentProcess(aGameState, aIp, aParams, aX, aY) {
   mSprite = mSprite2 = ENull;
   mDirection = aDirection;
   mGameState = aGameState;
@@ -32,8 +33,21 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->w = mSprite2->h = 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
-  }
-  else {
+  } else if (!strcasecmp(aKind, "DUNGEON")) {
+    const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
+    mAttribute = ATTR_DUNGEON_ENTRANCE;
+    mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
+    mSprite->Name("DUNGEON ENTRANCE");
+    mSprite->cx = -16;
+    mSprite->w = mSprite->h = 32;
+    mSprite->x = aX;
+    mSprite->y = aY + 32;
+    mSprite->SetFlags(SFLAG_BELOW);
+    mSprite->cMask = STYPE_PLAYER;
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mGameState->AddSprite(mSprite);
+    mSprite->ClearFlags(SFLAG_RENDER);
+  } else {
     const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
     mAttribute = isWood ? ATTR_WOOD_STAIRS_DOWN : ATTR_STONE_STAIRS_DOWN;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
@@ -79,8 +93,10 @@ TBool GStairsProcess::RunAfter() {
       mSprite2->cMask = 0;
       mSprite2->ClearFlags(SFLAG_CHECK);
     }
-    printf("USE STAIRS to level %d\n", mLevel);
-    mGameState->NextLevel(DUNGEON_DEV, mLevel);
+    const TInt16 dungeon = TUint16(mLevel >> 8) & 0xff,
+      level = TUint16(mLevel & 0xff);
+    printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
+    mGameState->NextLevel(dungeon,level);
     mSprite->mCollided->ClearCType(STYPE_OBJECT);
   }
   mSprite->cType = 0;

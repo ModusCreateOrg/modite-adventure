@@ -4,20 +4,27 @@
 #define TILES_WIDE 10
 #define TILES_HIGH 7
 
+#define ENABLE_REMAP_SLOTS
+//#undef ENABLE_REMAP_SLOTS
+
 #include "Game.h"
 #include "GGamePlayfield.h"
 #include "GPlayerProcess.h"
 
 class GPlayerProcess;
+
 class GAnchorSprite;
+
 class GGamePlayfield;
 
 // Message Types
 static TUint16 MESSAGE_FLOOR_SWITCH_DOWN = 0;
 static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 
-const TInt16 DUNGEON_DEV = 0;
-const TInt16 DUNGEON_LIVE = 1;
+const TInt16 OVERWORLD_DUNGEON = 0;
+const TInt16 DUNGEON_257 = 1;
+const TInt16 DUNGEON_258 = 1;
+const TInt16 DUNGEON_259 = 1;
 
 struct TDungeonInfo {
   const char *name;
@@ -35,6 +42,7 @@ class GGameState : public BGameEngine {
 public:
   // game engine
   GGameState();
+
   // game engine loads saved game
   GGameState(const char *aName);
 
@@ -44,17 +52,22 @@ public:
 
 public:
   void GameLoop() OVERRIDE;
+
   void PreRender() OVERRIDE;
+
   void PostRender() OVERRIDE;
 
   void NextLevel(const TInt16 aDungeon, const TInt16 aLevel);
+
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);
 
   TBool SaveState();
+
   TBool LoadState(const char *aGameName);
 
 public:
   GProcess *AddProcess(GProcess *p);
+
   // call this to resume game after death
   void TryAgain();
 
@@ -65,8 +78,30 @@ public:
   void EndProgram(TInt aIp, TUint16 aCode = ATTR_GONE, TUint16 aAttr = 0);
 
   TUint16 MapWidth();
+
   TUint16 MapHeight();
 
+public:
+  GGamePlayfield *mGamePlayfield, *mNextGamePlayfield;
+
+public:
+  TBool IsGameOver() { return mGameOver != ENull; }
+
+  TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
+
+protected:
+  TInt mTimer;
+  char mText[128];
+  char mName[128];
+  TInt16 mNextLevel, mLevel, mNextObjectsId;
+  TUint16 mDungeon, mNextDungeon, mNextTileMapId, mTileMapId;
+  GGameOver *mGameOver;
+#ifdef ENABLE_REMAP_SLOTS
+protected:
+  // If the value for the slot is ETrue, then the slot
+  // has already been remapped. We don't want to remap twice or the color range
+  // ends up in the wrong place.
+  TBool mSlotRemapState[SLOT_MAX];
 protected:
   /**
    * Load bmp and remap it to the specified color range, and set the palette colors in gDisplay
@@ -78,20 +113,9 @@ protected:
    */
   void RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize = IMAGE_64x64);
 
-public:
-  GGamePlayfield *mGamePlayfield, *mNextGamePlayfield;
+  void InitRemapSlots();
+#endif
 
-public:
-  TBool IsGameOver() { return mGameOver != ENull; }
-  TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
-
-protected:
-  TInt mTimer;
-  char mText[128];
-  char mName[128];
-  TInt16 mNextLevel, mLevel;
-  TUint16 mNextDungeon, mNextTileMapId, mTileMapId;
-  GGameOver *mGameOver;
 };
 
 #endif //MODITE_GGAMESTATE_H
