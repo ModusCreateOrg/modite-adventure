@@ -739,6 +739,30 @@ TBool GPlayerProcess::RunBefore() {
 }
 
 TBool GPlayerProcess::RunAfter() {
+  // position viewport to follow player
+  TFloat maxx = mGameState->MapWidth(),
+         maxy = mGameState->MapHeight();
+
+  // half viewport size
+  const TFloat ww = gViewPort->mRect.Width() / 2.0,
+               hh = gViewPort->mRect.Height() / 2.0;
+
+  // upper left corner of desired viewport position
+  TFloat xx = gViewPort->mWorldX = mSprite->x - ww,
+         yy = gViewPort->mWorldY = mSprite->y - hh;
+
+  if (xx < 0) {
+    gViewPort->mWorldX = 0;
+  }
+  else if (xx > maxx) {
+    gViewPort->mWorldX = maxx;
+  }
+  if (yy < 0) {
+    gViewPort->mWorldY = 0;
+  }
+  else if (yy > maxy) {
+    gViewPort->mWorldY = maxy;
+  }
 
   return ETrue;
 }
