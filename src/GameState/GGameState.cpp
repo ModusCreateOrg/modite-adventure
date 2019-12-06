@@ -17,44 +17,82 @@ const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
 struct TDungeonInfo gDungeonDefs[] = {
-  {"OVERWORLD",
+  {
+    "OVERWORLD",
     {
-        DUNGEON_TILESET_OBJECTS_BMP,
+      DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P256_OVERWORLD_MAP,
-        P256_OVERWORLD_MAP,
-        -1,
+        P256_OVERWORLD_MAP,   // 0
+        P256_OVERWORLD_MAP,   // 1
+        -1,                   // 2
+        -1,                   // 3
+        -1,                   // 4
+        -1,                   // 5
+        -1,                   // 6
+        -1,                   // 7
+        -1,                   // 8
+        -1,                   // 9
+        -1,                   // 10
       },
-    }},
-  {"DUNGEON 257",
-    { DUNGEON_TILESET_OBJECTS_BMP,
+    }
+  },
+  {
+    "DUNGEON 257",
+    {
+      DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P257_LEVEL_1_MAP,
-        P257_LEVEL_1_MAP,
-        P257_LEVEL_2_MAP,
-        P257_LEVEL_3_MAP,
-        P257_LEVEL_4_MAP,
-        P257_LEVEL_5_MAP,
-        -1,
-      }}},
-  {"DUNGEON 258",
-    { DUNGEON_TILESET_OBJECTS_BMP,
+        P257_LEVEL_1_MAP,   // 0
+        P257_LEVEL_1_MAP,   // 1
+        P257_LEVEL_2_MAP,   // 2
+        P257_LEVEL_3_MAP,   // 3
+        P257_LEVEL_4_MAP,   // 4
+        P257_LEVEL_5_MAP,   // 5
+        -1,                 // 6
+        -1,                 // 7
+        -1,                 // 8
+        -1,                 // 9
+        -1,                 // 10
+      }
+    }
+  },
+  {
+    "DUNGEON 258",
+    {
+      DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P258_LEVEL_1_MAP,
-        P258_LEVEL_1_MAP,
-        P258_LEVEL_2_MAP,
-        P258_LEVEL_3_MAP,
-        P258_LEVEL_4_MAP,
-        P258_LEVEL_5_MAP,
-        -1,
-      }}},
-  {"DUNGEON 259",
-    { DUNGEON_TILESET_OBJECTS_BMP,
+        P258_LEVEL_1_MAP,   // 0
+        P258_LEVEL_1_MAP,   // 1
+        P258_LEVEL_2_MAP,   // 2
+        P258_LEVEL_3_MAP,   // 3
+        P258_LEVEL_4_MAP,   // 4
+        P258_LEVEL_5_MAP,   // 5
+        -1,                 // 6
+        -1,                 // 7
+        -1,                 // 8
+        -1,                 // 9
+        -1,                 // 10
+      }
+    }
+  },
+  {
+    "DUNGEON 259",
+    {
+      DUNGEON_TILESET_OBJECTS_BMP,
       {
         P259_LEVEL_1_MAP,
         P259_LEVEL_1_MAP,
         -1,
-      }}},
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+      }
+    }
+  },
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
@@ -97,7 +135,7 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() { }
+GGameState::~GGameState() {}
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -293,11 +331,16 @@ void GGameState::GameLoop() {
  * @param aLevel    Level in dungeon
  */
 void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
-  mNextDungeon = aDungeon;
+  if (aDungeon == -1) {
+    // -1 means stay in the same dungeon
+    mNextDungeon = mDungeon;
+  } else {
+    mNextDungeon = aDungeon;
+  }
   mNextLevel = aLevel;
-  strcpy(mName, gDungeonDefs[aDungeon].name);
-  mNextTileMapId = gDungeonDefs[aDungeon].mInfo.map[aLevel];
-  mNextObjectsId = gDungeonDefs[aDungeon].mInfo.objectsId;
+  strcpy(mName, gDungeonDefs[mNextDungeon].name);
+  mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
+  mNextObjectsId = gDungeonDefs[mNextDungeon].mInfo.objectsId;
 
   mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   if (!mGamePlayfield) {
