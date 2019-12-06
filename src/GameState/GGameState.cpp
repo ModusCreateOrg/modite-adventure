@@ -19,7 +19,7 @@ const TInt GAUGE_WIDTH = 90;
 struct TDungeonInfo gDungeonDefs[] = {
   {"OVERWORLD",
     {
-      VILLAGE_TILESET_ALL_BMP,
+        DUNGEON_TILESET_OBJECTS_BMP,
       {
         P256_OVERWORLD_MAP,
         P256_OVERWORLD_MAP,
