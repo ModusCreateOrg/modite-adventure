@@ -44,7 +44,7 @@ SPRITESHEET 64x64 chara_rat.bmp
 SPRITESHEET 64x64 chara_slime.bmp
 SPRITESHEET 64x64 chara_spider.bmp
 SPRITESHEET 64x64 chara_troll.bmp
-SPRITESHEET 64x64 projectile_arrow.bmp
+# SPRITESHEET 64x64 projectile_arrow.bmp
 SPRITESHEET 64x64 enemy_death.bmp
 
 #
@@ -80,7 +80,7 @@ TMX 259.txt
 #
 PATH resources/sprites/environment
 SPRITESHEET 32x32 dungeon_tileset_objects.bmp
-SPRITESHEET 32x32 village_tileset_all.bmp
+# SPRITESHEET 32x32 village_tileset_all.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
