@@ -87,6 +87,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDx = 0;
   mSprite->mDy = 0;
 
+  // Reset blinking for all new states
+  mSprite->Fill(-1);
+
   switch (aState) {
 
     case MB_IDLE_STATE:
