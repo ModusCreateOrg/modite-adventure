@@ -47,10 +47,6 @@ GMidBossProcess::~GMidBossProcess() {
 }
 
 TBool GMidBossProcess::RunBefore() {
-  if (mSprite->Clipped()) {
-    NewState(MB_IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
   switch (mState) {
     case MB_IDLE_STATE:
       return IdleState();
@@ -86,6 +82,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDirection = aDirection;
   mSprite->mDx = 0;
   mSprite->mDy = 0;
+
+  // Reset blinking for all new states
+  mSprite->Fill(-1);
 
   switch (aState) {
 
@@ -142,6 +141,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->cy = 8;
       mSprite->w = 44;
       mSprite->h = 24;
+      mSprite->ResetShadow();
       Revert(aDirection);
       break;
 
@@ -210,7 +210,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         mDeathCounter = 10;
         for (TInt delay = 0; delay < mDeathCounter; delay++) {
           printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
-          auto *p = new GMidBossDeathProcess(mGameState, this, r.x1, r.y1, delay);
+          auto *p = new GMidBossDeathProcess(mGameState, this, r.x1, r.y1 - 64, delay);
           mGameState->AddProcess(p);
         }
       }
