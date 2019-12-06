@@ -10,7 +10,7 @@ cd ${WORKING_DIR}
 echo "Compiling"
 mkdir -p build/ldk/
 
-make -f Makefile-ldk.mk -j 12 ipk >/dev/null
+make -f Makefile-ldk.mk -j 12 ipk >/dev/null 2>&1
 if [[ $? -eq 0 ]]; then
  	make -f Makefile-ldk.mk cleanobjects >/dev/null 2>&1
 fi
