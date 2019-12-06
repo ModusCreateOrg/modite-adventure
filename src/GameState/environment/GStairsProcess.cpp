@@ -96,7 +96,12 @@ TBool GStairsProcess::RunAfter() {
     const TInt16 dungeon = TUint16(mLevel >> 8) & 0xff,
       level = TUint16(mLevel & 0xff);
     printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
-    mGameState->NextLevel(dungeon,level);
+    if (level == 10) {
+      mGameState->NextLevel(OVERWORLD_DUNGEON,1);
+    }
+    else {
+      mGameState->NextLevel(dungeon,level);
+    }
     mSprite->mCollided->ClearCType(STYPE_OBJECT);
   }
   mSprite->cType = 0;
