@@ -18,7 +18,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mState = IDLE_STATE;
   mSprite = new GEnemySprite(mGameState, ENEMY_PRIORITY, aSlot);
   mSprite->type = STYPE_ENEMY;
-  mSprite->cMask = STYPE_PLAYER | STYPE_PBULLET;
+  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->w = 32;
   mSprite->h = 16;
@@ -368,6 +368,12 @@ TBool GEnemyProcess::WalkState() {
     return ETrue;
   }
 
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    mSprite->Nudge();
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
   if (mSprite->AnimDone()) {
     // done with left/right step, start animation for the other foot
     NewState(WALK_STATE, mSprite->mDirection);
@@ -400,7 +406,7 @@ TBool GEnemyProcess::RunBefore() {
 }
 
 TBool GEnemyProcess::RunAfter() {
-  mSprite->ClearCType(STYPE_PLAYER);
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
 
   return ETrue;
 }
