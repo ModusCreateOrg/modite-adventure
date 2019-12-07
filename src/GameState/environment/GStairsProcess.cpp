@@ -17,7 +17,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->x = aX;
     mSprite->y = aY + 64;
     mSprite->w = mSprite->h = 32;
-    mSprite->cMask = STYPE_PLAYER;
+    mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite->SetFlags(SFLAG_BELOW);
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
@@ -43,7 +43,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->x = aX;
     mSprite->y = aY + 32;
     mSprite->SetFlags(SFLAG_BELOW);
-    mSprite->cMask = STYPE_PLAYER;
+    mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
   }

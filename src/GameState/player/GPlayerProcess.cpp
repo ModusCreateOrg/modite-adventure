@@ -305,7 +305,6 @@ TBool GPlayerProcess::MaybeSpell() {
 }
 
 TBool GPlayerProcess::MaybeHit() {
-  mSprite->ClearCType(STYPE_OBJECT);
 
   if (mSprite->mInvulnerable) {
     mSprite->ClearCType(STYPE_EBULLET);
@@ -396,6 +395,13 @@ TBool GPlayerProcess::MaybeHit() {
 
   if (mSprite->TestCType(STYPE_ENEMY)) {
     mSprite->ClearCType(STYPE_ENEMY);
+    mSprite->Nudge();
+    mMomentum = 0;
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
     mSprite->Nudge();
     mMomentum = 0;
     NewState(IDLE_STATE, mSprite->mDirection);

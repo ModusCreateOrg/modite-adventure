@@ -26,9 +26,9 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
 
   mAttribute = ATTR_LEVER;
 
-  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_ENEMY);
+  mSprite = new GAnchorSprite(mGameState, LEVER_PRIORITY, ENVIRONMENT_SLOT, IMG_LEVER, STYPE_OBJECT);
   mSprite->Name("ENVIRONMENT LEVER");
-  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
   mSprite->w = 32;
   mSprite->h = 24;
   mSprite->cx = -16;
@@ -102,7 +102,7 @@ TBool GLeverProcess::RunAfter() {
         break;
     }
   }
-  mSprite->TestAndClearCType(STYPE_PLAYER);
+  mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
 
   return ETrue;
 }
