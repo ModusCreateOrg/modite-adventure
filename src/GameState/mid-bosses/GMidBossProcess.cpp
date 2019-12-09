@@ -269,7 +269,6 @@ TBool GMidBossProcess::MaybeHit() {
           NewState(MB_HIT_STATE, DIRECTION_UP);
           break;
       }
-      mSprite->Nudge();
       return ETrue;
     }
   }
@@ -472,6 +471,10 @@ TBool GMidBossProcess::AttackState() {
 }
 
 TBool GMidBossProcess::HitState() {
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
+    mSprite->Nudge();
+  }
   if (mSprite->AnimDone()) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
