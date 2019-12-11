@@ -133,7 +133,7 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_MID_BOSS_FIRE:
     case ATTR_MID_BOSS_EARTH:
     case ATTR_MID_BOSS_WATER:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, params));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params));
       break;
   }
   return ENull;

@@ -72,7 +72,7 @@ static const TInt items[] = {
 
 static const char *itemNames[] = {
   "INVALID ITEM",
-  "Blue Spellbook",
+  "Water Spellbook",
   "Red Spellbook",
   "Green Spellbook",
   "Yellow Spellbook",
