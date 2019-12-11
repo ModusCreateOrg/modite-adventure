@@ -14,11 +14,6 @@ BITMAP splash_sprites.bmp
 BITMAP title.bmp
 PALETTE test.pal
 
-#
-### ENVIRONMENT/OBJECTS
-#
-PATH resources/sprites/environment
-SPRITESHEET 32x32 dungeon_tileset_objects.bmp
 
 #
 ### HERO
@@ -49,7 +44,7 @@ SPRITESHEET 64x64 chara_rat.bmp
 SPRITESHEET 64x64 chara_slime.bmp
 SPRITESHEET 64x64 chara_spider.bmp
 SPRITESHEET 64x64 chara_troll.bmp
-SPRITESHEET 64x64 projectile_arrow.bmp
+# SPRITESHEET 64x64 projectile_arrow.bmp
 SPRITESHEET 64x64 enemy_death.bmp
 
 #
@@ -71,10 +66,21 @@ SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 #
 # PATH resources/tilemaps/DevDungeon_0
 # TILEMAP DevDungeon_0.filelist.txt
-PATH resources/tilemaps-new/DevDungeon_0
-TMX DevDungeo_0.txt
-PATH resources/tilemaps-new/Dungeon_1
-TMX Dungeon_1.txt
+PATH resources/tilemaps-new/256
+TMX overworld.txt
+PATH resources/tilemaps-new/257
+TMX 257.txt
+PATH resources/tilemaps-new/258
+TMX 258.txt
+PATH resources/tilemaps-new/259
+TMX 259.txt
+
+#
+### ENVIRONMENT/OBJECTS
+#
+PATH resources/sprites/environment
+SPRITESHEET 32x32 dungeon_tileset_objects.bmp
+# SPRITESHEET 32x32 village_tileset_all.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/

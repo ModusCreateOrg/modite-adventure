@@ -50,6 +50,7 @@ const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
 const TUint16 ATTR_CHEST_OPEN = 25;
 const TUint16 ATTR_CRATE_GONE = 26;
+const TUint16 ATTR_DUNGEON_ENTRANCE = 27;
 // mid bosses
 const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
 const TUint16 ATTR_MID_BOSS_FIRE = 1002;
@@ -132,9 +133,17 @@ public:
       mObjectProgram[i].Dump(i);
     }
   }
+
+  void DumpMap();
+  void DumpMapAttributes();
+
 public:
   TUint16 GetAttribute(TFloat aWorldX, TFloat aWorldY) {
     return TUint16(GetCell(aWorldX, aWorldY) >> 16);
+  }
+
+  TUint16 GetAttribute(TInt aRow, TInt aCol) {
+    return TUint16(GetCell(aRow, aCol) >> 16);
   }
 
   TBool IsWall(TFloat aWorldX, TFloat aWorldY) {

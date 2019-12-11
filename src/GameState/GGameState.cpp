@@ -13,29 +13,72 @@
 #define DEBUGME
 //#undef DEBUGME
 
-// scope local to this file.  If the value for the slot is ETrue, then the slot
-// has already been remapped. We don't want to remap twice or the color range
-// ends up in the wrong place.
-
-static TBool slotRemapState[SLOT_MAX];
-
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
 struct TDungeonInfo gDungeonDefs[] = {
-  // DUNGEON_DEV
-  "DEV DUNGEON",
-  {
-    DUNGEON_TILESET_OBJECTS_BMP,
+  { "OVERWORLD",
     {
-      DEVDUNGEON_0_LEVEL_1_MAP,
-      DEVDUNGEON_0_LEVEL_1_MAP,
-      DEVDUNGEON_0_LEVEL_2_MAP,
-      DEVDUNGEON_0_LEVEL_3_MAP,
-      DEVDUNGEON_0_LEVEL_4_MAP,
-      -1,
-    },
-  },
+      DUNGEON_TILESET_OBJECTS_BMP,
+      {
+        P256_OVERWORLD_MAP, // 0
+        P256_OVERWORLD_MAP, // 1
+        -1,                 // 2
+        -1,                 // 3
+        -1,                 // 4
+        -1,                 // 5
+        -1,                 // 6
+        -1,                 // 7
+        -1,                 // 8
+        -1,                 // 9
+        -1,                 // 10
+      },
+    } },
+  { "DUNGEON 257",
+    { DUNGEON_TILESET_OBJECTS_BMP,
+      {
+        P257_LEVEL_1_MAP, // 0
+        P257_LEVEL_1_MAP, // 1
+        P257_LEVEL_2_MAP, // 2
+        P257_LEVEL_3_MAP, // 3
+        P257_LEVEL_4_MAP, // 4
+        P257_LEVEL_5_MAP, // 5
+        -1,               // 6
+        -1,               // 7
+        -1,               // 8
+        -1,               // 9
+        -1,               // 10
+      } } },
+  { "DUNGEON 258",
+    { DUNGEON_TILESET_OBJECTS_BMP,
+      {
+        P258_LEVEL_1_MAP, // 0
+        P258_LEVEL_1_MAP, // 1
+        P258_LEVEL_2_MAP, // 2
+        P258_LEVEL_3_MAP, // 3
+        P258_LEVEL_4_MAP, // 4
+        P258_LEVEL_5_MAP, // 5
+        -1,               // 6
+        -1,               // 7
+        -1,               // 8
+        -1,               // 9
+        -1,               // 10
+      } } },
+  { "DUNGEON 259",
+    { DUNGEON_TILESET_OBJECTS_BMP,
+      {
+        P259_LEVEL_1_MAP,
+        P259_LEVEL_1_MAP,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+      } } },
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
@@ -47,9 +90,11 @@ void GGameState::Init() {
   strcpy(mText, "");
   strcpy(mName, "");
   mLevel = 0;
+  mNextDungeon = mDungeon = 0;
   mNextLevel = 0;
   mTileMapId = 0;
   mNextTileMapId = 0;
+  mNextObjectsId = 0;
 
   gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1, MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
@@ -67,7 +112,7 @@ void GGameState::Init() {
 // Constructor
 GGameState::GGameState() : BGameEngine(gViewPort) {
   Init();
-  NextLevel(DUNGEON_DEV, 2);
+  NextLevel(OVERWORLD_DUNGEON, 1);
 }
 
 // Constructor
@@ -76,7 +121,7 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() { gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT); }
+GGameState::~GGameState() {}
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -90,8 +135,8 @@ void GGameState::TryAgain() {
   }
   GPlayer::mGameOver = EFalse;
   GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-//  mLevel = -1;
-//  NextLevel(DUNGEON_DEV, 2);
+  //  mLevel = -1;
+  //  NextLevel(DUNGEON_DEV, 2);
 }
 
 /*******************************************************************************
@@ -99,7 +144,7 @@ void GGameState::TryAgain() {
  *******************************************************************************/
 
 void GGameState::PreRender() {
-  if (mNextLevel != mLevel) {
+  if (mNextLevel != mLevel || mNextDungeon != mDungeon) {
     LoadLevel(mName, mNextLevel, mNextTileMapId);
     gViewPort->mWorldX = gViewPort->mWorldY = 0;
   }
@@ -142,7 +187,8 @@ void GGameState::PostRender() {
 #ifdef DEBUG_MODE
   if (mText[0]) {
     TInt len = strlen(mText);
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT,
+      COLOR_TEXT_TRANSPARENT);
   }
 #endif
 
@@ -211,7 +257,8 @@ void GGameState::PostRender() {
 
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints, GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
+  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints,
+    GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
   x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge
@@ -246,7 +293,7 @@ TUint16 GGameState::MapHeight() {
 }
 
 void GGameState::GameLoop() {
-  for (bool & s : mGamePlayfield->mGroupState) {
+  for (bool &s : mGamePlayfield->mGroupState) {
     s = ETrue;
   }
 
@@ -270,14 +317,21 @@ void GGameState::GameLoop() {
  * @param aLevel    Level in dungeon
  */
 void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
-  mNextDungeon = aDungeon;
+  if (aDungeon == -1) {
+    // -1 means stay in the same dungeon
+    mNextDungeon = mDungeon;
+  }
+  else {
+    mNextDungeon = aDungeon;
+  }
   mNextLevel = aLevel;
-  strcpy(mName, gDungeonDefs[aDungeon].name);
-  mNextTileMapId = gDungeonDefs[aDungeon].mInfo.map[aLevel];
+  strcpy(mName, gDungeonDefs[mNextDungeon].name);
+  mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
+  mNextObjectsId = gDungeonDefs[mNextDungeon].mInfo.objectsId;
 
   mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   if (!mGamePlayfield) {
-    mPlayfield = mGamePlayfield =  mNextGamePlayfield;
+    mPlayfield = mGamePlayfield = mNextGamePlayfield;
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
 }
@@ -287,34 +341,29 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   */
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
   strcpy(mName, aName);
+
+  const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
+
   mLevel = mNextLevel = aLevel;
+  mDungeon = mNextDungeon;
   mTileMapId = aTileMapId;
 
   Reset(); // remove sprites and processes
   mPlayfield = mGamePlayfield = mNextGamePlayfield;
   mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
-  for (TBool &i : slotRemapState) {
-    i = EFalse;
-  }
 
-  RemapSlot(DUNGEON_TILESET_OBJECTS_BMP, ENVIRONMENT_SLOT, IMAGE_32x32);
+  InitRemapSlots();
+
+  RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
   RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_SPELL_EFFECT_BMP, PLAYER_SPELL_SLOT, IMAGE_32x32);
-  RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
-  RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
-  RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
-  RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
-  RemapSlot(CHARA_ORC_BMP, ORC_SLOT);
-  RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
-  RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
-  RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
-  RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
   RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
   RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
   RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
   RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
+  RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
@@ -348,7 +397,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
                   row = program[ip].mRow,
                   col = program[ip].mCol;
 
-    auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+    auto xx = TFloat(col * 32),
+         yy = TFloat(row * 32);
 
     switch (op) {
 
@@ -365,9 +415,14 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_STONE_STAIRS_DOWN:
 #ifdef DEBUGME
-        printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+        printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "STONE");
+        if (mDungeon == OVERWORLD_DUNGEON) {
+          GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "DUNGEON");
+        }
+        else {
+          GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "STONE");
+        }
         break;
 
       case ATTR_WOOD_STAIRS_UP:
@@ -481,7 +536,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("PLAYER at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32);
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
         startedPlayer = ETrue;
         break;
 
@@ -496,6 +551,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SPIDER at %.2f,%.2f %d,%d\n", xx - 32, yy, row, col);
 #endif
+        RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY SPIDER");
         //        AddProcess(new GSpiderProcess(this, ip, xx - 32, yy + 32, params));
         break;
@@ -504,6 +560,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("BAT at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
+        RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY BAT");
         break;
 
@@ -514,6 +571,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("GOBLIN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
+        RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
         GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN");
         break;
 
@@ -524,6 +582,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("GOBLIN_SNIPER at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
+        RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN SNIPER");
         break;
 
@@ -537,6 +596,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
+        RemapSlot(CHARA_ORC_BMP, ORC_SLOT);
         GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY ORC");
         break;
 
@@ -547,6 +607,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("RAT at %.2f,%.2f %d,%d,%d\n", xx, yy, row, col, eCount);
 #endif
+        RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
         GProcess::Spawn(this, op, ip, xx - 18, yy + 32, params, DIRECTION_DOWN, "ENEMY RAT");
         break;
 
@@ -557,6 +618,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SLIME at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
+        RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
         GProcess::Spawn(this, op, ip, xx - 18, yy + 31, params, DIRECTION_DOWN, "ENEMY SLIME");
         break;
 
@@ -567,6 +629,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("TROLL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
+        RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
         GProcess::Spawn(this, op, ip, xx - 20, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
         break;
 
@@ -683,19 +746,33 @@ void GGameState::GameOver() {
  *******************************************************************************
  *******************************************************************************/
 
+void GGameState::InitRemapSlots() {
+  for (TInt i = 0; i < SLOT_MAX; i++) {
+    if (mSlotRemapState[i]) {
+      if (gResourceManager.GetBitmap(i)) {
+        printf("Releasing slot %d\n");
+        gResourceManager.ReleaseBitmapSlot(i);
+      }
+    }
+    mSlotRemapState[i] = EFalse;
+  }
+}
+
 // Load aBMP, and remap it to playfield's tilemap palette
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
-  if (!slotRemapState[aSlot]) {
-    gResourceManager.ReleaseBitmapSlot(aSlot);
-    gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
+  if (mSlotRemapState[aSlot]) {
+    return;
   }
+
+  gResourceManager.LoadBitmap(aBMP, aSlot, aImageSize);
+
   BBitmap *screen = mGamePlayfield->GetTilesBitmap();
   BBitmap *bm = gResourceManager.GetBitmap(aSlot);
-  if (!slotRemapState[aSlot]) {
+  if (!mSlotRemapState[aSlot]) {
     bm->Remap(screen);
-    slotRemapState[aSlot] = ETrue;
+    mSlotRemapState[aSlot] = ETrue;
 #ifdef DEBUGME
-    printf("Remapped bitmap %d, screen colors used %d\n", aBMP, screen->CountUsedColors());
+    printf("Remapped bitmap %d to slot %d, screen colors used %d\n", aBMP, aSlot, screen->CountUsedColors());
 #endif
   }
   gDisplay.SetPalette(screen->GetPalette());
