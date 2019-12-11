@@ -123,10 +123,36 @@ GPlayerProcess::~GPlayerProcess() {
   }
 }
 
-void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon) {
   mPlayfield = aPlayfield;
-  mSprite->x = aX;
-  mSprite->y = aY;
+  if (aOverworldDungeon == OVERWORLD_DUNGEON) {
+    mSprite->x = aX;
+    mSprite->y = aY;
+  }
+  else {
+    // player is exiting a dungeon to the overworld, so we need to scan the object program to find our starting position
+    TInt objectCount = mPlayfield->mObjectCount;
+    BObjectProgram *program = mPlayfield->mObjectProgram;
+
+    for (TInt ip = 0; ip < objectCount; ip++) {
+      const TUint16 op = program[ip].mCode & TUint32(0xffff),
+                    params = program[ip].mCode >> TUint32(16),
+                    row = program[ip].mRow,
+                    col = program[ip].mCol;
+      if (op != ATTR_STONE_STAIRS_DOWN) {
+        continue;
+      }
+      const TInt dungeon = params >> 8;
+      printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      if (aOverworldDungeon == dungeon) {
+        auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+        mSprite->x = xx - 16;
+        mSprite->y = yy + 64;
+        return;
+      }
+    }
+    Panic("Could not find dungeon entrance %d\n", aOverworldDungeon);
+  }
 }
 
 TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
@@ -186,28 +212,32 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         case DIRECTION_UP:
           if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidUpAnimation);
-          } else {
+          }
+          else {
             mSprite->StartAnimation(idleUpAnimation);
           }
           break;
         case DIRECTION_DOWN:
           if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidDownAnimation);
-          } else {
+          }
+          else {
             mSprite->StartAnimation(idleDownAnimation);
           }
           break;
         case DIRECTION_LEFT:
           if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidLeftAnimation);
-          } else {
+          }
+          else {
             mSprite->StartAnimation(idleLeftAnimation);
           }
           break;
         case DIRECTION_RIGHT:
           if (mMomentum > 0.5) {
             mSprite->StartAnimation(skidRightAnimation);
-          } else {
+          }
+          else {
             mSprite->StartAnimation(idleRightAnimation);
           }
           break;
@@ -345,7 +375,8 @@ TBool GPlayerProcess::MaybeHit() {
           mSprite->StartAnimation(hitLightLeftAnimation);
           break;
       }
-    } else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
+    }
+    else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
       switch (other->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitMediumDownAnimation);
@@ -360,7 +391,8 @@ TBool GPlayerProcess::MaybeHit() {
           mSprite->StartAnimation(hitMediumLeftAnimation);
           break;
       }
-    } else {
+    }
+    else {
       switch (other->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(hitHardDownAnimation);
@@ -381,7 +413,7 @@ TBool GPlayerProcess::MaybeHit() {
     if (GPlayer::mHitPoints <= 0) {
       // PLAYER DEAD
       GPlayer::mHitPoints = 0;
-//      printf("Player dead\n");
+      //      printf("Player dead\n");
       // TO RESUME:
       //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
       if (!GPlayer::mGameOver) {
@@ -464,7 +496,8 @@ TBool GPlayerProcess::MaybeWalk() {
   if (gControls.IsPressed(CONTROL_JOYUP)) {
     newVy = -PLAYER_VELOCITY;
     newDirection = DIRECTION_UP;
-  } else if (gControls.IsPressed(CONTROL_JOYDOWN)) {
+  }
+  else if (gControls.IsPressed(CONTROL_JOYDOWN)) {
     newVy = PLAYER_VELOCITY;
     newDirection = DIRECTION_DOWN;
   }
@@ -472,17 +505,20 @@ TBool GPlayerProcess::MaybeWalk() {
     if (ABS(newVy) > 0) {
       newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
       newVy = newVy * sqrt(2) / 2;
-    } else {
+    }
+    else {
       newVx = -PLAYER_VELOCITY;
     }
     if (newVy == 0 || newVx != 0) {
       newDirection = DIRECTION_LEFT;
     }
-  } else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
+  }
+  else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (ABS(newVy) > 0) {
       newVx = PLAYER_VELOCITY * sqrt(2) / 2;
       newVy = newVy * sqrt(2) / 2;
-    } else {
+    }
+    else {
       newVx = PLAYER_VELOCITY;
     }
     if (newVy == 0 || newVx != 0) {
@@ -510,12 +546,14 @@ TBool GPlayerProcess::MaybeWalk() {
       if (mMomentum < 1.3) {
         mMomentum += PLAYER_FRICTION / 4;
       }
-    } else {
+    }
+    else {
       if (mMomentum < 0.3) {
         mMomentum += PLAYER_FRICTION / 4;
       }
     }
-  } else {
+  }
+  else {
     if (mMomentum > 0) {
       mMomentum -= PLAYER_FRICTION;
     }
@@ -530,19 +568,22 @@ TBool GPlayerProcess::MaybeWalk() {
     if (mMomentum > 0) {
       if (mSprite->vy > PLAYER_VELOCITY) {
         newVy = mSprite->vy - PLAYER_FRICTION;
-      } else if (mSprite->vy < -PLAYER_VELOCITY) {
+      }
+      else if (mSprite->vy < -PLAYER_VELOCITY) {
         newVy = mSprite->vy + PLAYER_FRICTION;
       }
       if (mSprite->vx > PLAYER_VELOCITY) {
         newVx = mSprite->vx - PLAYER_FRICTION;
-      } else if (mSprite->vx < -PLAYER_VELOCITY) {
+      }
+      else if (mSprite->vx < -PLAYER_VELOCITY) {
         newVx = mSprite->vx + PLAYER_FRICTION;
       }
     }
     if (mState != IDLE_STATE || mSprite->mDirection != newDirection) {
       NewState(IDLE_STATE, newDirection);
     }
-  } else {
+  }
+  else {
     if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
       NewState(WALK_STATE, newDirection);
     }
@@ -787,8 +828,8 @@ void GPlayerProcess::WriteToStream(BMemoryStream &aStream) {
 void GPlayerProcess::WriteCustomToStream(BMemoryStream &aStream) {
   aStream.Write(&mState, sizeof(mState));
   aStream.Write(&mStep, sizeof(mStep));
-//  TBool v = mBlinkProcess ? ETrue : EFalse;
-//  aStream.Write(&v, sizeof(v));
+  //  TBool v = mBlinkProcess ? ETrue : EFalse;
+  //  aStream.Write(&v, sizeof(v));
 }
 
 void GPlayerProcess::ReadFromStream(BMemoryStream &aStream) {
@@ -800,6 +841,6 @@ void GPlayerProcess::ReadFromStream(BMemoryStream &aStream) {
 void GPlayerProcess::ReadCustomFromStream(BMemoryStream &aStream) {
   aStream.Read(&mState, sizeof(mState));
   aStream.Read(&mStep, sizeof(mStep));
-//  TBool v = mBlinkProcess ? ETrue : EFalse;
-//  aStream.Read(&v, sizeof(v));
+  //  TBool v = mBlinkProcess ? ETrue : EFalse;
+  //  aStream.Read(&v, sizeof(v));
 }

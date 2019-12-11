@@ -48,7 +48,12 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_UP, aParams, xx, yy, "STONE"));
 
     case ATTR_STONE_STAIRS_DOWN:
-      return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_DOWN, params, xx, yy, "STONE"));
+      if (!strcasecmp(aName, "DUNGEON")) {
+        return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_DOWN, params, xx, yy, "DUNGEON"));
+      }
+      else {
+        return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_DOWN, params, xx, yy, "STONE"));
+      }
       break;
 
     case ATTR_WOOD_STAIRS_UP:
@@ -128,7 +133,7 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_MID_BOSS_FIRE:
     case ATTR_MID_BOSS_EARTH:
     case ATTR_MID_BOSS_WATER:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, params));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params));
       break;
   }
   return ENull;

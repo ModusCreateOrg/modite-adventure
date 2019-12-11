@@ -3,14 +3,16 @@
 #include "GStatProcess.h"
 #include "GMidBossDeathProcess.h"
 #include "common/GSpellOverlayProcess.h"
+#include "GItemProcess.h"
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute) 
-  : GProcess(aAttribute) {
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute)
+    : GProcess(aAttribute) {
+  mIp = aIp;
   mSprite = ENull;
   mSaveToStream = ETrue;
   mGameState = aGameState;
@@ -494,8 +496,10 @@ TBool GMidBossProcess::HitState() {
 
 TBool GMidBossProcess::DeathState() {
   if (mDeathCounter <= 3) {
+    GItemProcess::SpawnItem(mGameState, mIp, mAttribute, mSprite->x, mSprite->y);
     return EFalse;
   }
+  // maybe drop item
   return ETrue;
 }
 

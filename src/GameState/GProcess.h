@@ -19,7 +19,7 @@ public:
   static GProcess *Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams, DIRECTION aDirection = DIRECTION_DOWN, const char *aName = "UNNAMED");
 
 public:
-  TBool mSaveToStream;
+  TBool mSaveToStream; // wil save to stream (save game) if true
   GAnchorSprite *mSprite, *mSprite2;
   TInt16 mAttribute; // type of thing (e.g. ATTR_BAT)
 
@@ -34,7 +34,7 @@ public:
   virtual void ReadCustomFromStream(BMemoryStream &aStream);
 
 public:
-  virtual void OverlayAnimationComplete() {};
+  virtual void OverlayAnimationComplete(){};
 };
 
 #endif
