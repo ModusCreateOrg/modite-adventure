@@ -17,67 +17,55 @@ const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
 struct TDungeonInfo gDungeonDefs[] = {
-  {
-    "OVERWORLD",
+  { "OVERWORLD",
     {
       DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P256_OVERWORLD_MAP,   // 0
-        P256_OVERWORLD_MAP,   // 1
-        -1,                   // 2
-        -1,                   // 3
-        -1,                   // 4
-        -1,                   // 5
-        -1,                   // 6
-        -1,                   // 7
-        -1,                   // 8
-        -1,                   // 9
-        -1,                   // 10
+        P256_OVERWORLD_MAP, // 0
+        P256_OVERWORLD_MAP, // 1
+        -1,                 // 2
+        -1,                 // 3
+        -1,                 // 4
+        -1,                 // 5
+        -1,                 // 6
+        -1,                 // 7
+        -1,                 // 8
+        -1,                 // 9
+        -1,                 // 10
       },
-    }
-  },
-  {
-    "DUNGEON 257",
-    {
-      DUNGEON_TILESET_OBJECTS_BMP,
+    } },
+  { "DUNGEON 257",
+    { DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P257_LEVEL_1_MAP,   // 0
-        P257_LEVEL_1_MAP,   // 1
-        P257_LEVEL_2_MAP,   // 2
-        P257_LEVEL_3_MAP,   // 3
-        P257_LEVEL_4_MAP,   // 4
-        P257_LEVEL_5_MAP,   // 5
-        -1,                 // 6
-        -1,                 // 7
-        -1,                 // 8
-        -1,                 // 9
-        -1,                 // 10
-      }
-    }
-  },
-  {
-    "DUNGEON 258",
-    {
-      DUNGEON_TILESET_OBJECTS_BMP,
+        P257_LEVEL_1_MAP, // 0
+        P257_LEVEL_1_MAP, // 1
+        P257_LEVEL_2_MAP, // 2
+        P257_LEVEL_3_MAP, // 3
+        P257_LEVEL_4_MAP, // 4
+        P257_LEVEL_5_MAP, // 5
+        -1,               // 6
+        -1,               // 7
+        -1,               // 8
+        -1,               // 9
+        -1,               // 10
+      } } },
+  { "DUNGEON 258",
+    { DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P258_LEVEL_1_MAP,   // 0
-        P258_LEVEL_1_MAP,   // 1
-        P258_LEVEL_2_MAP,   // 2
-        P258_LEVEL_3_MAP,   // 3
-        P258_LEVEL_4_MAP,   // 4
-        P258_LEVEL_5_MAP,   // 5
-        -1,                 // 6
-        -1,                 // 7
-        -1,                 // 8
-        -1,                 // 9
-        -1,                 // 10
-      }
-    }
-  },
-  {
-    "DUNGEON 259",
-    {
-      DUNGEON_TILESET_OBJECTS_BMP,
+        P258_LEVEL_1_MAP, // 0
+        P258_LEVEL_1_MAP, // 1
+        P258_LEVEL_2_MAP, // 2
+        P258_LEVEL_3_MAP, // 3
+        P258_LEVEL_4_MAP, // 4
+        P258_LEVEL_5_MAP, // 5
+        -1,               // 6
+        -1,               // 7
+        -1,               // 8
+        -1,               // 9
+        -1,               // 10
+      } } },
+  { "DUNGEON 259",
+    { DUNGEON_TILESET_OBJECTS_BMP,
       {
         P259_LEVEL_1_MAP,
         P259_LEVEL_1_MAP,
@@ -90,9 +78,7 @@ struct TDungeonInfo gDungeonDefs[] = {
         -1,
         -1,
         -1,
-      }
-    }
-  },
+      } } },
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
@@ -202,7 +188,7 @@ void GGameState::PostRender() {
   if (mText[0]) {
     TInt len = strlen(mText);
     gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT,
-                                      COLOR_TEXT_TRANSPARENT);
+      COLOR_TEXT_TRANSPARENT);
   }
 #endif
 
@@ -214,12 +200,12 @@ void GGameState::PostRender() {
   gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_TEXT_BG);
 
   BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
-    *screen = gDisplay.renderBitmap;
+          *screen = gDisplay.renderBitmap;
 
   const TInt BOTTLE_X = 64 * 3,
-    BOTTLE_Y = 14,
-    BOTTLE_WIDTH = 12,
-    BOTTLE_HEIGHT = 15;
+             BOTTLE_Y = 14,
+             BOTTLE_WIDTH = 12,
+             BOTTLE_HEIGHT = 15;
 
   TInt x = 2;
 
@@ -245,7 +231,7 @@ void GGameState::PostRender() {
 
   // render mana potion
   TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-             BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
+    BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
   switch (GPlayer::mManaPotion) {
     case 75:
       mana.Offset(BOTTLE_WIDTH * 1, 0);
@@ -272,7 +258,7 @@ void GGameState::PostRender() {
   // health fuel gauge
   gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
   fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints,
-             GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
+    GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
   x += GAUGE_WIDTH + 8;
 
   // experience fuel gauge
@@ -334,7 +320,8 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   if (aDungeon == -1) {
     // -1 means stay in the same dungeon
     mNextDungeon = mDungeon;
-  } else {
+  }
+  else {
     mNextDungeon = aDungeon;
   }
   mNextLevel = aLevel;
@@ -346,8 +333,6 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   if (!mGamePlayfield) {
     mPlayfield = mGamePlayfield = mNextGamePlayfield;
   }
-  mGamePlayfield->DumpMap();
-  mGamePlayfield->DumpMapAttributes();
   sprintf(mText, "%s Level %d", mName, aLevel);
 }
 
@@ -356,6 +341,9 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   */
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
   strcpy(mName, aName);
+
+  const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
+
   mLevel = mNextLevel = aLevel;
   mDungeon = mNextDungeon;
   mTileMapId = aTileMapId;
@@ -405,17 +393,18 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("%5d: ", ip);
 #endif
     const TUint16 op = program[ip].mCode & TUint32(0xffff),
-      params = program[ip].mCode >> TUint32(16),
-      row = program[ip].mRow,
-      col = program[ip].mCol;
+                  params = program[ip].mCode >> TUint32(16),
+                  row = program[ip].mRow,
+                  col = program[ip].mCol;
 
-    auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+    auto xx = TFloat(col * 32),
+         yy = TFloat(row * 32);
 
     switch (op) {
 
-      //
-      // ENVIRONMENT
-      //
+        //
+        // ENVIRONMENT
+        //
 
       case ATTR_STONE_STAIRS_UP:
 #ifdef DEBUGME
@@ -426,11 +415,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_STONE_STAIRS_DOWN:
 #ifdef DEBUGME
-        printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+        printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
 #endif
         if (mDungeon == OVERWORLD_DUNGEON) {
           GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "DUNGEON");
-        } else {
+        }
+        else {
           GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "STONE");
         }
         break;
@@ -546,7 +536,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("PLAYER at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32);
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
         startedPlayer = ETrue;
         break;
 
@@ -719,11 +709,11 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   */
 void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
   BObjectProgram *program = mGamePlayfield->mObjectProgram,
-    *step = &program[aIp];
+                 *step = &program[aIp];
 
   TUint32 code = aCode,
-    attr = aAttr,
-    sCode = step->mCode;
+          attr = aAttr,
+          sCode = step->mCode;
 
   if (aCode == ATTR_KEEP) {
     if (aAttr == ATTR_KEEP) {
@@ -731,9 +721,11 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
       return;
     }
     step->mCode = LOWORD(sCode) | (attr << 16);
-  } else if (aAttr == ATTR_KEEP) {
+  }
+  else if (aAttr == ATTR_KEEP) {
     step->mCode = (sCode & 0xffff0000) | (attr << 16);
-  } else {
+  }
+  else {
     TUint32 new_code = code | (attr << 16);
     step->mCode = new_code;
   }
@@ -805,7 +797,7 @@ TBool GGameState::SaveState() {
   GPlayer::WriteToStream(stream);
 
   // walk through process list and save enemies states
-  for (GProcess *p = (GProcess *) mProcessList.First(); !mProcessList.End(p); p = (GProcess *) mProcessList.Next(p)) {
+  for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
     if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER) {
       if (p->mSaveToStream) {
         p->WriteToStream(stream);

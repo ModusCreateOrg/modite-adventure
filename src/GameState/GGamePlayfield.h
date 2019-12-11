@@ -142,6 +142,10 @@ public:
     return TUint16(GetCell(aWorldX, aWorldY) >> 16);
   }
 
+  TUint16 GetAttribute(TInt aRow, TInt aCol) {
+    return TUint16(GetCell(aRow, aCol) >> 16);
+  }
+
   TBool IsWall(TFloat aWorldX, TFloat aWorldY) {
     return GetAttribute(aWorldX, aWorldY) == ATTR_WALL;
   }

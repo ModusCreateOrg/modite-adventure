@@ -9,9 +9,6 @@
 
 #include "Game.h"
 #include "GGamePlayfield.h"
-#include "GPlayerProcess.h"
-
-class GPlayerProcess;
 
 class GAnchorSprite;
 
@@ -25,6 +22,8 @@ const TInt16 OVERWORLD_DUNGEON = 0;
 const TInt16 DUNGEON_257 = 1;
 const TInt16 DUNGEON_258 = 1;
 const TInt16 DUNGEON_259 = 1;
+
+#include "GPlayerProcess.h"
 
 struct TDungeonInfo {
   const char *name;
