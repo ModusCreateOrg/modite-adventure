@@ -256,9 +256,8 @@ function patch_linux_build {
 }
 
 function checkout_creative_engine_branch {
-    DEFAULT_BRANCH="master"
-    MODITE_BRANCH="develop"
-    #MODITE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    DEFAULT_BRANCH="develop"
+    MODITE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     cd "$BASE_DIR" || exit 1
     echo "The current modite branch is: $MODITE_BRANCH"
     if (cd "$CREATIVE_ENGINE_DIR" && git checkout "$MODITE_BRANCH"); then
@@ -274,8 +273,7 @@ function checkout_creative_engine_branch {
 
 function checkout_resources_branch {
     DEFAULT_BRANCH="master"
-    MODITE_BRANCH="develop"
-    #MODITE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    MODITE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     cd "$BASE_DIR" || exit 1
     echo "The current modite branch is: $MODITE_BRANCH"
     if (cd "$RESOURCES_DIR" && git checkout "$MODITE_BRANCH"); then
