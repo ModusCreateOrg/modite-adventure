@@ -451,6 +451,10 @@ TBool GMidBossProcess::ReturnState() {
 }
 
 TBool GMidBossProcess::RevertState() {
+  if (mSprite->TestCType(STYPE_PLAYER)) {
+    mSprite->ClearCType(STYPE_PLAYER);
+    mSprite->Nudge();
+  }
   if (mSprite->AnimDone()) {
     if (mSprite->TestCType(STYPE_PLAYER)) {
       mSprite->type = STYPE_EBULLET;
