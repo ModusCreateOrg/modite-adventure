@@ -54,10 +54,14 @@ TBool GFloorSwitchProcess::RunAfter() {
   }
 
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-    mState = !mState;
-    OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
-    mAnimating = ETrue;
-    mSprite->mImageNumber = mState ? (mImage + 1) : mImage;
+    if (!mAnimating) {
+      mState = !mState;
+      OBJECT_ATTRIBUTE *oa = (OBJECT_ATTRIBUTE *)&mParam;
+      mAnimating = ETrue;
+      mSprite->mImageNumber = mState ? (mImage + 1) : mImage;
+    }
+  } else {
+    mAnimating = EFalse;
   }
 
   return ETrue;

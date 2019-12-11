@@ -6,6 +6,7 @@
 #include "GStatProcess.h"
 #include "GResources.h"
 #include "Items.h"
+#include "GPlayerBulletProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -244,7 +245,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       }
       break;
     case SWORD_STATE:
-    case SWORD_NO_BULLET_STATE:
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -252,19 +252,18 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       gSoundPlayer.SfxPlayerSlash();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordUpNoBulletAnimation : swordUpAnimation);
+          mSprite->StartAnimation(swordUpAnimation);
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordDownNoBulletAnimation : swordDownAnimation);
+          mSprite->StartAnimation(swordDownAnimation);
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordLeftNoBulletAnimation : swordLeftAnimation);
+          mSprite->StartAnimation(swordLeftAnimation);
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(mState == SWORD_NO_BULLET_STATE ? swordRightNoBulletAnimation : swordRightAnimation);
+          mSprite->StartAnimation(swordRightAnimation);
           break;
       }
-      mState = SWORD_STATE;
       break;
 
     case FALL_STATE:
@@ -451,31 +450,9 @@ TBool GPlayerProcess::MaybeSword() {
     return EFalse;
   }
 
-  TBool is_wall = EFalse;
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      if (!mSprite->IsFloor(DIRECTION_UP, 0, -4)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_DOWN:
-      if (!mSprite->IsFloor(DIRECTION_DOWN, 0, 4)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_LEFT:
-      if (!mSprite->IsFloor(DIRECTION_LEFT, -4, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      if (!mSprite->IsFloor(DIRECTION_RIGHT, 4, 0)) {
-        is_wall = ETrue;
-      }
-      break;
-  }
-
-  NewState(is_wall ? SWORD_NO_BULLET_STATE : SWORD_STATE, mSprite->mDirection);
+  auto *p = (GProcess *)new GPlayerBulletProcess(mGameState, mSprite->mDirection);
+  mGameState->AddProcess(p);
+  NewState(SWORD_STATE, mSprite->mDirection);
   return ETrue;
 }
 
