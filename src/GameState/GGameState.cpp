@@ -348,6 +348,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mDungeon = mNextDungeon;
   mTileMapId = aTileMapId;
 
+  gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
+  gDisplay.displayBitmap->Clear(COLOR_TEXT_BG);
+
   Reset(); // remove sprites and processes
   mPlayfield = mGamePlayfield = mNextGamePlayfield;
   mNextGamePlayfield = ENull;
