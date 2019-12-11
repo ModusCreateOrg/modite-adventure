@@ -727,6 +727,11 @@ TBool GPlayerProcess::FallState() {
 }
 
 TBool GPlayerProcess::HitState() {
+  if (mSprite->TestCType(STYPE_ENEMY)) {
+    mSprite->ClearCType(STYPE_ENEMY);
+    mSprite->Nudge();
+  }
+
   if (mSprite->AnimDone()) {
     if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
