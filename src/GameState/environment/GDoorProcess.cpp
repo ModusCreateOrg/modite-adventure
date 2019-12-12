@@ -10,14 +10,14 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   if (mHorizontal) {
     mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
       aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
-      STYPE_ENEMY);
+      STYPE_OBJECT);
     mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR 1" : "ENVIRONMENT HORIZONTAL METAL DOOR 1");
     mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_DOOR_H;
   }
   else {
     mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
       aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
-      STYPE_ENEMY);
+      STYPE_OBJECT);
     mSprite->Name(aWood ? "ENVIRONMENT VERTICAL WOOD DOOR 1" : "ENVIRONMENT VERTICAL METAL DOOR 1");
     mAttribute = aWood ? ATTR_WOOD_DOOR_V : ATTR_METAL_DOOR_V;
   }
@@ -37,7 +37,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
   if (!mHorizontal) {
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-      aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_ENEMY);
+      aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_OBJECT);
 
     mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL DOOR 2");
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
