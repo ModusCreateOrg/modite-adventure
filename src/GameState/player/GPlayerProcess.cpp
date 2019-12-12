@@ -401,20 +401,22 @@ TBool GPlayerProcess::MaybeHit() {
   if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
     mSprite->Nudge();
     // random variation from 50% to 100% base damage
-    hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(hitLightUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(hitLightDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(hitLightLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(hitLightRightAnimation);
-        break;
+    if (mSprite->mCollided->mHitPoints > 0) {
+      hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
+      switch (mSprite->mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(hitLightUpAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(hitLightDownAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(hitLightLeftAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(hitLightRightAnimation);
+          break;
+      }
     }
   }
 
