@@ -336,29 +336,18 @@ TBool GPlayerProcess::MaybeSpell() {
 TBool GPlayerProcess::MaybeHit() {
 
   if (mSprite->mInvulnerable) {
-    mSprite->ClearCType(STYPE_EBULLET);
+    if (mSprite->TestAndClearCType(STYPE_EBULLET | STYPE_ENEMY)) {
+      mSprite->Nudge();
+    }
   }
 
-  if (mSprite->TestCType(STYPE_EBULLET)) {
-    mSprite->ClearCType(STYPE_EBULLET);
+  const GAnchorSprite *other = mSprite->mCollided;
+  TInt hitAmount = 0;
+
+  if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
     mSprite->Nudge();
-    TInt state = HIT_LIGHT_STATE;
-    const GAnchorSprite *other = mSprite->mCollided;
-
     // random variation from 100% to 150% base damage
-    TInt hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
-    GPlayer::mHitPoints -= hitAmount;
-    mSprite->mInvulnerable = ETrue;
-    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
-    p->SetMessageType(STAT_PLAYER_HIT);
-    mGameState->AddProcess(p);
-
-    if (!mBlinkProcess) {
-      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
-    }
-
-    gSoundPlayer.SfxPlayerTakeDamage();
-
+    hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
       switch (other->mDirection) {
         case DIRECTION_UP:
@@ -407,6 +396,47 @@ TBool GPlayerProcess::MaybeHit() {
           break;
       }
     }
+  }
+
+  if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
+    mSprite->Nudge();
+    // random variation from 50% to 100% base damage
+    if (mSprite->mCollided->mHitPoints > 0) {
+      hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
+      switch (mSprite->mDirection) {
+        case DIRECTION_UP:
+          mSprite->StartAnimation(hitLightUpAnimation);
+          break;
+        case DIRECTION_DOWN:
+          mSprite->StartAnimation(hitLightDownAnimation);
+          break;
+        case DIRECTION_LEFT:
+          mSprite->StartAnimation(hitLightLeftAnimation);
+          break;
+        case DIRECTION_RIGHT:
+          mSprite->StartAnimation(hitLightRightAnimation);
+          break;
+      }
+    }
+  }
+
+  if (hitAmount) {
+    mMomentum = 0;
+    TInt state = HIT_LIGHT_STATE;
+
+    // random variation from 100% to 150% base damage
+    GPlayer::mHitPoints -= hitAmount;
+    mSprite->mInvulnerable = ETrue;
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
+    p->SetMessageType(STAT_PLAYER_HIT);
+    mGameState->AddProcess(p);
+
+    if (!mBlinkProcess) {
+      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+    }
+
+    gSoundPlayer.SfxPlayerTakeDamage();
+
     mState = state;
 
     if (GPlayer::mHitPoints <= 0) {
@@ -420,15 +450,22 @@ TBool GPlayerProcess::MaybeHit() {
       }
     }
 
-    mSprite->cType = 0;
-    return ETrue;
-  }
+    // push player away from center of other sprite's hit box
+    TRect myRect, otherRect;
+    mSprite->GetRect(myRect);
+    mSprite->mCollided->GetRect(otherRect);
+    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
+          dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
+    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
+        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
+      mSprite->vx = PLAYER_VELOCITY * (dx / (ABS(dx) + ABS(dy)));
+    }
+    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
+        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
+      mSprite->vy = PLAYER_VELOCITY * (dy / (ABS(dx) + ABS(dy)));
+    }
 
-  if (mSprite->TestCType(STYPE_ENEMY)) {
-    mSprite->ClearCType(STYPE_ENEMY);
-    mSprite->Nudge();
-    mMomentum = 0;
-    NewState(IDLE_STATE, mSprite->mDirection);
+    mSprite->cType = 0;
     return ETrue;
   }
 
@@ -732,7 +769,25 @@ TBool GPlayerProcess::HitState() {
     mSprite->Nudge();
   }
 
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    mSprite->Nudge();
+  }
+
+  if ((mSprite->vx < 0 && !CanWalk(DIRECTION_LEFT)) ||
+      (mSprite->vx > 0 && !CanWalk(DIRECTION_RIGHT))) {
+    mSprite->vx = 0;
+  } else if (ABS(mSprite->vx) > PLAYER_FRICTION) {
+    mSprite->vx -= PLAYER_FRICTION * (mSprite->vx / (ABS(mSprite->vx) + ABS(mSprite->vy)));
+  }
+  if ((mSprite->vy < 0 && !CanWalk(DIRECTION_UP)) ||
+      (mSprite->vy > 0 && !CanWalk(DIRECTION_DOWN))) {
+    mSprite->vy = 0;
+  } else if (ABS(mSprite->vy) > PLAYER_FRICTION) {
+    mSprite->vy -= PLAYER_FRICTION * (mSprite->vy / (ABS(mSprite->vx) + ABS(mSprite->vy)));
+  }
+
   if (mSprite->AnimDone()) {
+    mSprite->vx = mSprite->vy = 0;
     if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
