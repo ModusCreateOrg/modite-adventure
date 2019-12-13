@@ -94,6 +94,7 @@ protected:
   char mName[128];
   TInt16 mNextLevel, mLevel, mNextObjectsId;
   TUint16 mDungeon, mNextDungeon, mNextTileMapId, mTileMapId;
+  TUint16 mPlayerToLoad;
   GGameOver *mGameOver;
 #ifdef ENABLE_REMAP_SLOTS
 protected:

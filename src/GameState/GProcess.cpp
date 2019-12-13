@@ -100,7 +100,7 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_FLOOR_SWITCH_WOOD:
       return aGameState->AddProcess(new GFloorSwitchProcess(aGameState, ip, params, xx, yy, ETrue));
       break;
-    case ATTR_PLAYER:
+    case ATTR_PLAYER_IN1:
       // ignore
       break;
     case ATTR_SPIDER:

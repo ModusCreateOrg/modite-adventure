@@ -66,6 +66,10 @@ SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 #
 # PATH resources/tilemaps/DevDungeon_0
 # TILEMAP DevDungeon_0.filelist.txt
+PATH resources/tilemaps/overworld/
+TMX overworld.txt
+
+
 PATH resources/tilemaps-new/256
 TMX overworld.txt
 PATH resources/tilemaps-new/257

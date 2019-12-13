@@ -21,11 +21,16 @@ struct TDungeonInfo gDungeonDefs[] = {
     {
       DUNGEON_TILESET_OBJECTS_BMP,
       {
-        P256_OVERWORLD_MAP, // 0
-        P256_OVERWORLD_MAP, // 1
-        -1,                 // 2
-        -1,                 // 3
-        -1,                 // 4
+//        P256_OVERWORLD_MAP, // 0
+//        P256_OVERWORLD_MAP, // 1
+        OVERWORLD_OVERWORLD_L1_MAP, // 0
+        OVERWORLD_OVERWORLD_L1_MAP, // 1
+        OVERWORLD_OVERWORLD_L2_MAP, // 2
+        OVERWORLD_OVERWORLD_L3_MAP, // 3
+        OVERWORLD_OVERWORLD_L4_MAP, // 3
+//        -1,                 // 2
+//        -1,                 // 3
+//        -1,                 // 4
         -1,                 // 5
         -1,                 // 6
         -1,                 // 7
@@ -93,6 +98,8 @@ void GGameState::Init() {
   mNextDungeon = mDungeon = 0;
   mNextLevel = 0;
   mTileMapId = 0;
+  mPlayerToLoad = ATTR_PLAYER_IN1;
+
   mNextTileMapId = 0;
   mNextObjectsId = 0;
 
@@ -320,10 +327,30 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   if (aDungeon == -1) {
     // -1 means stay in the same dungeon
     mNextDungeon = mDungeon;
+
+
+    if (aLevel == 0 || aLevel > mLevel) {
+      // Going up
+      mPlayerToLoad = ATTR_PLAYER_IN1;
+    }
+    else if (aLevel  < mLevel) {
+      // Going Down
+      mPlayerToLoad = ATTR_PLAYER_IN2;
+    }
   }
   else {
     mNextDungeon = aDungeon;
+    mPlayerToLoad = ATTR_PLAYER_IN1;
   }
+
+//  // Going up levels
+//  if (aLevel > mLevel) {
+//    mPlayerToLoad = ATTR_PLAYER_IN1;
+//  }
+//  else if (aLevel < mLevel) {
+//    mPlayerToLoad = ATTR_PLAYER_IN2;
+//  }
+
   mNextLevel = aLevel;
   strcpy(mName, gDungeonDefs[mNextDungeon].name);
   mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
@@ -529,12 +556,23 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // PLAYER
         //
 
-      case ATTR_PLAYER:
-        if (!aNewLevel) {
+      case ATTR_PLAYER_IN1:
+        if (!aNewLevel || mPlayerToLoad != ATTR_PLAYER_IN1) {
           break;
         }
 #ifdef DEBUGME
-        printf("PLAYER at %.2f,%.2f\n", xx, yy);
+        printf("PLAYER IN1 at %.2f,%.2f\n", xx, yy);
+#endif
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
+        startedPlayer = ETrue;
+        break;
+
+      case ATTR_PLAYER_IN2:
+        if (!aNewLevel || startedPlayer) {
+          break;
+        }
+#ifdef DEBUGME
+        printf("PLAYER IN2 at %.2f,%.2f\n", xx, yy);
 #endif
         GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
         startedPlayer = ETrue;
@@ -798,7 +836,7 @@ TBool GGameState::SaveState() {
 
   // walk through process list and save enemies states
   for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
-    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER) {
+    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1) {
       if (p->mSaveToStream) {
         p->WriteToStream(stream);
       }

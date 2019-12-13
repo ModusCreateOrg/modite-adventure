@@ -77,7 +77,7 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
