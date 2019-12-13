@@ -747,10 +747,14 @@ void GGameState::GameOver() {
  *******************************************************************************/
 
 void GGameState::InitRemapSlots() {
-  for (TInt i = 0; i < SLOT_MAX; i++) {
+  for (TInt i = 2; i < SLOT_MAX; i++) {
+    if (i == TILESET_SLOT) {
+      // do not release TILESET
+      continue;
+    }
     if (mSlotRemapState[i]) {
       if (gResourceManager.GetBitmap(i)) {
-        printf("Releasing slot %d\n");
+        printf("Releasing slot %d\n", i);
         gResourceManager.ReleaseBitmapSlot(i);
       }
     }
@@ -760,6 +764,9 @@ void GGameState::InitRemapSlots() {
 
 // Load aBMP, and remap it to playfield's tilemap palette
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
+  if (aSlot == TILESET_SLOT) {
+    Panic("Attemp to RemapSlot(TILESET_SLOT)\n");
+  }
   if (mSlotRemapState[aSlot]) {
     return;
   }
