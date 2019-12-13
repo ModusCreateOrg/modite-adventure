@@ -351,9 +351,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   Reset(); // remove sprites and processes
   InitRemapSlots();
   mPlayfield = mGamePlayfield = mNextGamePlayfield;
+  gDisplay.SetPalette(mGamePlayfield->GetTilesBitmap(), 0, 128);
   mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
-
 
   RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
