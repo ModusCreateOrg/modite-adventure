@@ -29,7 +29,7 @@ struct GEquipped {
 
 struct GPlayer {
   static void Init() {
-    printf("Construct GPlayer\n");
+    printf("Init GPlayer\n");
     mLevel = 1;
     mNextLevel = 100;
     mExperience = 0;
