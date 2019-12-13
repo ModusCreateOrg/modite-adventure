@@ -112,7 +112,8 @@ public:
 
   const char* &operator[](int i) {
     if( i >= SIZE || i < 0 ) {
-      return itemNamesArray[0];
+      Panic("Requested name of invalid item number %d. Valid item numbers are in range [0 - %d].\n", i, SIZE-1);
+      // return itemNamesArray[0];
     }
     return itemNamesArray[i];
   }
