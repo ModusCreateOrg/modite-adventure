@@ -749,6 +749,7 @@ void GGameState::GameOver() {
 void GGameState::InitRemapSlots() {
   for (TInt i = 2; i < SLOT_MAX; i++) {
     if (i == TILESET_SLOT) {
+      // do not release TILESET
       continue;
     }
     if (mSlotRemapState[i]) {
