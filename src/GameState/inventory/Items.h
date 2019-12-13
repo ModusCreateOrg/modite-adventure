@@ -70,7 +70,7 @@ static const TInt items[] = {
   IMG_GREEN_BOTTLE4,
 };
 
-static const char *itemNames[] = {
+static const char *itemNamesArray[] = {
   "INVALID ITEM",
   "Water Spellbook",
   "Red Spellbook",
@@ -103,5 +103,21 @@ static const char *itemNames[] = {
   "Red Bottle 75%",
   "Red Bottle Full",
 };
+
+class ItemNames {
+private:
+  const TInt SIZE = sizeof(itemNamesArray) / sizeof(*itemNamesArray);
+public:
+  ItemNames() = default;
+
+  const char* &operator[](int i) {
+    if( i >= SIZE ) {
+      return itemNamesArray[0];
+    }
+    return itemNamesArray[i];
+  }
+};
+
+static ItemNames itemNames;
 
 #endif //MODITE_ITEMS_H
