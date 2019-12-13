@@ -111,7 +111,7 @@ public:
   ItemNames() = default;
 
   const char* &operator[](int i) {
-    if( i >= SIZE ) {
+    if( i >= SIZE || i < 0 ) {
       return itemNamesArray[0];
     }
     return itemNamesArray[i];
