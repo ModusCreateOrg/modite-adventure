@@ -78,8 +78,8 @@ void GDoorProcess::ClearWall() {
 }
 
 TBool GDoorProcess::RunBefore() {
-  // if door is in a group (realted to switches, etc.), open when the group is "done"
-  // "done" means player has successfully thrown the switchs in the right order.
+  // if door is in a group (related to switches, etc.), open when the group is "done"
+  // "done" means player has successfully thrown the switches in the right order.
   TInt group = mObjectAttribute->group;
   if (group && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
@@ -91,6 +91,11 @@ TBool GDoorProcess::RunBefore() {
 }
 
 TBool GDoorProcess::RunAfter() {
+  mSprite->TestAndClearCType(STYPE_PLAYER);
+  if (mSprite2) {
+    mSprite2->TestAndClearCType(STYPE_PLAYER);
+  }
+
   // if is in a group, we don't open on collisions.
   if (mObjectAttribute->group) {
     return ETrue;
@@ -100,10 +105,6 @@ TBool GDoorProcess::RunAfter() {
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
-  }
-  mSprite->TestAndClearCType(STYPE_PLAYER);
-  if (mSprite2) {
-    mSprite2->TestAndClearCType(STYPE_PLAYER);
   }
 
   return ETrue;
