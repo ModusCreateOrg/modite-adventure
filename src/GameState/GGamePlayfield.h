@@ -126,6 +126,12 @@ public:
   ~GGamePlayfield() OVERRIDE;
 
 public:
+  void Render() OVERRIDE;
+
+  void StartMosaicIn();
+
+  void StartMosaicOut();
+
   void Restore();
 
   void DumpObjectProgram() {
@@ -165,6 +171,7 @@ public:
 protected:
   GGameState *mGameState;
   TUint32 mTileMapId;
+  TUint mMosaic;
 };
 
 #endif //MODITE_GGAMEPLAYFIELD_H
