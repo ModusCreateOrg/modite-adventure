@@ -9,7 +9,7 @@ GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
   for (TInt s = 0; s < 16; s++) {
     mGroupDone[s] = mGroupState[s] = EFalse;
   }
-  mMosaicTimer = -FRAMES_PER_SECOND;
+  mMosaicTimer = 0;
 }
 
 GGamePlayfield::~GGamePlayfield() {
@@ -19,10 +19,9 @@ GGamePlayfield::~GGamePlayfield() {
 void GGamePlayfield::Render() {
   BMapPlayfield::Render();
   if (mMosaicTimer) {
-    mMosaicTimer > 0 ? mMosaicTimer-- : mMosaicTimer++;
-
-    const TInt mosaicWidth = (ABS(mMosaicTimer) * 10 / FRAMES_PER_SECOND) + 1;
-    const TRect r = mViewPort->mRect;
+    TInt mosaicWidth = 1 + (mMosaicIn ? (mMosaicTimer * 10 / MOSAIC_DURATION):
+            ((MOSAIC_DURATION - mMosaicTimer) * 10 / MOSAIC_DURATION));
+    TRect &r = mViewPort->mRect;
     TUint8 *pixels = &gDisplay.renderBitmap->mPixels[0];
 
     for (TInt y = r.y1; y < SCREEN_HEIGHT; y++) {
@@ -30,15 +29,22 @@ void GGamePlayfield::Render() {
         pixels[y * SCREEN_WIDTH + x] = pixels[(y - (y - r.y1) % mosaicWidth) * SCREEN_WIDTH + (x - (x - r.x1) % mosaicWidth)];
       }
     }
+    mMosaicTimer--;
   }
 }
 
 void GGamePlayfield::StartMosaicIn() {
-  mMosaicTimer = -FRAMES_PER_SECOND;
+  if (!mMosaicTimer) {
+    mMosaicTimer = MOSAIC_DURATION;
+    mMosaicIn = ETrue;
+  }
 }
 
 void GGamePlayfield::StartMosaicOut() {
-  mMosaicTimer = FRAMES_PER_SECOND;
+  if (!mMosaicTimer) {
+    mMosaicTimer = MOSAIC_DURATION;
+    mMosaicIn = EFalse;
+  }
 }
 
 void GGamePlayfield::DumpMap() {

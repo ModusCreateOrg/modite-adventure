@@ -145,8 +145,17 @@ void GGameState::TryAgain() {
 
 void GGameState::PreRender() {
   if (mNextLevel != mLevel || mNextDungeon != mDungeon) {
-    LoadLevel(mName, mNextLevel, mNextTileMapId);
-    gViewPort->mWorldX = gViewPort->mWorldY = 0;
+    if (mLevel) {
+      mGamePlayfield->StartMosaicOut();
+
+      if (mGamePlayfield->MosaicDone()) {
+        LoadLevel(mName, mNextLevel, mNextTileMapId);
+        gViewPort->mWorldX = gViewPort->mWorldY = 0;
+      }
+    } else {
+      LoadLevel(mName, mNextLevel, mNextTileMapId);
+      gViewPort->mWorldX = gViewPort->mWorldY = 0;
+    }
   }
 }
 
@@ -278,6 +287,13 @@ void GGameState::PostRender() {
     mGameOver->Run();
     return;
   }
+
+  if (mGamePlayfield->MosaicActive()) {
+    gControls.Reset();
+    Pause();
+  } else if (mGamePlayfield->MosaicDone()) {
+    Resume();
+  }
 }
 
 /*******************************************************************************
@@ -329,9 +345,8 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
   mNextObjectsId = gDungeonDefs[mNextDungeon].mInfo.objectsId;
 
-  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   if (!mGamePlayfield) {
-    mPlayfield = mGamePlayfield = mNextGamePlayfield;
+    mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
 }
@@ -340,6 +355,8 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   * This is NOT safe to call from BProcess context
   */
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
+  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+
   strcpy(mName, aName);
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
@@ -699,6 +716,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
+  mGamePlayfield->StartMosaicIn();
 }
 
 /**
