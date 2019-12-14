@@ -19,8 +19,7 @@ GGamePlayfield::~GGamePlayfield() {
 void GGamePlayfield::Render() {
   BMapPlayfield::Render();
   if (mMosaicTimer) {
-    TInt mosaicWidth = 1 + (mMosaicIn ? (mMosaicTimer * 10 / MOSAIC_DURATION):
-            ((MOSAIC_DURATION - mMosaicTimer) * 10 / MOSAIC_DURATION));
+    TInt mosaicWidth = 1 + (mMosaicIn ? mMosaicTimer : (MOSAIC_DURATION - mMosaicTimer)) * MOSAIC_INTENSITY / MOSAIC_DURATION;
     TRect &r = mViewPort->mRect;
     TUint8 *pixels = &gDisplay.renderBitmap->mPixels[0];
 
