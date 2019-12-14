@@ -171,7 +171,7 @@ public:
 protected:
   GGameState *mGameState;
   TUint32 mTileMapId;
-  TUint mMosaic;
+  TInt mMosaicTimer;
 };
 
 #endif //MODITE_GGAMEPLAYFIELD_H
