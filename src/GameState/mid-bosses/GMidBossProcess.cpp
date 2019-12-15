@@ -35,7 +35,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
 
   gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
@@ -109,6 +109,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       Ball(aDirection);
+      mSprite->ClearFlags(SFLAG_KNOCKBACK);
       break;
 
     case MB_MOVE_STATE:
@@ -145,6 +146,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->h = 24;
       mSprite->ResetShadow();
       Revert(aDirection);
+      mSprite->SetFlags(SFLAG_KNOCKBACK);
       break;
 
     case MB_WALK_STATE:
