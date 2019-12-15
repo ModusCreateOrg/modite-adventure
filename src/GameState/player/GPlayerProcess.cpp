@@ -491,6 +491,8 @@ TBool GPlayerProcess::MaybeHit() {
       mSprite->cType = 0;
       return ETrue;
     }
+  } else {
+    mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
   }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
@@ -696,6 +698,10 @@ TBool GPlayerProcess::WalkState() {
 }
 
 TBool GPlayerProcess::SwordState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -870,6 +876,7 @@ TBool GPlayerProcess::RunAfter() {
   }
 
   mSprite->mCollided = ENull;
+  mSprite->cType = 0;
 
   return ETrue;
 }
