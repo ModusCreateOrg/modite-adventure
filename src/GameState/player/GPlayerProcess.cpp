@@ -178,6 +178,25 @@ TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   }
 }
 
+void GPlayerProcess::StartKnockback() {
+  if (mSprite->mCollided) {
+    // push player away from center of other sprite's hit box
+    TRect myRect, otherRect;
+    mSprite->GetRect(myRect);
+    mSprite->mCollided->GetRect(otherRect);
+    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
+            dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
+    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
+        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
+      mSprite->vx = PLAYER_VELOCITY * (dx / (ABS(dx) + ABS(dy)));
+    }
+    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
+        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
+      mSprite->vy = PLAYER_VELOCITY * (dy / (ABS(dx) + ABS(dy)));
+    }
+  }
+}
+
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
@@ -450,20 +469,7 @@ TBool GPlayerProcess::MaybeHit() {
       }
     }
 
-    // push player away from center of other sprite's hit box
-    TRect myRect, otherRect;
-    mSprite->GetRect(myRect);
-    mSprite->mCollided->GetRect(otherRect);
-    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
-          dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
-    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
-        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
-      mSprite->vx = PLAYER_VELOCITY * (dx / (ABS(dx) + ABS(dy)));
-    }
-    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
-        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
-      mSprite->vy = PLAYER_VELOCITY * (dy / (ABS(dx) + ABS(dy)));
-    }
+    StartKnockback();
 
     mSprite->cType = 0;
     return ETrue;
@@ -764,7 +770,10 @@ TBool GPlayerProcess::FallState() {
 }
 
 TBool GPlayerProcess::HitState() {
-  mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
+  // if player collides with another or the same enemy during knockback, reset direction
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
+    StartKnockback();
+  }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
     mSprite->Nudge();
