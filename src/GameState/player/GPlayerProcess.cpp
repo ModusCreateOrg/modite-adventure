@@ -179,21 +179,22 @@ TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
 }
 
 void GPlayerProcess::StartKnockback() {
-  if (mSprite->mCollided && mSprite->mCollided->TestFlags(SFLAG_KNOCKBACK)) {
+  GAnchorSprite *other = mSprite->mCollided;
+  if (other && other->TestFlags(SFLAG_KNOCKBACK)) {
     // push player away from center of other sprite's hit box
     TRect myRect, otherRect;
     mSprite->GetRect(myRect);
-    mSprite->mCollided->GetRect(otherRect);
+    other->GetRect(otherRect);
     TFloat velocity = PLAYER_VELOCITY;
-    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
-            dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
+    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (other->x+otherRect.x1+otherRect.Width()),
+            dy = (mSprite->y+myRect.y1+myRect.Height()) - (other->y+otherRect.y1+otherRect.Height());
 
     // if other sprite is moving towards player, add its momentum to player knockback
-    if (dx > 0 ^ mSprite->mCollided->vx < 0) {
-      velocity += ABS(mSprite->mCollided->vx);
+    if (dx > 0 ^ other->vx < 0) {
+      velocity += ABS(other->vx);
     }
-    if (dy > 0 ^ mSprite->mCollided->vy < 0) {
-      velocity += ABS(mSprite->mCollided->vy);
+    if (dy > 0 ^ other->vy < 0) {
+      velocity += ABS(other->vy);
     }
 
     if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
@@ -485,7 +486,7 @@ TBool GPlayerProcess::MaybeHit() {
         }
       }
 
-    StartKnockback();
+      StartKnockback();
 
       mSprite->cType = 0;
       return ETrue;
