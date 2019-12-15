@@ -152,8 +152,17 @@ void GGameState::TryAgain() {
 
 void GGameState::PreRender() {
   if (mNextLevel != mLevel || mNextDungeon != mDungeon) {
-    LoadLevel(mName, mNextLevel, mNextTileMapId);
-    gViewPort->mWorldX = gViewPort->mWorldY = 0;
+    if (mLevel) {
+      mGamePlayfield->StartMosaicOut();
+
+      if (mGamePlayfield->MosaicDone()) {
+        LoadLevel(mName, mNextLevel, mNextTileMapId);
+        gViewPort->mWorldX = gViewPort->mWorldY = 0;
+      }
+    } else {
+      LoadLevel(mName, mNextLevel, mNextTileMapId);
+      gViewPort->mWorldX = gViewPort->mWorldY = 0;
+    }
   }
 }
 
@@ -285,6 +294,13 @@ void GGameState::PostRender() {
     mGameOver->Run();
     return;
   }
+
+  if (mGamePlayfield->MosaicActive()) {
+    gControls.Reset();
+    Pause();
+  } else if (mGamePlayfield->MosaicDone()) {
+    Resume();
+  }
 }
 
 /*******************************************************************************
@@ -356,9 +372,8 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
   mNextObjectsId = gDungeonDefs[mNextDungeon].mInfo.objectsId;
 
-  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   if (!mGamePlayfield) {
-    mPlayfield = mGamePlayfield = mNextGamePlayfield;
+    mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
 }
@@ -367,6 +382,8 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   * This is NOT safe to call from BProcess context
   */
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
+  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+
   strcpy(mName, aName);
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
@@ -376,11 +393,11 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   mTileMapId = aTileMapId;
 
   Reset(); // remove sprites and processes
+  InitRemapSlots();
   mPlayfield = mGamePlayfield = mNextGamePlayfield;
+  gDisplay.SetPalette(mGamePlayfield->GetTilesBitmap(), 0, 128);
   mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
-
-  InitRemapSlots();
 
   RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
@@ -737,6 +754,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
+  mGamePlayfield->StartMosaicIn();
 }
 
 /**
@@ -785,10 +803,14 @@ void GGameState::GameOver() {
  *******************************************************************************/
 
 void GGameState::InitRemapSlots() {
-  for (TInt i = 0; i < SLOT_MAX; i++) {
+  for (TInt i = 2; i < SLOT_MAX; i++) {
+    if (i == TILESET_SLOT) {
+      // do not release TILESET
+      continue;
+    }
     if (mSlotRemapState[i]) {
       if (gResourceManager.GetBitmap(i)) {
-        printf("Releasing slot %d\n");
+        printf("Releasing slot %d\n", i);
         gResourceManager.ReleaseBitmapSlot(i);
       }
     }
@@ -798,6 +820,9 @@ void GGameState::InitRemapSlots() {
 
 // Load aBMP, and remap it to playfield's tilemap palette
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
+  if (aSlot == TILESET_SLOT) {
+    Panic("Attemp to RemapSlot(TILESET_SLOT)\n");
+  }
   if (mSlotRemapState[aSlot]) {
     return;
   }

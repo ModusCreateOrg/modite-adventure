@@ -10,7 +10,7 @@
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute)
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet)
     : GProcess(aAttribute) {
   mIp = aIp;
   mSprite = ENull;
@@ -30,7 +30,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->w = 44;
   mSprite->h = 24;
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mGameState->AddSprite(mSprite);
   mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
