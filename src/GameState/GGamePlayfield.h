@@ -119,6 +119,9 @@ const TUint16 ATTR_RED_BOTTLE4 = 28;  // 100% full
 //const TUint16 IMG_OBJ_STAIRS_UP1  = 189;  // don't collide with this one
 //const TUint16 IMG_OBJ_STAIRS_UP2  = 188;
 
+const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
+const TInt MOSAIC_INTENSITY = 20;
+
 class GGamePlayfield : public BMapPlayfield {
 public:
   GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId);
@@ -126,6 +129,20 @@ public:
   ~GGamePlayfield() OVERRIDE;
 
 public:
+  void Render() OVERRIDE;
+
+  void StartMosaicIn();
+
+  void StartMosaicOut();
+
+  TBool MosaicActive() {
+    return mMosaicTimer > 1;
+  }
+
+  TBool MosaicDone() {
+    return mMosaicTimer == 1;
+  };
+
   void Restore();
 
   void DumpObjectProgram() {
@@ -165,6 +182,8 @@ public:
 protected:
   GGameState *mGameState;
   TUint32 mTileMapId;
+  TInt mMosaicTimer;
+  TBool mMosaicIn;
 };
 
 #endif //MODITE_GGAMEPLAYFIELD_H
