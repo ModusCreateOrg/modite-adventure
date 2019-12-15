@@ -764,10 +764,7 @@ TBool GPlayerProcess::FallState() {
 }
 
 TBool GPlayerProcess::HitState() {
-  if (mSprite->TestCType(STYPE_ENEMY)) {
-    mSprite->ClearCType(STYPE_ENEMY);
-    mSprite->Nudge();
-  }
+  mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
     mSprite->Nudge();
@@ -791,7 +788,6 @@ TBool GPlayerProcess::HitState() {
     if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
-    mSprite->ClearCType(STYPE_EBULLET);
     if (GPlayer::mGameOver || !MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
     }
