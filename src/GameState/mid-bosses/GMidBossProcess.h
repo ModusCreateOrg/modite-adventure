@@ -26,7 +26,7 @@ enum {
 
 class GMidBossProcess : public GProcess {
 public:
-  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute);
+  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet);
 
   ~GMidBossProcess() OVERRIDE;
 
