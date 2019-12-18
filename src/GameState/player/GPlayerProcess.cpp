@@ -156,12 +156,12 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
   }
 }
 
-TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE && (TInt(aY) % 32 > 12);
-}
-
 TBool GPlayerProcess::IsLedge() {
-  return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
+  TRect r;
+  mSprite->GetRect(r);
+
+  return mPlayfield->IsLedge(r.x1 + FLOOR_ADJUST_LEFT, r.y2) ||
+         mPlayfield->IsLedge(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
@@ -298,8 +298,10 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case FALL_STATE:
       mStep = 0;
+      mStepFrame = 0;
       mSprite->vx = 0;
-      mSprite->vy = GRAVITY;
+      mSprite->vy = PLAYER_VELOCITY;
+      mSprite->mDy = 0;
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -782,12 +784,23 @@ TBool GPlayerProcess::SpellState() {
 }
 
 TBool GPlayerProcess::FallState() {
-  if (mPlayfield->IsFloor(mSprite->x + 32, mSprite->y + mSprite->vy)) {
-    // land
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
+  mStepFrame++;
+  if (mStepFrame < FALL_DURATION) {
+    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame);
+  } else if (mStepFrame == FALL_DURATION) {
+    mSprite->StartAnimation(landAnimation);
   }
-  mSprite->vy += GRAVITY;
+
+  if (mSprite->IsFloor(DIRECTION_UP, 0, 0) &&
+      mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
+    mSprite->vy = 0;
+    if (mSprite->AnimDone()) {
+      // land
+      NewState(IDLE_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
   return ETrue;
 }
 
