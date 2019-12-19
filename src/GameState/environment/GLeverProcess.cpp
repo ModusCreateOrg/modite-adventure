@@ -34,7 +34,7 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 3;
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mState = 1;
   mSprite->StartAnimation(leverCenterAnimation);

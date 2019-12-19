@@ -95,7 +95,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN
   mSprite->w = 26;
   mSprite->h = 16;
   mSprite->cx = 7;
-  mSprite->cy = 4;
+  mSprite->cy = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
@@ -124,9 +124,9 @@ GPlayerProcess::~GPlayerProcess() {
   }
 }
 
-void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon) {
   mPlayfield = aPlayfield;
-  if (aOverworldDungeon == OVERWORLD_DUNGEON) {
+  if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
   }
@@ -145,14 +145,14 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
       }
       const TInt dungeon = params >> 8;
       printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
-      if (aOverworldDungeon == dungeon) {
+      if (aExitingDungeon == dungeon) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
         mSprite->x = xx - 16;
         mSprite->y = yy + 64;
         return;
       }
     }
-    Panic("Could not find dungeon entrance %d\n", aOverworldDungeon);
+    Panic("Could not find dungeon entrance %d\n", aExitingDungeon);
   }
 }
 

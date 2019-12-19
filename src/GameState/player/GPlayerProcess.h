@@ -23,7 +23,7 @@ public:
   ~GPlayerProcess();
 
 public:
-  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon = OVERWORLD_DUNGEON);
+  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON);
 
   GAnchorSprite *Sprite() { return mSprite; }
 

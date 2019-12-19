@@ -19,18 +19,14 @@ const TInt GAUGE_WIDTH = 90;
 struct TDungeonInfo gDungeonDefs[] = {
   { "OVERWORLD",
     {
-      DUNGEON_TILESET_OBJECTS_BMP,
+        GLOBAL_OBJECT_LAYER_BMP,
       {
-//        P256_OVERWORLD_MAP, // 0
-//        P256_OVERWORLD_MAP, // 1
         OVERWORLD_OVERWORLD_L1_MAP, // 0
         OVERWORLD_OVERWORLD_L1_MAP, // 1
+//        -1,-1,-1,
         OVERWORLD_OVERWORLD_L2_MAP, // 2
         OVERWORLD_OVERWORLD_L3_MAP, // 3
-        OVERWORLD_OVERWORLD_L4_MAP, // 3
-//        -1,                 // 2
-//        -1,                 // 3
-//        -1,                 // 4
+        OVERWORLD_OVERWORLD_L4_MAP, // 4
         -1,                 // 5
         -1,                 // 6
         -1,                 // 7
@@ -38,52 +34,66 @@ struct TDungeonInfo gDungeonDefs[] = {
         -1,                 // 9
         -1,                 // 10
       },
-    } },
-  { "DUNGEON 257",
-    { DUNGEON_TILESET_OBJECTS_BMP,
+    }
+  },
+//  {
+//    "OW Beach",
+//    {
+//      GLOBAL_OBJECT_LAYER_BMP,
+//      {
+//          OVERWORLD_BEACH_OVERWORLD_BEACH_L1_MAP, // 0
+//          OVERWORLD_BEACH_OVERWORLD_BEACH_L1_MAP, // 1
+//          OVERWORLD_BEACH_OVERWORLD_BEACH_L2_MAP, // 2
+//          OVERWORLD_BEACH_OVERWORLD_BEACH_L3_MAP, // 3
+//          OVERWORLD_BEACH_OVERWORLD_BEACH_L4_MAP, // 4
+//          -1, // 5
+//          -1,               // 6
+//          -1,               // 7
+//          -1,               // 8
+//          -1,               // 9
+//          -1,               // 10
+//      }
+//    }
+//  },
+  {
+    "DGN1",
+    {
+      GLOBAL_OBJECT_LAYER_BMP,
       {
-        P257_LEVEL_1_MAP, // 0
-        P257_LEVEL_1_MAP, // 1
-        P257_LEVEL_2_MAP, // 2
-        P257_LEVEL_3_MAP, // 3
-        P257_LEVEL_4_MAP, // 4
-        P257_LEVEL_5_MAP, // 5
+        DGN1_DGN1_L1_MAP, // 0
+        DGN1_DGN1_L1_MAP, // 1
+        DGN1_DGN1_L2_MAP, // 2
+        DGN1_DGN1_L3_MAP, // 3
+        DGN1_DGN1_L4_MAP, // 4
+        -1, // 5
         -1,               // 6
         -1,               // 7
         -1,               // 8
         -1,               // 9
         -1,               // 10
-      } } },
-  { "DUNGEON 258",
-    { DUNGEON_TILESET_OBJECTS_BMP,
+      }
+    }
+  },
+  {
+    "DGN2",
+    {
+      GLOBAL_OBJECT_LAYER_BMP,
       {
-        P258_LEVEL_1_MAP, // 0
-        P258_LEVEL_1_MAP, // 1
-        P258_LEVEL_2_MAP, // 2
-        P258_LEVEL_3_MAP, // 3
-        P258_LEVEL_4_MAP, // 4
-        P258_LEVEL_5_MAP, // 5
+        DGN2_DGN2_L1_MAP, // 0
+        DGN2_DGN2_L1_MAP, // 1
+        DGN2_DGN2_L2_MAP, // 2
+        DGN2_DGN2_L3_MAP, // 3
+        DGN2_DGN2_L4_MAP, // 4
+        -1, // 5
         -1,               // 6
         -1,               // 7
         -1,               // 8
         -1,               // 9
         -1,               // 10
-      } } },
-  { "DUNGEON 259",
-    { DUNGEON_TILESET_OBJECTS_BMP,
-      {
-        P259_LEVEL_1_MAP,
-        P259_LEVEL_1_MAP,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-      } } },
+      }
+    }
+  },
+
 };
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
@@ -345,7 +355,7 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
     mNextDungeon = mDungeon;
 
 
-    if (aLevel == 0 || aLevel > mLevel) {
+    if (aLevel > mLevel) {
       // Going up
       mPlayerToLoad = ATTR_PLAYER_IN1;
     }
@@ -387,6 +397,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   strcpy(mName, aName);
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
+
+  if (mDungeon == OVERWORLD_DUNGEON) {
+    mLastOverworldLevel = mLevel;
+  }
 
   mLevel = mNextLevel = aLevel;
   mDungeon = mNextDungeon;
@@ -432,6 +446,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   TBool startedPlayer = EFalse;
   TInt16 spikes_number = GSpikesProcess::mNumber;
   TInt eCount = 0;
+
   for (TInt ip = 0; ip < objectCount; ip++) {
 #ifdef DEBUGME
     printf("%5d: ", ip);
@@ -581,24 +596,24 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         printf("PLAYER IN1 at %.2f,%.2f\n", xx, yy);
 #endif
         GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
+//        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
         startedPlayer = ETrue;
         break;
 
       case ATTR_PLAYER_IN2:
-        if (!aNewLevel || startedPlayer) {
+        if (!aNewLevel || mPlayerToLoad != ATTR_PLAYER_IN2) {
           break;
         }
 #ifdef DEBUGME
         printf("PLAYER IN2 at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit);
         startedPlayer = ETrue;
         break;
 
-        //
-        // ENEMIES
-        //
-
+      //
+      // ENEMIES
+      //
       case ATTR_SPIDER:
         if (!aNewLevel) {
           break;
@@ -646,8 +661,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
 #ifdef DEBUGME
-        // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
-        // to test other enemy logic, comment out spawning the Orc and instead spawn the enemy we want to see/test
         printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));

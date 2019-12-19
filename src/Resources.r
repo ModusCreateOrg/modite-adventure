@@ -69,21 +69,28 @@ SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 PATH resources/tilemaps/overworld/
 TMX overworld.txt
 
+PATH resources/tilemaps/DGN1
+TMX DGN1.txt
 
-PATH resources/tilemaps-new/256
-TMX overworld.txt
-PATH resources/tilemaps-new/257
-TMX 257.txt
-PATH resources/tilemaps-new/258
-TMX 258.txt
-PATH resources/tilemaps-new/259
-TMX 259.txt
+PATH resources/tilemaps/DGN2
+TMX DGN2.txt
+
+
+#
+# PATH resources/tilemaps-new/256
+# TMX overworld.txt
+# PATH resources/tilemaps-new/257
+# TMX 257.txt
+# PATH resources/tilemaps-new/258
+# TMX 258.txt
+# PATH resources/tilemaps-new/259
+# TMX 259.txt
 
 #
 ### ENVIRONMENT/OBJECTS
 #
-PATH resources/sprites/environment
-SPRITESHEET 32x32 dungeon_tileset_objects.bmp
+PATH resources/tilemaps/tilesets/
+SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 # SPRITESHEET 32x32 village_tileset_all.bmp
 
 ########### SOUND :: MUSIC ###########

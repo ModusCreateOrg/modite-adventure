@@ -87,12 +87,12 @@ public:
   TBool IsGameOver() { return mGameOver != ENull; }
 
   TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
-
+  TInt16 LastOverworldLevel() { return mLastOverworldLevel; }
 protected:
   TInt mTimer;
   char mText[128];
   char mName[128];
-  TInt16 mNextLevel, mLevel, mNextObjectsId;
+  TInt16 mNextLevel, mLevel, mNextObjectsId, mLastOverworldLevel;
   TUint16 mDungeon, mNextDungeon, mNextTileMapId, mTileMapId;
   TUint16 mPlayerToLoad;
   GGameOver *mGameOver;

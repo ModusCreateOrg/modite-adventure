@@ -20,7 +20,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->w = mSprite->h = 32;
     mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite->SetFlags(SFLAG_BELOW);
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
 
     mSprite2 = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img - 10);
@@ -31,20 +31,25 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->x = aX;
     mSprite2->y = aY + 32;
     mSprite2->w = mSprite2->h = 32;
-    mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
   } else if (!strcasecmp(aKind, "DUNGEON")) {
     const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
     mAttribute = ATTR_DUNGEON_ENTRANCE;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name("DUNGEON ENTRANCE");
-    mSprite->cx = -16;
-    mSprite->w = mSprite->h = 32;
+
+    mSprite->h = 8;
+    mSprite->w = 8;
+    mSprite->cx = 8;
+    mSprite->cy = -12;
+
+//    mSprite->w = mSprite->h = 32;
     mSprite->x = aX;
     mSprite->y = aY + 32;
     mSprite->SetFlags(SFLAG_BELOW);
     mSprite->cMask = STYPE_PLAYER;
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
     mSprite->ClearFlags(SFLAG_RENDER);
   } else {
@@ -58,7 +63,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->y = aY + 32;
     mSprite->SetFlags(SFLAG_BELOW);
     mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
   }
 }
@@ -97,7 +102,7 @@ TBool GStairsProcess::RunAfter() {
       level = TUint16(mLevel & 0xff);
     if (level == 10) {
       printf("USE STAIRS to OVERWOLD\n");
-      mGameState->NextLevel(OVERWORLD_DUNGEON,1);
+      mGameState->NextLevel(OVERWORLD_DUNGEON, mGameState->LastOverworldLevel());
     }
     else {
       printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
