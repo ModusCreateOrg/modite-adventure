@@ -10,14 +10,19 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
   TBool isWood = strcmp(aKind, "WOOD") == 0;
   if (mDirection == DIRECTION_UP) {
     mAttribute = isWood ? ATTR_WOOD_STAIRS_UP : ATTR_STONE_STAIRS_UP;
-    const int img = strcmp(aKind, "WOOD") ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
+    const int img = isWood ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name(isWood ? "ENVIRONMENT WOOD STAIRS UP" : "ENVIRONMENT STONE STAIRS UP");
-    mSprite->cx = -16;
-    mSprite->w = mSprite->h = 32;
+//    mSprite->cx = -16;
+//    mSprite->w = mSprite->h = 32;
+    mSprite->h = 16;
+    mSprite->w = 16;
+    mSprite->cx = 8;
+    mSprite->cy = -16;
+
     mSprite->x = aX;
     mSprite->y = aY + 64;
-    mSprite->w = mSprite->h = 32;
+//    mSprite->w = mSprite->h = 32;
     mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite->SetFlags(SFLAG_BELOW);
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
@@ -33,18 +38,18 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->w = mSprite2->h = 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
-  } else if (!strcasecmp(aKind, "DUNGEON")) {
+  }
+  else if (!strcasecmp(aKind, "DUNGEON")) {
     const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
     mAttribute = ATTR_DUNGEON_ENTRANCE;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name("DUNGEON ENTRANCE");
 
-    mSprite->h = 8;
-    mSprite->w = 8;
-    mSprite->cx = 8;
+    mSprite->h = 4;
+    mSprite->w = 4;
+    mSprite->cx = 12;
     mSprite->cy = -12;
 
-//    mSprite->w = mSprite->h = 32;
     mSprite->x = aX;
     mSprite->y = aY + 32;
     mSprite->SetFlags(SFLAG_BELOW);
@@ -52,13 +57,18 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
     mSprite->ClearFlags(SFLAG_RENDER);
-  } else {
+  }
+  else {
     const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
     mAttribute = isWood ? ATTR_WOOD_STAIRS_DOWN : ATTR_STONE_STAIRS_DOWN;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
-    mSprite->Name(isWood ? "ENVIRONMENT WOOD STAIRS DOWN" : "ENVIRONMENT STONE STAIRS DOWN");
-    mSprite->cx = -16;
-    mSprite->w = mSprite->h = 32;
+    mSprite->Name(isWood ? "OVERWORLD WOOD STAIRS DOWN" : "OVERWORLD STONE STAIRS DOWN");
+//    mSprite->cx = -16;
+//    mSprite->w = mSprite->h = 32;
+    mSprite->h = 4;
+    mSprite->w = 4;
+    mSprite->cx = 12;
+    mSprite->cy = -12;
     mSprite->x = aX;
     mSprite->y = aY + 32;
     mSprite->SetFlags(SFLAG_BELOW);
