@@ -77,6 +77,7 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
+DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
@@ -102,7 +103,7 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN
 
   mSprite2 = ENull;
 
-  NewState(IDLE_STATE, DIRECTION_DOWN);
+  NewState(IDLE_STATE, mLastDirection);
 }
 
 GPlayerProcess::~GPlayerProcess() {
@@ -124,11 +125,57 @@ GPlayerProcess::~GPlayerProcess() {
   }
 }
 
-void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon, TInt16 aExitingLevel) {
   mPlayfield = aPlayfield;
+  printf("mSprite->mDirection %i\n", mSprite->mDirection);
+  printf("GPlayerProcess::mLastDirection %i\n", mLastDirection);
+//  printf("mSprite->vy %5f\n",mSprite->vy);
   if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
+
+    if (aExitingLevel == 0) {
+      return;
+    }
+
+
+    TInt objectCount = mPlayfield->mObjectCount;
+    BObjectProgram *program = mPlayfield->mObjectProgram;
+
+    for (TInt ip = 0; ip < objectCount; ip++) {
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
+      if (op != ATTR_OW_LEVEL_ENTRANCE) {
+        continue;
+      }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+            row = program[ip].mRow,
+            col = program[ip].mCol;
+
+
+      const TInt dungeon = params >> 8;
+      printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      if (aExitingLevel == params) {
+
+        auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+
+        if (mLastDirection == DIRECTION_DOWN) {
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 64;
+        }
+        else if (mLastDirection == DIRECTION_UP) {
+          mSprite->x = xx - 16;
+          mSprite->y = yy - 16;
+        }
+
+
+        return;
+      }
+    }
+
+
+
   }
   else {
     // player is exiting a dungeon to the overworld, so we need to scan the object program to find our starting position
@@ -211,6 +258,9 @@ void GPlayerProcess::StartKnockback() {
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+
+  mLastDirection = aDirection;
+
   mSprite->mDx = 0;
   mSprite->mDy = 0;
   switch (mState) {

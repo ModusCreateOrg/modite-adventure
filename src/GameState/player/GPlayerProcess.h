@@ -23,7 +23,7 @@ public:
   ~GPlayerProcess();
 
 public:
-  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON);
+  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON, TInt16 aExitingLevel = -1);
 
   GAnchorSprite *Sprite() { return mSprite; }
 
@@ -84,6 +84,9 @@ public:
 public:
   GPlayerBlinkProcess *mBlinkProcess;
 
+  static DIRECTION mLastDirection;
+//  static TUint16 mLastDirection;
+
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
@@ -92,6 +95,7 @@ protected:
   TUint16 mStep;
   TUint16 mStepFrame;
   TFloat mMomentum;
+
 };
 
 #endif // MODITE_GPLAYERPROCESS_H
