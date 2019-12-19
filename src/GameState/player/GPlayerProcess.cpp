@@ -178,6 +178,36 @@ TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   }
 }
 
+void GPlayerProcess::StartKnockback() {
+  GAnchorSprite *other = mSprite->mCollided;
+  if (other && other->TestFlags(SFLAG_KNOCKBACK)) {
+    // push player away from center of other sprite's hit box
+    TRect myRect, otherRect;
+    mSprite->GetRect(myRect);
+    other->GetRect(otherRect);
+    TFloat velocity = PLAYER_VELOCITY;
+    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (other->x+otherRect.x1+otherRect.Width()),
+            dy = (mSprite->y+myRect.y1+myRect.Height()) - (other->y+otherRect.y1+otherRect.Height());
+
+    // if other sprite is moving towards player, add its momentum to player knockback
+    if (dx > 0 ^ other->vx < 0) {
+      velocity += ABS(other->vx);
+    }
+    if (dy > 0 ^ other->vy < 0) {
+      velocity += ABS(other->vy);
+    }
+
+    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
+        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
+      mSprite->vx = velocity * (dx / (ABS(dx) + ABS(dy)));
+    }
+    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
+        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
+      mSprite->vy = velocity * (dy / (ABS(dx) + ABS(dy)));
+    }
+  }
+}
+
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
@@ -456,24 +486,13 @@ TBool GPlayerProcess::MaybeHit() {
         }
       }
 
-      // push player away from center of other sprite's hit box
-      TRect myRect, otherRect;
-      mSprite->GetRect(myRect);
-      other->GetRect(otherRect);
-      TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (other->x+otherRect.x1+otherRect.Width()),
-              dy = (mSprite->y+myRect.y1+myRect.Height()) - (other->y+otherRect.y1+otherRect.Height());
-      if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
-          (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
-        mSprite->vx = PLAYER_VELOCITY * (dx / (ABS(dx) + ABS(dy)));
-      }
-      if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
-          (dy > 0 && CanWalk(DIRECTION_DOWN))) {
-        mSprite->vy = PLAYER_VELOCITY * (dy / (ABS(dx) + ABS(dy)));
-      }
+      StartKnockback();
 
       mSprite->cType = 0;
       return ETrue;
     }
+  } else {
+    mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
   }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
@@ -679,6 +698,10 @@ TBool GPlayerProcess::WalkState() {
 }
 
 TBool GPlayerProcess::SwordState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -769,9 +792,9 @@ TBool GPlayerProcess::FallState() {
 }
 
 TBool GPlayerProcess::HitState() {
-  if (mSprite->TestCType(STYPE_ENEMY)) {
-    mSprite->ClearCType(STYPE_ENEMY);
-    mSprite->Nudge();
+  // if player collides with another or the same enemy during knockback, reset direction
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
+    StartKnockback();
   }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
@@ -796,7 +819,6 @@ TBool GPlayerProcess::HitState() {
     if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
-    mSprite->ClearCType(STYPE_EBULLET);
     if (GPlayer::mGameOver || !MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
     }
@@ -854,6 +876,7 @@ TBool GPlayerProcess::RunAfter() {
   }
 
   mSprite->mCollided = ENull;
+  mSprite->cType = 0;
 
   return ETrue;
 }

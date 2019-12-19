@@ -43,6 +43,8 @@ protected:
 
   TBool CanWalk(DIRECTION aDirection);
 
+  void StartKnockback();
+
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection);
 
