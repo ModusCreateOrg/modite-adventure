@@ -10,6 +10,7 @@
 #include "GameState/enemies/GSlimeProcess.h"
 #include "GameState/enemies/GTrollProcess.h"
 #include "GameState/environment/GStairsProcess.h"
+#include "GameState/environment/GOverworldLevelTransitionProcess.h"
 #include "GameState/environment/GCrateProcess.h"
 #include "GameState/environment/GChestProcess.h"
 #include "GameState/environment/GSpikesProcess.h"
@@ -46,6 +47,10 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return ENull;
     case ATTR_STONE_STAIRS_UP:
       return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_UP, aParams, xx, yy, "STONE"));
+
+    case ATTR_OW_LEVEL_ENTRANCE:
+      return aGameState->AddProcess(new GOverworldLevelTransitionProcess(aGameState, ip, DIRECTION_DOWN, params, xx, yy, "OVERWORLD"));
+      break;
 
     case ATTR_STONE_STAIRS_DOWN:
       if (!strcasecmp(aName, "DUNGEON")) {

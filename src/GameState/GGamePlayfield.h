@@ -67,17 +67,7 @@ const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OB
 // to be considered/globally unique.
 
 // stairs (destinations)
-const TUint16 ATTR_LEVEL1 = 1;
-const TUint16 ATTR_LEVEL2 = 2;
-const TUint16 ATTR_LEVEL3 = 3;
-const TUint16 ATTR_LEVEL4 = 4;
-const TUint16 ATTR_LEVEL5 = 5;
-const TUint16 ATTR_LEVEL6 = 6;
-const TUint16 ATTR_LEVEL7 = 7;
-const TUint16 ATTR_LEVEL8 = 8;
-const TUint16 ATTR_LEVEL9 = 9;
-const TUint16 ATTR_LEVEL10 = 10;
-const TUint16 ATTR_LEVEL_OVERWORLD = 99;
+const TUint16 ATTR_OW_LEVEL_ENTRANCE = 99;
 
 // items (can be inside crates, chests, inventory)
 // RED = LEFT, BLUE = MAGIC

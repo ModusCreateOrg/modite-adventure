@@ -16,85 +16,7 @@
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
-struct TDungeonInfo gDungeonDefs[] = {
-  { "OVERWORLD",
-    {
-        GLOBAL_OBJECT_LAYER_BMP,
-      {
-        OVERWORLD_OVERWORLD_L1_MAP, // 0
-        OVERWORLD_OVERWORLD_L1_MAP, // 1
-//        -1,-1,-1,
-        OVERWORLD_OVERWORLD_L2_MAP, // 2
-        OVERWORLD_OVERWORLD_L3_MAP, // 3
-        OVERWORLD_OVERWORLD_L4_MAP, // 4
-        -1,                 // 5
-        -1,                 // 6
-        -1,                 // 7
-        -1,                 // 8
-        -1,                 // 9
-        -1,                 // 10
-      },
-    }
-  },
-//  {
-//    "OW Beach",
-//    {
-//      GLOBAL_OBJECT_LAYER_BMP,
-//      {
-//          OVERWORLD_BEACH_OVERWORLD_BEACH_L1_MAP, // 0
-//          OVERWORLD_BEACH_OVERWORLD_BEACH_L1_MAP, // 1
-//          OVERWORLD_BEACH_OVERWORLD_BEACH_L2_MAP, // 2
-//          OVERWORLD_BEACH_OVERWORLD_BEACH_L3_MAP, // 3
-//          OVERWORLD_BEACH_OVERWORLD_BEACH_L4_MAP, // 4
-//          -1, // 5
-//          -1,               // 6
-//          -1,               // 7
-//          -1,               // 8
-//          -1,               // 9
-//          -1,               // 10
-//      }
-//    }
-//  },
-  {
-    "DGN1",
-    {
-      GLOBAL_OBJECT_LAYER_BMP,
-      {
-        DGN1_DGN1_L1_MAP, // 0
-        DGN1_DGN1_L1_MAP, // 1
-        DGN1_DGN1_L2_MAP, // 2
-        DGN1_DGN1_L3_MAP, // 3
-        DGN1_DGN1_L4_MAP, // 4
-        -1, // 5
-        -1,               // 6
-        -1,               // 7
-        -1,               // 8
-        -1,               // 9
-        -1,               // 10
-      }
-    }
-  },
-  {
-    "DGN2",
-    {
-      GLOBAL_OBJECT_LAYER_BMP,
-      {
-        DGN2_DGN2_L1_MAP, // 0
-        DGN2_DGN2_L1_MAP, // 1
-        DGN2_DGN2_L2_MAP, // 2
-        DGN2_DGN2_L3_MAP, // 3
-        DGN2_DGN2_L4_MAP, // 4
-        -1, // 5
-        -1,               // 6
-        -1,               // 7
-        -1,               // 8
-        -1,               // 9
-        -1,               // 10
-      }
-    }
-  },
-
-};
+#include "DungeonDefs.h"
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
 /*******************************************************************************
@@ -354,28 +276,22 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
     // -1 means stay in the same dungeon
     mNextDungeon = mDungeon;
 
+    if (mNextDungeon != OVERWORLD_DUNGEON) {
+      if (aLevel > mLevel) {
+        // Going up
+        mPlayerToLoad = ATTR_PLAYER_IN1;
+      }
+      else if (aLevel  < mLevel) {
+        // Going Down
+        mPlayerToLoad = ATTR_PLAYER_IN2;
+      }
+    }
 
-    if (aLevel > mLevel) {
-      // Going up
-      mPlayerToLoad = ATTR_PLAYER_IN1;
-    }
-    else if (aLevel  < mLevel) {
-      // Going Down
-      mPlayerToLoad = ATTR_PLAYER_IN2;
-    }
   }
   else {
     mNextDungeon = aDungeon;
     mPlayerToLoad = ATTR_PLAYER_IN1;
   }
-
-//  // Going up levels
-//  if (aLevel > mLevel) {
-//    mPlayerToLoad = ATTR_PLAYER_IN1;
-//  }
-//  else if (aLevel < mLevel) {
-//    mPlayerToLoad = ATTR_PLAYER_IN2;
-//  }
 
   mNextLevel = aLevel;
   strcpy(mName, gDungeonDefs[mNextDungeon].name);
@@ -397,6 +313,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   strcpy(mName, aName);
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
+  const TUint16 exiting_level  = mLevel;
+  TBool is_same_dungeon = (mDungeon != OVERWORLD_DUNGEON) && (mNextDungeon == mDungeon);
 
   if (mDungeon == OVERWORLD_DUNGEON) {
     mLastOverworldLevel = mLevel;
@@ -472,6 +390,15 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_UP, "STONE");
         break;
 
+      case ATTR_OW_LEVEL_ENTRANCE:
+#ifdef DEBUGME
+        printf("OVERWORLD LEVEL TRANSITION at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
+#endif
+        if (mDungeon == OVERWORLD_DUNGEON) {
+          GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "DUNGEON");
+        }
+
+        break;
       case ATTR_STONE_STAIRS_DOWN:
 #ifdef DEBUGME
         printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
@@ -595,19 +522,23 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("PLAYER IN1 at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
-//        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
+        if (mDungeon == OVERWORLD_DUNGEON) {
+          GPlayer::mProcess->StartLevel(mGamePlayfield, xx, yy, overworld_exit, exiting_level);
+        }
+        else {
+          GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit, exiting_level);
+        }
         startedPlayer = ETrue;
         break;
 
       case ATTR_PLAYER_IN2:
-        if (!aNewLevel || mPlayerToLoad != ATTR_PLAYER_IN2) {
+        if (mPlayerToLoad != ATTR_PLAYER_IN2) {
           break;
         }
 #ifdef DEBUGME
         printf("PLAYER IN2 at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit);
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit, exiting_level);
         startedPlayer = ETrue;
         break;
 

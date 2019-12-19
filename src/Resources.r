@@ -75,6 +75,9 @@ TMX DGN1.txt
 PATH resources/tilemaps/DGN2
 TMX DGN2.txt
 
+PATH resources/tilemaps/DGN3
+TMX DGN3.txt
+
 
 #
 # PATH resources/tilemaps-new/256
@@ -91,7 +94,6 @@ TMX DGN2.txt
 #
 PATH resources/tilemaps/tilesets/
 SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
-# SPRITESHEET 32x32 village_tileset_all.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
