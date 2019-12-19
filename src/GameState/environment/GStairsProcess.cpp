@@ -21,7 +21,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->cy = -16;
 
     mSprite->x = aX;
-    mSprite->y = aY + 64;
+    mSprite->y = aY + 32;
 //    mSprite->w = mSprite->h = 32;
     mSprite->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite->SetFlags(SFLAG_BELOW);
@@ -34,7 +34,7 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->cx = -16;
     mSprite2->w = mSprite2->h = 32;
     mSprite2->x = aX;
-    mSprite2->y = aY + 32;
+    mSprite2->y = aY;
     mSprite2->w = mSprite2->h = 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
