@@ -4,23 +4,22 @@
 
 struct TDungeonInfo gDungeonDefs[] = {
     { "OVERWORLD",
+      {
+        GLOBAL_OBJECT_LAYER_BMP,
         {
-            GLOBAL_OBJECT_LAYER_BMP,
-            {
-                OVERWORLD_OVERWORLD_L1_MAP, // 0
-                OVERWORLD_OVERWORLD_L1_MAP, // 1
-//        -1,-1,-1,
-                OVERWORLD_OVERWORLD_L2_MAP, // 2
-                OVERWORLD_OVERWORLD_L3_MAP, // 3
-                OVERWORLD_OVERWORLD_L4_MAP, // 4
-                -1,                 // 5
-                -1,                 // 6
-                -1,                 // 7
-                -1,                 // 8
-                -1,                 // 9
-                -1,                 // 10
-            },
-        }
+          OVERWORLD_OVERWORLD_L1_MAP, // 0
+          OVERWORLD_OVERWORLD_L1_MAP, // 1
+          OVERWORLD_OVERWORLD_L2_MAP, // 2
+          OVERWORLD_OVERWORLD_L3_MAP, // 3
+          OVERWORLD_OVERWORLD_L4_MAP, // 4
+          OVERWORLD_OVERWORLD_L5_MAP, // 5
+          OVERWORLD_OVERWORLD_L6_MAP, // 6
+          OVERWORLD_OVERWORLD_L7_MAP, // 7
+          OVERWORLD_OVERWORLD_L8_MAP, // 8
+          OVERWORLD_OVERWORLD_L9_MAP, // 9
+          -1                 // EMPTY -- no level 10 , evar!!
+        },
+      }
     },
 //  {
 //    "OW Beach",

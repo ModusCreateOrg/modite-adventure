@@ -127,9 +127,7 @@ GPlayerProcess::~GPlayerProcess() {
 
 void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon, TInt16 aExitingLevel) {
   mPlayfield = aPlayfield;
-  printf("mSprite->mDirection %i\n", mSprite->mDirection);
-  printf("GPlayerProcess::mLastDirection %i\n", mLastDirection);
-//  printf("mSprite->vy %5f\n",mSprite->vy);
+
   if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
@@ -142,6 +140,22 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     TInt objectCount = mPlayfield->mObjectCount;
     BObjectProgram *program = mPlayfield->mObjectProgram;
 
+    TUint16 maxCol = 0,
+            maxRow = 0;
+
+    // Detect Max column & Max row so we can auto-place the player
+    // within the overworld levels.
+    for (TInt ip = 0; ip < objectCount; ip++) {
+      if (program[ip].mRow > maxRow) {
+        maxRow = program[ip].mRow;
+      }
+
+      if (program[ip].mCol > maxCol) {
+        maxCol = program[ip].mCol;
+      }
+    }
+
+
     for (TInt ip = 0; ip < objectCount; ip++) {
       const TUint16 op = program[ip].mCode & TUint32(0xffff);
 
@@ -153,26 +167,28 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
             row = program[ip].mRow,
             col = program[ip].mCol;
 
-
       const TInt dungeon = params >> 8;
-      printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
       if (aExitingLevel == params) {
-
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
-        if (mLastDirection == DIRECTION_DOWN) {
+        if (row == 0) {
+          // Heading down
           mSprite->x = xx - 16;
           mSprite->y = yy + 64;
         }
-        else if (mLastDirection == DIRECTION_UP) {
+        else if (row == maxRow) {
+          // Heading Up
           mSprite->x = xx - 16;
-          mSprite->y = yy - 16;
+          mSprite->y = yy - 32;
         }
-        else if (mLastDirection == DIRECTION_RIGHT) {
+        else if (col == 0) {
+          // Heading Right
           mSprite->x = xx + 16;
           mSprite->y = yy + 32;
         }
-        else if (mLastDirection == DIRECTION_LEFT) {
+        else if (col == maxCol) {
+          // Heading Left
           mSprite->x = xx - 48;
           mSprite->y = yy + 32;
         }
@@ -191,13 +207,16 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     BObjectProgram *program = mPlayfield->mObjectProgram;
 
     for (TInt ip = 0; ip < objectCount; ip++) {
-      const TUint16 op = program[ip].mCode & TUint32(0xffff),
-                    params = program[ip].mCode >> TUint32(16),
-                    row = program[ip].mRow,
-                    col = program[ip].mCol;
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
       if (op != ATTR_STONE_STAIRS_DOWN) {
         continue;
       }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+          row = program[ip].mRow,
+          col = program[ip].mCol;
+
       const TInt dungeon = params >> 8;
       printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
       if (aExitingDungeon == dungeon) {

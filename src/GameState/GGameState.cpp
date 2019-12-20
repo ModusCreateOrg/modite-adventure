@@ -514,7 +514,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //
         // PLAYER
         //
-
+      // This case is used for the player 1 entrance for dungeon levels AND overworld entrance auto-detection.
       case ATTR_PLAYER_IN1:
         if (!aNewLevel || mPlayerToLoad != ATTR_PLAYER_IN1) {
           break;
@@ -531,6 +531,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         startedPlayer = ETrue;
         break;
 
+      // This case is used for the player 2 entrance for levels within dungeons only!
       case ATTR_PLAYER_IN2:
         if (mPlayerToLoad != ATTR_PLAYER_IN2) {
           break;
