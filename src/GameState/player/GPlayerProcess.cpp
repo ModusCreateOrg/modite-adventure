@@ -140,20 +140,6 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     TInt objectCount = mPlayfield->mObjectCount;
     BObjectProgram *program = mPlayfield->mObjectProgram;
 
-    TUint16 maxCol = 0,
-            maxRow = 0;
-
-    // Detect Max column & Max row so we can auto-place the player
-    // within the overworld levels.
-    for (TInt ip = 0; ip < objectCount; ip++) {
-      if (program[ip].mRow > maxRow) {
-        maxRow = program[ip].mRow;
-      }
-
-      if (program[ip].mCol > maxCol) {
-        maxCol = program[ip].mCol;
-      }
-    }
 
 
     for (TInt ip = 0; ip < objectCount; ip++) {
@@ -169,6 +155,8 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
 
       const TInt dungeon = params >> 8;
       printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      printf("GetMapHeight() = %i, GetMapWidth() = %i\n", mPlayfield->GetMapHeight(), mPlayfield->GetMapWidth());
+
       if (aExitingLevel == params) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
 
@@ -177,7 +165,7 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
           mSprite->x = xx - 16;
           mSprite->y = yy + 64;
         }
-        else if (row == maxRow) {
+        else if (row == mPlayfield->GetMapHeight() - 1) {
           // Heading Up
           mSprite->x = xx - 16;
           mSprite->y = yy - 32;
@@ -187,7 +175,7 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
           mSprite->x = xx + 16;
           mSprite->y = yy + 32;
         }
-        else if (col == maxCol) {
+        else if (col == mPlayfield->GetMapWidth() - 1) {
           // Heading Left
           mSprite->x = xx - 48;
           mSprite->y = yy + 32;
