@@ -168,6 +168,14 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
           mSprite->x = xx - 16;
           mSprite->y = yy - 16;
         }
+        else if (mLastDirection == DIRECTION_RIGHT) {
+          mSprite->x = xx + 16;
+          mSprite->y = yy + 32;
+        }
+        else if (mLastDirection == DIRECTION_LEFT) {
+          mSprite->x = xx - 48;
+          mSprite->y = yy + 32;
+        }
 
 
         return;
