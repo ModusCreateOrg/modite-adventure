@@ -108,14 +108,18 @@ TBool GStairsProcess::RunAfter() {
       mSprite2->cMask = 0;
       mSprite2->ClearFlags(SFLAG_CHECK);
     }
-    const TInt16 dungeon = TUint16(mLevel >> 8) & 0xff,
+
+    TInt16 dungeon = TUint16(mLevel >> 8) & 0xff,
       level = TUint16(mLevel & 0xff);
+
+
+    //DEBUG HERE @jgarcia TODO
     if (level == 10) {
-      printf("USE STAIRS to OVERWOLD\n");
+      printf("USE STAIRS up to OVERWOLD\n");
       mGameState->NextLevel(OVERWORLD_DUNGEON, mGameState->LastOverworldLevel());
     }
     else {
-      printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
+      printf("USE STAIRS down to dungeon %d level %d\n", dungeon, level);
       mGameState->NextLevel(dungeon == 0 ? -1 : dungeon,level);
     }
     mSprite->mCollided->ClearCType(STYPE_OBJECT);

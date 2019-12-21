@@ -64,20 +64,102 @@ SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 #
 ### TILEMAPS
 #
-# PATH resources/tilemaps/DevDungeon_0
-# TILEMAP DevDungeon_0.filelist.txt
-PATH resources/tilemaps/overworld/
+
+## OVERWORLD LEVELS
+PATH resources/tilemaps/overworld
 TMX overworld.txt
 
-PATH resources/tilemaps/DGN1
-TMX DGN1.txt
 
-PATH resources/tilemaps/DGN2
-TMX DGN2.txt
 
-PATH resources/tilemaps/DGN3
-TMX DGN3.txt
+## OVERWORLD 0 Dungeons
+PATH resources/tilemaps/OW1_DGN1_256
+TMX OW1_DGN1_256.txt
+PATH resources/tilemaps/OW1_DGN2_512
+TMX OW1_DGN2_512.txt
+PATH resources/tilemaps/OW1_DGN3_768
+TMX OW1_DGN3_768.txt
+PATH resources/tilemaps/OW1_DGN4_1024
+TMX OW1_DGN4_1024.txt
 
+## OVERWORLD 1 Dungeons
+PATH resources/tilemaps/OW2_DGN1_1280
+TMX OW2_DGN1_1280.txt
+PATH resources/tilemaps/OW2_DGN2_1536
+TMX OW2_DGN2_1536.txt
+PATH resources/tilemaps/OW2_DGN3_1792
+TMX OW2_DGN3_1792.txt
+PATH resources/tilemaps/OW2_DGN4_2048
+TMX OW2_DGN4_2048.txt
+
+## OVERWORLD 2 Dungeons
+PATH resources/tilemaps/OW3_DGN1_2304
+TMX OW3_DGN1_2304.txt
+PATH resources/tilemaps/OW3_DGN2_2560
+TMX OW3_DGN2_2560.txt
+PATH resources/tilemaps/OW3_DGN3_2816
+TMX OW3_DGN3_2816.txt
+PATH resources/tilemaps/OW3_DGN4_3072
+TMX OW3_DGN4_3072.txt
+
+## OVERWORLD 3 Dungeons
+PATH resources/tilemaps/OW4_DGN1_3328
+TMX OW4_DGN1_3328.txt
+PATH resources/tilemaps/OW4_DGN2_3584
+TMX OW4_DGN2_3584.txt
+PATH resources/tilemaps/OW4_DGN3_3840
+TMX OW4_DGN3_3840.txt
+PATH resources/tilemaps/OW4_DGN4_4096
+TMX OW4_DGN4_4096.txt
+
+## OVERWORLD 4 Dungeons
+PATH resources/tilemaps/OW5_DGN1_4352
+TMX OW5_DGN1_4352.txt
+PATH resources/tilemaps/OW5_DGN2_4608
+TMX OW5_DGN2_4608.txt
+PATH resources/tilemaps/OW5_DGN3_4864
+TMX OW5_DGN3_4864.txt
+PATH resources/tilemaps/OW5_DGN4_5120
+TMX OW5_DGN4_5120.txt
+
+## OVERWORLD 5 Dungeons
+PATH resources/tilemaps/OW6_DGN1_5376
+TMX OW6_DGN1_5376.txt
+PATH resources/tilemaps/OW6_DGN2_5632
+TMX OW6_DGN2_5632.txt
+PATH resources/tilemaps/OW6_DGN3_5888
+TMX OW6_DGN3_5888.txt
+PATH resources/tilemaps/OW6_DGN4_6144
+TMX OW6_DGN4_6144.txt
+
+## OVERWORLD 6 Dungeons
+PATH resources/tilemaps/OW7_DGN1_6400
+TMX OW7_DGN1_6400.txt
+PATH resources/tilemaps/OW7_DGN2_6656
+TMX OW7_DGN2_6656.txt
+PATH resources/tilemaps/OW7_DGN3_6912
+TMX OW7_DGN3_6912.txt
+PATH resources/tilemaps/OW7_DGN4_7168
+TMX OW7_DGN4_7168.txt
+
+## OVERWORLD 7 Dungeons
+PATH resources/tilemaps/OW8_DGN1_7424
+TMX OW8_DGN1_7424.txt
+PATH resources/tilemaps/OW8_DGN2_7680
+TMX OW8_DGN2_7680.txt
+PATH resources/tilemaps/OW8_DGN3_7936
+TMX OW8_DGN3_7936.txt
+PATH resources/tilemaps/OW8_DGN4_8192
+TMX OW8_DGN4_8192.txt
+
+## OVERWORLD 8 Dungeons
+PATH resources/tilemaps/OW9_DGN1_8448
+TMX OW9_DGN1_8448.txt
+PATH resources/tilemaps/OW9_DGN2_8704
+TMX OW9_DGN2_8704.txt
+PATH resources/tilemaps/OW9_DGN3_8960
+TMX OW9_DGN3_8960.txt
+PATH resources/tilemaps/OW9_DGN4_9216
+TMX OW9_DGN4_9216.txt
 
 #
 # PATH resources/tilemaps-new/256
