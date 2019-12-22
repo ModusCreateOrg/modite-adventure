@@ -104,12 +104,6 @@ const TUint16 ATTR_RED_BOTTLE2 = 28;  // 50% full
 const TUint16 ATTR_RED_BOTTLE3 = 27;  // 75% full
 const TUint16 ATTR_RED_BOTTLE4 = 28;  // 100% full
 
-// these match the tile numbers in the tileset that are used for sprites
-// TODO: get these from ENVIRONMENT_SLOT instead!
-//const TUint16 IMG_OBJ_STAIRS_DOWN = 187;  // don't collide with this one (only one sprite)
-//const TUint16 IMG_OBJ_STAIRS_UP1  = 189;  // don't collide with this one
-//const TUint16 IMG_OBJ_STAIRS_UP2  = 188;
-
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
 

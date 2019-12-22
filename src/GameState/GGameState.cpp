@@ -89,11 +89,9 @@ void GGameState::PreRender() {
 
       if (mGamePlayfield->MosaicDone()) {
         LoadLevel(mName, mNextLevel, mNextTileMapId);
-        gViewPort->mWorldX = gViewPort->mWorldY = 0;
       }
     } else {
       LoadLevel(mName, mNextLevel, mNextTileMapId);
-      gViewPort->mWorldX = gViewPort->mWorldY = 0;
     }
   }
 }
@@ -302,6 +300,28 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
     mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
+}
+
+void GGameState::SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY) {
+  TFloat maxx = MapWidth(),
+         maxy = MapHeight();
+
+  // upper left corner of desired viewport position
+  TFloat xx = gViewPort->mWorldX = aPlayerX,
+         yy = gViewPort->mWorldY = aPlayerY;
+
+  if (xx < 0) {
+    gViewPort->mWorldX = 0;
+  }
+  else if (xx > maxx) {
+    gViewPort->mWorldX = maxx;
+  }
+  if (yy < 0) {
+    gViewPort->mWorldY = 0;
+  }
+  else if (yy > maxy) {
+    gViewPort->mWorldY = maxy;
+  }
 }
 
 /**
@@ -524,9 +544,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #endif
         if (mDungeon == OVERWORLD_DUNGEON) {
           GPlayer::mProcess->StartLevel(mGamePlayfield, xx, yy, overworld_exit, exiting_level);
+          SetPlayfieldXYFromPlayer(xx,yy);
         }
         else {
           GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit, exiting_level);
+          SetPlayfieldXYFromPlayer(xx - 16, yy + 28);
+
         }
         startedPlayer = ETrue;
         break;
@@ -540,6 +563,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         printf("PLAYER IN2 at %.2f,%.2f\n", xx, yy);
 #endif
         GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit, exiting_level);
+        SetPlayfieldXYFromPlayer(xx - 16, yy - 32);
+
         startedPlayer = ETrue;
         break;
 

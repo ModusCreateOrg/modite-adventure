@@ -60,6 +60,8 @@ public:
 
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);
 
+  void SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY);
+
   TBool SaveState();
 
   TBool LoadState(const char *aGameName);
