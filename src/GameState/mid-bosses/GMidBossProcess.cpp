@@ -370,14 +370,14 @@ TBool GMidBossProcess::MaybeBounce() {
 
   if (vx > 0) {
     // check right edge (upper right, lower right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y1 + 8)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y1 + 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
     }
-    else if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2 - 8)) {
+    else if (!mSprite->IsFloorTile(r.x2, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
@@ -387,14 +387,14 @@ TBool GMidBossProcess::MaybeBounce() {
   }
   else {
     // check left edge (upper left, lower left corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1 + 8)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y1 + 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
     }
-    else if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2 - 8)) {
+    else if (!mSprite->IsFloorTile(r.x1, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
@@ -405,22 +405,22 @@ TBool GMidBossProcess::MaybeBounce() {
 
   if (vy > 0) {
     // check bottom edge (lower left, lower right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y2)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y2)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
   }
   else {
     // check top edge (upper left, upper right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y1)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y1)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y1)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }

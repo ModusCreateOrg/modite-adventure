@@ -7,7 +7,7 @@
 
 class GGameState;
 
-const TFloat GRAVITY = 0.25; // for falling, arrow dropping, etc.
+const TFloat GRAVITY = 15.0 / FRAMES_PER_SECOND; // for falling, arrow dropping, etc.
 
 #include "object_layer_attributes.h"
 
@@ -18,8 +18,8 @@ const TFloat GRAVITY = 0.25; // for falling, arrow dropping, etc.
 
 //// MAP ATTRIBUTE LAYER
 const TUint16 ATTR_FLOOR = 0;
-const TUint16 ATTR_WALL = 1;
-const TUint16 ATTR_LEDGE = 2;
+const TUint16 ATTR_WALL = 8;
+const TUint16 ATTR_LEDGE = 10;
 
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
@@ -159,7 +159,13 @@ public:
   }
 
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
-    return GetAttribute(aWorldX, aWorldY) == ATTR_FLOOR;
+    const TInt attr = GetAttribute(aWorldX, aWorldY);
+
+    return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
+  }
+
+  TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {
+    return GetAttribute(aWorldX, aWorldY) == ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
   }
 
 public:
