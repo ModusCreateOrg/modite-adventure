@@ -163,21 +163,21 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
         if (row == 0) {
           // Heading down
           mSprite->x = xx - 16;
-          mSprite->y = yy + 64;
+          mSprite->y = yy + 32;
         }
         else if (row == mPlayfield->GetMapHeight() - 1) {
           // Heading Up
           mSprite->x = xx - 16;
-          mSprite->y = yy - 32;
+          mSprite->y = yy + 24;
         }
         else if (col == 0) {
           // Heading Right
-          mSprite->x = xx + 16;
+          mSprite->x = xx - 16;
           mSprite->y = yy + 32;
         }
         else if (col == mPlayfield->GetMapWidth() - 1) {
           // Heading Left
-          mSprite->x = xx - 48;
+          mSprite->x = xx - 24;
           mSprite->y = yy + 32;
         }
 

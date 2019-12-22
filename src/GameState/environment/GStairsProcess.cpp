@@ -113,7 +113,6 @@ TBool GStairsProcess::RunAfter() {
       level = TUint16(mLevel & 0xff);
 
 
-    //DEBUG HERE @jgarcia TODO
     if (level == 10) {
       printf("USE STAIRS up to OVERWOLD\n");
       mGameState->NextLevel(OVERWORLD_DUNGEON, mGameState->LastOverworldLevel());

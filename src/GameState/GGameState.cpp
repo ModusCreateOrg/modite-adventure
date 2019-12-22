@@ -374,8 +374,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
                   row = program[ip].mRow,
                   col = program[ip].mCol;
 
-    auto xx = TFloat(col * 32),
-         yy = TFloat(row * 32);
+    auto xx = TFloat(col * TILESIZE),
+         yy = TFloat(row * TILESIZE);
 
     switch (op) {
 
