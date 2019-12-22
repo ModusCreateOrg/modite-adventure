@@ -15,6 +15,7 @@ class BMemoryStream;
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 const TFloat PLAYER_FRICTION = 0.05 / TFloat(FACTOR);
+const TInt FALL_DURATION = 10 * FACTOR;
 
 class GPlayerProcess : public GProcess {
 public:
@@ -37,8 +38,6 @@ public:
   TBool RunAfter();
 
 protected:
-  TBool IsLedge(TFloat aX, TFloat aY);
-
   TBool IsLedge();
 
   TBool CanWalk(DIRECTION aDirection);
