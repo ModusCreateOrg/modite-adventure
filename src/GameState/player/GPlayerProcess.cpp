@@ -306,36 +306,36 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidUpAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidUpAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleUpAnimation);
-          }
+//          }
           break;
         case DIRECTION_DOWN:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidDownAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidDownAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleDownAnimation);
-          }
+//          }
           break;
         case DIRECTION_LEFT:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidLeftAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidLeftAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleLeftAnimation);
-          }
+//          }
           break;
         case DIRECTION_RIGHT:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidRightAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidRightAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleRightAnimation);
-          }
+//          }
           break;
       }
       break;
@@ -648,12 +648,12 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
     if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
-      if (mMomentum < 1.3) {
+      if (mMomentum < 1) {
         mMomentum += PLAYER_FRICTION / 4;
       }
     }
     else {
-      if (mMomentum < 0.3) {
+      if (mMomentum < 0.4) {
         mMomentum += PLAYER_FRICTION / 4;
       }
     }

@@ -6,10 +6,11 @@
 
 GMainMenuContainer::GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProcess) : GDialogWidget("Menu", aX, aY) {
   mProcess = aProcess;
-  AddWidget((BWidget &) *new GStartWidget());
   if (gSavedGameList.mNumSavedGames) {
     AddWidget((BWidget &) *new GButtonWidget("RESUME GAME", GAME_STATE_LOAD_GAME));
   }
+  AddWidget((BWidget &) *new GStartWidget());
+
   AddWidget((BWidget &) *new GButtonWidget("OPTIONS", GAME_STATE_MAIN_OPTIONS));
   AddWidget((BWidget &) *new GButtonWidget("CREDITS", GAME_STATE_CREDITS));
 }

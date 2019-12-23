@@ -14,7 +14,7 @@ class BMemoryStream;
 #include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
-const TFloat PLAYER_FRICTION = 0.05 / TFloat(FACTOR);
+const TFloat PLAYER_FRICTION = 0.5 / TFloat(FACTOR);
 const TInt FALL_DURATION = 10 * FACTOR;
 
 class GPlayerProcess : public GProcess {
