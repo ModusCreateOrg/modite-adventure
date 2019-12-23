@@ -32,7 +32,7 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->cy = -4;
   mSprite->x = aX;
   mSprite->y = aY + 32;
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mState = EFalse;
   mTime = (7 * SPIKE_SPEED);

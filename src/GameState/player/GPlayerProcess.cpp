@@ -77,7 +77,8 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
+DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
@@ -95,14 +96,14 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mSprite->w = 26;
   mSprite->h = 16;
   mSprite->cx = 7;
-  mSprite->cy = 4;
+  mSprite->cy = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 
   mSprite2 = ENull;
 
-  NewState(IDLE_STATE, DIRECTION_DOWN);
+  NewState(IDLE_STATE, mLastDirection);
 }
 
 GPlayerProcess::~GPlayerProcess() {
@@ -124,11 +125,69 @@ GPlayerProcess::~GPlayerProcess() {
   }
 }
 
-void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon, TInt16 aExitingLevel) {
   mPlayfield = aPlayfield;
-  if (aOverworldDungeon == OVERWORLD_DUNGEON) {
+
+  if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
+
+    if (aExitingLevel == 0) {
+      return;
+    }
+
+
+    TInt objectCount = mPlayfield->mObjectCount;
+    BObjectProgram *program = mPlayfield->mObjectProgram;
+
+
+
+    for (TInt ip = 0; ip < objectCount; ip++) {
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
+      if (op != ATTR_OW_LEVEL_ENTRANCE) {
+        continue;
+      }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+            row = program[ip].mRow,
+            col = program[ip].mCol;
+
+      const TInt dungeon = params >> 8;
+      printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      printf("GetMapHeight() = %i, GetMapWidth() = %i\n", mPlayfield->GetMapHeight(), mPlayfield->GetMapWidth());
+
+      if (aExitingLevel == params) {
+        auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+
+        if (row == 0) {
+          // Heading down
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 32;
+        }
+        else if (row == mPlayfield->GetMapHeight() - 1) {
+          // Heading Up
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 24;
+        }
+        else if (col == 0) {
+          // Heading Right
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 32;
+        }
+        else if (col == mPlayfield->GetMapWidth() - 1) {
+          // Heading Left
+          mSprite->x = xx - 24;
+          mSprite->y = yy + 32;
+        }
+
+
+        return;
+      }
+    }
+
+
+
   }
   else {
     // player is exiting a dungeon to the overworld, so we need to scan the object program to find our starting position
@@ -136,23 +195,26 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     BObjectProgram *program = mPlayfield->mObjectProgram;
 
     for (TInt ip = 0; ip < objectCount; ip++) {
-      const TUint16 op = program[ip].mCode & TUint32(0xffff),
-                    params = program[ip].mCode >> TUint32(16),
-                    row = program[ip].mRow,
-                    col = program[ip].mCol;
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
       if (op != ATTR_STONE_STAIRS_DOWN) {
         continue;
       }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+          row = program[ip].mRow,
+          col = program[ip].mCol;
+
       const TInt dungeon = params >> 8;
       printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
-      if (aOverworldDungeon == dungeon) {
+      if (aExitingDungeon == dungeon) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
         mSprite->x = xx - 16;
         mSprite->y = yy + 64;
         return;
       }
     }
-    Panic("Could not find dungeon entrance %d\n", aOverworldDungeon);
+    Panic("Could not find dungeon entrance %d\n", aExitingDungeon);
   }
 }
 
@@ -211,6 +273,9 @@ void GPlayerProcess::StartKnockback() {
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+
+  mLastDirection = aDirection;
+
   mSprite->mDx = 0;
   mSprite->mDy = 0;
   switch (mState) {

@@ -39,7 +39,8 @@ const TUint16 ATTR_METAL_DOOR_V = 11; // vertical
 const TUint16 ATTR_LEVER = 12;        // tri state lever
 const TUint16 ATTR_FLOOR_SWITCH = 13;
 const TUint16 ATTR_FLOOR_SWITCH_WOOD = 14;
-const TUint16 ATTR_PLAYER = 16;
+const TUint16 ATTR_PLAYER_IN1 = 100;
+const TUint16 ATTR_PLAYER_IN2 = 101;
 const TUint16 ATTR_SPIDER = 17;
 const TUint16 ATTR_BAT = 18;
 const TUint16 ATTR_GOBLIN = 19;
@@ -66,17 +67,7 @@ const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OB
 // to be considered/globally unique.
 
 // stairs (destinations)
-const TUint16 ATTR_LEVEL1 = 1;
-const TUint16 ATTR_LEVEL2 = 2;
-const TUint16 ATTR_LEVEL3 = 3;
-const TUint16 ATTR_LEVEL4 = 4;
-const TUint16 ATTR_LEVEL5 = 5;
-const TUint16 ATTR_LEVEL6 = 6;
-const TUint16 ATTR_LEVEL7 = 7;
-const TUint16 ATTR_LEVEL8 = 8;
-const TUint16 ATTR_LEVEL9 = 9;
-const TUint16 ATTR_LEVEL10 = 10;
-const TUint16 ATTR_LEVEL_OVERWORLD = 99;
+const TUint16 ATTR_OW_LEVEL_ENTRANCE = 99;
 
 // items (can be inside crates, chests, inventory)
 // RED = LEFT, BLUE = MAGIC
@@ -112,12 +103,6 @@ const TUint16 ATTR_RED_BOTTLE1 = 27;  // 25% full
 const TUint16 ATTR_RED_BOTTLE2 = 28;  // 50% full
 const TUint16 ATTR_RED_BOTTLE3 = 27;  // 75% full
 const TUint16 ATTR_RED_BOTTLE4 = 28;  // 100% full
-
-// these match the tile numbers in the tileset that are used for sprites
-// TODO: get these from ENVIRONMENT_SLOT instead!
-//const TUint16 IMG_OBJ_STAIRS_DOWN = 187;  // don't collide with this one (only one sprite)
-//const TUint16 IMG_OBJ_STAIRS_UP1  = 189;  // don't collide with this one
-//const TUint16 IMG_OBJ_STAIRS_UP2  = 188;
 
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;

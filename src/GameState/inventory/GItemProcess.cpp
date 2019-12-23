@@ -34,7 +34,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     mSprite->cx = -16;
     mSprite->x = aX;
     mSprite->y = aY;
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
     // TODO: uncomment this if we want to spawn items in the dungeon that can be picked up and want to retain 
     //       whether already picked up
