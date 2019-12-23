@@ -74,10 +74,10 @@ void GInventory::RenderInventory() {
     bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
     if (gControls.WasPressed(BUTTONA)) {
       switch (selected->mItemNumber) {
-        case ITEM_BLUE_AMULET:
-        case ITEM_RED_AMULET:
-        case ITEM_GREEN_AMULET:
-        case ITEM_YELLOW_AMULET:
+        case ITEM_BLUE_BRACELET:
+        case ITEM_RED_BRACELET:
+        case ITEM_GREEN_BRACELET:
+        case ITEM_YELLOW_BRACELET:
           GPlayer::mEquipped.mAmulet = selected;
           mMode = MODE_EQUIPPED;
           break;

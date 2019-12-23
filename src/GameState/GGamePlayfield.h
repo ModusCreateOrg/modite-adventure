@@ -23,7 +23,7 @@ const TUint16 ATTR_LEDGE = 10;
 
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
-//// OBJECT LAYER ATTRIBUTES
+//// OBJECT LAYER VALUES
 const TUint16 ATTR_GONE = 0; // thing is no longer in the world
 const TUint16 ATTR_STONE_STAIRS_UP = 1;
 const TUint16 ATTR_STONE_STAIRS_DOWN = 2;
@@ -53,15 +53,23 @@ const TUint16 ATTR_CHEST_OPEN = 25;
 const TUint16 ATTR_CRATE_GONE = 26;
 const TUint16 ATTR_DUNGEON_ENTRANCE = 27;
 // mid bosses
-const TUint16 ATTR_MID_BOSS_ENERGY = 1001;
-const TUint16 ATTR_MID_BOSS_FIRE = 1002;
-const TUint16 ATTR_MID_BOSS_EARTH = 1003;
-const TUint16 ATTR_MID_BOSS_WATER = 1004;
+const TUint16 ATTR_MID_BOSS_EARTH = 1001;
+const TUint16 ATTR_MID_BOSS_WATER = 1002;
+const TUint16 ATTR_MID_BOSS_FIRE = 1003;
+const TUint16 ATTR_MID_BOSS_ENERGY = 1004;
+const TUint16 ATTR_WIZARD_EARTH = 1005;
+const TUint16 ATTR_WIZARD_WATER = 1006;
+const TUint16 ATTR_WIZARD_FIRE = 1007;
+const TUint16 ATTR_WIZARD_ENERGY = 1008;
+const TUint16 ATTR_FINAL_BOSS = 1009;
+
+
+
 //
 const TUint16 ATTR_KEEP = 32767;  // pass this to EndProgram to keep existing OBJECT_LAYER value
 
-//// OBJECT ATTRIBUTE LAYER ATTRIBUTES
-// Note: these attributes are unique per thing
+//// OBJECT ATTRIBUTE LAYER VALUES
+// Note: these values are unique per thing
 // That is, stairs has its own 0-0xffff attributes and crate has its own, and so on.
 // Some things, like a key, might be in a crate or simply on the floor, so those have
 // to be considered/globally unique.
@@ -86,23 +94,25 @@ const TUint16 ATTR_YELLOW_RING = 10;
 const TUint16 ATTR_BOOTS = 11;
 const TUint16 ATTR_GLOVES = 12;
 const TUint16 ATTR_SWORD = 13;
-const TUint16 ATTR_BLUE_AMULET = 14;
-const TUint16 ATTR_RED_AMULET = 15;
-const TUint16 ATTR_GREEN_AMULET = 16;
-const TUint16 ATTR_YELLOW_AMULET = 17;
+const TUint16 ATTR_BLUE_BRACELET = 14;
+const TUint16 ATTR_RED_BRACELET = 15;
+const TUint16 ATTR_GREEN_BRACELET = 16;
+const TUint16 ATTR_YELLOW_BRACELET = 17;
 const TUint16 ATTR_RED_POTION1 = 18;
 const TUint16 ATTR_RED_POTION2 = 19;
 const TUint16 ATTR_BLUE_POTION1 = 20;
 const TUint16 ATTR_BLUE_POTION2 = 21;
-const TUint16 ATTR_EMPTY_BOTTLE = 22; // empty bottle
-const TUint16 ATTR_BLUE_BOTTLE1 = 23; // 25% full
-const TUint16 ATTR_BLUE_BOTTLE2 = 24; // 50% full
-const TUint16 ATTR_BLUE_BOTTLE3 = 25; // 75% full
-const TUint16 ATTR_BLUE_BOTTLE4 = 26; // 100% full
-const TUint16 ATTR_RED_BOTTLE1 = 27;  // 25% full
-const TUint16 ATTR_RED_BOTTLE2 = 28;  // 50% full
-const TUint16 ATTR_RED_BOTTLE3 = 27;  // 75% full
-const TUint16 ATTR_RED_BOTTLE4 = 28;  // 100% full
+const TUint16 ATTR_HEART = 22;
+
+const TUint16 ATTR_EMPTY_BOTTLE = 23; // empty bottle
+const TUint16 ATTR_BLUE_BOTTLE1 = 24; // 25% full
+const TUint16 ATTR_BLUE_BOTTLE2 = 25; // 50% full
+const TUint16 ATTR_BLUE_BOTTLE3 = 26; // 75% full
+const TUint16 ATTR_BLUE_BOTTLE4 = 27; // 100% full
+const TUint16 ATTR_RED_BOTTLE1 = 28;  // 25% full
+const TUint16 ATTR_RED_BOTTLE2 = 29;  // 50% full
+const TUint16 ATTR_RED_BOTTLE3 = 30;  // 75% full
+const TUint16 ATTR_RED_BOTTLE4 = 31;  // 100% full
 
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
