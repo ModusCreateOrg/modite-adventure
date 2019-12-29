@@ -34,8 +34,8 @@ struct TDungeonInfo gDungeonDefs[] = {
       {
         OW1_DGN1_256_OW1_DGN1_L1_MAP, // 0
         OW1_DGN1_256_OW1_DGN1_L1_MAP, // 1
-        -1, // 2
-        -1, // 3
+        OW1_DGN1_256_OW1_DGN1_L2_MAP, // 2
+        OW1_DGN1_256_OW1_DGN1_L3_MAP, // 3
         -1, // 4
         -1, // 5
         -1, // 6
