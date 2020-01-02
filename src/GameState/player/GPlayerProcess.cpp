@@ -453,7 +453,7 @@ TBool GPlayerProcess::MaybeHit() {
     // push player away from center of other sprite's hit box
     TRect myRect, otherRect;
     mSprite->GetRect(myRect);
-    mSprite->mCollided->GetRect(otherRect);
+   mSprite->mCollided->GetRect(otherRect);
     TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
           dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
     if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
