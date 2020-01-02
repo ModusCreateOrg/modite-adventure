@@ -46,7 +46,7 @@ GCrateProcess::GCrateProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mSprite->y = aY + 32;
   mSprite->mHitPoints = 3;
   mSprite->StartAnimation(crateAnimation);
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(DUNGEON_TILESET_OBJECTS_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
 }
 

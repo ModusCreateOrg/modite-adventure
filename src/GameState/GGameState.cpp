@@ -16,70 +16,7 @@
 const TInt GAUGE_WIDTH = 90;
 
 // info about the dungeons
-struct TDungeonInfo gDungeonDefs[] = {
-  { "OVERWORLD",
-    {
-      DUNGEON_TILESET_OBJECTS_BMP,
-      {
-        P256_OVERWORLD_MAP, // 0
-        P256_OVERWORLD_MAP, // 1
-        -1,                 // 2
-        -1,                 // 3
-        -1,                 // 4
-        -1,                 // 5
-        -1,                 // 6
-        -1,                 // 7
-        -1,                 // 8
-        -1,                 // 9
-        -1,                 // 10
-      },
-    } },
-  { "DUNGEON 257",
-    { DUNGEON_TILESET_OBJECTS_BMP,
-      {
-        P257_LEVEL_1_MAP, // 0
-        P257_LEVEL_1_MAP, // 1
-        P257_LEVEL_2_MAP, // 2
-        P257_LEVEL_3_MAP, // 3
-        P257_LEVEL_4_MAP, // 4
-        P257_LEVEL_5_MAP, // 5
-        -1,               // 6
-        -1,               // 7
-        -1,               // 8
-        -1,               // 9
-        -1,               // 10
-      } } },
-  { "DUNGEON 258",
-    { DUNGEON_TILESET_OBJECTS_BMP,
-      {
-        P258_LEVEL_1_MAP, // 0
-        P258_LEVEL_1_MAP, // 1
-        P258_LEVEL_2_MAP, // 2
-        P258_LEVEL_3_MAP, // 3
-        P258_LEVEL_4_MAP, // 4
-        P258_LEVEL_5_MAP, // 5
-        -1,               // 6
-        -1,               // 7
-        -1,               // 8
-        -1,               // 9
-        -1,               // 10
-      } } },
-  { "DUNGEON 259",
-    { DUNGEON_TILESET_OBJECTS_BMP,
-      {
-        P259_LEVEL_1_MAP,
-        P259_LEVEL_1_MAP,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-      } } },
-};
+#include "DungeonDefs.h"
 const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 
 /*******************************************************************************
@@ -93,6 +30,8 @@ void GGameState::Init() {
   mNextDungeon = mDungeon = 0;
   mNextLevel = 0;
   mTileMapId = 0;
+  mPlayerToLoad = ATTR_PLAYER_IN1;
+
   mNextTileMapId = 0;
   mNextObjectsId = 0;
 
@@ -145,8 +84,15 @@ void GGameState::TryAgain() {
 
 void GGameState::PreRender() {
   if (mNextLevel != mLevel || mNextDungeon != mDungeon) {
-    LoadLevel(mName, mNextLevel, mNextTileMapId);
-    gViewPort->mWorldX = gViewPort->mWorldY = 0;
+    if (mLevel) {
+      mGamePlayfield->StartMosaicOut();
+
+      if (mGamePlayfield->MosaicDone()) {
+        LoadLevel(mName, mNextLevel, mNextTileMapId);
+      }
+    } else {
+      LoadLevel(mName, mNextLevel, mNextTileMapId);
+    }
   }
 }
 
@@ -278,6 +224,13 @@ void GGameState::PostRender() {
     mGameOver->Run();
     return;
   }
+
+  if (mGamePlayfield->MosaicActive()) {
+    gControls.Reset();
+    Pause();
+  } else if (mGamePlayfield->MosaicDone()) {
+    Resume();
+  }
 }
 
 /*******************************************************************************
@@ -320,29 +273,72 @@ void GGameState::NextLevel(const TInt16 aDungeon, const TInt16 aLevel) {
   if (aDungeon == -1) {
     // -1 means stay in the same dungeon
     mNextDungeon = mDungeon;
+
+    if (mNextDungeon != OVERWORLD_DUNGEON) {
+      if (aLevel > mLevel) {
+        // Going up
+        mPlayerToLoad = ATTR_PLAYER_IN1;
+      }
+      else if (aLevel  < mLevel) {
+        // Going Down
+        mPlayerToLoad = ATTR_PLAYER_IN2;
+      }
+    }
+
   }
   else {
     mNextDungeon = aDungeon;
+    mPlayerToLoad = ATTR_PLAYER_IN1;
   }
+
   mNextLevel = aLevel;
   strcpy(mName, gDungeonDefs[mNextDungeon].name);
   mNextTileMapId = gDungeonDefs[mNextDungeon].mInfo.map[aLevel];
   mNextObjectsId = gDungeonDefs[mNextDungeon].mInfo.objectsId;
 
-  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   if (!mGamePlayfield) {
-    mPlayfield = mGamePlayfield = mNextGamePlayfield;
+    mPlayfield = mGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
   }
   sprintf(mText, "%s Level %d", mName, aLevel);
+}
+
+void GGameState::SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY) {
+  TFloat maxx = MapWidth(),
+         maxy = MapHeight();
+
+  // upper left corner of desired viewport position
+  TFloat xx = gViewPort->mWorldX = aPlayerX,
+         yy = gViewPort->mWorldY = aPlayerY;
+
+  if (xx < 0) {
+    gViewPort->mWorldX = 0;
+  }
+  else if (xx > maxx) {
+    gViewPort->mWorldX = maxx;
+  }
+  if (yy < 0) {
+    gViewPort->mWorldY = 0;
+  }
+  else if (yy > maxy) {
+    gViewPort->mWorldY = maxy;
+  }
 }
 
 /**
   * This is NOT safe to call from BProcess context
   */
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel) {
+  mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
+
   strcpy(mName, aName);
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
+  const TUint16 exiting_level  = mLevel;
+  TBool is_same_dungeon = (mDungeon != OVERWORLD_DUNGEON) && (mNextDungeon == mDungeon);
+
+  if (mDungeon == OVERWORLD_DUNGEON) {
+    mLastOverworldLevel = mLevel;
+  }
 
   mLevel = mNextLevel = aLevel;
   mDungeon = mNextDungeon;
@@ -351,9 +347,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   Reset(); // remove sprites and processes
   InitRemapSlots();
   mPlayfield = mGamePlayfield = mNextGamePlayfield;
+  gDisplay.SetPalette(mGamePlayfield->GetTilesBitmap(), 0, 128);
   mNextGamePlayfield = ENull;
   GPlayer::mProcess = ENull;
-
 
   RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
@@ -388,6 +384,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   TBool startedPlayer = EFalse;
   TInt16 spikes_number = GSpikesProcess::mNumber;
   TInt eCount = 0;
+
   for (TInt ip = 0; ip < objectCount; ip++) {
 #ifdef DEBUGME
     printf("%5d: ", ip);
@@ -397,8 +394,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
                   row = program[ip].mRow,
                   col = program[ip].mCol;
 
-    auto xx = TFloat(col * 32),
-         yy = TFloat(row * 32);
+    auto xx = TFloat(col * TILESIZE),
+         yy = TFloat(row * TILESIZE);
 
     switch (op) {
 
@@ -413,6 +410,15 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_UP, "STONE");
         break;
 
+      case ATTR_OW_LEVEL_ENTRANCE:
+#ifdef DEBUGME
+        printf("OVERWORLD LEVEL TRANSITION at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
+#endif
+        if (mDungeon == OVERWORLD_DUNGEON) {
+          GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "DUNGEON");
+        }
+
+        break;
       case ATTR_STONE_STAIRS_DOWN:
 #ifdef DEBUGME
         printf("STONE STAIRS DOWN at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
@@ -528,22 +534,43 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //
         // PLAYER
         //
-
-      case ATTR_PLAYER:
-        if (!aNewLevel) {
+      // This case is used for the player 1 entrance for dungeon levels AND overworld entrance auto-detection.
+      case ATTR_PLAYER_IN1:
+        if (!aNewLevel || mPlayerToLoad != ATTR_PLAYER_IN1) {
           break;
         }
 #ifdef DEBUGME
-        printf("PLAYER at %.2f,%.2f\n", xx, yy);
+        printf("PLAYER IN1 at %.2f,%.2f\n", xx, yy);
 #endif
-        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit);
+        if (mDungeon == OVERWORLD_DUNGEON) {
+          GPlayer::mProcess->StartLevel(mGamePlayfield, xx, yy, overworld_exit, exiting_level);
+          SetPlayfieldXYFromPlayer(xx,yy);
+        }
+        else {
+          GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit, exiting_level);
+          SetPlayfieldXYFromPlayer(xx - 16, yy + 28);
+
+        }
         startedPlayer = ETrue;
         break;
 
-        //
-        // ENEMIES
-        //
+      // This case is used for the player 2 entrance for levels within dungeons only!
+      case ATTR_PLAYER_IN2:
+        if (mPlayerToLoad != ATTR_PLAYER_IN2) {
+          break;
+        }
+#ifdef DEBUGME
+        printf("PLAYER IN2 at %.2f,%.2f\n", xx, yy);
+#endif
+        GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit, exiting_level);
+        SetPlayfieldXYFromPlayer(xx - 16, yy - 32);
 
+        startedPlayer = ETrue;
+        break;
+
+      //
+      // ENEMIES
+      //
       case ATTR_SPIDER:
         if (!aNewLevel) {
           break;
@@ -591,8 +618,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
 #ifdef DEBUGME
-        // TODO @jaygarcia Using our test level 1, we spawn 2+ ORCs
-        // to test other enemy logic, comment out spawning the Orc and instead spawn the enemy we want to see/test
         printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
@@ -699,6 +724,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
+  mGamePlayfield->StartMosaicIn();
 }
 
 /**
@@ -805,7 +831,7 @@ TBool GGameState::SaveState() {
 
   // walk through process list and save enemies states
   for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
-    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER) {
+    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1) {
       if (p->mSaveToStream) {
         p->WriteToStream(stream);
       }

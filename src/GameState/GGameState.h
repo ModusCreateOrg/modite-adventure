@@ -60,6 +60,8 @@ public:
 
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);
 
+  void SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY);
+
   TBool SaveState();
 
   TBool LoadState(const char *aGameName);
@@ -87,13 +89,14 @@ public:
   TBool IsGameOver() { return mGameOver != ENull; }
 
   TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
-
+  TInt16 LastOverworldLevel() { return mLastOverworldLevel; }
 protected:
   TInt mTimer;
   char mText[128];
   char mName[128];
-  TInt16 mNextLevel, mLevel, mNextObjectsId;
+  TInt16 mNextLevel, mLevel, mNextObjectsId, mLastOverworldLevel;
   TUint16 mDungeon, mNextDungeon, mNextTileMapId, mTileMapId;
+  TUint16 mPlayerToLoad;
   GGameOver *mGameOver;
 #ifdef ENABLE_REMAP_SLOTS
 protected:

@@ -3,7 +3,9 @@
 #include "GEnemySprite.h"
 
 GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(
-        aGameState, aPri, aBM, aImg, aType) {}
+        aGameState, aPri, aBM, aImg, aType) {
+  SetFlags(SFLAG_KNOCKBACK);
+}
 
 TBool GEnemySprite::Render(BViewPort *aViewPort) {
   TBool ret = GAnchorSprite::Render(aViewPort);

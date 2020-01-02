@@ -9,6 +9,7 @@ extern ANIMSCRIPT idleAnimation[];
 
 extern ANIMSCRIPT selectedAnimation[];
 extern ANIMSCRIPT fallAnimation[];
+extern ANIMSCRIPT landAnimation[];
 
 // HEAL
 extern ANIMSCRIPT quaff1Animation[];

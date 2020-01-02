@@ -10,7 +10,7 @@
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute)
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet)
     : GProcess(aAttribute) {
   mIp = aIp;
   mSprite = ENull;
@@ -30,12 +30,12 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->w = 44;
   mSprite->h = 24;
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mGameState->AddSprite(mSprite);
   mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
 
   gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
@@ -109,6 +109,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       Ball(aDirection);
+      mSprite->ClearFlags(SFLAG_KNOCKBACK);
       break;
 
     case MB_MOVE_STATE:
@@ -145,6 +146,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->h = 24;
       mSprite->ResetShadow();
       Revert(aDirection);
+      mSprite->SetFlags(SFLAG_KNOCKBACK);
       break;
 
     case MB_WALK_STATE:
@@ -368,14 +370,14 @@ TBool GMidBossProcess::MaybeBounce() {
 
   if (vx > 0) {
     // check right edge (upper right, lower right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y1 + 8)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y1 + 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
     }
-    else if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2 - 8)) {
+    else if (!mSprite->IsFloorTile(r.x2, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
@@ -385,14 +387,14 @@ TBool GMidBossProcess::MaybeBounce() {
   }
   else {
     // check left edge (upper left, lower left corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1 + 8)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y1 + 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
       mSprite->y = mSprite->mLastY;
       mSprite->GetRect(r);
     }
-    else if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2 - 8)) {
+    else if (!mSprite->IsFloorTile(r.x1, r.y2 - 8)) {
       mSprite->vx = -vx;
       bouncedX = ETrue;
       mSprite->x = mSprite->mLastX;
@@ -403,22 +405,22 @@ TBool GMidBossProcess::MaybeBounce() {
 
   if (vy > 0) {
     // check bottom edge (lower left, lower right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y2)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y2)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y2)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y2)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
   }
   else {
     // check top edge (upper left, upper right corners)
-    if (!mSprite->IsFloorTile(mSprite, r.x1, r.y1)) {
+    if (!mSprite->IsFloorTile(r.x1, r.y1)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }
-    if (!mSprite->IsFloorTile(mSprite, r.x2, r.y1)) {
+    if (!mSprite->IsFloorTile(r.x2, r.y1)) {
       mSprite->vy = -vy;
       bouncedY = ETrue;
     }

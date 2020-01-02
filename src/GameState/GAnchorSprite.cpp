@@ -66,9 +66,8 @@ void GAnchorSprite::SetWall(TBool aState) {
   }
 }
 
-TBool GAnchorSprite::IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY) {
-  TUint16 attr = aSprite->mGameState->mGamePlayfield->GetAttribute(aX, aY);
-  return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aSprite->mDirection != DIRECTION_UP);
+TBool GAnchorSprite::IsFloorTile(TFloat aX, TFloat aY) {
+  return mGameState->mGamePlayfield->IsFloor(aX, aY);
 }
 
 TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
@@ -82,25 +81,23 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
+      if (IsFloorTile(r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
         return ETrue;
       }
       break;
-
+    case DIRECTION_SPELL:
     case DIRECTION_DOWN:
-      if (IsFloorTile(this, r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(this, r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
+      if (IsFloorTile(r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
         return ETrue;
       }
       break;
-
     case DIRECTION_LEFT:
-      if (IsFloorTile(this, r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
-
     case DIRECTION_RIGHT:
-      if (IsFloorTile(this, r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(this, r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+      if (IsFloorTile(r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
         return ETrue;
       }
       break;
@@ -154,8 +151,13 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
 
 #ifdef DEBUG_MODE
   if (GGame::mDebug && !Clipped()) {
-    gDisplay.renderBitmap->SetColor(COLOR_TEXT, 255, 0, 255);
-    gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_TEXT);
+    // render sprite border if sprite is visible
+    if (flags & SFLAG_RENDER) {
+      gDisplay.renderBitmap->SetColor(COLOR_TEXT, 255, 0, 255);
+      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_TEXT);
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_TEXT_SHADOW);
+      gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_TEXT_SHADOW);
+    }
     // render collision rect
     TRect r;
     GetRect(r);
@@ -165,9 +167,6 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     r.y2 -= aViewPort->mWorldY;
     gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
     gDisplay.renderBitmap->DrawRect(aViewPort, r, COLOR_TEXT_SHADOW);
-
-    gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_TEXT_SHADOW);
   }
 #endif
 

@@ -77,7 +77,8 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
+DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
@@ -95,14 +96,14 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER) {
   mSprite->w = 26;
   mSprite->h = 16;
   mSprite->cx = 7;
-  mSprite->cy = 4;
+  mSprite->cy = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
   mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 
   mSprite2 = ENull;
 
-  NewState(IDLE_STATE, DIRECTION_DOWN);
+  NewState(IDLE_STATE, mLastDirection);
 }
 
 GPlayerProcess::~GPlayerProcess() {
@@ -124,11 +125,69 @@ GPlayerProcess::~GPlayerProcess() {
   }
 }
 
-void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon) {
+void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon, TInt16 aExitingLevel) {
   mPlayfield = aPlayfield;
-  if (aOverworldDungeon == OVERWORLD_DUNGEON) {
+
+  if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
+
+    if (aExitingLevel == 0) {
+      return;
+    }
+
+
+    TInt objectCount = mPlayfield->mObjectCount;
+    BObjectProgram *program = mPlayfield->mObjectProgram;
+
+
+
+    for (TInt ip = 0; ip < objectCount; ip++) {
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
+      if (op != ATTR_OW_LEVEL_ENTRANCE) {
+        continue;
+      }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+            row = program[ip].mRow,
+            col = program[ip].mCol;
+
+      const TInt dungeon = params >> 8;
+      printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+      printf("GetMapHeight() = %i, GetMapWidth() = %i\n", mPlayfield->GetMapHeight(), mPlayfield->GetMapWidth());
+
+      if (aExitingLevel == params) {
+        auto xx = TFloat(col * 32), yy = TFloat(row * 32);
+
+        if (row == 0) {
+          // Heading down
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 32;
+        }
+        else if (row == mPlayfield->GetMapHeight() - 1) {
+          // Heading Up
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 24;
+        }
+        else if (col == 0) {
+          // Heading Right
+          mSprite->x = xx - 16;
+          mSprite->y = yy + 32;
+        }
+        else if (col == mPlayfield->GetMapWidth() - 1) {
+          // Heading Left
+          mSprite->x = xx - 24;
+          mSprite->y = yy + 32;
+        }
+
+
+        return;
+      }
+    }
+
+
+
   }
   else {
     // player is exiting a dungeon to the overworld, so we need to scan the object program to find our starting position
@@ -136,32 +195,35 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     BObjectProgram *program = mPlayfield->mObjectProgram;
 
     for (TInt ip = 0; ip < objectCount; ip++) {
-      const TUint16 op = program[ip].mCode & TUint32(0xffff),
-                    params = program[ip].mCode >> TUint32(16),
-                    row = program[ip].mRow,
-                    col = program[ip].mCol;
+      const TUint16 op = program[ip].mCode & TUint32(0xffff);
+
       if (op != ATTR_STONE_STAIRS_DOWN) {
         continue;
       }
+
+      const TUint16 params = program[ip].mCode >> TUint32(16),
+          row = program[ip].mRow,
+          col = program[ip].mCol;
+
       const TInt dungeon = params >> 8;
       printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
-      if (aOverworldDungeon == dungeon) {
+      if (aExitingDungeon == dungeon) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
         mSprite->x = xx - 16;
         mSprite->y = yy + 64;
         return;
       }
     }
-    Panic("Could not find dungeon entrance %d\n", aOverworldDungeon);
+    Panic("Could not find dungeon entrance %d\n", aExitingDungeon);
   }
 }
 
-TBool GPlayerProcess::IsLedge(TFloat aX, TFloat aY) {
-  return mPlayfield->GetAttribute(aX, aY) == ATTR_LEDGE && (TInt(aY) % 32 > 12);
-}
-
 TBool GPlayerProcess::IsLedge() {
-  return (IsLedge(mSprite->x + TFloat(mSprite->cx) + TFloat(mSprite->w) / 2, mSprite->y + 4));
+  TRect r;
+  mSprite->GetRect(r);
+
+  return mPlayfield->IsLedge(r.x1 + FLOOR_ADJUST_LEFT, r.y2) ||
+         mPlayfield->IsLedge(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
 }
 
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
@@ -178,9 +240,42 @@ TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   }
 }
 
+void GPlayerProcess::StartKnockback() {
+  GAnchorSprite *other = mSprite->mCollided;
+  if (other && other->TestFlags(SFLAG_KNOCKBACK)) {
+    // push player away from center of other sprite's hit box
+    TRect myRect, otherRect;
+    mSprite->GetRect(myRect);
+    other->GetRect(otherRect);
+    TFloat velocity = PLAYER_VELOCITY;
+    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (other->x+otherRect.x1+otherRect.Width()),
+            dy = (mSprite->y+myRect.y1+myRect.Height()) - (other->y+otherRect.y1+otherRect.Height());
+
+    // if other sprite is moving towards player, add its momentum to player knockback
+    if (dx > 0 ^ other->vx < 0) {
+      velocity += ABS(other->vx);
+    }
+    if (dy > 0 ^ other->vy < 0) {
+      velocity += ABS(other->vy);
+    }
+
+    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
+        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
+      mSprite->vx = velocity * (dx / (ABS(dx) + ABS(dy)));
+    }
+    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
+        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
+      mSprite->vy = velocity * (dy / (ABS(dx) + ABS(dy)));
+    }
+  }
+}
+
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+
+  mLastDirection = aDirection;
+
   mSprite->mDx = 0;
   mSprite->mDy = 0;
   switch (mState) {
@@ -211,36 +306,36 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidUpAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidUpAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleUpAnimation);
-          }
+//          }
           break;
         case DIRECTION_DOWN:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidDownAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidDownAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleDownAnimation);
-          }
+//          }
           break;
         case DIRECTION_LEFT:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidLeftAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidLeftAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleLeftAnimation);
-          }
+//          }
           break;
         case DIRECTION_RIGHT:
-          if (mMomentum > 0.5) {
-            mSprite->StartAnimation(skidRightAnimation);
-          }
-          else {
+//          if (mMomentum > 0.5) {
+//            mSprite->StartAnimation(skidRightAnimation);
+//          }
+//          else {
             mSprite->StartAnimation(idleRightAnimation);
-          }
+//          }
           break;
       }
       break;
@@ -268,8 +363,10 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case FALL_STATE:
       mStep = 0;
+      mStepFrame = 0;
       mSprite->vx = 0;
-      mSprite->vy = GRAVITY;
+      mSprite->vy = PLAYER_VELOCITY;
+      mSprite->mDy = 0;
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -334,144 +431,138 @@ TBool GPlayerProcess::MaybeSpell() {
 }
 
 TBool GPlayerProcess::MaybeHit() {
+  if (mSprite->TestCType(STYPE_EBULLET | STYPE_ENEMY | STYPE_OBJECT)) {
+    mSprite->Nudge();
+    mMomentum = 0;
+  }
 
   if (mSprite->mInvulnerable) {
-    if (mSprite->TestAndClearCType(STYPE_EBULLET | STYPE_ENEMY)) {
-      mSprite->Nudge();
-    }
-  }
-
-  const GAnchorSprite *other = mSprite->mCollided;
-  TInt hitAmount = 0;
-
-  if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-    mSprite->Nudge();
-    // random variation from 100% to 150% base damage
-    hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
-    if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-      switch (other->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitLightDownAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitLightUpAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLightRightAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitLightLeftAnimation);
-          break;
-      }
-    }
-    else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-      switch (other->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitMediumDownAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitMediumUpAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitMediumRightAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitMediumLeftAnimation);
-          break;
-      }
-    }
-    else {
-      switch (other->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitHardDownAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitHardUpAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitHardRightAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitHardLeftAnimation);
-          break;
-      }
-    }
-  }
-
-  if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
-    mSprite->Nudge();
-    // random variation from 50% to 100% base damage
-    if (mSprite->mCollided->mHitPoints > 0) {
-      hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(hitLightUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(hitLightDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(hitLightLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(hitLightRightAnimation);
-          break;
-      }
-    }
-  }
-
-  if (hitAmount) {
-    mMomentum = 0;
-    TInt state = HIT_LIGHT_STATE;
-
-    // random variation from 100% to 150% base damage
-    GPlayer::mHitPoints -= hitAmount;
-    mSprite->mInvulnerable = ETrue;
-    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
-    p->SetMessageType(STAT_PLAYER_HIT);
-    mGameState->AddProcess(p);
-
-    if (!mBlinkProcess) {
-      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
-    }
-
-    gSoundPlayer.SfxPlayerTakeDamage();
-
-    mState = state;
-
-    if (GPlayer::mHitPoints <= 0) {
-      // PLAYER DEAD
-      GPlayer::mHitPoints = 0;
-      //      printf("Player dead\n");
-      // TO RESUME:
-      //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-      if (!GPlayer::mGameOver) {
-        mGameState->GameOver();
-      }
-    }
-
-    // push player away from center of other sprite's hit box
-    TRect myRect, otherRect;
-    mSprite->GetRect(myRect);
-   mSprite->mCollided->GetRect(otherRect);
-    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (mSprite->mCollided->x+otherRect.x1+otherRect.Width()),
-          dy = (mSprite->y+myRect.y1+myRect.Height()) - (mSprite->mCollided->y+otherRect.y1+otherRect.Height());
-    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
-        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
-      mSprite->vx = PLAYER_VELOCITY * (dx / (ABS(dx) + ABS(dy)));
-    }
-    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
-        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
-      mSprite->vy = PLAYER_VELOCITY * (dy / (ABS(dx) + ABS(dy)));
-    }
-
     mSprite->cType = 0;
-    return ETrue;
+    return EFalse;
+  }
+
+  GAnchorSprite *other = mSprite->mCollided;
+
+  if (other) {
+    TInt hitAmount = 0;
+
+    if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
+      // random variation from 100% to 150% base damage
+      hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
+      if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
+        switch (other->mDirection) {
+          case DIRECTION_UP:
+            mSprite->StartAnimation(hitLightDownAnimation);
+            break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitLightUpAnimation);
+            break;
+          case DIRECTION_LEFT:
+            mSprite->StartAnimation(hitLightRightAnimation);
+            break;
+          case DIRECTION_RIGHT:
+          default:
+            mSprite->StartAnimation(hitLightLeftAnimation);
+            break;
+        }
+      }
+      else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
+        switch (other->mDirection) {
+          case DIRECTION_UP:
+            mSprite->StartAnimation(hitMediumDownAnimation);
+            break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitMediumUpAnimation);
+            break;
+          case DIRECTION_LEFT:
+            mSprite->StartAnimation(hitMediumRightAnimation);
+            break;
+          case DIRECTION_RIGHT:
+          default:
+            mSprite->StartAnimation(hitMediumLeftAnimation);
+            break;
+        }
+      }
+      else {
+        switch (other->mDirection) {
+          case DIRECTION_UP:
+            mSprite->StartAnimation(hitHardDownAnimation);
+            break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitHardUpAnimation);
+            break;
+          case DIRECTION_LEFT:
+            mSprite->StartAnimation(hitHardRightAnimation);
+            break;
+          case DIRECTION_RIGHT:
+          default:
+            mSprite->StartAnimation(hitHardLeftAnimation);
+            break;
+        }
+      }
+    }
+
+    if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
+      // random variation from 50% to 100% base damage
+      if (other->mHitPoints > 0) {
+        hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
+        switch (mSprite->mDirection) {
+          case DIRECTION_UP:
+            mSprite->StartAnimation(hitLightUpAnimation);
+            break;
+          case DIRECTION_DOWN:
+            mSprite->StartAnimation(hitLightDownAnimation);
+            break;
+          case DIRECTION_LEFT:
+            mSprite->StartAnimation(hitLightLeftAnimation);
+            break;
+          case DIRECTION_RIGHT:
+          default:
+            mSprite->StartAnimation(hitLightRightAnimation);
+            break;
+        }
+      }
+    }
+
+    if (hitAmount) {
+      TInt state = HIT_LIGHT_STATE;
+
+      // random variation from 100% to 150% base damage
+      GPlayer::mHitPoints -= hitAmount;
+      mSprite->mInvulnerable = ETrue;
+      auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
+      p->SetMessageType(STAT_PLAYER_HIT);
+      mGameState->AddProcess(p);
+
+      if (!mBlinkProcess) {
+        mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+      }
+
+      gSoundPlayer.SfxPlayerTakeDamage();
+
+      mState = state;
+
+      if (GPlayer::mHitPoints <= 0) {
+        // PLAYER DEAD
+        GPlayer::mHitPoints = 0;
+        //      printf("Player dead\n");
+        // TO RESUME:
+        //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
+        if (!GPlayer::mGameOver) {
+          mGameState->GameOver();
+        }
+      }
+
+      StartKnockback();
+
+      mSprite->cType = 0;
+      return ETrue;
+    }
+  } else {
+    mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
   }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
-    mSprite->Nudge();
-    mMomentum = 0;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -557,12 +648,12 @@ TBool GPlayerProcess::MaybeWalk() {
 
   if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
     if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
-      if (mMomentum < 1.3) {
+      if (mMomentum < 1) {
         mMomentum += PLAYER_FRICTION / 4;
       }
     }
     else {
-      if (mMomentum < 0.3) {
+      if (mMomentum < 0.4) {
         mMomentum += PLAYER_FRICTION / 4;
       }
     }
@@ -674,6 +765,10 @@ TBool GPlayerProcess::WalkState() {
 }
 
 TBool GPlayerProcess::SwordState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -754,19 +849,30 @@ TBool GPlayerProcess::SpellState() {
 }
 
 TBool GPlayerProcess::FallState() {
-  if (mPlayfield->IsFloor(mSprite->x + 32, mSprite->y + mSprite->vy)) {
-    // land
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
+  mStepFrame++;
+  if (mStepFrame < FALL_DURATION) {
+    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame);
+  } else if (mStepFrame == FALL_DURATION) {
+    mSprite->StartAnimation(landAnimation);
   }
-  mSprite->vy += GRAVITY;
+
+  if (mSprite->IsFloor(DIRECTION_UP, 0, 0) &&
+      mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
+    mSprite->vy = 0;
+    if (mSprite->AnimDone()) {
+      // land
+      NewState(IDLE_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
   return ETrue;
 }
 
 TBool GPlayerProcess::HitState() {
-  if (mSprite->TestCType(STYPE_ENEMY)) {
-    mSprite->ClearCType(STYPE_ENEMY);
-    mSprite->Nudge();
+  // if player collides with another or the same enemy during knockback, reset direction
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
+    StartKnockback();
   }
 
   if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
@@ -791,7 +897,6 @@ TBool GPlayerProcess::HitState() {
     if (!GPlayer::mGameOver && !mBlinkProcess) {
       mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
     }
-    mSprite->ClearCType(STYPE_EBULLET);
     if (GPlayer::mGameOver || !MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
     }
@@ -847,6 +952,9 @@ TBool GPlayerProcess::RunAfter() {
   else if (yy > maxy) {
     gViewPort->mWorldY = maxy;
   }
+
+  mSprite->mCollided = ENull;
+  mSprite->cType = 0;
 
   return ETrue;
 }

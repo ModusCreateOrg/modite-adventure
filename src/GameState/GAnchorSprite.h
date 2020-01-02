@@ -24,14 +24,16 @@ const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
 const TUint32 SFLAG_RENDER_SHADOW_BIT = SFLAG_USER_BIT + 1;
 const TUint32 SFLAG_RENDER_SHADOW = 1 << SFLAG_RENDER_SHADOW_BIT; // sprite will be rendered with a shadow
+const TUint32 SFLAG_KNOCKBACK_BIT = SFLAG_USER_BIT + 2;
+const TUint32 SFLAG_KNOCKBACK = 1 << SFLAG_KNOCKBACK_BIT;
 
 const TInt PRIORITY_BELOW = 500;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 4;
-const TFloat FLOOR_ADJUST_TOP = 2;
-const TFloat FLOOR_ADJUST_RIGHT = 4;
-const TFloat FLOOR_ADJUST_BOTTOM = 2;
+const TFloat FLOOR_ADJUST_LEFT = 1;
+const TFloat FLOOR_ADJUST_TOP = 1;
+const TFloat FLOOR_ADJUST_RIGHT = 1;
+const TFloat FLOOR_ADJUST_BOTTOM = 1;
 
 const TInt BASE_HIT_POINTS = 100;
 const TInt BASE_STRENGTH = 25;
@@ -54,7 +56,7 @@ public:
 
   void SetWall(TBool aState = ETrue);
 
-  TBool IsFloorTile(GAnchorSprite *aSprite, TFloat aX, TFloat aY);
+  TBool IsFloorTile(TFloat aX, TFloat aY);
 
   TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
 

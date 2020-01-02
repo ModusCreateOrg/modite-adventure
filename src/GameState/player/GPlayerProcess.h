@@ -14,7 +14,8 @@ class BMemoryStream;
 #include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
-const TFloat PLAYER_FRICTION = 0.05 / TFloat(FACTOR);
+const TFloat PLAYER_FRICTION = 0.5 / TFloat(FACTOR);
+const TInt FALL_DURATION = 10 * FACTOR;
 
 class GPlayerProcess : public GProcess {
 public:
@@ -23,7 +24,7 @@ public:
   ~GPlayerProcess();
 
 public:
-  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aOverworldDungeon = OVERWORLD_DUNGEON);
+  void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON, TInt16 aExitingLevel = -1);
 
   GAnchorSprite *Sprite() { return mSprite; }
 
@@ -37,11 +38,11 @@ public:
   TBool RunAfter();
 
 protected:
-  TBool IsLedge(TFloat aX, TFloat aY);
-
   TBool IsLedge();
 
   TBool CanWalk(DIRECTION aDirection);
+
+  void StartKnockback();
 
 protected:
   void NewState(TUint16 aState, DIRECTION aDirection);
@@ -82,6 +83,9 @@ public:
 public:
   GPlayerBlinkProcess *mBlinkProcess;
 
+  static DIRECTION mLastDirection;
+//  static TUint16 mLastDirection;
+
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
@@ -90,6 +94,7 @@ protected:
   TUint16 mStep;
   TUint16 mStepFrame;
   TFloat mMomentum;
+
 };
 
 #endif // MODITE_GPLAYERPROCESS_H
