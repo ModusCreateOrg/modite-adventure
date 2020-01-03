@@ -29,10 +29,10 @@ GFloorSwitchProcess::~GFloorSwitchProcess() {
 TBool GFloorSwitchProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
-  TInt group = mObjectAttribute->group;
+  TInt group = mObjectAttribute->attr.group;
   if (group) {
     if (mState) {
-      if (mObjectAttribute->order != OA_ORDER_ANY) {
+      if (mObjectAttribute->attr.order != OA_ORDER_ANY) {
         p->mGroupState[group] = EFalse;
       }
     }

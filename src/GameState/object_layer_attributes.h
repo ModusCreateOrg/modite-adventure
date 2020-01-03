@@ -7,13 +7,24 @@
 // We have 16 bites of attributes.  This struct + union defines how the bits are assigned and used.
 //
 // See tools/object_attribute.cpp - the executable takes a group, order, and item and prints out the code.
-struct OBJECT_ATTRIBUTE {
+struct OBJECT_GROUP_ATTRIBUTE {
   unsigned int group : 4;  // 4 bits of group to assocate things together
-                  // next 8 bits are either order or item number, accessed via attribute.order or attribute.item
   unsigned int order : 5;  // see order bits below
   unsigned int state : 2;  // desired state for operation of 3-way switches
   unsigned int unused : 4; // unused bits
   unsigned int flag : 1;
+};
+
+struct OBJECT_ITEM_ATTRIBUTE {
+  unsigned int group : 4; // 4 bits of group to assocate things together
+  TUint64 item : 60;
+};
+struct OBJECT_ATTRIBUTE {
+  // next 8 bits are either order or item number, accessed via attribute.order or attribute.item
+  union {
+    OBJECT_GROUP_ATTRIBUTE attr;
+    OBJECT_ITEM_ATTRIBUTE item;
+  };
 };
 
 const TUint8 OA_GROUP_NONE = 0;  // thing does not belong to any group
@@ -53,12 +64,20 @@ const TUint8 OA_STATE_RIGHT = 3;  // switch must be in the right position
 // handy macro for generating the CODE to be used for the tile in Pro Motion
 static inline TUint16 MAKE_OBJECT_ATTRIBUTE(TInt8 group, TInt8 order, TInt8 state = 0) {
   struct OBJECT_ATTRIBUTE oa;
-  oa.group = group;
-  oa.order = order;
-  oa.state = state;
-  oa.flag = 1;
+  oa.attr.group = group;
+  oa.attr.order = order;
+  oa.attr.state = state;
+  oa.attr.flag = 1;
   TUint16 *ptr = (TUint16 *)&oa;
   return *ptr;
 }
 
+// handy macro for generating the CODE to be used for the tile in Pro Motion
+static inline TUint16 MAKE_OBJECT_ATTRIBUTE(Uint64 item) {
+  struct OBJECT_ATTRIBUTE oa;
+  oa.item.group = OA_GROUP_ITEM;
+  oa.item.item = item;
+  TUint16 *ptr = (TUint16 *)&oa;
+  return *ptr;
+}
 #endif
