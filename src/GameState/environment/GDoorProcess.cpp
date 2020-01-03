@@ -85,6 +85,8 @@ TBool GDoorProcess::RunBefore() {
   // check inventory for key
   if (group && group != OA_GROUP_ITEM && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
+    printf("door open group %d\n", group);
+
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
@@ -108,16 +110,15 @@ TBool GDoorProcess::RunAfter() {
   if (mSprite->TestAndClearCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET))) {
     if (group == OA_GROUP_ITEM) {
       TUint16 item = mObjectAttribute->item.item;
-      GInventoryItem *i = GPlayer::mInventoryList.FindItem(item);
-      if (i && i->mCount >= 1) {
-        // has at least one key/item to unlock door
-        i->mCount--;
+      if (GPlayer::mInventoryList.UseItem(item)) {
+        printf("door open player used item %d\n", item);
         ClearWall();
         mGameState->EndProgram(mIp);
         return EFalse;
       }
       return ETrue;
     }
+    printf("player opens door\n");
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;

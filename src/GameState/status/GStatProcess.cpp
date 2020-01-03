@@ -15,7 +15,7 @@ GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProce
   mSprite = new GStatSprite(STAT_SIZE_16x16, msg, mImageNumber);
   mSprite->x = aX - 56 + Random() % 16; // slight random deviation
   mSprite->y = aY - 60 + Random() % 8;
-  mSprite->vy = -.8;
+  mSprite->vy = -1;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
   gGame->CurrentState()->AddSprite(mSprite);
   mTimeout = TIMEOUT;
