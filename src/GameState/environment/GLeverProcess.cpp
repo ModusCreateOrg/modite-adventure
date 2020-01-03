@@ -47,12 +47,12 @@ GLeverProcess::~GLeverProcess() {
 TBool GLeverProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;
 
-  TInt group = mObjectAttribute->group,
-       state = mObjectAttribute->state;
+  TInt group = mObjectAttribute->attr.group,
+       state = mObjectAttribute->attr.state;
 
   if (group) {
     if (mState == state) {
-      if (mObjectAttribute->order != OA_ORDER_ANY) {
+      if (mObjectAttribute->attr.order != OA_ORDER_ANY) {
         p->mGroupState[group] = EFalse;
       }
     }

@@ -67,7 +67,8 @@ void GSavedGameList::LoadSavedGameList() {
 
 void GSavedGameList::SaveGame(TUint8 *aData, TUint32 aSize, char *aSavedName) {
   char game_name[128];
-  TInt game_number = mMaxGameNumber + 1;
+  TInt game_number = mMaxGameNumber  = 0;
+//  TInt game_number = mMaxGameNumber + 1;
   LoadSavedGameList();
   GSavedGameNode::GameName(game_name, game_number);
   BStore store(SAVED_GAME_STORE);

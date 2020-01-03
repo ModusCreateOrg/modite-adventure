@@ -1,5 +1,6 @@
 #include "GDoorProcess.h"
 #include "GGamePlayfield.h"
+#include "GPlayer.h"
 #include "BSpriteSheet.h"
 
 GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
@@ -80,7 +81,12 @@ void GDoorProcess::ClearWall() {
 TBool GDoorProcess::RunBefore() {
   // if door is in a group (related to switches, etc.), open when the group is "done"
   // "done" means player has successfully thrown the switches in the right order.
+<<<<<<< HEAD
   TInt group = mObjectAttribute->group;
+=======
+  TInt group = mObjectAttribute->attr.group;
+  // check inventory for key
+>>>>>>> ffa305354687948c241bc20a3a55b67587906120
   if (group && group != OA_GROUP_ITEM && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
 
@@ -88,6 +94,7 @@ TBool GDoorProcess::RunBefore() {
     mGameState->EndProgram(mIp);
     return EFalse;
   }
+
   return ETrue;
 }
 
@@ -98,11 +105,24 @@ TBool GDoorProcess::RunAfter() {
   }
 
   // if is in a group, we don't open on collisions.
-  if (mObjectAttribute->group) {
+  TInt group = mObjectAttribute->item.group;
+  if (group && group != OA_GROUP_ITEM) {
     return ETrue;
   }
 
-  if (mSprite->TestCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestCType(STYPE_PBULLET))) {
+  if (mSprite->TestAndClearCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET))) {
+    if (group == OA_GROUP_ITEM) {
+      TUint16 item = mObjectAttribute->item.item;
+      GInventoryItem *i = GPlayer::mInventoryList.FindItem(item);
+      if (i && i->mCount >= 1) {
+        // has at least one key/item to unlock door
+        i->mCount--;
+        ClearWall();
+        mGameState->EndProgram(mIp);
+        return EFalse;
+      }
+      return ETrue;
+    }
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
