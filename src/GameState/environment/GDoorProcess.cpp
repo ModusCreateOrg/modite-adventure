@@ -81,8 +81,9 @@ TBool GDoorProcess::RunBefore() {
   // if door is in a group (related to switches, etc.), open when the group is "done"
   // "done" means player has successfully thrown the switches in the right order.
   TInt group = mObjectAttribute->group;
-  if (group && mGameState->mGamePlayfield->mGroupDone[group]) {
+  if (group && group != OA_GROUP_ITEM && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
+
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
