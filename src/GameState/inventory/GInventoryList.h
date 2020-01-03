@@ -35,6 +35,8 @@ struct GInventoryList : public BList {
 
   GInventoryItem *FindItem(TInt16 aItemNumber);
 
+  TBool UseItem(TInt16 aItemNumber);
+
 public:
   void WriteToStream(BMemoryStream &aStream);
   void ReadFromStream(BMemoryStream &aStream);

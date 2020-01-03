@@ -81,14 +81,11 @@ void GDoorProcess::ClearWall() {
 TBool GDoorProcess::RunBefore() {
   // if door is in a group (related to switches, etc.), open when the group is "done"
   // "done" means player has successfully thrown the switches in the right order.
-<<<<<<< HEAD
-  TInt group = mObjectAttribute->group;
-=======
   TInt group = mObjectAttribute->attr.group;
   // check inventory for key
->>>>>>> ffa305354687948c241bc20a3a55b67587906120
   if (group && group != OA_GROUP_ITEM && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
+    printf("door open group %d\n", group);
 
     ClearWall();
     mGameState->EndProgram(mIp);
@@ -113,16 +110,15 @@ TBool GDoorProcess::RunAfter() {
   if (mSprite->TestAndClearCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET))) {
     if (group == OA_GROUP_ITEM) {
       TUint16 item = mObjectAttribute->item.item;
-      GInventoryItem *i = GPlayer::mInventoryList.FindItem(item);
-      if (i && i->mCount >= 1) {
-        // has at least one key/item to unlock door
-        i->mCount--;
+      if (GPlayer::mInventoryList.UseItem(item)) {
+        printf("door open player used item %d\n", item);
         ClearWall();
         mGameState->EndProgram(mIp);
         return EFalse;
       }
       return ETrue;
     }
+    printf("player opens door\n");
     ClearWall();
     mGameState->EndProgram(mIp);
     return EFalse;
