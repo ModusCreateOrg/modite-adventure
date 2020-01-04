@@ -1,6 +1,6 @@
 #include "GResumeWidget.h"
 
-GResumeWidget::GResumeWidget() : GButtonWidget("RESUME") {}
+GResumeWidget::GResumeWidget() : GButtonWidget("EXIT MENU") {}
 
 GResumeWidget::~GResumeWidget() {}
 
