@@ -1,5 +1,6 @@
 #include "GMainMenuContainer.h"
 #include "GStartWidget.h"
+#include "GResumeGameWidget.h"
 #include "common/GButtonWidget.h"
 #include "GMainMenuProcess.h"
 #include "common/GSavedGameList.h"
@@ -7,7 +8,7 @@
 GMainMenuContainer::GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProcess) : GDialogWidget("Menu", aX, aY) {
   mProcess = aProcess;
   if (gSavedGameList.mNumSavedGames) {
-    AddWidget((BWidget &) *new GButtonWidget("RESUME GAME", GAME_STATE_LOAD_GAME));
+    AddWidget((BWidget &) *new GResumeGameWidget());
   }
   AddWidget((BWidget &) *new GStartWidget());
 

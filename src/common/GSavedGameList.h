@@ -5,7 +5,7 @@
 #include <BList.h>
 #include <BMemoryStream.h>
 
-static const char *SAVED_GAME_STORE = "saved_game";
+static const char *SAVED_GAME_STORE = "ModiteAdventure";
 
 class GSavedGameNode : public BNodePri {
 public:
