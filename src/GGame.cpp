@@ -238,6 +238,8 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GCreditsState();
           break;
+        case GAME_STATE_QUIT:
+          done = ETrue;
         default:
           continue;
       }
@@ -288,7 +290,7 @@ void GGame::Run() {
     }
 
     if (gControls.WasPressed(BUTTONQ)) {
-      done = true;
+      done = ETrue;
     }
 #ifdef ENABLE_OPTIONS
     if (gControls.WasPressed(BUTTON2)) {

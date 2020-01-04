@@ -13,6 +13,7 @@ enum {
   GAME_STATE_CREDITS,
   GAME_STATE_GAME,
   GAME_STATE_RESUME_GAME,
+  GAME_STATE_QUIT,
 };
 
 class GGame : public BApplication {

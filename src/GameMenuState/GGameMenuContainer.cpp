@@ -4,6 +4,7 @@
 #include "GBrightnessWidget.h"
 #include "GSaveWidget.h"
 #include "GResumeWidget.h"
+#include "GQuitWidget.h"
 
 GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("GAME PAUSED", aX, aY) {
   mGameState = aGameState;
@@ -12,8 +13,9 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState)
 #endif
   AddWidget((BWidget &) *new GMusicWidget());
   AddWidget((BWidget &) *new GSfxWidget());
-  AddWidget((BWidget &) *new GSaveWidget(mGameState));
   AddWidget((BWidget &) *new GResumeWidget());
+  AddWidget((BWidget &) *new GSaveWidget(mGameState));
+  AddWidget((BWidget &) *new GQuitWidget());
 
   mTimer = 30;
 }
