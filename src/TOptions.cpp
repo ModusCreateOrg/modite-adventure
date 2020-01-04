@@ -31,12 +31,12 @@ void TOptions::ResetGameProgress() {
 
 void TOptions::Save() {
   version = VERSION;
-  BStore f("ModditeAdventure");
+  BStore f("ModiteAdventure");
   f.Set("options", this, sizeof(TOptions));
 }
 
 void TOptions::Load() {
-  BStore f("ModditeAdventure");
+  BStore f("ModiteAdventure");
   if (!f.Get("options", this, sizeof(TOptions)) || version != VERSION) {
     Reset();
   }
