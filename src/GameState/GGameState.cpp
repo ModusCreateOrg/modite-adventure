@@ -44,7 +44,7 @@ void GGameState::Init() {
 
   // Clear BObject programs
   GGamePlayfield::ResetCache();
-  
+
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);

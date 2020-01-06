@@ -13,12 +13,11 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     const int img = isWood ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name(isWood ? "ENVIRONMENT WOOD STAIRS UP" : "ENVIRONMENT STONE STAIRS UP");
-//    mSprite->cx = -16;
 //    mSprite->w = mSprite->h = 32;
-    mSprite->h = 16;
+    mSprite->h = 32;
     mSprite->w = 16;
     mSprite->cx = 8;
-    mSprite->cy = -16;
+//    mSprite->cy = 0;
 
     mSprite->x = aX;
     mSprite->y = aY + 32;
@@ -35,7 +34,6 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite2->w = mSprite2->h = 32;
     mSprite2->x = aX;
     mSprite2->y = aY;
-    mSprite2->w = mSprite2->h = 32;
     mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite2);
   }
@@ -45,10 +43,10 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name("DUNGEON ENTRANCE");
 
-    mSprite->h = 4;
-    mSprite->w = 4;
-    mSprite->cx = 12;
-    mSprite->cy = -12;
+    mSprite->h = 8;
+    mSprite->w = 8;
+    mSprite->cx = 8;
+    mSprite->cy = -8;
 
     mSprite->x = aX;
     mSprite->y = aY + 32;
@@ -65,9 +63,9 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->Name(isWood ? "OVERWORLD WOOD STAIRS DOWN" : "OVERWORLD STONE STAIRS DOWN");
 //    mSprite->cx = -16;
 //    mSprite->w = mSprite->h = 32;
-    mSprite->h = 4;
-    mSprite->w = 4;
-    mSprite->cx = 12;
+    mSprite->h = 8;
+    mSprite->w = 8;
+    mSprite->cx = 8;
     mSprite->cy = -12;
     mSprite->x = aX;
     mSprite->y = aY + 32;
