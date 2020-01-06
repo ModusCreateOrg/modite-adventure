@@ -461,6 +461,9 @@ void GRatProcess::Idle(DIRECTION aDirection) {
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(idleRightAnimation);
       break;
+    default:
+      Panic("GRatProcess no idle direction\n");
+      break;
   }
 }
 
@@ -488,6 +491,9 @@ void GRatProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GRatProcess no walk direction\n");
+      break;
   }
 }
 
@@ -504,6 +510,9 @@ void GRatProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GRatProcess no Attack direction\n");
       break;
   }
 }
@@ -524,6 +533,9 @@ void GRatProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GRatProcess no Hit direction\n");
       break;
   }
 }

@@ -368,6 +368,9 @@ void GSpiderProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GSpiderProcess no walk direction\n");
+      break;
   }
 }
 
@@ -384,6 +387,9 @@ void GSpiderProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GSpiderProcess no Attack direction\n");
       break;
   }
 }
@@ -404,6 +410,9 @@ void GSpiderProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GSpiderProcess no Hit direction\n");
       break;
   }
 }

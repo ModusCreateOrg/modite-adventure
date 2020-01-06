@@ -181,6 +181,9 @@ TBool GEnemyProcess::MaybeHit() {
         case DIRECTION_DOWN:
           NewState(HIT_STATE, DIRECTION_UP);
           break;
+        default:
+          Panic("GEnemyProcess no MaybeHit() direction\n");
+          break;
       }
       return ETrue;
     }

@@ -385,6 +385,9 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GOrcProcess no walk direction\n");
+      break;
   }
 }
 
@@ -401,6 +404,9 @@ void GOrcProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GOrcProcess no attack direction\n");
       break;
   }
 }
