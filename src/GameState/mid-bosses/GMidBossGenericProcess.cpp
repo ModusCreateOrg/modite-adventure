@@ -137,8 +137,8 @@ static ANIMSCRIPT revertAnimation[] = {
 
 /* endregion }}} */
 
-GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet)
-    : GMidBossProcess(aGameState, aX, aY, aSlot, aIp, aAttribute, aSpriteSheet) {
+GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute, TInt16 aSpriteSheet)
+    : GMidBossProcess(aGameState, aX, aY, aSlot, aIp, aAttribute, aDropsItemAttribute, aSpriteSheet) {
   //
   NewState(MB_IDLE_STATE, DIRECTION_DOWN);
 }

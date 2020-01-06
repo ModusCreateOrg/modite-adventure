@@ -218,6 +218,7 @@ void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&h, sizeof(h));
   aStream.Write(&pri, sizeof(pri));
   aStream.Write(&flags, sizeof(flags));
+  aStream.Write(&mDirection, sizeof(mDirection));
 }
 
 void GAnchorSprite::ReadFromStream(BMemoryStream &aStream) {
@@ -231,6 +232,7 @@ void GAnchorSprite::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&h, sizeof(h));
   aStream.Read(&pri, sizeof(pri));
   aStream.Read(&flags, sizeof(flags));
+  aStream.Read(&mDirection, sizeof(mDirection));
 }
 
 void GAnchorSprite::Dump() {

@@ -11,12 +11,13 @@ const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 
-GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet)
+GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16  aDropsItemAttribute, TInt16 aSpriteSheet)
     : GProcess(aAttribute) {
   mIp = aIp;
   mSprite = ENull;
   mSaveToStream = ETrue;
   mGameState = aGameState;
+  mDropsItemAttribute = aDropsItemAttribute;
   mPlayfield = mGameState->mGamePlayfield;
   mStartX = aX;
   mStartY = aY;
@@ -516,8 +517,8 @@ TBool GMidBossProcess::HitState() {
 
 TBool GMidBossProcess::DeathState() {
   if (mDeathCounter <= 3) {
-    printf("drop $%x %d\n", mAttribute, mAttribute);
-    GItemProcess::SpawnItem(mGameState, mIp, mAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
+    GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
     return EFalse;
   }
   // maybe drop item
@@ -541,4 +542,29 @@ TBool GMidBossProcess::SpellState() {
     }
   }
   return ETrue;
+}
+
+
+void GMidBossProcess::WriteToStream(BMemoryStream &aStream) {
+  aStream.Write(&mIp, sizeof(mIp));
+  aStream.Write(&mStartX, sizeof(mStartX));
+  aStream.Write(&mStartY, sizeof(mStartY));
+  aStream.Write(&mState, sizeof(mState));
+  aStream.Write(&mStep, sizeof(mStep));
+  aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
+  aStream.Write(&mStateTimer, sizeof(mStateTimer));
+  aStream.Write(&mHitPoints, sizeof(mHitPoints));
+  mSprite->WriteToStream(aStream);
+}
+
+void GMidBossProcess::ReadFromStream(BMemoryStream &aStream) {
+  aStream.Read(&mIp, sizeof(mIp));
+  aStream.Read(&mStartX, sizeof(mStartX));
+  aStream.Read(&mStartY, sizeof(mStartY));
+  aStream.Read(&mState, sizeof(mState));
+  aStream.Read(&mStep, sizeof(mStep));
+  aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
+  aStream.Read(&mStateTimer, sizeof(mStateTimer));
+  aStream.Read(&mHitPoints, sizeof(mHitPoints));
+  mSprite->ReadFromStream(aStream);
 }
