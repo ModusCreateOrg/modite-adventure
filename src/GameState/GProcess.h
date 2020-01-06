@@ -27,8 +27,8 @@ public:
   GAnchorSprite *GetSprite() { return mSprite; }
 
 public:
-  void WriteToStream(BMemoryStream &aStream);
-  void ReadFromStream(BMemoryStream &aStream);
+  virtual void WriteToStream(BMemoryStream &aStream);
+  virtual void ReadFromStream(BMemoryStream &aStream);
   // inheritor can override this to write additional instance data to stream
   virtual void WriteCustomToStream(BMemoryStream &aStream) {}
   virtual void ReadCustomFromStream(BMemoryStream &aStream);
