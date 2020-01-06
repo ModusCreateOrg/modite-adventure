@@ -1,6 +1,6 @@
 #include "GQuitWidget.h"
 
-GQuitWidget::GQuitWidget() : GButtonWidget("QUIT", GAME_STATE_MAIN_MENU) {}
+GQuitWidget::GQuitWidget() : GButtonWidget("QUIT GAME", GAME_STATE_MAIN_MENU) {}
 
 GQuitWidget::~GQuitWidget() {}
 
