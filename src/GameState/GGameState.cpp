@@ -51,12 +51,26 @@ void GGameState::Init() {
 // Constructor
 GGameState::GGameState() : BGameEngine(gViewPort) {
   Init();
+  for (TInt i = 2; i < SLOT_MAX; i++) {
+    if (gResourceManager.GetBitmap(i)) {
+      printf("Releasing slot %d\n", i);
+      gResourceManager.ReleaseBitmapSlot(i);
+    }
+    mSlotRemapState[i] = EFalse;
+  }
   NextLevel(OVERWORLD_DUNGEON, 1);
 }
 
 // Constructor
 GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   Init();
+  for (TInt i = 2; i < SLOT_MAX; i++) {
+    if (gResourceManager.GetBitmap(i)) {
+      printf("Releasing slot %d\n", i);
+      gResourceManager.ReleaseBitmapSlot(i);
+    }
+    mSlotRemapState[i] = EFalse;
+  }
   LoadState(aName);
 }
 
@@ -572,48 +586,51 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
       // ENEMIES
       //
       case ATTR_SPIDER:
+        RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
+
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("SPIDER at %.2f,%.2f %d,%d\n", xx - 32, yy, row, col);
 #endif
-        RemapSlot(CHARA_SPIDER_BMP, SPIDER_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY SPIDER");
         //        AddProcess(new GSpiderProcess(this, ip, xx - 32, yy + 32, params));
         break;
 
       case ATTR_BAT:
+        RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
+
 #ifdef DEBUGME
         printf("BAT at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        RemapSlot(CHARA_BAT_BMP, BAT_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY BAT");
         break;
 
       case ATTR_GOBLIN:
+        RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("GOBLIN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        RemapSlot(CHARA_GOBLIN_BMP, GOBLIN_SLOT);
         GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN");
         break;
 
       case ATTR_GOBLIN_SNIPER:
+        RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("GOBLIN_SNIPER at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
         GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN SNIPER");
         break;
 
       case ATTR_ORC:
+        RemapSlot(CHARA_ORC_BMP, ORC_SLOT);
         if (!aNewLevel) {
           break;
         }
@@ -621,55 +638,57 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         //        AddProcess(new GGoblinProcess(this, xx, yy + 32, params));
-        RemapSlot(CHARA_ORC_BMP, ORC_SLOT);
         GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY ORC");
         break;
 
       case ATTR_RAT:
+        RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
+
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("RAT at %.2f,%.2f %d,%d,%d\n", xx, yy, row, col, eCount);
 #endif
-        RemapSlot(CHARA_RAT_BMP, RAT_SLOT);
         GProcess::Spawn(this, op, ip, xx - 18, yy + 32, params, DIRECTION_DOWN, "ENEMY RAT");
         break;
 
       case ATTR_SLIME:
+        RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
+
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("SLIME at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        RemapSlot(CHARA_SLIME_BMP, SLIME_SLOT);
         GProcess::Spawn(this, op, ip, xx - 18, yy + 31, params, DIRECTION_DOWN, "ENEMY SLIME");
         break;
 
       case ATTR_TROLL:
+        RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
+
         if (!aNewLevel) {
           break;
         }
 #ifdef DEBUGME
         printf("TROLL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        RemapSlot(CHARA_TROLL_BMP, TROLL_SLOT);
         GProcess::Spawn(this, op, ip, xx - 20, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
         break;
 
         // mid boss
         // only one mid boss can be available
       case ATTR_MID_BOSS_ENERGY:
-        if (!aNewLevel) {
-          break;
-        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
-        RemapSlot(MID_BOSS_ENERGY_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
-        RemapSlot(MID_BOSS_ENERGY_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(MID_BOSS_FIRE_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        if (!aNewLevel) {
+          break;
+        }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS ENERGY");
         //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_ENERGY));
         break;
@@ -677,40 +696,37 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         if (!aNewLevel) {
           break;
         }
-        // always explosion (for any enemy)
-        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
-        // Sprite sheet for enemy
-        RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
-        // Sprite sheet for enemy projectiles
-        RemapSlot(MID_BOSS_FIRE_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS FIRE");
         //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_FIRE));
         break;
 
       case ATTR_MID_BOSS_EARTH:
-        if (!aNewLevel) {
-          break;
-        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_EARTH_BROWN_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_EARTH_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        if (!aNewLevel) {
+          break;
+        }
+
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
         //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_EARTH));
         break;
 
       case ATTR_MID_BOSS_WATER:
-        if (!aNewLevel) {
-          break;
-        }
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
         RemapSlot(MID_BOSS_WATER_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_WATER_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        if (!aNewLevel) {
+          break;
+        }
+
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS WATER");
         //        AddProcess(new GMidBossGenericProcess(this, xx, yy + 64, MID_BOSS_SLOT, ATTR_MID_BOSS_WATER));
         break;
@@ -816,24 +832,50 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
 }
 
 TBool GGameState::SaveState() {
+  printf("\n======= BEGIN %s =======\n", __FUNCTION__);
   BMemoryStream stream;
 
   TUint32 seed = GetRandomSeed();
   stream.Write(&seed, sizeof(TUint32));
 
+  printf("Write BMapPlayfield\n");
+  stream.PrintMSize();
   BMapPlayfield::WriteToStream(&stream, NUM_RESOURCES);
   stream.Write(&mTileMapId, sizeof(mTileMapId));
   stream.Write(&mNextDungeon, sizeof(mNextDungeon));
   stream.Write(&mLevel, sizeof(mLevel));
+  stream.Write(&mDungeon, sizeof(mDungeon));
+  stream.Write(&mLastOverworldLevel, sizeof(mLastOverworldLevel));
+  stream.PrintMSize();
 
   //  mGamePlayfield->Restore();
+  printf("Writing Player\n");
+  stream.PrintMSize();
   GPlayer::WriteToStream(stream);
+  stream.PrintMSize();
 
   // walk through process list and save enemies states
   for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
-    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1) {
+    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1 && p->mAttribute != ATTR_PLAYER_IN2) {
       if (p->mSaveToStream) {
+#ifndef __DINGUX__
+        printf("Writing attribute %i (%s)\n", p->mAttribute,  typeid(*p).name());
+#endif
+        stream.PrintMSize();
+        stream.Write(& p->mAttribute, sizeof(p->mAttribute));
+        stream.PrintMSize();
+
+#ifndef __DINGUX__
+        printf("Writing state for %s\n",  typeid(*p).name());
+#endif
+        stream.PrintMSize();
         p->WriteToStream(stream);
+        stream.PrintMSize();
+
+//        p->WriteToStream(stream);
+      }
+      else {
+        printf("Skipping %i %s\n", p->mAttribute, typeid(*p).name());
       }
     }
   }
@@ -842,46 +884,80 @@ TBool GGameState::SaveState() {
   TInt16 attr = -1;
   stream.Write(&attr, sizeof(attr));
 
+  printf("Writing Player mSprite\n");
+  stream.PrintMSize();
   GAnchorSprite *s = GPlayer::mSprite;
   s->WriteToStream(stream);
+  stream.PrintMSize();
 
+  printf("SAVE Stream size %i\n", stream.Size());
   gSavedGameList.SaveGame(stream.Data(), stream.Size(), mText);
   mTimer = FRAMES_PER_SECOND * 1;
+  printf("\n-------- END %s--------\n", __FUNCTION__);
+
   return ETrue;
 }
 
+
 TBool GGameState::LoadState(const char *aGameName) {
+
+  printf("\n======= BEGIN %s =======\n", __FUNCTION__);
   BMemoryStream stream = *gSavedGameList.LoadSavedGame(aGameName);
+  printf("LOAD Stream size %i\n", stream.Size());
+
 
   TUint32 seed;
   stream.Read(&seed, sizeof(TUint32));
   SeedRandom(seed);
 
+  printf("Reading BMapPlayfield\n");
+  stream.PrintReadIndex();
   BMapPlayfield::ReadFromStream(&stream, NUM_RESOURCES);
   stream.Read(&mTileMapId, sizeof(mTileMapId));
   stream.Read(&mNextDungeon, sizeof(mNextDungeon));
   stream.Read(&mLevel, sizeof(mLevel));
+  stream.Read(&mDungeon, sizeof(mDungeon));
+  stream.Read(&mLastOverworldLevel, sizeof(mLastOverworldLevel));
+  stream.PrintReadIndex();
+
 
   // spawn it all
-
   NextLevel(mNextDungeon, mLevel);
   LoadLevel(mName, mLevel, mNextTileMapId, EFalse);
-  //  mGamePlayfield->DumpObjectProgram();
+
+//  mGamePlayfield->DumpObjectProgram();
+  printf("Reading Player\n");
+  stream.PrintReadIndex();
   GPlayer::ReadFromStream(stream);
+  stream.PrintReadIndex();
+
   GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
+
+  printf("Reading processes\n");
+  stream.PrintReadIndex();
 
   TInt16 attr = 0;
   while (attr != -1) {
     stream.Read(&attr, sizeof(attr));
     if (attr != -1) {
+      printf("Reading process %i\n", attr);
+      stream.PrintReadIndex();
+
+      stream.PrintReadIndex();
       GProcess *p = GProcess::Spawn(this, attr, 0, 0, 0, 0, DIRECTION_DOWN);
       p->ReadFromStream(stream);
+      stream.PrintReadIndex();
       //      p->mSprite->Dump();
+
     }
   }
 
+  printf ("Reading Player Sprite\n");
+  stream.PrintReadIndex();
   GAnchorSprite *s = GPlayer::mSprite;
   s->ReadFromStream(stream);
+  stream.PrintReadIndex();
 
+  printf("\n-------- END %s--------\n", __FUNCTION__);
   return ETrue;
 }
