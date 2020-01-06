@@ -9,6 +9,7 @@
 
 const TFloat VELOCITY = 1.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
+const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 
 GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet)
     : GProcess(aAttribute) {
@@ -19,6 +20,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mPlayfield = mGameState->mGamePlayfield;
   mStartX = aX;
   mStartY = aY;
+  mHitTimer = HIT_SPAM_TIME;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
   mSprite->Name("ENEMY");
@@ -76,6 +78,9 @@ TBool GMidBossProcess::RunBefore() {
 }
 
 TBool GMidBossProcess::RunAfter() {
+  if (mHitTimer-- < 0) {
+    mHitTimer = HIT_SPAM_TIME;
+  }
   return ETrue;
 }
 
@@ -482,10 +487,19 @@ TBool GMidBossProcess::AttackState() {
 }
 
 TBool GMidBossProcess::HitState() {
+
   if (mSprite->TestCType(STYPE_PLAYER)) {
     mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
   }
+
+  if (mHitTimer < 0) {
+    mHitTimer = HIT_SPAM_TIME;
+    mSprite->mInvulnerable = EFalse;
+    mSprite->ClearCType(STYPE_PBULLET);
+    NewState(MB_BALL_STATE, DIRECTION_DOWN);
+  }
+
   if (mSprite->AnimDone()) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
@@ -496,6 +510,7 @@ TBool GMidBossProcess::HitState() {
       NewState(MB_IDLE_STATE, mSprite->mDirection);
     }
   }
+
   return ETrue;
 }
 
