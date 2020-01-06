@@ -272,6 +272,9 @@ TBool GMidBossProcess::MaybeHit() {
         case DIRECTION_DOWN:
           NewState(MB_HIT_STATE, DIRECTION_UP);
           break;
+        default:
+          Panic("GMidBossProcess no hit direction\n");
+          break;
       }
       return ETrue;
     }
