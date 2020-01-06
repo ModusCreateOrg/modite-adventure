@@ -266,6 +266,9 @@ void GTrollProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GTrollProcess no walk direction\n");
+      break;
   }
 }
 
@@ -282,6 +285,9 @@ void GTrollProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GTrollProcess no attack direction\n");
       break;
   }
 }
@@ -302,6 +308,9 @@ void GTrollProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GTrollProcess no Hit direction\n");
       break;
   }
 }

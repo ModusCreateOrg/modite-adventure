@@ -410,6 +410,9 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GGoblinProcess no walk direction\n");
+      break;
   }
 }
 
@@ -426,6 +429,9 @@ void GGoblinProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GGoblinProcess no attack direction\n");
       break;
   }
 }
@@ -446,6 +452,9 @@ void GGoblinProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GGoblinProcess no Hit direction\n");
       break;
   }
 }

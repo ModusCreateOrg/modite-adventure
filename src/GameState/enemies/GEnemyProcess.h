@@ -93,14 +93,14 @@ protected:
   void Spell(DIRECTION aDirection);
   TBool SpellState();
 
-  void OverlayAnimationComplete();
+  void OverlayAnimationComplete() OVERRIDE;
 
 public:
   static TInt16 mCount; // number of enemy processes
 
 public:
-  void WriteToStream(BMemoryStream &aStream);
-  void ReadFromStream(BMemoryStream &aStream);
+  void WriteToStream(BMemoryStream &aStream) OVERRIDE;
+  void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
 };
 
 #endif //MODITE_GENEMYPROCESS_H

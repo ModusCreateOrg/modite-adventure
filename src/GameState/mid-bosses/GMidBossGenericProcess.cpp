@@ -169,6 +169,9 @@ void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GMidBossGenericProcess no Walk direction\n");
+      break;
   }
   mStep = !mStep;
 }

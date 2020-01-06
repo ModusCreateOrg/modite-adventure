@@ -376,6 +376,9 @@ void GSlimeProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GSlimeProcess no walk direction\n");
+      break;
   }
 }
 
@@ -393,6 +396,10 @@ void GSlimeProcess::Attack(DIRECTION aDirection) {
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
       break;
+    default:
+      Panic("GSlimeProcess No attack direction!\n");
+      break;
+
   }
 }
 
@@ -412,6 +419,9 @@ void GSlimeProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GSlimeProcess no Hit direction\n");
       break;
   }
 }

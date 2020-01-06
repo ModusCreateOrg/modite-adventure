@@ -299,6 +299,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
             mStep = 1 - mStep;
             mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
             break;
+          default:
+            Panic("GPlayerProcess no Walk direction\n");
+            break;
         }
         break;
       }
@@ -337,6 +340,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
             mSprite->StartAnimation(idleRightAnimation);
 //          }
           break;
+        default:
+          Panic("GPlayerProcess no idle direction\n");
+          break;
       }
       break;
     case SWORD_STATE:
@@ -357,6 +363,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
           break;
         case DIRECTION_RIGHT:
           mSprite->StartAnimation(swordRightAnimation);
+          break;
+        default:
+          Panic("GPlayerProcess no SWORD_STATE direction\n");
           break;
       }
       break;

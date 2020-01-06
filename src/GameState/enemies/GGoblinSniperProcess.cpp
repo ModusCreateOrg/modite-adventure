@@ -353,6 +353,9 @@ void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GGoblinSniperProcess no walk direction\n");
+      break;
   }
 }
 
@@ -369,6 +372,9 @@ void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GGoblinSniperProcess no attack direction\n");
       break;
   }
 }
@@ -389,6 +395,9 @@ void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GGoblinSniperProcess no Hit direction\n");
       break;
   }
 }

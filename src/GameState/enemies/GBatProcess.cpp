@@ -354,6 +354,9 @@ void GBatProcess::Walk(DIRECTION aDirection) {
       mSprite->vx = VELOCITY;
       mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
+    default:
+      Panic("GBatProcess no walk direction\n");
+      break;
   }
 }
 
@@ -370,6 +373,9 @@ void GBatProcess::Attack(DIRECTION aDirection) {
       break;
     case DIRECTION_RIGHT:
       mSprite->StartAnimation(attackRightAnimation);
+      break;
+    default:
+      Panic("GBatProcess no Attack direction\n");
       break;
   }
 }
@@ -390,6 +396,9 @@ void GBatProcess::Hit(DIRECTION aDirection) {
       break;
     case DIRECTION_SPELL:
       mSprite->StartAnimation(hitSpellAnimation);
+      break;
+    default:
+      Panic("GBatProcess no Hit direction\n");
       break;
   }
 }

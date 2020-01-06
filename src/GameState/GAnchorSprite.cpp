@@ -235,10 +235,6 @@ void GAnchorSprite::ReadFromStream(BMemoryStream &aStream) {
 
 void GAnchorSprite::Dump() {
   printf("\nSPRITE @ %p\n", this);
-  if (this == NULL) {
-    printf("WE ARE NULL!!!\n");
-    return;
-  }
   printf("%-16.16s: %f(%f),%f(%f)\n", "x(vx),y(vy)", x, vx, y, vy);
   printf("%-16.16s: %d,%d,%d,%d\n", "cx,cy,w,h", cx, cy, w, h);
   printf("%-16.16s: %d\n", "pri", pri);
