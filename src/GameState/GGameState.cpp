@@ -869,7 +869,6 @@ TBool GGameState::SaveState() {
 #endif
         stream.PrintMSize();
         stream.Write(&p->mAttribute, sizeof(p->mAttribute));
-        stream.Write(& p->mAttribute, sizeof(p->mAttribute));
         stream.PrintMSize();
 
 #ifndef __DINGUX__
@@ -881,9 +880,11 @@ TBool GGameState::SaveState() {
 
 //        p->WriteToStream(stream);
       }
+#ifndef __DINGUX__
       else {
         printf("Skipping %i %s\n", p->mAttribute, typeid(*p).name());
       }
+#endif
     }
   }
 
@@ -949,15 +950,15 @@ TBool GGameState::LoadState(const char *aGameName) {
     stream.PrintReadIndex();
     stream.Read(&attr, sizeof(attr));
     stream.PrintReadIndex();
+    printf("Attribute found: %i\n", attr);
 
     if (attr != -1) {
-      printf("Found process %i\n", attr);
-
-      stream.PrintReadIndex();
-      printf("Reading process %i\n", attr);
-      stream.PrintReadIndex();
 
       GProcess *p = GProcess::Spawn(this, attr, 0, 0, 0, 0, DIRECTION_DOWN);
+      if (!p) {
+        Panic("GGameState::LoadState Did not spawn process for attribute %i\n", attr);
+      }
+      printf("Reading stream for process %i\n", attr);
       stream.PrintReadIndex();
       p->ReadFromStream(stream);
       stream.PrintReadIndex();

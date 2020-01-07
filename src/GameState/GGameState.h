@@ -19,9 +19,7 @@ static TUint16 MESSAGE_FLOOR_SWITCH_DOWN = 0;
 static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 
 const TInt16 OVERWORLD_DUNGEON = 0;
-const TInt16 DUNGEON_257 = 1;
-const TInt16 DUNGEON_258 = 1;
-const TInt16 DUNGEON_259 = 1;
+
 
 #include "GPlayerProcess.h"
 
