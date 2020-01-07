@@ -26,7 +26,7 @@ enum {
 
 class GMidBossProcess : public GProcess {
 public:
-  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet);
+  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute, TInt16 aSpriteSheet);
 
   ~GMidBossProcess() OVERRIDE;
 
@@ -76,14 +76,19 @@ protected:
   virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
+
+
+
 public:
   void DeathAnimationDone() {
     mDeathCounter--;
   }
-
+    void WriteToStream(BMemoryStream &aStream) OVERRIDE;
+    void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
+  TInt16 mDropsItemAttribute;
   TInt mIp;
   GAnchorSprite *mSprite;
   GSpellOverlayProcess *mSpellOverlayProcess;

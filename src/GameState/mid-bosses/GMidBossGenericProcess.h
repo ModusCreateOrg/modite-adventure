@@ -5,7 +5,7 @@
 
 class GMidBossGenericProcess : public GMidBossProcess {
 public:
-  GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TInt16 aSpriteSheet);
+  GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute, TInt16 aSpriteSheet);
 
   ~GMidBossGenericProcess() OVERRIDE;
 

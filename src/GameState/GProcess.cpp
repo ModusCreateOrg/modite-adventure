@@ -135,13 +135,13 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
 
       // mid bosses
     case ATTR_MID_BOSS_ENERGY:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params, MID_BOSS_ENERGY_BMP_SPRITES));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, ATTR_MID_BOSS_ENERGY, params, MID_BOSS_ENERGY_BMP_SPRITES));
     case ATTR_MID_BOSS_FIRE:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params, MID_BOSS_FIRE_BMP_SPRITES));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, ATTR_MID_BOSS_ENERGY, params, MID_BOSS_FIRE_BMP_SPRITES));
     case ATTR_MID_BOSS_EARTH:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params, MID_BOSS_EARTH_BROWN_BMP_SPRITES));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, ATTR_MID_BOSS_ENERGY, params, MID_BOSS_EARTH_BROWN_BMP_SPRITES));
     case ATTR_MID_BOSS_WATER:
-      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, params, MID_BOSS_WATER_BMP_SPRITES));
+      return aGameState->AddProcess(new GMidBossGenericProcess(aGameState, xx, yy, MID_BOSS_SLOT, ip, ATTR_MID_BOSS_ENERGY, params, MID_BOSS_WATER_BMP_SPRITES));
       break;
   }
   return ENull;
