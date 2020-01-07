@@ -8,7 +8,7 @@
 //
 // See tools/object_attribute.cpp - the executable takes a group, order, and item and prints out the code.
 struct OBJECT_GROUP_ATTRIBUTE {
-  unsigned int group : 4;  // 4 bits of group to assocate things together
+  unsigned int group : 4;  // 4 bits of group to associate things together
   unsigned int order : 5;  // see order bits below
   unsigned int state : 2;  // desired state for operation of 3-way switches
   unsigned int unused : 4; // unused bits
@@ -16,8 +16,8 @@ struct OBJECT_GROUP_ATTRIBUTE {
 };
 
 struct OBJECT_ITEM_ATTRIBUTE {
-  unsigned int group : 4; // 4 bits of group to assocate things together
-  TUint64 item : 60;
+  unsigned int group : 4; // 4 bits of group to associate things together
+  unsigned int item : 12;
 };
 struct OBJECT_ATTRIBUTE {
   // next 8 bits are either order or item number, accessed via attribute.order or attribute.item
@@ -38,7 +38,7 @@ const TUint8 OA_GROUP_ITEM = 15; // thing requires an item to be operated
 // OA_ORDER_SECOND on switch 3, and OA_ORDER_THIRD on switch 2.  If you don't care about the
 // order, use OA_ORDER_ANY.
 //
-// The swtiches and the door(s) would be in the same OA_GROUP.
+// The switches and the door(s) would be in the same OA_GROUP.
 const TUint8 OA_ORDER_NONE = 0;        // this thing should not be operated
 const TUint8 OA_ORDER_FIRST = 1;       // this thing must be operated first
 const TUint8 OA_ORDER_SECOND = 2;      // this thing must be operated second
