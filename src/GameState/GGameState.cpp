@@ -687,7 +687,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, MID_BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
-        RemapSlot(MID_BOSS_ENERGY_BMP, MID_BOSS_SLOT, IMAGE_128x128);
+        RemapSlot(MID_BOSS_FIRE_BMP, MID_BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_ENERGY_PROJECTILE_BMP, MID_BOSS_PROJECTILE_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
@@ -869,6 +869,7 @@ TBool GGameState::SaveState() {
 #endif
         stream.PrintMSize();
         stream.Write(&p->mAttribute, sizeof(p->mAttribute));
+        stream.Write(& p->mAttribute, sizeof(p->mAttribute));
         stream.PrintMSize();
 
 #ifndef __DINGUX__
@@ -901,10 +902,6 @@ TBool GGameState::SaveState() {
   mTimer = FRAMES_PER_SECOND * 1;
   printf("\n-------- END %s--------\n", __FUNCTION__);
 
-//  for (uint32_t i = 0; i < stream.Size(); i++) {
-//    printf("%i %i\n", i, stream.Data()[i]);
-//  }
-
   return ETrue;
 
 }
@@ -916,10 +913,6 @@ TBool GGameState::LoadState(const char *aGameName) {
   BMemoryStream stream = *gSavedGameList.LoadSavedGame(aGameName);
   printf("LOAD Stream size %i\n", stream.Size());
 
-//
-//  for (uint32_t i = 0; i < stream.Size(); i++) {
-//    printf("%i %i\n", i, stream.Data()[i]);
-//  }
 
   TUint32 seed;
   stream.Read(&seed, sizeof(TUint32));
@@ -959,9 +952,10 @@ TBool GGameState::LoadState(const char *aGameName) {
 
     if (attr != -1) {
       printf("Found process %i\n", attr);
-      stream.PrintReadIndex();
-      // We have to cast appropriately
 
+      stream.PrintReadIndex();
+      printf("Reading process %i\n", attr);
+      stream.PrintReadIndex();
 
       GProcess *p = GProcess::Spawn(this, attr, 0, 0, 0, 0, DIRECTION_DOWN);
       stream.PrintReadIndex();
