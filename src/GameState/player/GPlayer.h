@@ -60,6 +60,13 @@ struct GPlayer {
     }
   }
 
+  static void AddHitPoints(TInt aMoreHitpoints) {
+    mHitPoints += aMoreHitpoints;
+    if (mHitPoints > mMaxHitPoints) {
+      mHitPoints = mMaxHitPoints;
+    }
+  }
+
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);
   static TUint16 GetSpellSlot();

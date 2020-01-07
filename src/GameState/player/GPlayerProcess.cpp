@@ -154,8 +154,8 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
             col = program[ip].mCol;
 
       const TInt dungeon = params >> 8;
-      printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
-      printf("GetMapHeight() = %i, GetMapWidth() = %i\n", mPlayfield->GetMapHeight(), mPlayfield->GetMapWidth());
+//      printf("OVERWORLD ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+//      printf("GetMapHeight() = %i, GetMapWidth() = %i\n", mPlayfield->GetMapHeight(), mPlayfield->GetMapWidth());
 
       if (aExitingLevel == params) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
