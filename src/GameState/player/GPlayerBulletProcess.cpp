@@ -53,6 +53,7 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
 
   mSprite->x = GPlayer::mSprite->x - mSprite->w / 2 + 32;
   mSprite->y = GPlayer::mSprite->y - mSprite->h / 2 - 4;
+  mSprite->mDirection = mDirection;
   mAge = 0;
   aGameState->AddSprite(mSprite);
 }
