@@ -209,4 +209,5 @@ RAW SFX_player_take_damage.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
 RAW SFX_playfield_spike_raise.wav
-
+RAW SFX_item_heart.wav
+RAW SFX_item_pickup_generic.wav

@@ -23,6 +23,7 @@ const TUint16 ITEM_RED_BRACELET = ATTR_RED_BRACELET;
 const TUint16 ITEM_GREEN_BRACELET = ATTR_GREEN_BRACELET;
 const TUint16 ITEM_YELLOW_BRACELET = ATTR_YELLOW_BRACELET;
 const TUint16 ITEM_RED_POTION1 = ATTR_RED_POTION1;
+const TUint16 ITEM_HEART = ATTR_HEART;
 const TUint16 ITEM_RED_POTION2 = ATTR_RED_POTION2;
 const TUint16 ITEM_BLUE_POTION1 = ATTR_BLUE_POTION1;
 const TUint16 ITEM_BLUE_POTION2 = ATTR_BLUE_POTION2;
@@ -59,7 +60,8 @@ static const TInt items[] = {
   IMG_GREEN_POTION2,
   IMG_BLUE_POTION1,
   IMG_BLUE_POTION2,
-  IMAGE_EMPTY_BOTTLE,
+  IMG_HEART,
+  IMG_EMPTY_BOTTLE,
   IMG_BLUE_BOTTLE1,
   IMG_BLUE_BOTTLE2,
   IMG_BLUE_BOTTLE3,
@@ -93,15 +95,16 @@ static const char *itemNames[] = {
   "Big Red Potion",
   "Small Blue Potion",
   "Big Blue Potion",
+  "Heart",
   "Empty Bottle",
-  "Blue Bottle 25%",
-  "Blue Bottle 50%",
-  "Blue Bottle 75%",
-  "Blue Bottle Full",
-  "Red Bottle 25%",
-  "Red Bottle 50%",
-  "Red Bottle 75%",
-  "Red Bottle Full",
+  "Magic Bottle 25%",
+  "Magic Bottle 50%",
+  "Magic Bottle 75%",
+  "Health Bottle Full",
+  "Health Bottle 25%",
+  "Health Bottle 50%",
+  "Health Bottle 75%",
+  "Health Bottle Full",
 };
 
 #endif //MODITE_ITEMS_H

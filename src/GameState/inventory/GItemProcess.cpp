@@ -41,7 +41,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
   }
   else {
-    Panic("GItemProcess contructor: invalid item number: %d\n", mItemNumber);
+    Panic("GItemProcess constructor: invalid item number: %d\n", mItemNumber);
   }
 }
 
@@ -59,16 +59,29 @@ TBool GItemProcess::RunBefore() {
 
 TBool GItemProcess::RunAfter() {
   if (mSprite->cType & STYPE_PLAYER) {
+
+    // Pick up a heart, gain life and move on. No status.
+    if (mItemNumber == ITEM_HEART) {
+      GPlayer::AddHitPoints(30);
+      gSoundPlayer.SfxItemHeart();
+      return EFalse;
+    }
+
+
     auto *p = new GStatProcess(mSprite->x, mSprite->y, itemNames[mItemNumber]);
     p->SetImageNumber(mSprite->mImageNumber);
-    p->SetTimeout(5 * FRAMES_PER_SECOND);
+    p->SetTimeout(FRAMES_PER_SECOND);
     mGameState->AddProcess(p);
+
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
     if (mIp != -1) {
       mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     }
+    
     GPlayer::mInventoryList.Dump();
+    gSoundPlayer.SfxItemPickupGeneric();
+
     return EFalse;
   }
   return ETrue;

@@ -27,6 +27,8 @@ static const TUint16 effectsList[] = {
   SFX_ENEMY_DEATH_WAV,
   SFX_ENEMY_TAKE_DAMAGE_WAV,
   SFX_PLAYFIELD_SPIKE_RAISE_WAV,
+  SFX_ITEM_HEART_WAV,
+  SFX_ITEM_PICKUP_GENERIC_WAV
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
@@ -134,7 +136,10 @@ BRaw *GSoundPlayer::LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) 
 
 
 
+void GSoundPlayer::GenericPlaySfx(TUint16 aSfxNumber) {
+  PlaySfx(FindSfxNumber(aSfxNumber));
 
+}
 
 
 void GSoundPlayer::SfxOptionSelect() {
@@ -202,7 +207,13 @@ void GSoundPlayer::SfxEnemyTakeDamage() {
 }
 
 // SFX Playfield
-
 void GSoundPlayer::SfxPlayfieldSpikeRaise() {
   PlaySfx(FindSfxNumber(SFX_PLAYFIELD_SPIKE_RAISE_WAV));
+}
+
+void GSoundPlayer::SfxItemHeart() {
+  PlaySfx(FindSfxNumber(SFX_ITEM_HEART_WAV));
+}
+void GSoundPlayer::SfxItemPickupGeneric() {
+  PlaySfx(FindSfxNumber(SFX_ITEM_PICKUP_GENERIC_WAV));
 }

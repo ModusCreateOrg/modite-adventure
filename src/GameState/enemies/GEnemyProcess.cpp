@@ -105,6 +105,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case DEATH_STATE: {
+      mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
       gSoundPlayer.SfxEnemyDeath();
       auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
@@ -296,19 +297,39 @@ TBool GEnemyProcess::DeathState() {
       if (s->AnimDone()) {
         GPlayer::AddExperience(mSprite->mExperience);
         // drop a potion
-        switch (Random(0, 3)) {
+
+        // For now, le'ts just drop this and leave potions to crate.
+        const TInt32 spawn_threshold = 6;
+        TInt32 should_spawn = Random(0, 10);
+//        printf("should_spawn = %i\n", should_spawn);
+        if (should_spawn <= spawn_threshold) {
+          return EFalse;
+        }
+
+        TInt32 item_to_spawn = Random(0, 5);
+//        printf("item_to_spawn = %i\n", item_to_spawn);
+
+        switch (item_to_spawn) {
           case 0:
+          case 1:
+          case 2:
+          case 3:
+            GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
+            break;
+          case 4:
             GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
             break;
-          case 1:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
-            break;
-          case 2:
+//          case 4:
+//            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
+//            break;
+          case 5:
             GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
             break;
-          case 3:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
-            break;
+//          case 3:
+//            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
+//            break;
+          default:
+          break;
         }
         return EFalse;
       }
@@ -427,6 +448,7 @@ void GEnemyProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mHitPoints, sizeof(mHitPoints));
   aStream.Write(&mVelocity, sizeof(mVelocity));
   mSprite->WriteToStream(aStream);
+  printf("mSprite->mDirection = %i\n", mSprite->mDirection);
 }
 
 void GEnemyProcess::ReadFromStream(BMemoryStream &aStream) {
@@ -442,4 +464,7 @@ void GEnemyProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mHitPoints, sizeof(mHitPoints));
   aStream.Read(&mVelocity, sizeof(mVelocity));
   mSprite->ReadFromStream(aStream);
+  printf("mSprite->mDirection = %i\n", mSprite->mDirection);
+
+  NewState(mState, mSprite->mDirection);
 }
