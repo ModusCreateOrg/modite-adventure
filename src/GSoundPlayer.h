@@ -20,6 +20,8 @@ public:
   BRaw* LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) override;
   TBool PlayMusic(TInt16 aResourceId);
 
+  void GenericPlaySfx(TUint16 aSfxNumber);
+
   // SFX Methods //
 
   void SfxSaveGame();
@@ -47,6 +49,9 @@ public:
 
   // SFX Playfield
   void SfxPlayfieldSpikeRaise();
+
+  void SfxItemHeart();
+  void SfxItemPickupGeneric();
 };
 
 
