@@ -10,7 +10,7 @@ const TInt16 LAND_TIMEOUT = 150 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;

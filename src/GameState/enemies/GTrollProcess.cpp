@@ -78,7 +78,7 @@ static ANIMSCRIPT attackDownAnimation[] = {ABITMAP(TROLL_SLOT),
                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 3),
                                            ADELTA( -4, 0),
                                            ASTEP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_DOWN + 0),
-                                           ATYPE(STYPE_EBULLET),  ASIZE(0,12,32,24),
+                                           ATYPE(STYPE_EBULLET),  ASIZE(0,20,32,32),
                                            ADELTA(2, 16),
                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 1),
                                            ATYPE(STYPE_ENEMY),  ASIZE(0,4,32,16),
@@ -216,7 +216,7 @@ static ANIMSCRIPT attackUpAnimation[] = {ABITMAP(TROLL_SLOT),
                                          ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 3),
                                          ADELTA(0, 0),
                                          ASTEP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_UP + 0),
-                                         ATYPE(STYPE_EBULLET), ASIZE(0,4,32,24),
+                                         ATYPE(STYPE_EBULLET), ASIZE(0,4,32,32),
                                          ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 1),
                                          ATYPE(STYPE_ENEMY), ASIZE(0, 4, 32, 16),
                                          ADELTA(-8, 0),
@@ -266,6 +266,7 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->SetStatMultipliers(5.0, 5.0, 5.0);
+  mRangeX = mRangeY = 16;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
