@@ -1,5 +1,43 @@
 #!/usr/bin/env bash
 
+
+set -euo pipefail
+
+# Set DEBUG to true for enhanced debugging: run prefixed with "DEBUG=true"
+${DEBUG:-false} && set -vx
+# Credit to https://stackoverflow.com/a/17805088
+# and http://wiki.bash-hackers.org/scripting/debuggingtips
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
+VERBOSE=0
+DEPLOY_IPK=0
+
+# https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+POSITIONAL=()
+while [[ $# -gt 0 ]] ;do
+  key="$1"
+
+  case $key in
+      -v|--verbose)
+      VERBOSE=1
+      shift # past argument
+      ;;
+
+      -d|--deploy-ipk)
+      set DEPLOY_IPK=1
+      shift # past argument
+      ;;
+      
+      *)    # unknown option
+      POSITIONAL+=("$1") # save it in an array for later
+      shift # past argument
+      ;;
+  esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 . ${SCRIPT_DIR}/ldk_scripts_common.sh
@@ -7,15 +45,31 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${WORKING_DIR}
 
 
+
+
 echo "Compiling"
 mkdir -p build/ldk/
 
-make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
+make cleanall
 
-make -f Makefile-ldk.mk -j 12 ipk >/dev/null
-# if [[ $? -eq 0 ]]; then
- 	make -f Makefile-ldk.mk cleanobjects >/dev/null 2>&1
-# fi
+md5=''
+
+if [[ ${VERBOSE} -eq 1 ]]; then
+  make -j `nproc` ipk
+  
+  md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
+  md5=${md5: -6}
+  make cleanall
+
+else
+  make -j `nproc` ipk >/dev/null 2>&1
+  
+  md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
+  md5=${md5: -6}
+
+  make cleanall >/dev/null 2>&1
+fi
+
 
 me=`whoami`
 
@@ -42,8 +96,6 @@ ping 169.254.1.1 -c 1 -W 1 -i 200
 # fi
 
 
-md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
-md5=${md5: -6}
 
 
 
@@ -88,17 +140,15 @@ EOT
   echo " - Navigate to /home/retrofw/tmp"
   echo " - Install 'modite-adventure.ipk'"
   echo "Further invocations of this script should not require \"deploy-ipk\" argument."
-
 }
 
 
-if [[ $# -gt 0 ]] && [[ "${1}" == "deploy-ipk" ]]; then
+if [[ $DEPLOY_IPK == true ]]; then
   deploy_ipk_via_ftp
 else
   deploy_binary_via_ftp
 fi
 
-# make -f Makefile-ldk.mk cleanall >/dev/null 2>&1
 
 
 
