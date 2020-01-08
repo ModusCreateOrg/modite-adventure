@@ -234,17 +234,7 @@ TBool GMidBossProcess::MaybeHit() {
     mSprite->ClearCType(STYPE_SPELL);
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
-      // TODO take into account which spellbook is being wielded
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
-        printf("MID BOSS DEATH\n");
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
+      mSprite->MaybeDamage(ETrue);
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -256,15 +246,7 @@ TBool GMidBossProcess::MaybeHit() {
     if (!mSprite->mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
+      mSprite->MaybeDamage(EFalse);
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
           NewState(MB_HIT_STATE, DIRECTION_LEFT);
@@ -516,6 +498,10 @@ TBool GMidBossProcess::HitState() {
 }
 
 TBool GMidBossProcess::DeathState() {
+  if (mDeathCounter == 1) {
+    printf("MID BOSS DEATH\n");
+    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+  }
   if (mDeathCounter <= 3) {
     printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
     GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
