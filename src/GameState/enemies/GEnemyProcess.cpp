@@ -228,16 +228,21 @@ TBool GEnemyProcess::MaybeAttack() {
 }
 
 TBool GEnemyProcess::AttackState() {
-  // Spells interrupt attack animation, normal attacks don't
+  // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
     if (mSprite->MaybeDamage(ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
+      return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->MaybeDamage(EFalse);
+    if (mSprite->mHitPoints <= 0) {
+      NewState(DEATH_STATE, mSprite->mDirection);
+      return ETrue;
+    }
   }
 
   if (mSprite->AnimDone()) {
