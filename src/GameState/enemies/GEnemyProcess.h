@@ -51,6 +51,7 @@ protected:
   TInt16 mStateTimer;
   TInt16 mHitPoints;
   TFloat mVelocity;
+  TInt mRangeX, mRangeY;
 
   GAnchorSprite *mPlayerSprite;
 

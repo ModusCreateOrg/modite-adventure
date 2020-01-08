@@ -27,6 +27,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mDirection = DIRECTION_DOWN;
   mState = IDLE_STATE;
   mStep = 0;
+  mRangeX = mRangeY = 8;
 
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
@@ -175,9 +176,6 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TInt DX = 8,
-  DY = 8;
-
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
@@ -186,14 +184,14 @@ TBool GEnemyProcess::MaybeAttack() {
   if (!mPlayerSprite->mInvulnerable) {
     if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
       // vertical overlap
-      if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < DX) {
+      if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < mRangeX) {
         // to right of player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_LEFT);
         }
         return ETrue;
       }
-      if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < DX) {
+      if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < mRangeX) {
         // to left of player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_RIGHT);
@@ -202,14 +200,14 @@ TBool GEnemyProcess::MaybeAttack() {
       }
     } else if (myRect.x1 <= hisRect.x2 && myRect.x2 >= hisRect.x1) {
       // horizontal overlap
-      if (myRect.y1 >= hisRect.y2 && myRect.y1 - hisRect.y2 < DY) {
+      if (myRect.y1 >= hisRect.y2 && myRect.y1 - hisRect.y2 < mRangeY) {
         // below player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_UP);
         }
         return ETrue;
       }
-      if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < DY) {
+      if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < mRangeY) {
         // above player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_DOWN);
