@@ -536,6 +536,28 @@ TBool GPlayerProcess::MaybeHit() {
       TInt state = HIT_LIGHT_STATE;
       // Random +/- 20% variation
       hitAmount = (hitAmount * Random(80, 120)) / 100;
+      if (GPlayer::mEquipped.mAmulet && other->mElement) {
+        ELEMENT armorElement = ELEMENT_NONE;
+        switch (GPlayer::mEquipped.mAmulet->mItemNumber) {
+          case ITEM_BLUE_BRACELET:
+            armorElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_BRACELET:
+            armorElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_BRACELET:
+            armorElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_BRACELET:
+            armorElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (armorElement) {
+          hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
+        }
+      }
       GPlayer::mHitPoints -= hitAmount;
       mSprite->mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
