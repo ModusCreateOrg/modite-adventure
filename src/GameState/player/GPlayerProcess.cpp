@@ -456,8 +456,7 @@ TBool GPlayerProcess::MaybeHit() {
     TInt hitAmount = 0;
 
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-      // random variation from 100% to 150% base damage
-      hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
+      hitAmount = other->mHitStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -512,9 +511,9 @@ TBool GPlayerProcess::MaybeHit() {
     }
 
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
-      // random variation from 50% to 100% base damage
       if (other->mHitPoints > 0) {
-        hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
+        // contact damage independent of enemy attack strength
+        hitAmount = BASE_STRENGTH + other->mLevel * (BASE_STRENGTH / 5);
         switch (mSprite->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitLightUpAnimation);
@@ -535,8 +534,8 @@ TBool GPlayerProcess::MaybeHit() {
 
     if (hitAmount) {
       TInt state = HIT_LIGHT_STATE;
-
-      // random variation from 100% to 150% base damage
+      // Random +/- 20% variation
+      hitAmount = (hitAmount * Random(80, 120)) / 100;
       GPlayer::mHitPoints -= hitAmount;
       mSprite->mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);

@@ -360,6 +360,7 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
+  mSprite->SetStatMultipliers(2.2, 2.5, 2.5);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
