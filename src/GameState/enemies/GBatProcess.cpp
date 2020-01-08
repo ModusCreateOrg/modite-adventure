@@ -6,6 +6,7 @@
  *********************************************************************************/
 
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 LAND_TIMEOUT = 150 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
@@ -15,6 +16,7 @@ const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
+const TInt MAX_ALTITUDE = 8;
 
 // region  ANIMATIONS {{{
 
@@ -77,9 +79,17 @@ static ANIMSCRIPT deathAnimation[] = {
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(BAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_DOWN + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_DOWN + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_DOWN + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_DOWN + 3),
+  ALOOP,
+};
+
+static ANIMSCRIPT landedDownAnimation[] = {
+  ABITMAP(BAT_SLOT),
+  ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_DAMAGE_DOWN + 3),
   ALOOP,
 };
 
@@ -130,9 +140,17 @@ static ANIMSCRIPT hitDownAnimation[] = {
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(BAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  AFLIP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 0),
+  AFLIP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 1),
+  AFLIP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 2),
+  AFLIP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 3),
+  ALOOP,
+};
+
+static ANIMSCRIPT landedLeftAnimation[] = {
+  ABITMAP(BAT_SLOT),
+  ALABEL,
+  AFLIP(IDLE_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
   ALOOP,
 };
 
@@ -183,9 +201,17 @@ static ANIMSCRIPT hitLeftAnimation[] = {
 static ANIMSCRIPT idleRightAnimation[] = {
   ABITMAP(BAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_RIGHT + 3),
+  ALOOP,
+};
+
+static ANIMSCRIPT landedRightAnimation[] = {
+  ABITMAP(BAT_SLOT),
+  ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
   ALOOP,
 };
 
@@ -236,9 +262,17 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT idleUpAnimation[] = {
   ABITMAP(BAT_SLOT),
   ALABEL,
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_BAT_IDLE + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_UP + 0),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_UP + 1),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_UP + 2),
+  ASTEP(IDLE_SPEED, IMG_BAT_WALK_UP + 3),
+  ALOOP,
+};
+
+static ANIMSCRIPT landedUpAnimation[] = {
+  ABITMAP(BAT_SLOT),
+  ALABEL,
+  ASTEP(IDLE_SPEED, IMG_BAT_DAMAGE_UP + 3),
   ALOOP,
 };
 
@@ -303,9 +337,9 @@ static ANIMSCRIPT hitSpellAnimation[] = {
 GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
     : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
   mStateTimer = 0;
+  mLandTimer = 0;
+  mAltitude = MAX_ALTITUDE;
   mSprite->Name("ENEMY BAT");
-  mSprite->x = aX;
-  mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
@@ -326,7 +360,43 @@ GBatProcess::~GBatProcess() {
  *********************************************************************************/
 
 void GBatProcess::Idle(DIRECTION aDirection) {
-  mStateTimer = IDLE_TIMEOUT;
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(idleUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(idleDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(idleLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(idleRightAnimation);
+      break;
+    default:
+      Panic("GBatProcess no Idle direction\n");
+      break;
+  }
+}
+
+void GBatProcess::Land(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(landedUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(landedDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(landedLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(landedRightAnimation);
+      break;
+    default:
+      Panic("GBatProcess no Land direction\n");
+      break;
+  }
 }
 
 void GBatProcess::Walk(DIRECTION aDirection) {
@@ -335,7 +405,7 @@ void GBatProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
       mSprite->vy = -VELOCITY;
@@ -361,7 +431,7 @@ void GBatProcess::Walk(DIRECTION aDirection) {
 }
 
 void GBatProcess::Attack(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
+  switch (aDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);
       break;
@@ -405,4 +475,43 @@ void GBatProcess::Hit(DIRECTION aDirection) {
 
 void GBatProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
+}
+
+void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+  if (mState != IDLE_STATE && aState == IDLE_STATE) {
+    if (!Random(0, 2)) {
+      mLandTimer = LAND_TIMEOUT;
+    }
+    mStateTimer = IDLE_TIMEOUT;
+  }
+  if (mState != IDLE_STATE || aState != IDLE_STATE) {
+    GEnemyProcess::NewState(aState, aDirection);
+  } else {
+    if (--mLandTimer > 0) {
+      mAltitude = MIN(mAltitude, MAX_ALTITUDE);
+      if (mAltitude > 0) {
+        mAltitude -= GRAVITY;
+      } else {
+        mAltitude = 0;
+        Land(aDirection);
+      }
+    } else {
+      if (mLandTimer == 0) {
+        Idle(aDirection);
+      }
+      if (mAltitude < MAX_ALTITUDE) {
+        mAltitude += GRAVITY;
+      }
+    }
+  }
+
+  mSprite->mDy = 16 - TInt(mAltitude);
+}
+
+TBool GBatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  if (mState == IDLE_STATE && (mAltitude < MAX_ALTITUDE || mLandTimer > 0)) {
+    return EFalse;
+  }
+
+  return GEnemyProcess::CanWalk(aDirection, aVx, aVy);
 }
