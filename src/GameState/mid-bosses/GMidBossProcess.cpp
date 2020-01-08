@@ -553,7 +553,6 @@ void GMidBossProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mStep, sizeof(mStep));
   aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Write(&mStateTimer, sizeof(mStateTimer));
-  aStream.Write(&mHitPoints, sizeof(mHitPoints));
   mSprite->WriteToStream(aStream);
 }
 
@@ -565,6 +564,5 @@ void GMidBossProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mStep, sizeof(mStep));
   aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Read(&mStateTimer, sizeof(mStateTimer));
-  aStream.Read(&mHitPoints, sizeof(mHitPoints));
   mSprite->ReadFromStream(aStream);
 }

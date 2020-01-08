@@ -62,6 +62,19 @@ SPRITESHEET 128x128 mid_boss_water.bmp
 SPRITESHEET 32x32 mid_boss_water_projectile.bmp
 
 #
+### WIZARD BOSSES
+#
+PATH resources/sprites/wizards
+SPRITESHEET 64x64 earth_wizard.bmp
+SPRITESHEET 32x32 earth_projectile.bmp
+SPRITESHEET 64x64 energy_wizard.bmp
+SPRITESHEET 32x32 energy_projectile.bmp
+SPRITESHEET 64x64 fire_wizard.bmp
+SPRITESHEET 32x32 fire_projectile.bmp
+SPRITESHEET 64x64 water_wizard.bmp
+SPRITESHEET 32x32 water_projectile.bmp
+
+#
 ### TILEMAPS
 #
 
