@@ -39,6 +39,22 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mDeathCounter = 0;
   mSpellCounter = 0;
   mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
+  switch (aAttribute) {
+    case ATTR_MID_BOSS_WATER:
+      mSprite->mElement = ELEMENT_WATER;
+      break;
+    case ATTR_MID_BOSS_FIRE:
+      mSprite->mElement = ELEMENT_FIRE;
+      break;
+    case ATTR_MID_BOSS_EARTH:
+      mSprite->mElement = ELEMENT_EARTH;
+      break;
+    case ATTR_MID_BOSS_ENERGY:
+      mSprite->mElement = ELEMENT_ENERGY;
+      break;
+    default:
+      break;
+  }
 
   gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
