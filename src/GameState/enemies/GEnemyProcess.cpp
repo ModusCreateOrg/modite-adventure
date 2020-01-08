@@ -108,7 +108,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
       gSoundPlayer.SfxEnemyDeath();
-      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
+      auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
     } break;
@@ -128,6 +128,7 @@ void GEnemyProcess::Spell(DIRECTION aDirection) {
 
 void GEnemyProcess::OverlayAnimationComplete() {
   mSpellOverlayProcess = ENull;
+  mEnemyDeathOverlayProcess = ENull;
 }
 
 TBool GEnemyProcess::MaybeHit() {
@@ -281,55 +282,48 @@ TBool GEnemyProcess::SpellState() {
 }
 
 TBool GEnemyProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    GAnchorSprite *s = mEnemyDeathOverlayProcess->GetSprite();
-    if (s) {
-      if (s->AnimDone()) {
-        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
-        p->SetMessageType(STAT_EXPERIENCE);
-        mGameState->AddProcess(p);
-        GPlayer::AddExperience(mSprite->mExperience);
-        // drop a potion
+  auto *p = mEnemyDeathOverlayProcess;
+  if (mSprite->AnimDone() && !p) {
+    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+    p2->SetMessageType(STAT_EXPERIENCE);
+    mGameState->AddProcess(p2);
+    GPlayer::AddExperience(mSprite->mExperience);
+    // drop a potion
 
-        // For now, le'ts just drop this and leave potions to crate.
-        const TInt32 spawn_threshold = 6;
-        TInt32 should_spawn = Random(0, 10);
+    // For now, le'ts just drop this and leave potions to crate.
+    const TInt32 spawn_threshold = 6;
+    TInt32 should_spawn = Random(0, 10);
 //        printf("should_spawn = %i\n", should_spawn);
-        if (should_spawn <= spawn_threshold) {
-          return EFalse;
-        }
+    if (should_spawn <= spawn_threshold) {
+      return EFalse;
+    }
 
-        TInt32 item_to_spawn = Random(0, 5);
+    TInt32 item_to_spawn = Random(0, 5);
 //        printf("item_to_spawn = %i\n", item_to_spawn);
 
-        switch (item_to_spawn) {
-          case 0:
-          case 1:
-          case 2:
-          case 3:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
-            break;
-          case 4:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
-            break;
+    switch (item_to_spawn) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
+        break;
+      case 4:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
+        break;
 //          case 4:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
 //            break;
-          case 5:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
-            break;
+      case 5:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
+        break;
 //          case 3:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
 //            break;
-          default:
-          break;
-        }
-        return EFalse;
-      }
-      else {
-        return ETrue;
-      }
+      default:
+        break;
     }
+    return EFalse;
   }
 
   return ETrue;
