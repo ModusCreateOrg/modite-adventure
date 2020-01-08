@@ -254,7 +254,7 @@ TBool GEnemyProcess::HitState() {
     }
     mSprite->mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;
 }
