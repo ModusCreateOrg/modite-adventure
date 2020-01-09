@@ -92,7 +92,6 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      gSoundPlayer.SfxEnemyTakeDamage();
       Hit(aDirection);
       break;
 

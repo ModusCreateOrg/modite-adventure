@@ -270,6 +270,7 @@ TBool GAnchorSprite::MaybeDamage(TBool aSpell) {
     auto *p = new GStatProcess(x + 68, y + 32, "%d", hitAmount);
     p->SetMessageType(STAT_ENEMY_HIT);
     mGameState->AddProcess(p);
+    gSoundPlayer.SfxEnemyTakeDamage();
 
     return ETrue;
   }
