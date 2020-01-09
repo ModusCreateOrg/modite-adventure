@@ -277,7 +277,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mLastDirection = aDirection;
 
   mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDy = -4;
   switch (mState) {
 
     case WALK_STATE:
@@ -375,7 +375,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStepFrame = 0;
       mSprite->vx = 0;
       mSprite->vy = PLAYER_VELOCITY;
-      mSprite->mDy = 0;
+      mSprite->mDy = -4;
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -881,7 +881,7 @@ TBool GPlayerProcess::SpellState() {
 TBool GPlayerProcess::FallState() {
   mStepFrame++;
   if (mStepFrame < FALL_DURATION) {
-    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame);
+    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame) - 4;
   } else if (mStepFrame == FALL_DURATION) {
     mSprite->StartAnimation(landAnimation);
   }
