@@ -240,7 +240,7 @@ TBool GEnemyProcess::AttackState() {
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->MaybeDamage(EFalse);
     if (mSprite->mHitPoints <= 0) {
-      NewState(DEATH_STATE, mSprite->mDirection);
+      NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
