@@ -14,7 +14,7 @@ const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = PLAYER_VELOCITY * 0.8;
 
 // region  ANIMATIONS {{{
 
@@ -354,7 +354,7 @@ void GSpiderProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
   if (mStateTimer <= 0) {
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(2, 4)) * 32 / VELOCITY);
   }
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
