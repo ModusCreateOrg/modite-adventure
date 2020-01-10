@@ -5,7 +5,7 @@
 const TInt EXPLODE_SPEED = 5;
 
 static ANIMSCRIPT fireballExplodeAnimation[] = {
-  ABITMAP(MID_BOSS_PROJECTILE_SLOT),
+  ABITMAP(BOSS_PROJECTILE_SLOT),
   ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 0),
   ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 1),
   ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 2),
@@ -15,7 +15,7 @@ static ANIMSCRIPT fireballExplodeAnimation[] = {
 
 class ProjectileSprite : public GAnchorSprite {
 public:
-  ProjectileSprite(GGameState *aGameState) : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, MID_BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
+  ProjectileSprite(GGameState *aGameState) : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
     Name("PROJECTILE");
     mExploding = EFalse;
     mTimer = 128;

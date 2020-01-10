@@ -24,7 +24,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mHitTimer = HIT_SPAM_TIME;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
-  mSprite->Name("ENEMY");
+  mSprite->Name("MID BOSS");
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->x = aX;
   mSprite->y = aY;
@@ -56,7 +56,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
       break;
   }
 
-  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
+//  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
 
 GMidBossProcess::~GMidBossProcess() {
@@ -232,7 +232,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         // get coordinates for explosion placement
         TRect r;
         mSprite->GetRect(r);
-        r.Dump();
+//        r.Dump();
         mDeathCounter = 10;
         for (TInt delay = 0; delay < mDeathCounter; delay++) {
           printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
@@ -528,11 +528,11 @@ TBool GMidBossProcess::DeathState() {
 }
 
 TBool GMidBossProcess::SpellState() {
-  while (BEventMessage *m = GetMessage()) {
-    if (m->mType == EVENT_SPELL_PROCESS_EXIT) {
-      mSpellCounter--;
-    }
-  }
+//  while (BEventMessage *m = GetMessage()) {
+//    if (m->mType == EVENT_SPELL_PROCESS_EXIT) {
+//      mSpellCounter--;
+//    }
+//  }
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
@@ -555,7 +555,6 @@ void GMidBossProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mStep, sizeof(mStep));
   aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Write(&mStateTimer, sizeof(mStateTimer));
-  aStream.Write(&mHitPoints, sizeof(mHitPoints));
   mSprite->WriteToStream(aStream);
 }
 
@@ -567,6 +566,5 @@ void GMidBossProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mStep, sizeof(mStep));
   aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Read(&mStateTimer, sizeof(mStateTimer));
-  aStream.Read(&mHitPoints, sizeof(mHitPoints));
   mSprite->ReadFromStream(aStream);
 }

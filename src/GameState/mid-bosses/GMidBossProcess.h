@@ -97,7 +97,6 @@ protected:
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitTimer;
-  TInt16 mHitPoints;
   TInt mDeathCounter; // number of death animation processes spawned/outstanding
   TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };
