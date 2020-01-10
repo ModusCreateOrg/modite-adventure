@@ -13,10 +13,26 @@ public:
 public:
   TBool RunBefore();
   TBool RunAfter();
+
+public:
   void WriteToStream(BMemoryStream &aStream);
   void ReadFromStream(BMemoryStream &aStream);
-public:
+
+protected:
   void SetState(TInt aState, DIRECTION aDirection);
+
+protected:
+  TBool MaybeHit();
+  TBool MaybeAttack();
+
+  void Idle(DIRECTION aDirection);
+  TBool IdleState();
+  void Walk(DIRECTION aDirection);
+  TBool WalkState();
+  void Fire(DIRECTION aDirection);
+  TBool FireState();
+  void Teleport(DIRECTION aDirection);
+  TBool TeleportState();
 
 protected:
   GGameState *mGameState;
@@ -25,12 +41,14 @@ protected:
   TInt mType;
   TInt16 aSpriteSheet;
   DIRECTION mDirection;
+  TFloat mStartX, mStartY;
 
 protected:
   TInt mState;
   TInt mStep;
   TInt mStateTimer;
   TInt mAttackTimer;
+  TBool mAttackType;
 };
 
 #endif
