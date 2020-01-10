@@ -1,5 +1,6 @@
 #include "GWizardProcess.h"
 #include "GWizardProjectileProcess.h"
+#include "GWizardPillarProcess.h"
 #include "GWizardDeathProcess.h"
 #include "GStatProcess.h"
 #include "GPlayer.h"
@@ -169,6 +170,7 @@ static ANIMSCRIPT teleportAnimation3[] = {
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
     : GProcess(aAttribute) {
+  printf("GWizardProcess(attribute: %d/$%x)\n", aAttribute, aAttribute);
   mGameState = aGameState;
   mSlot = aSlot;
   mIp = aIp;
@@ -181,7 +183,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   //
   mSprite = new GAnchorSprite(mGameState, 0, aSlot);
   mSprite->Name("WIZARD");
-    mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mSprite->type = STYPE_ENEMY;
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
@@ -277,7 +279,7 @@ void GWizardProcess::Spell(DIRECTION aDirection) {
   mSprite->StartAnimation(hitAnimation);
   mSpellCounter += 2;
   auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-//  mSpellOverlayProcess = p;
+  //  mSpellOverlayProcess = p;
   mGameState->AddProcess(p);
   p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
   mGameState->AddProcess(p);
@@ -464,24 +466,28 @@ TBool GWizardProcess::TeleportState() {
   if (!mSprite->AnimDone()) {
     return ETrue;
   }
-  printf("AnimDone(%d)\n", mStep);
   if (!mStep) {
-    printf("ANIM2\n");
     mSprite->StartAnimation(teleportAnimation2);
     mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK);
     mStep++;
     mSprite->x = mStartX;
     mSprite->y = mStartY;
     mStateTimer = 100;
+
+    // spawn pillars
+    for (TInt n = 0; n < 5; n++) {
+      TInt xx = gViewPort->mWorldX + n * 64 + 16 + Random(0, 32),
+           yy = gViewPort->mWorldY + n * 32 + 16 + Random(0, 176);
+      mGameState->AddProcess(new GWizardPillarProcess(mGameState, xx, yy));
+    }
+
     return ETrue;
   }
   else if (mStep == 1 && --mStateTimer < 1) {
-    printf("ANIM3\n");
     mState++;
     mSprite->StartAnimation(teleportAnimation3);
   }
   else {
-    printf("ANIM4\n");
     mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
     SetAttackTimer();
     SetState(STATE_IDLE, mDirection);
@@ -534,8 +540,8 @@ TBool GWizardProcess::SpellState() {
 TBool GWizardProcess::DeathState() {
   if (mDeathCounter <= 3) {
     // TODO: boss drops?
-//    printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
-//    GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    //    printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
+    //    GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
     return EFalse;
   }
   // maybe drop item

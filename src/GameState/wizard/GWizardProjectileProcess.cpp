@@ -29,6 +29,7 @@ static ANIMSCRIPT explodeAnimation[] = {
   AEND,
 };
 
+// consructor
 GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TInt aAngle)
     : GProcess(0, 0) {
   mSaveToStream = EFalse;
@@ -84,7 +85,7 @@ TBool GWizardProjectileProcess::RunAfter() {
   }
   if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
     mSprite->ClearFlags(SFLAG_CHECK);
-      mSprite->vx = mSprite->vy = 0;
+    mSprite->vx = mSprite->vy = 0;
     mSprite->StartAnimation(explodeAnimation);
     mStep++;
   }
@@ -107,7 +108,7 @@ TBool GWizardProjectileProcess::RunAfter() {
   if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
     printf("HIT PLAYER\n");
     mSprite->ClearFlags(SFLAG_CHECK);
-      mSprite->vx = mSprite->vy = 0;
+    mSprite->vx = mSprite->vy = 0;
     mSprite->StartAnimation(explodeAnimation);
     mStep++;
     mTimer = 10000;

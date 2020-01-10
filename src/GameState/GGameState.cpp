@@ -756,6 +756,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         RemapSlot(EARTH_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
         RemapSlot(EARTH_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(EARTH_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
@@ -772,6 +773,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         RemapSlot(WATER_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
         RemapSlot(WATER_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(WATER_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
@@ -788,6 +790,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         RemapSlot(FIRE_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
         RemapSlot(FIRE_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(FIRE_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
@@ -804,6 +807,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         RemapSlot(ENERGY_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
         RemapSlot(ENERGY_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(ENERGY_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
