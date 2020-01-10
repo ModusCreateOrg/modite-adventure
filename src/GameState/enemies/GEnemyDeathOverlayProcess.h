@@ -7,7 +7,7 @@
 
 class GEnemyDeathOverlayProcess : public GProcess {
 public:
-  GEnemyDeathOverlayProcess(GGameState *aGameState, TFloat aX, TFloat aY);
+  GEnemyDeathOverlayProcess(GGameState *aGameState, GProcess *aProcess, TFloat aX, TFloat aY);
 
   ~GEnemyDeathOverlayProcess() OVERRIDE;
 
@@ -15,6 +15,10 @@ public:
   TBool RunBefore() OVERRIDE;
 
   TBool RunAfter() OVERRIDE;
+
+protected:
+  GAnchorSprite *mSprite;
+  GProcess *mParent;
 };
 
 

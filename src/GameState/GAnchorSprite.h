@@ -15,6 +15,38 @@ enum DIRECTION {
   DIRECTION_SPELL,
 };
 
+enum ELEMENT {
+  ELEMENT_NONE,
+  ELEMENT_WATER,
+  ELEMENT_FIRE,
+  ELEMENT_EARTH,
+  ELEMENT_ENERGY,
+};
+
+const TFloat SPELLBOOK_MATRIX[4][4] = {
+     // water,   fire,  earth, energy
+        { 1.0,    1.0,    1.0,    1.0 }, // water
+        { 1.5,    1.0,    1.5,    1.5 }, // fire
+        { 1.0,    1.5,    1.0,    1.5 }, // earth
+        { 1.5,    1.5,    1.5,    1.0 }, // energy
+};
+
+const TFloat RING_MATRIX[4][4] = {
+      // water,   fire,  earth, energy
+        { 1.0 ,   1.0 ,   1.0 ,   1.0  }, // water
+        { 1.25,   1.0 ,   1.25,   1.25 }, // fire
+        { 1.0 ,   1.25,   1.0 ,   1.25 }, // earth
+        { 1.25,   1.25,   1.25,   1.0  }, // energy
+};
+
+const TFloat AMULET_MATRIX[4][4] = {
+      // water,   fire,  earth, energy
+        { 0.25,   2.0 ,   2.0 ,   2.0  }, // water
+        { 1.0 ,   0.25,   1.0 ,   1.0  }, // fire
+        { 1.0 ,   1.0 ,   0.25,   1.0  }, // earth
+        { 2.0 ,   1.0 ,   1.0 ,   0.25 }, // energy
+};
+
 const TUint32 STYPE_OBJECT_BIT = STYPE_USER_BIT;
 const TUint32 STYPE_OBJECT = 1 << STYPE_OBJECT_BIT;
 const TUint32 STYPE_SPELL_BIT = STYPE_OBJECT_BIT + 1;
@@ -38,6 +70,9 @@ const TFloat FLOOR_ADJUST_BOTTOM = 1;
 const TInt BASE_HIT_POINTS = 100;
 const TInt BASE_STRENGTH = 25;
 const TInt BASE_EXPERIENCE = 20;
+
+static const TFloat SPELL_HIT_BONUS = 1.1;
+static const TFloat RING_HIT_BONUS = 1.1;
 
 class GAnchorSprite : public BAnimSprite {
 public:
@@ -68,6 +103,8 @@ public:
 
   void ResetShadow();
 
+  TBool MaybeDamage(TBool aSpell);
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -94,6 +131,7 @@ public:
   TFloat mVelocity;
   TRect mShadow;
   TUint mAttributeSave;
+  ELEMENT mElement;
 
 public:
   void WriteToStream(BMemoryStream &aStream);

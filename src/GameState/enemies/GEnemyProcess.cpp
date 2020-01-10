@@ -7,7 +7,6 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-static const TFloat SPELL_HIT_BONUS = 1.1;
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
@@ -28,6 +27,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mDirection = DIRECTION_DOWN;
   mState = IDLE_STATE;
   mStep = 0;
+  mRangeX = mRangeY = 8;
 
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
@@ -92,7 +92,6 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      gSoundPlayer.SfxEnemyTakeDamage();
       Hit(aDirection);
       break;
 
@@ -108,7 +107,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
       gSoundPlayer.SfxEnemyDeath();
-      auto *p = new GEnemyDeathOverlayProcess(mGameState, mSprite->x + 16, mSprite->y + 1);
+      auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
     } break;
@@ -128,25 +127,14 @@ void GEnemyProcess::Spell(DIRECTION aDirection) {
 
 void GEnemyProcess::OverlayAnimationComplete() {
   mSpellOverlayProcess = ENull;
+  mEnemyDeathOverlayProcess = ENull;
 }
 
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (!mSprite->mInvulnerable) {
+    if (mSprite->MaybeDamage(ETrue)) {
       mSprite->mInvulnerable = ETrue;
-      // TODO take into account which spellbook is being wielded
-      // use GPlayer::mEquipped.mSpellbook
-      TInt hitAmount = SPELL_HIT_BONUS * GPlayer::mHitStrength;
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
-        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
-        p->SetMessageType(STAT_EXPERIENCE);
-        mGameState->AddProcess(p);
-      }
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -155,20 +143,8 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (!mSprite->mInvulnerable) {
-      mSprite->Nudge(); // move sprite so it's not on top of player
+    if (mSprite->MaybeDamage(EFalse)) {
       mSprite->mInvulnerable = ETrue;
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
-        auto *p = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
-        p->SetMessageType(STAT_EXPERIENCE);
-        mGameState->AddProcess(p);
-      }
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
           NewState(HIT_STATE, DIRECTION_LEFT);
@@ -200,9 +176,6 @@ TBool GEnemyProcess::MaybeHit() {
   return EFalse;
 }
 
-static const TInt DX = 8,
-  DY = 8;
-
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
@@ -211,14 +184,14 @@ TBool GEnemyProcess::MaybeAttack() {
   if (!mPlayerSprite->mInvulnerable) {
     if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
       // vertical overlap
-      if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < DX) {
+      if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < mRangeX) {
         // to right of player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_LEFT);
         }
         return ETrue;
       }
-      if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < DX) {
+      if (myRect.x2 <= hisRect.x1 && hisRect.x1 - myRect.x2 < mRangeX) {
         // to left of player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_RIGHT);
@@ -227,14 +200,14 @@ TBool GEnemyProcess::MaybeAttack() {
       }
     } else if (myRect.x1 <= hisRect.x2 && myRect.x2 >= hisRect.x1) {
       // horizontal overlap
-      if (myRect.y1 >= hisRect.y2 && myRect.y1 - hisRect.y2 < DY) {
+      if (myRect.y1 >= hisRect.y2 && myRect.y1 - hisRect.y2 < mRangeY) {
         // below player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_UP);
         }
         return ETrue;
       }
-      if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < DY) {
+      if (myRect.y2 <= hisRect.y1 && hisRect.y1 - myRect.y2 < mRangeY) {
         // above player
         if (--mAttackTimer <= 0) {
           NewState(ATTACK_STATE, DIRECTION_DOWN);
@@ -255,6 +228,23 @@ TBool GEnemyProcess::MaybeAttack() {
 }
 
 TBool GEnemyProcess::AttackState() {
+  // Spells interrupt attack animation, normal attacks don't except for killing blows
+  if (mSprite->TestCType(STYPE_SPELL)) {
+    mSprite->ClearCType(STYPE_SPELL);
+    if (mSprite->MaybeDamage(ETrue)) {
+      NewState(SPELL_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+  if (mSprite->TestCType(STYPE_PBULLET)) {
+    mSprite->ClearCType(STYPE_PBULLET);
+    mSprite->MaybeDamage(EFalse);
+    if (mSprite->mHitPoints <= 0) {
+      NewState(HIT_STATE, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -269,7 +259,7 @@ TBool GEnemyProcess::HitState() {
     }
     mSprite->mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(WALK_STATE, mSprite->mDirection);
   }
   return ETrue;
 }
@@ -291,52 +281,48 @@ TBool GEnemyProcess::SpellState() {
 }
 
 TBool GEnemyProcess::DeathState() {
-  if (mSprite->AnimDone()) {
-    GAnchorSprite *s = mEnemyDeathOverlayProcess->GetSprite();
-    if (s) {
-      if (s->AnimDone()) {
-        GPlayer::AddExperience(mSprite->mExperience);
-        // drop a potion
+  auto *p = mEnemyDeathOverlayProcess;
+  if (mSprite->AnimDone() && !p) {
+    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+    p2->SetMessageType(STAT_EXPERIENCE);
+    mGameState->AddProcess(p2);
+    GPlayer::AddExperience(mSprite->mExperience);
+    // drop a potion
 
-        // For now, le'ts just drop this and leave potions to crate.
-        const TInt32 spawn_threshold = 6;
-        TInt32 should_spawn = Random(0, 10);
+    // For now, le'ts just drop this and leave potions to crate.
+    const TInt32 spawn_threshold = 6;
+    TInt32 should_spawn = Random(0, 10);
 //        printf("should_spawn = %i\n", should_spawn);
-        if (should_spawn <= spawn_threshold) {
-          return EFalse;
-        }
+    if (should_spawn <= spawn_threshold) {
+      return EFalse;
+    }
 
-        TInt32 item_to_spawn = Random(0, 5);
+    TInt32 item_to_spawn = Random(0, 5);
 //        printf("item_to_spawn = %i\n", item_to_spawn);
 
-        switch (item_to_spawn) {
-          case 0:
-          case 1:
-          case 2:
-          case 3:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
-            break;
-          case 4:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
-            break;
+    switch (item_to_spawn) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
+        break;
+      case 4:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
+        break;
 //          case 4:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
 //            break;
-          case 5:
-            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
-            break;
+      case 5:
+        GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
+        break;
 //          case 3:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);
 //            break;
-          default:
-          break;
-        }
-        return EFalse;
-      }
-      else {
-        return ETrue;
-      }
+      default:
+        break;
     }
+    return EFalse;
   }
 
   return ETrue;

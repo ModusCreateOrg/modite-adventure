@@ -1,3 +1,6 @@
+#include <GameState/player/GPlayer.h>
+#include <GameState/inventory/Items.h>
+#include <GameState/status/GStatProcess.h>
 #include "Game.h"
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
@@ -26,6 +29,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mInvulnerable = EFalse;
   mCollided = ENull;
   mShadow = TRect();
+  mElement = ELEMENT_NONE;
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -207,6 +211,72 @@ void GAnchorSprite::SetLevel(TInt aLevel) {
   mHitPoints = mMaxHitPoints;
   mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
+}
+
+TBool GAnchorSprite::MaybeDamage(TBool aSpell) {
+  if (!mInvulnerable) {
+    TInt hitAmount = GPlayer::mHitStrength;
+    ELEMENT hitElement = ELEMENT_NONE;
+    if (aSpell) {
+      if (GPlayer::mEquipped.mSpellbook) {
+        switch (GPlayer::mEquipped.mSpellbook->mItemNumber) {
+          case ITEM_BLUE_SPELLBOOK:
+            hitElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_SPELLBOOK:
+            hitElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_SPELLBOOK:
+            hitElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_SPELLBOOK:
+            hitElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (hitElement && mElement) {
+          hitAmount *= SPELLBOOK_MATRIX[mElement - 1][hitElement - 1];
+        } else {
+          hitAmount *= SPELL_HIT_BONUS;
+        }
+      }
+    } else {
+      // Random +/- 20% damage modifier
+      hitAmount = (hitAmount * Random(80, 120)) / 100;
+      if (GPlayer::mEquipped.mRing) {
+        switch (GPlayer::mEquipped.mRing->mItemNumber) {
+          case ITEM_BLUE_RING:
+            hitElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_RING:
+            hitElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_RING:
+            hitElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_RING:
+            hitElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (hitElement && mElement) {
+          hitAmount *= RING_MATRIX[mElement - 1][hitElement - 1];
+        } else {
+          hitAmount *= RING_HIT_BONUS;
+        }
+      }
+    }
+    mHitPoints -= hitAmount;
+    auto *p = new GStatProcess(x + 68, y + 32, "%d", hitAmount);
+    p->SetMessageType(STAT_ENEMY_HIT);
+    mGameState->AddProcess(p);
+    gSoundPlayer.SfxEnemyTakeDamage();
+
+    return ETrue;
+  }
+  return EFalse;
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
