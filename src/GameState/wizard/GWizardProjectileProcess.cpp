@@ -3,31 +3,34 @@
 const TFloat PROJECTILE_VELOCITY = 3;
 const TInt PROJECTILE_TIMEOUT = 90;
 
+const TInt16 PROJECTILE_SPEED = 4;
+const TInt16 EXPLODE_SPEED = 2;
+
 static ANIMSCRIPT projectileAnimation[] = {
   ABITMAP(BOSS_PROJECTILE_SLOT),
   ALABEL,
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 0),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 1),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 2),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 3),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 4),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 3),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 2),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 1),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 0),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 4),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
   ALOOP,
 };
 
 static ANIMSCRIPT explodeAnimation[] = {
   ABITMAP(BOSS_PROJECTILE_SLOT),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 5),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 6),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 7),
-  ASTEP(1, IMG_WIZARD_PROJECTILE + 8),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 5),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 6),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 7),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 8),
   AEND,
 };
 
-GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TInt aAngle) 
-  : GProcess(0, 0) {
+GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TInt aAngle)
+    : GProcess(0, 0) {
   mSaveToStream = EFalse;
   mStep = 0;
   mTimer = PROJECTILE_TIMEOUT;
@@ -79,9 +82,32 @@ TBool GWizardProjectileProcess::RunAfter() {
   if (mSprite->Clipped()) {
     return EFalse;
   }
+  if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
+    mSprite->ClearFlags(SFLAG_CHECK);
+      mSprite->vx = mSprite->vy = 0;
+    mSprite->StartAnimation(explodeAnimation);
+    mStep++;
+  }
+  if (mSprite->vx < 0) {
+    if (!mSprite->IsFloor(DIRECTION_LEFT, mSprite->vx, mSprite->vy)) {
+      mSprite->vx = mSprite->vy = 0;
+      mSprite->ClearFlags(SFLAG_CHECK);
+      mSprite->StartAnimation(explodeAnimation);
+      mStep++;
+    }
+  }
+  if (mSprite->vx > 0) {
+    if (!mSprite->IsFloor(DIRECTION_RIGHT, mSprite->vx, mSprite->vy)) {
+      mSprite->vx = mSprite->vy = 0;
+      mSprite->ClearFlags(SFLAG_CHECK);
+      mSprite->StartAnimation(explodeAnimation);
+      mStep++;
+    }
+  }
   if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
     printf("HIT PLAYER\n");
     mSprite->ClearFlags(SFLAG_CHECK);
+      mSprite->vx = mSprite->vy = 0;
     mSprite->StartAnimation(explodeAnimation);
     mStep++;
     mTimer = 10000;

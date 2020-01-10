@@ -24,7 +24,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mHitTimer = HIT_SPAM_TIME;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
-  mSprite->Name("ENEMY");
+  mSprite->Name("MID BOSS");
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->x = aX;
   mSprite->y = aY;
@@ -40,7 +40,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSpellCounter = 0;
   mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
 
-  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
+//  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
 
 GMidBossProcess::~GMidBossProcess() {
@@ -216,7 +216,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         // get coordinates for explosion placement
         TRect r;
         mSprite->GetRect(r);
-        r.Dump();
+//        r.Dump();
         mDeathCounter = 10;
         for (TInt delay = 0; delay < mDeathCounter; delay++) {
           printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
@@ -526,11 +526,11 @@ TBool GMidBossProcess::DeathState() {
 }
 
 TBool GMidBossProcess::SpellState() {
-  while (BEventMessage *m = GetMessage()) {
-    if (m->mType == EVENT_SPELL_PROCESS_EXIT) {
-      mSpellCounter--;
-    }
-  }
+//  while (BEventMessage *m = GetMessage()) {
+//    if (m->mType == EVENT_SPELL_PROCESS_EXIT) {
+//      mSpellCounter--;
+//    }
+//  }
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);

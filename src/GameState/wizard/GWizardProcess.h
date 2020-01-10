@@ -4,6 +4,7 @@
 #include "GAnchorSprite.h"
 #include "GProcess.h"
 #include "GGameState.h"
+#include "common/GSpellOverlayProcess.h"
 
 class GWizardProcess : public GProcess {
 public:
@@ -13,6 +14,10 @@ public:
 public:
   TBool RunBefore();
   TBool RunAfter();
+
+  void DeathAnimationDone(){
+    mDeathCounter--;
+  }
 
 public:
   void WriteToStream(BMemoryStream &aStream);
@@ -34,6 +39,12 @@ protected:
   TBool ProjectileState();
   void Teleport(DIRECTION aDirection);
   TBool TeleportState();
+  void Hit(DIRECTION aDirection);
+  TBool HitState();
+  void Spell(DIRECTION aDirection);
+  TBool SpellState();
+  void Death(DIRECTION aDirection);
+  TBool DeathState();
 
 protected:
   GGameState *mGameState;
@@ -47,9 +58,9 @@ protected:
 protected:
   TInt mState;
   TInt mStep;
-  TInt mStateTimer;
-  TInt mAttackTimer;
   TBool mAttackType;
+  TInt mDeathCounter, mSpellCounter;
+  TInt mStateTimer, mAttackTimer, mHitTimer;
 };
 
 #endif
