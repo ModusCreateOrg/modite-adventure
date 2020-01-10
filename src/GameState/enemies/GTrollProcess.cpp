@@ -14,7 +14,7 @@ const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = (PLAYER_VELOCITY / 4) / FACTOR;
+const TFloat VELOCITY = PLAYER_VELOCITY * 0.3;
 
 // region  ANIMATIONS {{{
 
@@ -62,8 +62,7 @@ static ANIMSCRIPT deathAnimation[] = {ABITMAP(TROLL_SLOT),
 */
 
 static ANIMSCRIPT idleDownAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+                                         ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 0), ALOOP};
 
 static ANIMSCRIPT walkDownAnimation1[] = {ABITMAP(TROLL_SLOT),
                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 0),
@@ -74,10 +73,22 @@ static ANIMSCRIPT walkDownAnimation2[] = {ABITMAP(TROLL_SLOT),
                                           ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3), AEND};
 
 static ANIMSCRIPT attackDownAnimation[] = {ABITMAP(TROLL_SLOT),
+                                           ADELTA(8, 0),
                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 3),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 0), ATYPE(STYPE_EBULLET),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 1), ATYPE(STYPE_ENEMY),
-                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 2), AEND};
+                                           ADELTA( -4, 0),
+                                           ASTEP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_DOWN + 0),
+                                           ATYPE(STYPE_EBULLET),  ASIZE(0,20,32,32),
+                                           ADELTA(2, 16),
+                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 1),
+                                           ATYPE(STYPE_ENEMY),  ASIZE(0,4,32,16),
+                                           ADELTA(10, 0),
+                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 2),
+                                           ADELTA(10, 0),
+                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 3),
+                                           ADELTA(10, 0),
+                                           ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_DOWN + 2),
+                                           ADELTA(0, 0),
+                                           ASTEP(ATTACK_SPEED, IMG_TROLL_WALK_DOWN + 0), AEND};
 
 static ANIMSCRIPT hitDownAnimation[] = {ABITMAP(TROLL_SLOT),
                                         ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
@@ -96,29 +107,39 @@ static ANIMSCRIPT hitDownAnimation[] = {ABITMAP(TROLL_SLOT),
  */
 
 static ANIMSCRIPT idleLeftAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                         ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+                                         ADELTA(-8, 0),
+                                         AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0), ALOOP};
 
 static ANIMSCRIPT walkLeftAnimation1[] = {ABITMAP(TROLL_SLOT),
+                                          ADELTA(-8, 0),
                                           AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
                                           AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1), AEND};
 
 static ANIMSCRIPT walkLeftAnimation2[] = {ABITMAP(TROLL_SLOT),
+                                          ADELTA(-8, 0),
                                           AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
                                           AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3), AEND};
 
 static ANIMSCRIPT attackLeftAnimation[] = {ABITMAP(TROLL_SLOT),
+                                           ADELTA(-8, 0),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0),
-
-                                           ATYPE(STYPE_EBULLET), ADELTA(-8, 12), ASIZE(-16, 4, 40, 16),
-                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-                                           ASIZE(0, 4, 32, 16), ATYPE(STYPE_ENEMY), ADELTA(-4, 4),
+                                           ADELTA(6, 0),
+                                           AFLIP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_RIGHT + 0),
+                                           ATYPE(STYPE_EBULLET), ASIZE(-24, 4, 48, 16),
+                                           ADELTA(-14, 10),
+                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1),
+                                           ATYPE(STYPE_ENEMY), ASIZE(0, 4, 32, 16),
+                                           ADELTA(-8, 0),
                                            AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
-
-                                           ASIZE(0, 4, 32, 16), ADELTA(0, 0), ATYPE(STYPE_ENEMY), AEND};
+                                           ADELTA(-8, 0),
+                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
+                                           ADELTA(-8, 0),
+                                           AFLIP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
+                                           ADELTA(-8, 0),
+                                           AFLIP(ATTACK_SPEED, IMG_TROLL_WALK_RIGHT + 0), AEND};
 
 static ANIMSCRIPT hitLeftAnimation[] = {ABITMAP(TROLL_SLOT),
+                                        ADELTA(-8, 0),
                                         AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
                                         AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
                                         AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
@@ -135,24 +156,39 @@ static ANIMSCRIPT hitLeftAnimation[] = {ABITMAP(TROLL_SLOT),
  */
 
 static ANIMSCRIPT idleRightAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                          ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                          ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+                                          ADELTA(4, 0),
+                                          ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0), ALOOP};
 
 static ANIMSCRIPT walkRightAnimation1[] = {ABITMAP(TROLL_SLOT),
+                                           ADELTA(4, 0),
                                            ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
                                            ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 1), AEND};
 
 static ANIMSCRIPT walkRightAnimation2[] = {ABITMAP(TROLL_SLOT),
+                                           ADELTA(4, 0),
                                            ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 2),
                                            ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3), AEND};
 
 static ANIMSCRIPT attackRightAnimation[] = {ABITMAP(TROLL_SLOT),
+                                            ADELTA(2, 0),
                                             ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 0), ATYPE(STYPE_EBULLET),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1), ATYPE(STYPE_ENEMY),
-                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2), AEND};
+                                            ADELTA(-8, 0),
+                                            ASTEP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_RIGHT + 0),
+                                            ATYPE(STYPE_EBULLET), ASIZE(-8, 4, 48, 16),
+                                            ADELTA(12, 10),
+                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 1),
+                                            ATYPE(STYPE_ENEMY), ASIZE(0, 4, 32, 16),
+                                            ADELTA(2, 0),
+                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
+                                            ADELTA(2, 0),
+                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 3),
+                                            ADELTA(2, 0),
+                                            ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_RIGHT + 2),
+                                            ADELTA(4, 0),
+                                            ASTEP(ATTACK_SPEED, IMG_TROLL_WALK_RIGHT + 0), AEND};
 
 static ANIMSCRIPT hitRightAnimation[] = {ABITMAP(TROLL_SLOT),
+                                         ADELTA(2, 0),
                                          ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
                                          ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
                                          ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
@@ -169,8 +205,7 @@ static ANIMSCRIPT hitRightAnimation[] = {ABITMAP(TROLL_SLOT),
  */
 
 static ANIMSCRIPT idleUpAnimation[] = {ABITMAP(TROLL_SLOT), ALABEL,
-                                       ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 0), ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 1),
-                                       ASTEP(IDLE_SPEED, IMG_TROLL_IDLE + 2), ALOOP};
+                                       ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 0), ALOOP};
 
 static ANIMSCRIPT walkUpAnimation1[] = {ABITMAP(TROLL_SLOT),
                                         ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 0),
@@ -181,10 +216,21 @@ static ANIMSCRIPT walkUpAnimation2[] = {ABITMAP(TROLL_SLOT),
                                         ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 3), AEND};
 
 static ANIMSCRIPT attackUpAnimation[] = {ABITMAP(TROLL_SLOT),
+                                         ADELTA(-8, 0),
                                          ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 3),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 0), ATYPE(STYPE_EBULLET),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 1), ATYPE(STYPE_ENEMY),
-                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 2), AEND};
+                                         ADELTA(0, 0),
+                                         ASTEP(ATTACK_SPEED * 3, IMG_TROLL_ATTACK_UP + 0),
+                                         ATYPE(STYPE_EBULLET), ASIZE(0,4,32,32),
+                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 1),
+                                         ATYPE(STYPE_ENEMY), ASIZE(0, 4, 32, 16),
+                                         ADELTA(-8, 0),
+                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 2),
+                                         ADELTA(-8, 0),
+                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 3),
+                                         ADELTA(-8, 0),
+                                         ASTEP(ATTACK_SPEED, IMG_TROLL_ATTACK_UP + 2),
+                                         ADELTA(0, 0),
+                                         ASTEP(ATTACK_SPEED, IMG_TROLL_WALK_UP + 0), AEND};
 
 static ANIMSCRIPT hitUpAnimation[] = {ABITMAP(TROLL_SLOT),
                                       ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
@@ -223,6 +269,8 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->y = aY;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
+  mSprite->SetStatMultipliers(5.0, 5.0, 5.0);
+  mRangeX = mRangeY = 16;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
@@ -241,6 +289,23 @@ GTrollProcess::~GTrollProcess() {
 
 void GTrollProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(idleUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(idleDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      mSprite->StartAnimation(idleLeftAnimation);
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(idleRightAnimation);
+      break;
+    default:
+      Panic("GTrollProcess no idle direction\n");
+      break;
+  }
 }
 
 void GTrollProcess::Walk(DIRECTION aDirection) {

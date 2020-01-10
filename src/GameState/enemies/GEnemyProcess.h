@@ -10,7 +10,7 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
-const TInt16 ATTACK_TIME = 3 * FRAMES_PER_SECOND;
+const TInt16 ATTACK_TIME = 1 * FRAMES_PER_SECOND;
 
 enum {
   IDLE_STATE,
@@ -51,6 +51,7 @@ protected:
   TInt16 mStateTimer;
   TInt16 mHitPoints;
   TFloat mVelocity;
+  TInt mRangeX, mRangeY;
 
   GAnchorSprite *mPlayerSprite;
 

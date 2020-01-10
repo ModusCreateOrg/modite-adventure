@@ -10,7 +10,7 @@ const TInt16 LAND_TIMEOUT = 150 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
@@ -350,6 +350,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("ENEMY BAT");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
+  mSprite->SetStatMultipliers(1.8, 2.0, 1.0);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

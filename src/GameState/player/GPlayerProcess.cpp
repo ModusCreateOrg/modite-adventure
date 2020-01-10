@@ -277,7 +277,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mLastDirection = aDirection;
 
   mSprite->mDx = 0;
-  mSprite->mDy = 0;
+  mSprite->mDy = -4;
   switch (mState) {
 
     case WALK_STATE:
@@ -375,7 +375,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStepFrame = 0;
       mSprite->vx = 0;
       mSprite->vy = PLAYER_VELOCITY;
-      mSprite->mDy = 0;
+      mSprite->mDy = -4;
       mSprite->StartAnimation(fallAnimation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -456,8 +456,7 @@ TBool GPlayerProcess::MaybeHit() {
     TInt hitAmount = 0;
 
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-      // random variation from 100% to 150% base damage
-      hitAmount = other->mHitStrength + round(RandomFloat() * other->mHitStrength / 2);
+      hitAmount = other->mHitStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -512,9 +511,9 @@ TBool GPlayerProcess::MaybeHit() {
     }
 
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
-      // random variation from 50% to 100% base damage
       if (other->mHitPoints > 0) {
-        hitAmount = other->mHitStrength - round(RandomFloat() * other->mHitStrength / 2);
+        // contact damage independent of enemy attack strength
+        hitAmount = BASE_STRENGTH + other->mLevel * (BASE_STRENGTH / 5);
         switch (mSprite->mDirection) {
           case DIRECTION_UP:
             mSprite->StartAnimation(hitLightUpAnimation);
@@ -535,8 +534,30 @@ TBool GPlayerProcess::MaybeHit() {
 
     if (hitAmount) {
       TInt state = HIT_LIGHT_STATE;
-
-      // random variation from 100% to 150% base damage
+      // Random +/- 20% variation
+      hitAmount = (hitAmount * Random(80, 120)) / 100;
+      if (GPlayer::mEquipped.mAmulet && other->mElement) {
+        ELEMENT armorElement = ELEMENT_NONE;
+        switch (GPlayer::mEquipped.mAmulet->mItemNumber) {
+          case ITEM_BLUE_BRACELET:
+            armorElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_BRACELET:
+            armorElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_BRACELET:
+            armorElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_BRACELET:
+            armorElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (armorElement) {
+          hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
+        }
+      }
       GPlayer::mHitPoints -= hitAmount;
       mSprite->mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
@@ -860,7 +881,7 @@ TBool GPlayerProcess::SpellState() {
 TBool GPlayerProcess::FallState() {
   mStepFrame++;
   if (mStepFrame < FALL_DURATION) {
-    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame);
+    mSprite->mDy = GRAVITY * TFloat(.5 * (mStepFrame - FALL_DURATION) * mStepFrame) - 4;
   } else if (mStepFrame == FALL_DURATION) {
     mSprite->StartAnimation(landAnimation);
   }
