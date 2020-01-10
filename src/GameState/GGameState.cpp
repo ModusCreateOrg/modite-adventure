@@ -803,7 +803,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // Sprite sheet for enemy
         RemapSlot(ENERGY_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
-        RemapSlot(FIRE_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(ENERGY_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }

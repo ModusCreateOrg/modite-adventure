@@ -1,11 +1,13 @@
 #include "GWizardProcess.h"
+#include "GWizardProjectileProcess.h"
 #include "GPlayer.h"
 
 #define DEBUGME
 //#undef DEBUGME
 
 const TInt16 WALK_SPEED = 8;
-const TInt16 WALK_VELOCITY = 1;
+const TFloat WALK_VELOCITY = 1.0;
+const TInt16 ATTACK_SPEED = 5;
 
 enum {
   STATE_IDLE,
@@ -16,7 +18,7 @@ enum {
 
 static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(1, IMG_WIZARD_IDLE),
+  ASTEP(1, IMG_WIZARD_IDLE + 2),
   AEND,
 };
 
@@ -76,6 +78,59 @@ static ANIMSCRIPT walkRightAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT projectileAnimation1[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  AEND,
+};
+
+static ANIMSCRIPT projectileAnimation2[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 3),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 1),
+  AEND,
+};
+
+static ANIMSCRIPT teleportAnimation1[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  ANULL(1),
+  AEND,
+};
+
+static ANIMSCRIPT teleportAnimation2[] = {
+  ABITMAP(BOSS_SLOT),
+  ANULL(100),
+  AEND,
+};
+
+static ANIMSCRIPT teleportAnimation3[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
+  AEND,
+};
+
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
     : GProcess(aAttribute) {
   mGameState = aGameState;
@@ -101,11 +156,12 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 22;
   mSprite->h = 24;
-  mStateTimer = 5 * 60;
+  mStateTimer = 3 * 60;
   mStep = 0;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   mGameState->AddSprite(mSprite);
   mAttackType = EFalse;
+  SetAttackTimer();
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -114,6 +170,10 @@ GWizardProcess::~GWizardProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+}
+
+void GWizardProcess::SetAttackTimer() {
+  mAttackTimer = Random(60, 180);
 }
 
 // start wizard idle in specified direction
@@ -153,6 +213,20 @@ void GWizardProcess::Walk(DIRECTION aDirection) {
   }
 }
 
+void GWizardProcess::Projectile(DIRECTION aDirection) {
+  printf("Projectile\n");
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(projectileAnimation1);
+  mStep = 0;
+}
+
+void GWizardProcess::Teleport(DIRECTION aDirection) {
+  printf("Teleport\n");
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(teleportAnimation1);
+  mStep = 0;
+}
+
 // change wizard state
 void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
   mState = aState;
@@ -165,6 +239,12 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
     case STATE_WALK:
       Walk(mDirection);
       break;
+    case STATE_PROJECTILE:
+      Projectile(mDirection);
+      break;
+    case STATE_TELEPORT:
+      Teleport(mDirection);
+      break;
     default:
       Panic("GWizardProcess: invalid SetState(%d)\n", mState);
   }
@@ -176,28 +256,25 @@ TBool GWizardProcess::MaybeHit() {
 
 TBool GWizardProcess::MaybeAttack() {
   if (--mAttackTimer < 0) {
-    SetState(STATE_ATTACK, mDireciton);
+    printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
+    SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
+    mAttackType = !mAttackType;
     return ETrue;
   }
   return EFalse;
-}
-
-TBool GWizardProcess::RunBefore() {
-  switch (mState) {
-    case STATE_IDLE:
-      return IdleState();
-    case STATE_WALK:
-      return WalkState();
-    default:
-      Panic("GWizardProcess invalid mState %d\n", mState);
-  }
-  return ETrue;
 }
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
   if (--mStateTimer < 1) {
     mStateTimer = 5 * 60;
+    for (TInt i = 0; i < 10; i++) {
+      DIRECTION d = (Random() & 1) ? DIRECTION_RIGHT : DIRECTION_LEFT;
+      if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
+        SetState(STATE_WALK, d);
+        return ETrue;
+      }
+    }
     SetState(STATE_WALK, (Random() & 1) ? DIRECTION_RIGHT : DIRECTION_LEFT);
   }
   return ETrue;
@@ -219,6 +296,71 @@ TBool GWizardProcess::WalkState() {
 
   if (mSprite->AnimDone()) {
     Walk(mDirection);
+  }
+  return ETrue;
+}
+
+TBool GWizardProcess::ProjectileState() {
+  if (!mSprite->AnimDone()) {
+    return ETrue;
+  }
+  if (!mStep) {
+    // fire 1-3 projectiled
+    printf("FIRE!\n");
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 0));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 1));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 2));
+    mSprite->StartAnimation(projectileAnimation2);
+    mStep++;
+    return ETrue;
+  }
+  SetAttackTimer();
+  SetState(STATE_IDLE, mDirection);
+  return ETrue;
+}
+
+TBool GWizardProcess::TeleportState() {
+  if (!mSprite->AnimDone()) {
+    return ETrue;
+  }
+  printf("AnimDone(%d)\n", mStep);
+  if (!mStep) {
+    printf("ANIM2\n");
+    mSprite->StartAnimation(teleportAnimation2);
+    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK);
+    mStep++;
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
+    mStateTimer = 100;
+    return ETrue;
+  }
+  else if (mStep == 1 && --mStateTimer < 1) {
+    printf("ANIM3\n");
+    mState++;
+    mSprite->StartAnimation(teleportAnimation3);
+  }
+  else {
+    printf("ANIM4\n");
+    mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
+    SetAttackTimer();
+    SetState(STATE_IDLE, mDirection);
+  }
+
+  return ETrue;
+}
+
+TBool GWizardProcess::RunBefore() {
+  switch (mState) {
+    case STATE_IDLE:
+      return IdleState();
+    case STATE_WALK:
+      return WalkState();
+    case STATE_PROJECTILE:
+      return ProjectileState();
+    case STATE_TELEPORT:
+      return TeleportState();
+    default:
+      Panic("GWizardProcess invalid mState %d\n", mState);
   }
   return ETrue;
 }

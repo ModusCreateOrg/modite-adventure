@@ -20,6 +20,7 @@ public:
 
 protected:
   void SetState(TInt aState, DIRECTION aDirection);
+  void SetAttackTimer();
 
 protected:
   TBool MaybeHit();
@@ -29,8 +30,8 @@ protected:
   TBool IdleState();
   void Walk(DIRECTION aDirection);
   TBool WalkState();
-  void Fire(DIRECTION aDirection);
-  TBool FireState();
+  void Projectile(DIRECTION aDirection);
+  TBool ProjectileState();
   void Teleport(DIRECTION aDirection);
   TBool TeleportState();
 
