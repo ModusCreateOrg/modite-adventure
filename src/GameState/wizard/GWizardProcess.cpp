@@ -295,7 +295,7 @@ void GWizardProcess::Death(DIRECTION aDirection) {
   mDeathCounter = 10;
   for (TInt delay = 0; delay < mDeathCounter; delay++) {
     printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
-    auto *p = new GWizardDeathProcess(mGameState, this, r.x1, r.y1 - 32, delay);
+    auto *p = new GWizardDeathProcess(mGameState, this, r.x1, r.y1 - 48, delay);
     mGameState->AddProcess(p);
   }
 }
@@ -539,9 +539,8 @@ TBool GWizardProcess::SpellState() {
 
 TBool GWizardProcess::DeathState() {
   if (mDeathCounter <= 3) {
-    // TODO: boss drops?
-    //    printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
-    //    GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    printf("drop $%x %d\n", mAttribute, mAttribute);
+    GItemProcess::SpawnItem(mGameState, mIp, mAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
     return EFalse;
   }
   // maybe drop item
