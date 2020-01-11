@@ -173,13 +173,22 @@ TInt GGame::GetState() {
   return mState;
 }
 
-void GGame::StartGame( char *aGameName) {
+void GGame::StartGame(char *aGameName) {
+#ifdef DEBUG_MODE
   printf("START GAME (%s)\n", aGameName);
-  SetState(GAME_STATE_RESUME_GAME, aGameName, strlen(aGameName)+1);
+#endif
+  SetState(
+    mState == GAME_STATE_RESUME_GAME ? GAME_STATE_LOAD_SAVEGAME : GAME_STATE_RESUME_GAME,
+    aGameName,
+    strlen(aGameName)+1
+  );
 }
 
 TBool GGame::IsGameState() {
-  TBool state = mState == GAME_STATE_RESUME_GAME || mState == GAME_STATE_GAME;
+  TBool state = mState == GAME_STATE_RESUME_GAME ||
+                mState == GAME_STATE_GAME ||
+                mState == GAME_STATE_LOAD_SAVEGAME;
+
   if (!state) {
     return EFalse;
   }
@@ -226,10 +235,12 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GResetOptionsState();
           break;
+        case GAME_STATE_RESET_GAME:
         case GAME_STATE_GAME:
           delete gGameEngine;
           gGameEngine = new GGameState();
           break;
+        case GAME_STATE_LOAD_SAVEGAME:
         case GAME_STATE_RESUME_GAME:
           delete gGameEngine;
           gGameEngine = new GGameState((char *)mLocalData);
