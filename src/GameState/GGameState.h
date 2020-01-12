@@ -80,6 +80,8 @@ public:
 
   TUint16 MapHeight();
 
+  TBool IsBossRoom();
+
 public:
   GGamePlayfield *mGamePlayfield, *mNextGamePlayfield;
 
