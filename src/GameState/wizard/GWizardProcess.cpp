@@ -331,15 +331,8 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 TBool GWizardProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (!mSprite->mInvulnerable) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
-      // TODO take into account which spellbook is being wielded
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         printf("WIZARD  DEATH\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
@@ -352,15 +345,9 @@ TBool GWizardProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (!mSprite->mInvulnerable) {
+    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
       }
