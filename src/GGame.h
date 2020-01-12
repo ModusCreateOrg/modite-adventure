@@ -11,8 +11,10 @@ enum {
   GAME_STATE_MAIN_OPTIONS,
   GAME_STATE_RESET_OPTIONS,
   GAME_STATE_CREDITS,
+  GAME_STATE_RESET_GAME,
   GAME_STATE_GAME,
   GAME_STATE_RESUME_GAME,
+  GAME_STATE_LOAD_SAVEGAME,
   GAME_STATE_QUIT,
 };
 
@@ -34,11 +36,11 @@ public:
   void ToggleInGameMenu();
   void ToggleInventory();
   void ToggleDebugMenu();
+  TBool IsGameState();
   BGameEngine *CurrentState();
 
   static TBool mDebug;
 protected:
-  TBool IsGameState();
 protected:
   TInt mState;
   TInt mNextState;

@@ -96,6 +96,30 @@ void GGameState::TryAgain() {
   //  NextLevel(DUNGEON_DEV, 2);
 }
 
+TBool GGameState::IsBossRoom() {
+  TInt objectCount = mGamePlayfield->mObjectCount;
+  BObjectProgram *program = mGamePlayfield->mObjectProgram;
+  for (TInt ip = 0; ip < objectCount; ip++) {
+    TUint16 op = program[ip].mCode & TUint32(0xffff);
+    switch (op) {
+      case ATTR_MID_BOSS_EARTH:
+      case ATTR_MID_BOSS_ENERGY:
+      case ATTR_MID_BOSS_FIRE:
+      case ATTR_MID_BOSS_WATER:
+      case ATTR_WIZARD_EARTH:
+      case ATTR_WIZARD_ENERGY:
+      case ATTR_WIZARD_FIRE:
+      case ATTR_WIZARD_WATER:
+      case ATTR_FINAL_BOSS:
+        return ETrue;
+      default:
+        continue;
+    }
+  }
+
+  return EFalse;
+}
+
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
