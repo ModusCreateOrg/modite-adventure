@@ -56,18 +56,12 @@ md5=''
 
 if [[ ${VERBOSE} -eq 1 ]]; then
   make -j `nproc` ipk
-  
   md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
   md5=${md5: -6}
-  make cleanall
-
 else
   make -j `nproc` ipk >/dev/null 2>&1
-  
   md5=`md5sum build/ldk/modite-adventure.dge | awk '{print $1}'`
   md5=${md5: -6}
-
-  make cleanall >/dev/null 2>&1
 fi
 
 

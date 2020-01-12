@@ -19,7 +19,15 @@ GGameOver::GGameOver(GGameState *aGameState) {
   }
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
+
+#ifdef DEBUG_MODE
   mState = 0;
+#else
+  mState = 1;
+#endif
+
+  // Load saved games
+  gSavedGameList.LoadSavedGameList();
 }
 
 GGameOver::~GGameOver() {
@@ -61,21 +69,30 @@ TBool GGameOver::Run() {
   center("You are dead", y);
   y += line_height * 2;
 
-  center("Resume Game", y, mState == 0);
+#ifdef DEBUG_MODE
+  center("Resume Game (debug)", y, mState == 0);
   y += line_height;
-  center("Save Game and Exit", y, mState == 1);
-  y += line_height;
-  center("Exit", y, mState == 2);
-  y += line_height * 3;
-  center("A to select", y);
+#endif
+
+  center("Load Saved Game", y, mState == 1);
   y += line_height;
 
+  center("Exit", y, mState == 2);
+
   if (gControls.WasPressed(JOYUP)) {
+#ifdef DEBUG_MODE
     mState = CLAMP(mState - 1, 0, 2);
+#else
+    mState = CLAMP(mState - 1, 1, 2);
+#endif
   }
 
   if (gControls.WasPressed(JOYDOWN)) {
+#ifdef DEBUG_MODE
     mState = CLAMP(mState + 1, 0, 2);
+#else
+    mState = CLAMP(mState + 1, 1, 2);
+#endif
   }
 
   if (gControls.WasPressed(BUTTON_SELECT | BUTTON_START | BUTTONA)) {
@@ -90,7 +107,17 @@ TBool GGameOver::Run() {
         gControls.Reset();
         break;
       case 1:
-        mGameState->SaveState();
+        mGameState->TryAgain();
+        gControls.Reset();
+
+        if (gSavedGameList.mNumSavedGames > 0) {
+          char saveGameName[256];
+          gSavedGameList.First()->GameName(saveGameName);
+          gGame->StartGame(saveGameName);
+        } else {
+          gGame->SetState(GAME_STATE_RESET_GAME);
+        }
+        return EFalse;
       case 2:
       default:
         gGame->SetState(GAME_STATE_MAIN_MENU);
