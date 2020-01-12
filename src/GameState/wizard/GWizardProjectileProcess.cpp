@@ -6,8 +6,21 @@ const TInt PROJECTILE_TIMEOUT = 90;
 const TInt16 PROJECTILE_SPEED = 4;
 const TInt16 EXPLODE_SPEED = 2;
 
-static ANIMSCRIPT projectileAnimation[] = {
-  ABITMAP(BOSS_PROJECTILE_SLOT),
+static ANIMSCRIPT projectileFireAnimation[] = {
+  ABITMAP(FIRE_WIZARD_PROJECTILE_SLOT),
+  ALABEL,
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 0),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 4),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ALOOP,
+};
+static ANIMSCRIPT projectileWaterAnimation[] = {
+  ABITMAP(WATER_WIZARD_PROJECTILE_SLOT),
   ALABEL,
   ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 0),
   ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
@@ -20,8 +33,36 @@ static ANIMSCRIPT projectileAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT explodeAnimation[] = {
-  ABITMAP(BOSS_PROJECTILE_SLOT),
+static ANIMSCRIPT projectileEnergyAnimation[] = {
+  ABITMAP(ENERGY_WIZARD_PROJECTILE_SLOT),
+  ALABEL,
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 0),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 4),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ALOOP,
+};
+
+static ANIMSCRIPT projectileEarthAnimation[] = {
+  ABITMAP(EARTH_WIZARD_PROJECTILE_SLOT),
+  ALABEL,
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 0),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 4),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 3),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 2),
+  ASTEP(PROJECTILE_SPEED, IMG_WIZARD_PROJECTILE + 1),
+  ALOOP,
+};
+
+static ANIMSCRIPT explodeEnergyAnimation[] = {
+  ABITMAP(ENERGY_WIZARD_PROJECTILE_SLOT),
   ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 5),
   ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 6),
   ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 7),
@@ -29,9 +70,74 @@ static ANIMSCRIPT explodeAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT explodeFireAnimation[] = {
+  ABITMAP(FIRE_WIZARD_PROJECTILE_SLOT),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 5),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 6),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 7),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 8),
+  AEND,
+};
+
+static ANIMSCRIPT explodeEarthAnimation[] = {
+  ABITMAP(EARTH_WIZARD_PROJECTILE_SLOT),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 5),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 6),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 7),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 8),
+  AEND,
+};
+
+static ANIMSCRIPT explodeWaterAnimation[] = {
+  ABITMAP(WATER_WIZARD_PROJECTILE_SLOT),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 5),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 6),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 7),
+  ASTEP(EXPLODE_SPEED, IMG_WIZARD_PROJECTILE + 8),
+  AEND,
+};
+
+void GWizardProjectileProcess::StartProjectileAnimation() {
+  switch (mAttribute) {
+    case ATTR_WIZARD_ENERGY:
+      mSprite->StartAnimation(projectileEnergyAnimation);
+      break;
+    case ATTR_WIZARD_FIRE:
+      mSprite->StartAnimation(projectileFireAnimation);
+      break;
+    case ATTR_WIZARD_EARTH:
+      mSprite->StartAnimation(projectileEarthAnimation);
+      break;
+    case ATTR_WIZARD_WATER:
+      mSprite->StartAnimation(projectileWaterAnimation);
+      break;
+  }
+}
+
+void GWizardProjectileProcess::StartExplodeAnimation() {
+  mExploding = ETrue;
+  switch (mAttribute) {
+    case ATTR_WIZARD_ENERGY:
+      mSprite->StartAnimation(explodeEnergyAnimation);
+      break;
+    case ATTR_WIZARD_FIRE:
+      mSprite->StartAnimation(explodeFireAnimation);
+      break;
+    case ATTR_WIZARD_EARTH:
+      mSprite->StartAnimation(explodeEarthAnimation);
+      break;
+    case ATTR_WIZARD_WATER:
+      mSprite->StartAnimation(explodeWaterAnimation);
+      break;
+    default:
+      Panic("StartExplision: invalid mAttribute: %d\n", mAttribute);
+  }
+}
 // consructor
-GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TInt aAngle)
+GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute)
     : GProcess(0, 0) {
+
+  mAttribute = aAttribute;
   mSaveToStream = EFalse;
   mStep = 0;
   mTimer = PROJECTILE_TIMEOUT;
@@ -41,26 +147,16 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWiza
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->mHitStrength = 55;
 
-  mSprite->x = aParent->mSprite->x + 32;
-  mSprite->y = aParent->mSprite->y - 32;
+  mSprite->x = aX;
+  mSprite->y = aY;
   mSprite->w = 16;
   mSprite->h = 8;
   mSprite->cy = 4;
 
-  mSprite->vy = PROJECTILE_VELOCITY;
-  switch (aAngle) {
-    case 0:
-      mSprite->vx = -PROJECTILE_VELOCITY;
-      break;
-    case 1:
-      mSprite->vx = 0;
-      break;
-    default:
-      mSprite->vx = PROJECTILE_VELOCITY;
-      break;
-  }
+  mSprite->vx = cos(aAngle) * PROJECTILE_VELOCITY;
+  mSprite->vy = sin(aAngle) * -PROJECTILE_VELOCITY;
   aGameState->AddSprite(mSprite);
-  mSprite->StartAnimation(projectileAnimation);
+  StartProjectileAnimation();
   printf("WIZARD PROJECTILE at %f,%f\n", mSprite->x, mSprite->y);
 }
 
@@ -73,7 +169,7 @@ GWizardProjectileProcess::~GWizardProjectileProcess() {
 }
 
 TBool GWizardProjectileProcess::RunBefore() {
-  if (mStep > 0 && mSprite->AnimDone()) {
+  if (mExploding && mSprite->AnimDone()) {
     return EFalse;
   }
   return ETrue;
@@ -86,14 +182,14 @@ TBool GWizardProjectileProcess::RunAfter() {
   if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->vx = mSprite->vy = 0;
-    mSprite->StartAnimation(explodeAnimation);
+    StartExplodeAnimation();
     mStep++;
   }
   if (mSprite->vx < 0) {
     if (!mSprite->IsFloor(DIRECTION_LEFT, mSprite->vx, mSprite->vy)) {
       mSprite->vx = mSprite->vy = 0;
       mSprite->ClearFlags(SFLAG_CHECK);
-      mSprite->StartAnimation(explodeAnimation);
+      StartExplodeAnimation();
       mStep++;
     }
   }
@@ -101,7 +197,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     if (!mSprite->IsFloor(DIRECTION_RIGHT, mSprite->vx, mSprite->vy)) {
       mSprite->vx = mSprite->vy = 0;
       mSprite->ClearFlags(SFLAG_CHECK);
-      mSprite->StartAnimation(explodeAnimation);
+      StartExplodeAnimation();
       mStep++;
     }
   }
@@ -109,7 +205,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     printf("HIT PLAYER\n");
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->vx = mSprite->vy = 0;
-    mSprite->StartAnimation(explodeAnimation);
+    StartExplodeAnimation();
     mStep++;
     mTimer = 10000;
   }
@@ -118,7 +214,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     mTimer = 10000;
     mSprite->ClearFlags(SFLAG_CHECK);
     mStep++;
-    mSprite->StartAnimation(explodeAnimation);
+    StartExplodeAnimation();
   }
 
   return ETrue;
