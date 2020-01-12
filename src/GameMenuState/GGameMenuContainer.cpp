@@ -14,7 +14,9 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState)
   AddWidget((BWidget &) *new GMusicWidget());
   AddWidget((BWidget &) *new GSfxWidget());
   AddWidget((BWidget &) *new GResumeWidget());
-  AddWidget((BWidget &) *new GSaveWidget(mGameState));
+  if (gGame->IsGameState() && !((GGameState *) gGameEngine)->IsBossRoom()) {
+    AddWidget((BWidget &) *new GSaveWidget(mGameState));
+  }
   AddWidget((BWidget &) *new GQuitWidget());
 
   mTimer = 30;

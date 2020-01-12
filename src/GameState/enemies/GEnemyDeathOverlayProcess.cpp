@@ -25,6 +25,8 @@ GEnemyDeathOverlayProcess::GEnemyDeathOverlayProcess(GGameState *aGameState, GPr
   mParent = aProcess;
   mSprite->x = aX;
   mSprite->y = aY + 1;
+  mSprite->h = 0;
+  mSprite->w = 0;
   mSprite->Name("ENEMY DEATH SPRITE");
   mSprite->ClearFlags(SFLAG_CHECK);
   aGameState->AddSprite(mSprite);

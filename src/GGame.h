@@ -36,11 +36,11 @@ public:
   void ToggleInGameMenu();
   void ToggleInventory();
   void ToggleDebugMenu();
+  TBool IsGameState();
   BGameEngine *CurrentState();
 
   static TBool mDebug;
 protected:
-  TBool IsGameState();
 protected:
   TInt mState;
   TInt mNextState;
