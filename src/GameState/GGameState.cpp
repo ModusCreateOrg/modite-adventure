@@ -1055,8 +1055,6 @@ TBool GGameState::LoadState(const char *aGameName) {
   GPlayer::ReadFromStream(stream);
   stream.PrintReadIndex();
 
-  GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
-
   printf("Reading all processes\n");
 
   TInt16 attr = 0;
@@ -1086,6 +1084,8 @@ TBool GGameState::LoadState(const char *aGameName) {
   GAnchorSprite *s = GPlayer::mSprite;
   s->ReadFromStream(stream);
   stream.PrintReadIndex();
+
+  GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
 
   printf("\n-------- END %s--------\n", __FUNCTION__);
   return ETrue;
