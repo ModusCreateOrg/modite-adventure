@@ -11,7 +11,7 @@
 
 const TInt16 IDLE_SPEED = 8;
 const TInt16 WALK_SPEED = 8;
-const TFloat WALK_VELOCITY = 1.0;
+const TFloat WALK_VELOCITY = 1.25;
 const TInt16 ATTACK_SPEED = 5;
 const TInt16 HIT_SPEED = 5;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
@@ -28,7 +28,7 @@ enum {
 
 static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(1, IMG_WIZARD_IDLE + 2),
+  ASTEP(1, IMG_WIZARD_IDLE + 3),
   AEND,
 };
 
@@ -117,8 +117,7 @@ static ANIMSCRIPT deathAnimation[] = {
 static ANIMSCRIPT projectileAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 7),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
@@ -137,8 +136,13 @@ static ANIMSCRIPT projectileAnimation2[] = {
 static ANIMSCRIPT teleportAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_WALK_DOWN + 7),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
@@ -150,7 +154,7 @@ static ANIMSCRIPT teleportAnimation1[] = {
 
 static ANIMSCRIPT teleportAnimation2[] = {
   ABITMAP(BOSS_SLOT),
-  ANULL(100),
+  ANULL(300),
   AEND,
 };
 
@@ -161,8 +165,8 @@ static ANIMSCRIPT teleportAnimation3[] = {
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 6),
-  ASTEP(ATTACK_SPEED * 3, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 6),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   AEND,
 };
@@ -185,19 +189,20 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->Name("WIZARD");
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mSprite->type = STYPE_ENEMY;
-  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
+  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
+//  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK);
   mSprite->x = aX;
   mSprite->y = aY;
-  mSprite->cx = 10;
+  mSprite->cx = 2;
   mSprite->cy = 0;
-  mSprite->w = 22;
+  mSprite->w = 30;
   mSprite->h = 24;
   mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mGameState->AddSprite(mSprite);
   //
   mHitTimer = HIT_SPAM_TIME;
-  mStateTimer = 3 * 60;
+  mStateTimer = 2 * 60;
   mStep = 0;
   mDeathCounter = 0;
   mSpellCounter = 0;
@@ -215,7 +220,8 @@ GWizardProcess::~GWizardProcess() {
 }
 
 void GWizardProcess::SetAttackTimer() {
-  mAttackTimer = Random(60, 180);
+//  mAttackTimer = 5;
+  mAttackTimer = Random(1, 30);
 }
 
 // start wizard idle in specified direction
@@ -223,6 +229,7 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
   mDirection = aDirection;
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleAnimation);
+  mSprite->mInvulnerable = EFalse;
 }
 
 // start wizard walking in specified direction
@@ -267,6 +274,7 @@ void GWizardProcess::Teleport(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(teleportAnimation1);
   mStep = 0;
+  mSprite->mInvulnerable = ETrue;
 }
 
 void GWizardProcess::Hit(DIRECTION aDirection) {
@@ -331,12 +339,14 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 TBool GWizardProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
+
     if (!mSprite->mInvulnerable) {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
       // random variation from 100% to 150% base damage
       TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
       mSprite->mHitPoints -= hitAmount;
+
       auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
@@ -397,6 +407,7 @@ TBool GWizardProcess::MaybeHit() {
 TBool GWizardProcess::MaybeAttack() {
   if (--mAttackTimer < 0) {
     printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
+//    SetState(STATE_TELEPORT, mDirection);
     SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
     mAttackType = !mAttackType;
     return ETrue;
@@ -410,7 +421,7 @@ TBool GWizardProcess::IdleState() {
     return ETrue;
   }
   if (--mStateTimer < 1) {
-    mStateTimer = 5 * 60;
+    mStateTimer = 60;
     for (TInt i = 0; i < 10; i++) {
       DIRECTION d = (Random() & 1) ? DIRECTION_RIGHT : DIRECTION_LEFT;
       if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
@@ -448,7 +459,7 @@ TBool GWizardProcess::ProjectileState() {
     return ETrue;
   }
   if (!mStep) {
-    // fire 1-3 projectiled
+    // fire 1-3 projectiles
     printf("FIRE!\n");
     mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 0));
     mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 1));
@@ -463,22 +474,73 @@ TBool GWizardProcess::ProjectileState() {
 }
 
 TBool GWizardProcess::TeleportState() {
+
+
+  // check to see if wizard has met a wall
+  TBool canWalkUp = mSprite->CanWalk(DIRECTION_UP, mSprite->vx, mSprite->vy),
+        canWalkLt = mSprite->CanWalk(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
+        canWalkRt = mSprite->CanWalk(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
+        canWalkDn = mSprite->CanWalk(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
+
+
+  // Bound around the room while the player is being attacked by the spikes/pillars
+  if (! canWalkUp) {
+    mSprite->vy *= -1;
+  }
+  if (! canWalkDn) {
+    mSprite->vy *= -1;
+  }
+
+  if (! canWalkLt) {
+    mSprite->vx *= -1;
+  }
+  if (! canWalkRt) {
+    mSprite->vx *= -1;
+  }
+
+
+//
+//  //  SetState(STATE_IDLE, DIRECTION_DOWN);
+//  //  return ETrue;
+//  }
   if (!mSprite->AnimDone()) {
     return ETrue;
   }
+
+
   if (!mStep) {
     mSprite->StartAnimation(teleportAnimation2);
-    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK);
+    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK); // Let's not hit the player.
     mStep++;
-    mSprite->x = mStartX;
-    mSprite->y = mStartY;
-    mStateTimer = 100;
+
+//    int nTries = 0;
+    while (mSprite->vx == 0) {
+//      nTries ++;
+      mSprite->vx = (TFloat)Random(-3, 3);
+    }
+//    printf("nTries VX = %i\n", nTries);
+
+//    nTries = 0;
+    while (mSprite->vy == 0) {
+//      nTries++;
+      mSprite->vy = (TFloat)Random(-3, 3);
+    }
+//    printf("nTries VX = %i\n", nTries);
+
 
     // spawn pillars
-    for (TInt n = 0; n < 5; n++) {
-      TInt xx = gViewPort->mWorldX + n * 64 + 16 + Random(0, 32),
-           yy = gViewPort->mWorldY + n * 32 + 16 + Random(0, 176);
-      mGameState->AddProcess(new GWizardPillarProcess(mGameState, xx, yy));
+    for (TInt n = 0; n < 8; n++) {
+      // Follows Player if water or fire
+      if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
+        mGameState->AddProcess(new GWizardPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, ETrue, (n * 30)));
+      }
+      else {
+        TInt pillarX = mSprite->x + Random(-64, 64),
+             pillarY = mSprite->y + Random(-64, 64);
+
+        mGameState->AddProcess(new GWizardPillarProcess(mGameState, pillarX, pillarY, EFalse, 0));
+      }
+
     }
 
     return ETrue;
@@ -497,6 +559,10 @@ TBool GWizardProcess::TeleportState() {
 }
 
 TBool GWizardProcess::HitState() {
+#ifdef __CHICKEN_MODE__
+  mSprite->mHitPoints = 0;
+#endif
+
   if (mSprite->TestCType(STYPE_PLAYER)) {
     mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
@@ -548,6 +614,12 @@ TBool GWizardProcess::DeathState() {
 }
 
 TBool GWizardProcess::RunBefore() {
+  // Patch to prevent the damn thing from going out of screen.
+  if ((mSprite->x < 0) || (mSprite->y <0)) {
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
+  }
+
   switch (mState) {
     case STATE_IDLE:
       return IdleState();
