@@ -7,7 +7,7 @@
 
 class GFinalBossProcess : public GProcess {
 public:
-  GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams);
+  GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt16 aParams);
   ~GFinalBossProcess();
 
 public:

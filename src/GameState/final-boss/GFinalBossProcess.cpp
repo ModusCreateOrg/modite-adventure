@@ -241,10 +241,10 @@ static ANIMSCRIPT fireRightAnimation[] = {
 };
 
 // constructor
-GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
+GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt16 aParams)
     : GProcess(aParams) {
   mGameState = aGameState;
-  mSprite = new GAnchorSprite(mGameState, 0, 0);
+  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
   mSprite->x = aX;
   mSprite->y = aY;
   mStep = 0;
@@ -261,6 +261,7 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
 
 // destructor
 GFinalBossProcess::~GFinalBossProcess() {
+  printf("GFinalBoss died!\n ");
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
