@@ -134,7 +134,6 @@ const TUint16 IMG_FIREBALL_EXPLODE = 5;
 // MID BOSS DEATH
 const TUint16 IMG_MID_BOSS_DEATH = 0;
 
-
 // WIZARD
 const TUint16 IMG_WIZARD_IDLE = 0;
 const TUint16 IMG_WIZARD_WALK_DOWN = 0;
@@ -153,7 +152,6 @@ const TUint16 IMG_WIZARD_PILLAR = 0;
 
 // WIZARD DEATH
 const TUint16 IMG_WIZARD_DEATH = 0;
-
 
 // CHARA_SPIDER_BMP
 const TUint16 IMG_SPIDER_IDLE = 0;
@@ -299,23 +297,29 @@ const TUint16 IMG_GREEN_POTION1 = 110;
 const TUint16 IMG_GREEN_POTION2 = 111;
 const TUint16 IMG_BLUE_POTION1 = 112;
 const TUint16 IMG_BLUE_POTION2 = 113;
-const TUint16 IMG_EMPTY_BOTTLE = 114; // EMPTY
-const TUint16 IMG_HEART = 84; // EMPTY
-const TUint16 IMG_BLUE_BOTTLE1 = 120;   // 25% full
-const TUint16 IMG_BLUE_BOTTLE2 = 121;   // 50% full
-const TUint16 IMG_BLUE_BOTTLE3 = 122;   // 75% full
-const TUint16 IMG_BLUE_BOTTLE4 = 123;   // 100% full
-const TUint16 IMG_GREEN_BOTTLE1 = 124;  // 25% full
-const TUint16 IMG_GREEN_BOTTLE2 = 125;  // 50% full
-const TUint16 IMG_GREEN_BOTTLE3 = 126;  // 75% full
-const TUint16 IMG_GREEN_BOTTLE4 = 127;  // 100% full
+const TUint16 IMG_EMPTY_BOTTLE = 114;  // EMPTY
+const TUint16 IMG_HEART = 84;          // EMPTY
+const TUint16 IMG_BLUE_BOTTLE1 = 120;  // 25% full
+const TUint16 IMG_BLUE_BOTTLE2 = 121;  // 50% full
+const TUint16 IMG_BLUE_BOTTLE3 = 122;  // 75% full
+const TUint16 IMG_BLUE_BOTTLE4 = 123;  // 100% full
+const TUint16 IMG_GREEN_BOTTLE1 = 124; // 25% full
+const TUint16 IMG_GREEN_BOTTLE2 = 125; // 50% full
+const TUint16 IMG_GREEN_BOTTLE3 = 126; // 75% full
+const TUint16 IMG_GREEN_BOTTLE4 = 127; // 100% full
 
 //// RESERVED COLORS
-const TUint8 COLOR_SHADOW = 246;
-const TUint8 COLOR_SHMOO_RED = 247;
-const TUint8 COLOR_SHMOO_GREEN = 249;
-const TUint8 COLOR_EXPERIENCE = 250; // experience bar
-const TUint8 COLOR_HEALTH = 251;     // health bar
+const TUint8 COLOR_SHADOW = 241;
+const TUint8 COLOR_SHMOO_RED = 242;
+const TUint8 COLOR_SHMOO_GREEN = 243;
+const TUint8 COLOR_HUD_BG = 244;
+const TUint8 COLOR_METER_OUTLINE = 245;
+const TUint8 COLOR_HEALTH = 246;  // health bar
+const TUint8 COLOR_HEALTH2 = 247; // health bar
+const TUint8 COLOR_MAGIC = 248;
+const TUint8 COLOR_MAGIC2 = 249;
+const TUint8 COLOR_EXPERIENCE = 250;  // experience bar
+const TUint8 COLOR_EXPERIENCE2 = 251; // experience bar
 const TUint8 COLOR_SHMOO = 252;
 const TUint8 COLOR_TEXT_SHADOW = 253;
 const TUint8 COLOR_TEXT_BG = 254;
