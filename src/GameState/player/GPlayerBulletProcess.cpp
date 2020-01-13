@@ -26,7 +26,7 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
       mSprite->w = 30;
       mSprite->h = 8;
       mSprite->vy = -VELOCITY;
-      mRange = 36;
+      mRange = 48;
       break;
     case DIRECTION_DOWN:
       mSprite->w = 30;
@@ -36,14 +36,16 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
       break;
     case DIRECTION_LEFT:
       mSprite->w = 8;
-      mSprite->h = 20;
+      mSprite->h = 26;
       mSprite->vx = -VELOCITY;
+      mSprite->cy = -8;
       mRange = 40;
       break;
     case DIRECTION_RIGHT:
       mSprite->w = 8;
-      mSprite->h = 20;
+      mSprite->h = 26;
       mSprite->vx = VELOCITY;
+      mSprite->cy = -8;
       mRange = 40;
       break;
     default:

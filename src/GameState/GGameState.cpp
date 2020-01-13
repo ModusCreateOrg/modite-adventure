@@ -773,7 +773,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         if (!aNewLevel) {
           break;
         }
-        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
+        GProcess::Spawn(this, op, ip, xx - 64, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
         break;
 
       case ATTR_MID_BOSS_WATER:

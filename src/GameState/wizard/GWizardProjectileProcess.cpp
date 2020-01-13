@@ -41,8 +41,8 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWiza
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->mHitStrength = 55;
 
-  mSprite->x = aParent->mSprite->x + 32;
-  mSprite->y = aParent->mSprite->y - 32;
+  mSprite->x = aParent->mSprite->x + 16;
+  mSprite->y = aParent->mSprite->y;
   mSprite->w = 16;
   mSprite->h = 8;
   mSprite->cy = 4;
@@ -73,9 +73,16 @@ GWizardProjectileProcess::~GWizardProjectileProcess() {
 }
 
 TBool GWizardProjectileProcess::RunBefore() {
+  if (mSprite->Clipped()) {
+    return EFalse;
+  }
+  if (mTimer <= 0) {
+    return EFalse;
+  }
   if (mStep > 0 && mSprite->AnimDone()) {
     return EFalse;
   }
+
   return ETrue;
 }
 
@@ -113,7 +120,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     mStep++;
     mTimer = 10000;
   }
-  else if (--mTimer < 1) {
+ if (--mTimer < 1) {
     printf("TIMEOUT\n");
     mTimer = 10000;
     mSprite->ClearFlags(SFLAG_CHECK);

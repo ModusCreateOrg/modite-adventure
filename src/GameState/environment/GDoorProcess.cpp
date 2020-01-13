@@ -23,7 +23,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mAttribute = aWood ? ATTR_WOOD_DOOR_V : ATTR_METAL_DOOR_V;
   }
 
-  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
 
   mSprite->w = 32;
@@ -32,6 +32,8 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mSprite->x = aX;
   mSprite->y = aY + (mHorizontal ? 2.0 : 3.0);
   mGameState->AddSprite(mSprite);
+//  mSprite->SetWall(ETrue);
+
   if (!mHorizontal) {
     mSprite->SetWall(ETrue);
   }
@@ -41,7 +43,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
       aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_OBJECT);
 
     mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL DOOR 2");
-    mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER);
+    mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
 
     mSprite2->w = 32;
     mSprite2->h = 64;
