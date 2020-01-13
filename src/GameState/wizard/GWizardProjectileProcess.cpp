@@ -149,6 +149,8 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, TFloa
 
   mSprite->x = aX;
   mSprite->y = aY;
+//   mSprite->x = aParent->mSprite->x + 16;
+//   mSprite->y = aParent->mSprite->y;
   mSprite->w = 16;
   mSprite->h = 8;
   mSprite->cy = 4;
@@ -170,8 +172,18 @@ GWizardProjectileProcess::~GWizardProjectileProcess() {
 
 TBool GWizardProjectileProcess::RunBefore() {
   if (mExploding && mSprite->AnimDone()) {
+//Todo: @jaygarcia
+// =======
+//   if (mSprite->Clipped()) {
+//     return EFalse;
+//   }
+//   if (mTimer <= 0) {
+//     return EFalse;
+//   }
+//   if (mStep > 0 && mSprite->AnimDone()) {
     return EFalse;
   }
+
   return ETrue;
 }
 
@@ -209,7 +221,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     mStep++;
     mTimer = 10000;
   }
-  else if (--mTimer < 1) {
+ if (--mTimer < 1) {
     printf("TIMEOUT\n");
     mTimer = 10000;
     mSprite->ClearFlags(SFLAG_CHECK);

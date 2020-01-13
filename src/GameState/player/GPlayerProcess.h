@@ -85,6 +85,7 @@ public:
 
   static DIRECTION mLastDirection;
 //  static TUint16 mLastDirection;
+  static TFloat mRespawnAt[2];
 
 protected:
   GGameState *mGameState;
@@ -94,7 +95,6 @@ protected:
   TUint16 mStep;
   TUint16 mStepFrame;
   TFloat mMomentum;
-
 };
 
 #endif // MODITE_GPLAYERPROCESS_H

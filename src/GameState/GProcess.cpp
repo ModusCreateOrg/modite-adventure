@@ -137,6 +137,10 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_FINAL_BOSS:
       printf("HERE\n");
       return aGameState->AddProcess(new GFinalBossProcess(aGameState, xx, yy, ip, params));
+    case ATTR_WIZARD_EARTH:
+      return aGameState->AddProcess(new GWizardProcess(aGameState, xx, yy, BOSS_SLOT, ip, ATTR_WIZARD_EARTH, params, EARTH_WIZARD_BMP_SPRITES));
+    case ATTR_WIZARD_WATER:
+      return aGameState->AddProcess(new GWizardProcess(aGameState, xx, yy, BOSS_SLOT, ip, ATTR_WIZARD_WATER, params, WATER_WIZARD_BMP_SPRITES));
   }
   return ENull;
 }
