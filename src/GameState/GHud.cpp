@@ -6,24 +6,24 @@
 #include "GHud.h"
 #include "Items.h"
 
-static const TRect heart(0, 416, 15, 431);
-static const TRect magic(16, 416, 31, 431);
-static const TRect sword(0, 432, 15, 463);
+static const TRect heart(0, 384, 15, 399);
+static const TRect magic(16, 384, 31, 399);
+static const TRect sword(0, 400, 15, 415);
 
-static const TRect water(32, 416, 32, 431);
-static const TRect fire(48, 416, 48 + 15, 416 + 15);
-static const TRect earth(32, 416 + 16, 32 + 15, 416 + 31);
-static const TRect energy(48, 416 + 16, 48 + 15, 416 + 31);
+static const TRect water(32, 384, 47, 399);
+static const TRect fire(48, 384, 48 + 15, 399);
+static const TRect earth(32, 400, 32 + 15, 415);
+static const TRect energy(48, 400, 48 + 15, 415);
 
 // TODO: @jaygarcia no silver or godld key images on GLOBAL_OBJECT_LAYER.bmp
 // TODO: add them and then adjust these rects
-static const TRect silver_key(48, 416 + 16, 48 + 15, 416 + 31);
-static const TRect gold_key(48, 416 + 16, 48 + 15, 416 + 31);
+static const TRect silver_key(64, 384, 79,399);
+static const TRect gold_key(64, 400, 79, 415);
 
 // meter width:
 // 26, 70
-static const TInt METER_WIDTH = 44;
-static const TInt METER_HEIGHT = 11;
+static const TInt METER_WIDTH = 50;
+static const TInt METER_HEIGHT = 12;
 
 static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, TInt y, TFloat value, TFloat max) {
   TInt w = value ? value / max * 42 : 0;
@@ -72,13 +72,13 @@ void GHud::Render() {
   screen->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
 
   screen->DrawBitmapTransparent(&vp, b, heart, 8, 0);
-  render_meter(&vp, screen, COLOR_HEALTH, 26, 3, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
+  render_meter(&vp, screen, COLOR_HEALTH, 26, 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
 
   screen->DrawBitmapTransparent(&vp, b, magic, 91, 0);
-  render_meter(&vp, screen, COLOR_MAGIC, 105, 3, GPlayer::mManaPotion, 100);
+  render_meter(&vp, screen, COLOR_MAGIC, 105, 2, GPlayer::mManaPotion, 100);
 
   screen->DrawBitmapTransparent(&vp, b, sword, 168, 0);
-  render_meter(&vp, screen, COLOR_EXPERIENCE, 169 + 20, 3, GPlayer::mExperience, GPlayer::mNextLevel);
+  render_meter(&vp, screen, COLOR_EXPERIENCE, 169 + 20, 2, GPlayer::mExperience, GPlayer::mNextLevel);
 
   const GInventoryItem *item = GPlayer::mEquipped.mSpellbook;
   if (item) {
