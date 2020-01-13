@@ -1,17 +1,14 @@
 #include "GSaveWidget.h"
 
-GSaveWidget::GSaveWidget(GGameState *aGameState) : GButtonWidget("SAVE GAME") {
+GSaveWidget::GSaveWidget(GGameState *aGameState) : GButtonWidget("Save Progress") {
   mGameState = aGameState;
 }
 
 GSaveWidget::~GSaveWidget() {}
 
 TInt GSaveWidget::Render(TInt aX, TInt aY) {
-#ifndef __XTENSA__
-  aY += 10;
-#endif
   GButtonWidget::Render(aX, aY);
-  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
+  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight + 10;
 }
 
 void GSaveWidget::Select() {

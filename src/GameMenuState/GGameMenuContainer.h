@@ -3,14 +3,25 @@
 
 #include "Game.h"
 
+enum GAME_MENU_STATE {
+  GAME_MENU_KEEP_STATE,
+  GAME_MENU_PAUSE_STATE,
+  GAME_MENU_OPTIONS_STATE,
+};
+
 class GGameMenuContainer : public GDialogWidget {
 public:
   GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState);
   ~GGameMenuContainer();
+  void PauseState();
+  void OptionsState();
+  void State(GAME_MENU_STATE aState);
   TInt Render(TInt aX, TInt aY);
   TInt mTimer;
 protected:
+  void Clear();
   GGameState *mGameState;
+  GAME_MENU_STATE mState;
 };
 
 #endif //GENUS_GGAMEMENUCONTAINER_H

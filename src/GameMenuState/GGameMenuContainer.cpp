@@ -5,26 +5,73 @@
 #include "GSaveWidget.h"
 #include "GResumeWidget.h"
 #include "GQuitWidget.h"
+#include "GOptionsWidget.h"
 
 GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("GAME PAUSED", aX, aY) {
   mGameState = aGameState;
-#ifdef __XTENSA__
-  AddWidget((BWidget &) *new GBrightnessWidget());
-#endif
-  AddWidget((BWidget &) *new GMusicWidget());
-  AddWidget((BWidget &) *new GSfxWidget());
-  AddWidget((BWidget &) *new GResumeWidget());
-  if (gGame->IsGameState() && !((GGameState *) gGameEngine)->IsBossRoom()) {
-    AddWidget((BWidget &) *new GSaveWidget(mGameState));
-  }
-  AddWidget((BWidget &) *new GQuitWidget());
-
   mTimer = 30;
+  mState = GAME_MENU_PAUSE_STATE;
 }
 
 GGameMenuContainer::~GGameMenuContainer() {}
 
+void GGameMenuContainer::State(GAME_MENU_STATE aState) {
+  mState = aState;
+}
+
+void GGameMenuContainer::PauseState() {
+  Clear();
+  State(GAME_MENU_KEEP_STATE);
+  mTitle = (char *)"Game Paused";
+
+  AddWidget((BWidget &) *new GResumeWidget());
+  if (gGame->IsGameState() && !((GGameState *) gGameEngine)->IsBossRoom()) {
+    AddWidget((BWidget &) *new GSaveWidget(mGameState));
+  }
+  AddWidget((BWidget &) *new GOptionsWidget(this, EFalse));
+  AddWidget((BWidget &) *new GQuitWidget());
+
+  mCurrentWidget = mList.First();
+  mList.First()->Activate();
+}
+
+void GGameMenuContainer::OptionsState() {
+  Clear();
+  State(GAME_MENU_KEEP_STATE);
+  mTitle = (char *)"Volume";
+
+  AddWidget((BWidget &) *new GMusicWidget());
+  AddWidget((BWidget &) *new GSfxWidget());
+  AddWidget((BWidget &) *new GOptionsWidget(this, ETrue));
+
+  mCurrentWidget = mList.First();
+  mList.First()->Activate();
+}
+
+void GGameMenuContainer::Clear() {
+  BWidget *w = (BWidget *) mList.First();
+  while (!(BWidget *) mList.End(w)) {
+    BWidget *n = (BWidget *) mList.Next(w);
+    delete w;
+    w = n;
+  }
+  mList.Reset();
+}
+
 TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
+  switch (mState) {
+    case GAME_MENU_KEEP_STATE:
+      break;
+    case GAME_MENU_PAUSE_STATE:
+      PauseState();
+      break;
+    case GAME_MENU_OPTIONS_STATE:
+      OptionsState();
+      break;
+    default:
+      Panic("Invalid Game Menu state\n");
+  }
+
   TUint8 color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);;
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
   const TInt x = (SCREEN_WIDTH - (strlen(mTitle) * f->mWidth)) / 2;

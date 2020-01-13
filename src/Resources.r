@@ -82,6 +82,12 @@ SPRITESHEET 32x32 water_projectile.bmp
 SPRITESHEET 32x32 water_pillar.bmp
 
 #
+### FINAL BOSS
+#
+PATH resources/sprites/final_boss
+SPRITESHEET 128x128 draganos.bmp
+
+#
 ### TILEMAPS
 #
 
