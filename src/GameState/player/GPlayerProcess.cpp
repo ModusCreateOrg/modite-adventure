@@ -78,6 +78,8 @@ TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
 DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
+TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
+
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
@@ -131,6 +133,8 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
   if (aExitingDungeon == OVERWORLD_DUNGEON) {
     mSprite->x = aX;
     mSprite->y = aY;
+    mRespawnAt[0] = aX;
+    mRespawnAt[1] = aY;
 
     if (aExitingLevel == 0) {
       return;
@@ -181,7 +185,8 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
           mSprite->y = yy + 32;
         }
 
-
+        mRespawnAt[0] = mSprite->x;
+        mRespawnAt[1] = mSprite->y;
         return;
       }
     }
@@ -211,6 +216,8 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
         mSprite->x = xx - 16;
         mSprite->y = yy + 64;
+        mRespawnAt[0] = mSprite->x;
+        mRespawnAt[1] = mSprite->y;
         return;
       }
     }

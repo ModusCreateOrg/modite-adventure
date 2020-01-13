@@ -68,7 +68,7 @@ public:
   GProcess *AddProcess(GProcess *p);
 
   // call this to resume game after death
-  void TryAgain();
+  void TryAgain(TBool aExitDungeon);
 
   // call this when player is dead
   void GameOver();
@@ -87,7 +87,7 @@ public:
 
 public:
   TBool IsGameOver() { return mGameOver != ENull; }
-
+  TInt16 Dungeon() { return mDungeon; }
   TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
   TInt16 LastOverworldLevel() { return mLastOverworldLevel; }
 protected:
