@@ -5,6 +5,7 @@
 #include "GameState/player/GGameOver.h"
 #include "GameState/environment/GSpikesProcess.h"
 #include "GameState/player/GPlayerProcess.h"
+#include "GHud.h"
 
 #include "GPlayer.h"
 
@@ -34,8 +35,6 @@ void GGameState::Init() {
 
   mNextTileMapId = 0;
   mNextObjectsId = 0;
-
-  gViewPort->SetRect(TRect(0, 0, MIN(SCREEN_WIDTH, TILES_WIDE * 32) - 1, MIN(SCREEN_HEIGHT, TILES_HIGH * 32) - 1));
 
   mTimer = FRAMES_PER_SECOND * 1;
   mGameOver = ENull;
@@ -195,95 +194,7 @@ static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, 
 }
 
 void GGameState::PostRender() {
-#ifdef DEBUG_MODE
-  if (mText[0]) {
-    TInt len = strlen(mText);
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT,
-      COLOR_TEXT_TRANSPARENT);
-  }
-#endif
-
-  BViewPort vp;
-  TRect rect(0, 0, SCREEN_WIDTH - 1, 15);
-  vp.SetRect(rect);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_TEXT_BG);
-
-  BBitmap *b = gResourceManager.GetBitmap(PLAYER_SLOT),
-          *screen = gDisplay.renderBitmap;
-
-  const TInt BOTTLE_X = 64 * 3,
-             BOTTLE_Y = 14,
-             BOTTLE_WIDTH = 12,
-             BOTTLE_HEIGHT = 15;
-
-  TInt x = 2;
-
-  // render health potion
-  TRect healing(BOTTLE_X, BOTTLE_Y, BOTTLE_X + BOTTLE_WIDTH, BOTTLE_Y + BOTTLE_HEIGHT);
-  switch (GPlayer::mHealthPotion) {
-    case 75:
-      healing.Offset(BOTTLE_WIDTH * 1, 0);
-      break;
-    case 50:
-      healing.Offset(BOTTLE_WIDTH * 2, 0);
-      break;
-    case 25:
-      healing.Offset(BOTTLE_WIDTH * 3, 0);
-      break;
-    case 0:
-      healing.Offset(BOTTLE_WIDTH * 4, 0);
-    default:
-      break;
-  }
-  screen->DrawBitmapTransparent(&vp, b, healing, x, 1);
-  x += 16;
-
-  // render mana potion
-  TRect mana(BOTTLE_X, BOTTLE_Y + BOTTLE_HEIGHT + 2, BOTTLE_X + BOTTLE_WIDTH,
-    BOTTLE_Y + BOTTLE_HEIGHT + BOTTLE_HEIGHT + 2);
-  switch (GPlayer::mManaPotion) {
-    case 75:
-      mana.Offset(BOTTLE_WIDTH * 1, 0);
-      break;
-    case 50:
-      mana.Offset(BOTTLE_WIDTH * 2, 0);
-      break;
-    case 25:
-      mana.Offset(BOTTLE_WIDTH * 3, 0);
-      break;
-    case 0:
-      mana.Offset(BOTTLE_WIDTH * 4, 0);
-    default:
-      break;
-  }
-  screen->DrawBitmapTransparent(&vp, b, mana, x, 1);
-  x += 16;
-
-  // render heart
-  TRect heart(64 * 3, 0, 64 * 3 + 15, 11);
-  screen->DrawBitmapTransparent(&vp, b, heart, x, 3);
-  x += 18;
-
-  // health fuel gauge
-  gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-  fuel_gauge(&vp, x, 4, GPlayer::mHitPoints, GPlayer::mMaxHitPoints,
-    GPlayer::mSprite->mInvulnerable ? COLOR_SHMOO_RED : COLOR_HEALTH);
-  x += GAUGE_WIDTH + 8;
-
-  // experience fuel gauge
-  gDisplay.SetColor(COLOR_EXPERIENCE, 0, 255, 0);
-  screen->DrawString(&vp, "XP", gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
-  x += 28;
-  fuel_gauge(&vp, x, 4, GPlayer::mExperience, GPlayer::mNextLevel, COLOR_EXPERIENCE);
-  x += GAUGE_WIDTH + 8;
-
-  // display level
-  char output[160];
-  const TInt l_width = 48 + 2; // 2 px padding right
-  sprintf(output, "L%-3d", GPlayer::mLevel);
-  screen->DrawString(&vp, output, gFont16x16, x, 0, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
+  GHud::Render();
 
   if (mGameOver) {
     mGameOver->Run();

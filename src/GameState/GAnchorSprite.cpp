@@ -142,6 +142,8 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
     }
+
+    // render shadow beneath sprite
     gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
     TFloat screenX = x - aViewPort->mWorldX;
@@ -151,27 +153,27 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
       gDisplay.renderBitmap->DrawFastHLine(aViewPort, screenX + mShadow.x1 + mShadow.Width() - TInt(chord / 2 + 1), screenY + i, chord, COLOR_SHADOW);
     }
   }
+
   TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
   if (GGame::mDebug && !Clipped()) {
     // render sprite border if sprite is visible
     if (flags & SFLAG_RENDER) {
-      gDisplay.renderBitmap->SetColor(COLOR_TEXT, 255, 0, 255);
       gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_TEXT);
-      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_TEXT_SHADOW);
-      gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_TEXT_SHADOW);
+      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
+      gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
     }
     // render collision rect
-    if (flags && SFLAG_CHECK) {
+    if (flags & SFLAG_CHECK) {
       TRect r;
       GetRect(r);
       r.x1 -= aViewPort->mWorldX;
       r.x2 -= aViewPort->mWorldX;
       r.y1 -= aViewPort->mWorldY;
       r.y2 -= aViewPort->mWorldY;
-      gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
-      gDisplay.renderBitmap->DrawRect(aViewPort, r, COLOR_TEXT_SHADOW);
+//      gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
+      gDisplay.renderBitmap->DrawRect(aViewPort, r, COLOR_HEALTH);
     }
   }
 #endif

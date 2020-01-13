@@ -17,8 +17,6 @@ GGameOver::GGameOver(GGameState *aGameState) {
     // set grayscale color in palette
     gDisplay.SetColor(color, c);
   }
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 
   mState = 0;
 }
