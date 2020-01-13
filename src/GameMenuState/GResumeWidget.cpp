@@ -1,12 +1,12 @@
 #include "GResumeWidget.h"
 
-GResumeWidget::GResumeWidget() : GButtonWidget("EXIT MENU") {}
+GResumeWidget::GResumeWidget() : GButtonWidget("Exit Menu") {}
 
 GResumeWidget::~GResumeWidget() {}
 
 TInt GResumeWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);
-  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
+  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight + 10;
 }
 
 void GResumeWidget::Select() {
