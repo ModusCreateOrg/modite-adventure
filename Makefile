@@ -54,6 +54,9 @@ INCLUDE = -I $(CREATIVE_ENGINE_SOURCE_DIR) \
           -I $(GAME_SOURCE_DIR)/GameState/enemies \
           -I $(GAME_SOURCE_DIR)/GameState/environment \
           -I $(GAME_SOURCE_DIR)/GameState/inventory \
+          -I $(GAME_SOURCE_DIR)/GameState/final-boss \
+          -I $(GAME_SOURCE_DIR)/GameState/mid-bosses \
+          -I $(GAME_SOURCE_DIR)/GameState/wizard \
           -I $(GAME_SOURCE_DIR)/GameState/player \
           -I $(GAME_SOURCE_DIR)/GameState/status \
           -I $(GAME_SOURCE_DIR)/ResetState \

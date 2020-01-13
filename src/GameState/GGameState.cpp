@@ -844,7 +844,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
 
       case ATTR_WIZARD_EARTH:
-#if 0 // TODO testing!  remove this
 #ifdef DEBUGME
         printf("EARTH WIZARD at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
@@ -860,7 +859,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY EARTH WIZARD");
         break;
-#endif
       case ATTR_FINAL_BOSS:
 #ifdef DEBUGME
         printf("FINAL BOSS at %.2f,%.2f %d,%d\n", xx, yy, row, col);

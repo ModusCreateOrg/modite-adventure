@@ -21,24 +21,27 @@ const TInt16 WALK_SPEED = 15;
 const TInt16 FIRE_SPEED = 30;
 const TInt16 HIT_SPEED = 5;
 const TInt16 IDLE_SPEED = 8;
+const TInt16 ATTACK_SPEED = 5;
+
 
 static DIRECTION reverse_direction(DIRECTION d) {
-  switch (d) {
-    case DIRECTION_UP:
-      return DIRECTION_DOWN;
-    default:
-    case DIRECTION_DOWN:
-      return DIRECTION_UP;
-    case DIRECTION_LEFT:
-      return DIRECTION_RIGHT;
-    case DIRECTION_RIGHT:
-      return DIRECTION_LEFT;
-  }
+  return (DIRECTION)Random(0,3);
+//  switch (d) {
+//    case DIRECTION_UP:
+//      return DIRECTION_DOWN;
+//    default:
+//    case DIRECTION_DOWN:
+//      return DIRECTION_UP;
+//    case DIRECTION_LEFT:
+//      return DIRECTION_RIGHT;
+//    case DIRECTION_RIGHT:
+//      return DIRECTION_LEFT;
+//  }
 }
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(IDLE_SPEED, IMG_WIZARD_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_FINAL_BOSS_IDLE + 1),
   AEND,
 };
 
@@ -65,8 +68,7 @@ static ANIMSCRIPT hitAnimation[] = {
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(BOSS_SLOT),
   ALABEL,
-  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 2),
+  ASTEP(IDLE_SPEED, IMG_FINAL_BOSS_IDLE + 1),
   ALOOP,
 };
 
@@ -131,6 +133,86 @@ static ANIMSCRIPT fireUpAnimation[] = {
   AEND,
 };
 
+
+static ANIMSCRIPT earthProjectileAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+// Common start frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+//Elemental frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 11),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 12),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 11),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 12),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 13),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 14),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 15),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE),
+  AEND,
+};
+
+static ANIMSCRIPT energyProjectileAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  // Common start frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+  //Elemental frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 16),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 17),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 16),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 17),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 18),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 19),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 20),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE),
+  AEND,
+};
+
+static ANIMSCRIPT fireProjectileAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+// Common start frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+//Elemental frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 21),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 22),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 21),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 22),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 23),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 24),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 25),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE),
+  AEND,
+};
+
+static ANIMSCRIPT waterProjectileAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+// Common start frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 9),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 10),
+//Elemental frames
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 26),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 27),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 26),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 27),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 28),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 29),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 30),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE),
+  AEND,
+};
+
+
+
+
 static ANIMSCRIPT fireDownAnimation[] = {
   ABITMAP(BOSS_SLOT),
   AFLIP(FIRE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
@@ -166,7 +248,11 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mSprite->x = aX;
   mSprite->y = aY;
   mStep = 0;
-  mSprite->StartAnimation(walkLeftAnimation1);
+  mSprite->StartAnimation(idleDownAnimation);
+  mSprite->type = STYPE_ENEMY;
+  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
+//  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK);
   mGameState->AddSprite(mSprite);
   mHitTimer = HIT_SPAM_TIME;
   SetAttackTimer();
@@ -218,26 +304,26 @@ void GFinalBossProcess::Walk(DIRECTION aDirection) {
 
 void GFinalBossProcess::Fire(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
+  mDirection = aDirection;
   switch (aDirection) {
-    case DIRECTION_UP:
-      mDirection = DIRECTION_UP;
-      mSprite->StartAnimation(fireUpAnimation);
+    case 0:
+      mSprite->StartAnimation(earthProjectileAnimation);
+      break;
+    case 1:
+      mSprite->StartAnimation(waterProjectileAnimation);
+      break;
+    case 2:
+      mSprite->StartAnimation(fireProjectileAnimation);
+      break;
+    case 3:
+      mSprite->StartAnimation(energyProjectileAnimation);
       break;
     default:
-    case DIRECTION_DOWN:
-      mDirection = DIRECTION_DOWN;
-      mSprite->StartAnimation(fireDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mDirection = DIRECTION_LEFT;
-      mSprite->StartAnimation(fireLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mDirection = DIRECTION_RIGHT;
-      mSprite->StartAnimation(fireRightAnimation);
+      mSprite->StartAnimation(earthProjectileAnimation);
       break;
   }
 }
+
 void GFinalBossProcess::Hit(DIRECTION aDirection) {
   mDirection = aDirection;
   mSprite->vx = mSprite->vy = 0;
@@ -269,6 +355,7 @@ void GFinalBossProcess::Death(DIRECTION aDirection) {
     mGameState->AddProcess(p);
   }
 }
+
 void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
   mStep = 0;
   mState = aNewState;
@@ -389,7 +476,7 @@ TBool GFinalBossProcess::WalkState() {
   }
 
   if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
-    SetState(STATE_WALK, reverse_direction(mDirection));
+    SetState(STATE_WALK, (DIRECTION)Random(0,3));
     return ETrue;
   }
 
@@ -406,8 +493,8 @@ TBool GFinalBossProcess::FireState() {
   }
   if (mSprite->AnimDone()) {
     // fire!
-    TInt16 type;
-    switch (Random(0, 3)) {
+    TInt16 type = 0;
+    switch (mDirection) {
       case 0:
         type = ATTR_WIZARD_FIRE;
         break;
@@ -420,9 +507,13 @@ TBool GFinalBossProcess::FireState() {
       case 3:
         type = ATTR_WIZARD_EARTH;
         break;
+
+      default:
+        type = ATTR_WIZARD_ENERGY;
+        break;
     }
-    TFloat xx = mSprite->x + 64,
-           yy = mSprite->y - 64;
+    TFloat xx = mSprite->x + 48,
+           yy = mSprite->y;
     // fire 10 projectiles in a circle pattern with the boss in the center
     for (TFloat angle = 0; angle < 360; angle += 360 / 10) {
       mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angle, type));
