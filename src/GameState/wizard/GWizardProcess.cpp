@@ -459,11 +459,14 @@ TBool GWizardProcess::ProjectileState() {
     return ETrue;
   }
   if (!mStep) {
-    // fire 1-3 projectiles
-    printf("FIRE!\n");
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 0));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 1));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, 2));
+    // fire 1-3 projectiled
+    TFloat xx = mSprite->x + 32,
+           yy = mSprite->y - 32;
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 45., mType));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 90., mType));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 135., mType));
+
+    
     mSprite->StartAnimation(projectileAnimation2);
     mStep++;
     return ETrue;

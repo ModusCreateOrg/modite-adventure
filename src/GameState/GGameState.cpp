@@ -792,23 +792,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS WATER");
         break;
 
-      case ATTR_WIZARD_EARTH:
-#ifdef DEBUGME
-        printf("EARTH WIZARD at %.2f,%.2f %d,%d\n", xx, yy, row, col);
-#endif
-        // always explosion (for any enemy)
-        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, BOSS_DEATH_SLOT, IMAGE_64x64);
-        // Sprite sheet for enemy
-        RemapSlot(EARTH_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
-        // Sprite sheet for enemy projectiles
-        RemapSlot(EARTH_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        RemapSlot(EARTH_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
-        if (!aNewLevel) {
-          break;
-        }
-        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY EARTH WIZARD");
-        break;
-
       case ATTR_WIZARD_WATER:
 #ifdef DEBUGME
         printf("WATER WIZARD at %.2f,%.2f %d,%d\n", xx, yy, row, col);
@@ -818,8 +801,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // Sprite sheet for enemy
         RemapSlot(WATER_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
-        RemapSlot(WATER_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        RemapSlot(WATER_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(WATER_PROJECTILE_BMP, WATER_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(WATER_PILLAR_BMP, WATER_WIZARD_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
@@ -835,8 +818,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // Sprite sheet for enemy
         RemapSlot(FIRE_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
-        RemapSlot(FIRE_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        RemapSlot(FIRE_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(FIRE_PROJECTILE_BMP, FIRE_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(FIRE_PILLAR_BMP, FIRE_WIZARD_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
@@ -852,12 +835,54 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // Sprite sheet for enemy
         RemapSlot(ENERGY_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy projectiles
-        RemapSlot(ENERGY_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
-        RemapSlot(ENERGY_PILLAR_BMP, BOSS_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(ENERGY_PROJECTILE_BMP, ENERGY_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(ENERGY_PILLAR_BMP, ENERGY_WIZARD_PILLAR_SLOT, IMAGE_32x32);
         if (!aNewLevel) {
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY ENERGY WIZARD");
+        break;
+
+      case ATTR_WIZARD_EARTH:
+#if 0 // TODO testing!  remove this
+#ifdef DEBUGME
+        printf("EARTH WIZARD at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        // always explosion (for any enemy)
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, BOSS_DEATH_SLOT, IMAGE_64x64);
+        // Sprite sheet for enemy
+        RemapSlot(EARTH_WIZARD_BMP, BOSS_SLOT, IMAGE_64x64);
+        // Sprite sheet for enemy projectiles
+        RemapSlot(EARTH_PROJECTILE_BMP, EARTH_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(EARTH_PILLAR_BMP, EARTH_WIZARD_PILLAR_SLOT, IMAGE_32x32);
+        if (!aNewLevel) {
+          break;
+        }
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY EARTH WIZARD");
+        break;
+#endif
+      case ATTR_FINAL_BOSS:
+#ifdef DEBUGME
+        printf("FINAL BOSS at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        // always explosion (for any enemy)
+        RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, BOSS_DEATH_SLOT, IMAGE_64x64);
+        // Sprite sheet for enemy
+        RemapSlot(DRAGANOS_BMP, BOSS_SLOT, IMAGE_128x128);
+        // Sprite sheets for enemy projectiles
+        // Final Boss fires all the Wizard projectiles
+        RemapSlot(ENERGY_PROJECTILE_BMP, ENERGY_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(ENERGY_PILLAR_BMP, ENERGY_WIZARD_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(EARTH_PROJECTILE_BMP, EARTH_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(EARTH_PILLAR_BMP, EARTH_WIZARD_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(WATER_PROJECTILE_BMP, WATER_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(WATER_PILLAR_BMP, WATER_WIZARD_PILLAR_SLOT, IMAGE_32x32);
+        RemapSlot(FIRE_PROJECTILE_BMP, FIRE_WIZARD_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(FIRE_PILLAR_BMP, FIRE_WIZARD_PILLAR_SLOT, IMAGE_32x32);
+        if (!aNewLevel) {
+          break;
+        }
+        GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "FINAL BOSS");
         break;
 
       default:
