@@ -7,7 +7,7 @@
 
 class GWizardPillarProcess : public GProcess {
 public:
-  GWizardPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY);
+  GWizardPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TBool aFollowPlayer, TInt aStartDelay);
   ~GWizardPillarProcess();
 
 public:
@@ -17,6 +17,10 @@ public:
 protected:
   GGameState *mGameState;
   TBool mExploding;
+  TUint16 mFrame;
+  TUint16 mStartDelay;
+  TBool mFollowPlayer;
+
 };
 
 #endif
