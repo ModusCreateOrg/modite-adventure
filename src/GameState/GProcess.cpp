@@ -84,9 +84,9 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return aGameState->AddProcess(new GDoorProcess(aGameState, ip, params, xx, yy, ETrue, ETrue));
     case ATTR_WOOD_DOOR_V:
       return aGameState->AddProcess(new GDoorProcess(aGameState, ip, params, xx, yy, ETrue, EFalse));
-    case ATTR_METAL_DOOR_H:
+    case ATTR_METAL_GATE_H:
       return aGameState->AddProcess(new GDoorProcess(aGameState, ip, params, xx, yy, EFalse, ETrue));
-    case ATTR_METAL_DOOR_V:
+    case ATTR_METAL_GATE_V:
       return aGameState->AddProcess(new GDoorProcess(aGameState, ip, params, xx, yy, EFalse, EFalse));
     case ATTR_LEVER:
       return aGameState->AddProcess(new GLeverProcess(aGameState, ip, params, xx, yy));

@@ -278,16 +278,24 @@ const TUint16 IMG_TROLL_DAMAGE_UP = 40;
 const TUint16 IMG_ENEMY_DEATH = 0;
 
 // GLOBAL_OBJECT_LAYER_BMP
-const TUint16 IMG_WOOD_DOOR_H = 10;
-const TUint16 IMG_METAL_DOOR_H = 11;
+const TUint16 IMG_WOOD_DOOR_H_TOP = 10;      // Top
+const TUint16 IMG_WOOD_DOOR_H_BOTTOM = 20;   // Bottom. This is the code ATTR_WOOD_DOOR_H
+const TUint16 IMG_METAL_GATE_H_TOP = 11;     // Top
+const TUint16 IMG_METAL_GATE_H_BOTTOM = 21;  // Bottom. This is the code ATTR_METAL_GATE_H
+
 const TUint16 IMG_POT = 12;               // through 14
 const TUint16 IMG_SPIKES = 15;            // through 19
 const TUint16 IMG_CHEST = 22;             // closed, open is 23
 const TUint16 IMG_CRATE = 24;             // through 28
-const TUint16 IMG_WOOD_DOOR_V = 30;       // top, bottom is 30
-const TUint16 IMG_METAL_DOOR_V = 31;      // top, bottom is 31
+
+const TUint16 IMG_WOOD_DOOR_V_TOP = 30;       // Top.
+const TUint16 IMG_WOOD_DOOR_V_BOTTOM = 40;    // Bottom.
+const TUint16 IMG_METAL_GATE_V_TOP = 31;      // Top
+const TUint16 IMG_METAL_GATE_V_BOTTOM = 41;   // Bottom
+
 const TUint16 IMG_FLOOR_SWITCH = 32;      // grey, 33 is pressed
 const TUint16 IMG_FLOOR_SWITCH_WOOD = 34; // brown, 35 is pressed
+
 const TUint16 IMG_LEVER = 36;             // left, center = 36, right = 37
 const TUint16 IMG_STONE_STAIRS_DOWN = 48;
 const TUint16 IMG_STONE_STAIRS_UP = 49; // 39 is the upper sprite image for the very top stairs
