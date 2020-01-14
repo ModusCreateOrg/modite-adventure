@@ -1,3 +1,4 @@
+#include <math.h>
 #include "GWizardProcess.h"
 #include "GWizardProjectileProcess.h"
 #include "GWizardPillarProcess.h"
@@ -460,11 +461,17 @@ TBool GWizardProcess::ProjectileState() {
   }
   if (!mStep) {
     // fire 1-3 projectiled
-    TFloat xx = mSprite->x + 32,
-           yy = mSprite->y - 32;
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 45., mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 90., mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, 135., mType));
+    TFloat xx = mSprite->x + 16,
+           yy = mSprite->y - 16;
+
+    // Angles are in radians
+    const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
+    const TFloat step = 45. * (M_PI/180);
+    const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
+
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[0], mType));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[1], mType));
+    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[2], mType));
 
     
     mSprite->StartAnimation(projectileAnimation2);

@@ -1,3 +1,4 @@
+#include <math.h>
 #include "GWizardProjectileProcess.h"
 
 const TFloat PROJECTILE_VELOCITY = 3;
@@ -155,8 +156,9 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, TFloa
   mSprite->h = 8;
   mSprite->cy = 4;
 
+  // Angles are in radians
   mSprite->vx = cos(aAngle) * PROJECTILE_VELOCITY;
-  mSprite->vy = sin(aAngle) * -PROJECTILE_VELOCITY;
+  mSprite->vy = sin(aAngle) * PROJECTILE_VELOCITY;
   aGameState->AddSprite(mSprite);
   StartProjectileAnimation();
   printf("WIZARD PROJECTILE at %f,%f\n", mSprite->x, mSprite->y);
