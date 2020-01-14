@@ -10,7 +10,7 @@
 GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) {
   mGameState = aGameState;
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
-  mContainer = new GGameMenuContainer(20, PAUSE_MODAL_Y, mGameState);
+  mContainer = new GGameMenuContainer(65, PAUSE_MODAL_Y, mGameState);
 
   gWidgetTheme.Configure(
       WIDGET_TEXT_FONT, mFont16,
@@ -31,14 +31,14 @@ GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) 
     mSavedPalette[color] = c;
     // convert color to grayscale color
     TUint8 max = MAX(c.b, MAX(c.r, c.g));
-    c.r = c.g = c.b = max;
+    c.r = c.g = c.b = (max > 0) ? (max * .25) : 0;
     // set grayscale color in palette
     gDisplay.SetColor(color, c);
   }
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
-  gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, 60,60,60);
 }
 
 GGameMenuState::~GGameMenuState() {

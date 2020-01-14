@@ -1,9 +1,10 @@
 #include "GOptionsWidget.h"
 #include "GGameMenuContainer.h"
 
-GOptionsWidget::GOptionsWidget(GGameMenuContainer *aContainer, TBool aExit) : GButtonWidget(aExit ? "Exit Options" : "Options") {
+GOptionsWidget::GOptionsWidget(GGameMenuContainer *aContainer, TBool aExit) : GButtonWidget(aExit ? "Back" : "Options") {
   mContainer = aContainer;
   mExit = aExit;
+  mHeight = 24;
 }
 
 GOptionsWidget::~GOptionsWidget() {}
