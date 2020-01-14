@@ -10,7 +10,7 @@ GDebugButtonWidget::~GDebugButtonWidget() {}
 TInt GDebugButtonWidget::Render(TInt aX, TInt aY) {
   aY += 20;
   GButtonWidget::Render(aX, aY);
-  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
+  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight + 4;
 }
 
 void GDebugButtonWidget::Select() {

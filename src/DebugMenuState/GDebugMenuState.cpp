@@ -2,7 +2,7 @@
 #include "GDebugMenuContainer.h"
 
 GDebugMenuState::GDebugMenuState() : BGameEngine(gViewPort) {
-  mContainer = new GDebugMenuContainer(20, 20, this);
+  mContainer = new GDebugMenuContainer(30, 40, this);
 
   gWidgetTheme.Configure(
       WIDGET_TEXT_FONT, gFont16x16,
@@ -17,12 +17,26 @@ GDebugMenuState::GDebugMenuState() : BGameEngine(gViewPort) {
       WIDGET_SLIDER_BG, COLOR_TEXT,
       WIDGET_END_TAG);
 
+  TRGB *source = gDisplay.renderBitmap->GetPalette();
+  for (TInt color = 0; color < COLOR_TEXT; color++) {
+    TRGB c = source[color];
+    mSavedPalette[color] = c;
+    // convert color to grayscale color
+    TUint8 max = MAX(c.b, MAX(c.r, c.g));
+    c.r = c.g = c.b = (max > 0) ? (max * .15) : 0;
+    // set grayscale color in palette
+    gDisplay.SetColor(color, c);
+  }
+
+
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 255, 92, 93);
   gDisplay.SetColor(COLOR_TEXT_SHADOW, 255, 0, 0);
 }
 
 GDebugMenuState::~GDebugMenuState() {
+  gDisplay.SetPalette(mSavedPalette);
+
   delete mContainer;
 }
 
