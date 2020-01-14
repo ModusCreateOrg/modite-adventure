@@ -19,6 +19,8 @@ GInventory::GInventory(BViewPort *aViewPort) : BGameEngine(aViewPort) {
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 }
 
+
+
 GInventory::~GInventory() {
 }
 
