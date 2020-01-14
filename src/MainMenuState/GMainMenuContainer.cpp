@@ -12,8 +12,8 @@ GMainMenuContainer::GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProc
   }
   AddWidget((BWidget &) *new GStartWidget());
 
-  AddWidget((BWidget &) *new GButtonWidget("OPTIONS", GAME_STATE_MAIN_OPTIONS));
-  AddWidget((BWidget &) *new GButtonWidget("QUIT", GAME_STATE_QUIT));
+  AddWidget((BWidget &) *new GButtonWidget("Options", GAME_STATE_MAIN_OPTIONS));
+  AddWidget((BWidget &) *new GButtonWidget("Quit", GAME_STATE_QUIT));
 }
 
 GMainMenuContainer::~GMainMenuContainer() {}
