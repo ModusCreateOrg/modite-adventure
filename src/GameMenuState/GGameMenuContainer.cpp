@@ -6,6 +6,7 @@
 #include "GResumeWidget.h"
 #include "GQuitWidget.h"
 #include "GOptionsWidget.h"
+#include "GExitDungeonWidget.h"
 
 GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("Pause", aX, aY) {
   mGameState = aGameState;
@@ -23,12 +24,20 @@ void GGameMenuContainer::PauseState() {
   Clear();
   State(GAME_MENU_KEEP_STATE);
   mTitle = (char *)"Pause";
+  GGameState *gameState = (GGameState *)gGameEngine;
 
   AddWidget((BWidget &) *new GResumeWidget());
-  if (gGame->IsGameState() && !((GGameState *) gGameEngine)->IsBossRoom()) {
+
+  if (gGame->IsGameState() && !gameState->IsBossRoom()) {
     AddWidget((BWidget &) *new GSaveWidget(mGameState));
   }
+
   AddWidget((BWidget &) *new GOptionsWidget(this, EFalse));
+
+  if (gameState->Dungeon() != OVERWORLD_DUNGEON) {
+    AddWidget((BWidget &) *new GExitDungeonWidget());
+  }
+
   AddWidget((BWidget &) *new GQuitWidget());
 
   mCurrentWidget = mList.First();
