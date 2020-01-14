@@ -212,6 +212,11 @@ void GGameState::PostRender() {
   }
 
 #ifdef DEBUG_MODE
+  if (mTimer-- < 0) {
+    mTimer = FRAMES_PER_SECOND * 1;
+    sprintf(mText, "%s Level %d", mName, mLevel);
+  }
+
   if (mText[0]) {
     gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
   }
