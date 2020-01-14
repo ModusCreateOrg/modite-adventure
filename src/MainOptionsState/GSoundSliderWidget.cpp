@@ -45,7 +45,7 @@ TInt GSoundSliderWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
 }
 
 TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
-  aX += 82;
+  aX += 60;
 #ifdef __XTENSA__
   aY -= 16;
 #else
@@ -57,10 +57,10 @@ TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
                bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
 
   for (TInt i = 0; i < mRange->end; i += mRange->step) {
-    gDisplay.renderBitmap->DrawFastVLine(ENull, aX + 1, aY - 1, 16, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 2, aY + 14, 7, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->FillRect(ENull, aX + 2, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
-    aX += 16;
+    gDisplay.renderBitmap->DrawFastVLine(ENull, aX+10, aY - 1, 16, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 1, aY + 14, 9, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->FillRect(ENull, aX, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
+    aX += 10;
   }
 
   return f->mHeight - 4;

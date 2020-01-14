@@ -36,7 +36,7 @@ public:
 
 public:
     TBool RunBefore() {
-      mContainer->Render(30, 20);
+      mContainer->Render(80, 60);
       mContainer->Run();
       return ETrue;
     }
