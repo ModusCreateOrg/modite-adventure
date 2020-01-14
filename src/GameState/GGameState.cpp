@@ -14,7 +14,7 @@
 #define DEBUGME
 //#undef DEBUGME
 
-const TInt GAUGE_WIDTH = 90;
+//const TInt GAUGE_WIDTH = 100;
 
 // info about the dungeons
 #include "DungeonDefs.h"
@@ -43,6 +43,8 @@ void GGameState::Init() {
 
   // Clear BObject programs
   GGamePlayfield::ResetCache();
+  GPlayer::mInventoryList.FullReset();
+
 
   gViewPort->SetRect(TRect(0, 16, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
   gViewPort->Offset(0, 16);
@@ -165,32 +167,32 @@ void GGameState::PreRender() {
  *******************************************************************************/
 
 static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {
-  BBitmap *screen = gDisplay.renderBitmap;
-
-  // calculate fill percentage
-  TRect r(0, 0, GAUGE_WIDTH, 8);
-
-  // offset to display coordinates
-  r.Offset(x, y);
-
-  // draw frame
-  screen->DrawRect(vp, r, COLOR_TEXT);
-
-  // calculate percentage
-  TFloat pct = stat_max ? (TFloat(stat)) / TFloat(stat_max) : 0.;
-  TFloat gw = pct * GAUGE_WIDTH;
-
-  // fill area
-  TRect fill(0, 0, TInt(gw), 8);
-  fill.x1 += 2;
-  fill.y1 += 2;
-  fill.x2 -= 2;
-  fill.y2 -= 2;
-  if (fill.x2 < fill.x1) {
-    fill.x2 = fill.x1 + 1;
-  }
-  fill.Offset(x, y);
-  screen->FillRect(vp, fill, color);
+//  BBitmap *screen = gDisplay.renderBitmap;
+//
+//  // calculate fill percentage
+//  TRect r(0, 0, GAUGE_WIDTH, 8);
+//
+//  // offset to display coordinates
+//  r.Offset(x, y);
+//
+//  // draw frame
+//  screen->DrawRect(vp, r, COLOR_TEXT);
+//
+//  // calculate percentage
+//  TFloat pct = stat_max ? (TFloat(stat)) / TFloat(stat_max) : 0.;
+//  TFloat gw = pct * GAUGE_WIDTH;
+//
+//  // fill area
+//  TRect fill(0, 0, TInt(gw), 8);
+//  fill.x1 += 2;
+//  fill.y1 += 2;
+//  fill.x2 -= 2;
+//  fill.y2 -= 2;
+//  if (fill.x2 < fill.x1) {
+//    fill.x2 = fill.x1 + 1;
+//  }
+//  fill.Offset(x, y);
+//  screen->FillRect(vp, fill, color);
 }
 
 void GGameState::PostRender() {
@@ -917,32 +919,32 @@ TBool GGameState::SaveState() {
   stream.PrintMSize();
 
   // walk through process list and save enemies states
-  for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
-    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1 && p->mAttribute != ATTR_PLAYER_IN2) {
-      if (p->mSaveToStream) {
-#ifndef __DINGUX__
-        printf("Writing attribute %i (%s)\n", p->mAttribute, typeid(*p).name());
-#endif
-        stream.PrintMSize();
-        stream.Write(&p->mAttribute, sizeof(p->mAttribute));
-        stream.PrintMSize();
-
-#ifndef __DINGUX__
-        printf("Writing state for %s\n", typeid(*p).name());
-#endif
-        stream.PrintMSize();
-        p->WriteToStream(stream);
-        stream.PrintMSize();
-
-        //        p->WriteToStream(stream);
-      }
-#ifndef __DINGUX__
-      else {
-        printf("Skipping %i %s\n", p->mAttribute, typeid(*p).name());
-      }
-#endif
-    }
-  }
+//  for (GProcess *p = (GProcess *)mProcessList.First(); !mProcessList.End(p); p = (GProcess *)mProcessList.Next(p)) {
+//    if (p->mAttribute != ATTR_GONE && p->mAttribute != ATTR_PLAYER_IN1 && p->mAttribute != ATTR_PLAYER_IN2) {
+//      if (p->mSaveToStream) {
+//#ifndef __DINGUX__
+//        printf("Writing attribute %i (%s)\n", p->mAttribute, typeid(*p).name());
+//#endif
+//        stream.PrintMSize();
+//        stream.Write(&p->mAttribute, sizeof(p->mAttribute));
+//        stream.PrintMSize();
+//
+//#ifndef __DINGUX__
+//        printf("Writing state for %s\n", typeid(*p).name());
+//#endif
+//        stream.PrintMSize();
+//        p->WriteToStream(stream);
+//        stream.PrintMSize();
+//
+//        //        p->WriteToStream(stream);
+//      }
+//#ifndef __DINGUX__
+//      else {
+//        printf("Skipping %i %s\n", p->mAttribute, typeid(*p).name());
+//      }
+//#endif
+//    }
+//  }
 
   // write attribute of -1 to signify end of list in the stream
   TInt16 attr = -1;
@@ -963,6 +965,7 @@ TBool GGameState::SaveState() {
 }
 
 TBool GGameState::LoadState(const char *aGameName) {
+  GPlayer::mInventoryList.FullReset();
 
   printf("\n======= BEGIN %s =======\n", __FUNCTION__);
   BMemoryStream stream = *gSavedGameList.LoadSavedGame(aGameName);
@@ -984,7 +987,7 @@ TBool GGameState::LoadState(const char *aGameName) {
 
   // spawn it all
   NextLevel(mNextDungeon, mLevel);
-  LoadLevel(mName, mLevel, mNextTileMapId, EFalse);
+  LoadLevel(mName, mLevel, mNextTileMapId, ETrue);
 
   //  mGamePlayfield->DumpObjectProgram();
   printf("Reading Player\n");
