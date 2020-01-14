@@ -576,9 +576,7 @@ TBool GFinalBossProcess::SpellState() {
 
 TBool GFinalBossProcess::DeathState() {
   if (mDeathCounter <= 3) {
-    // TODO @jaygarcia drop?
-//    printf("drop $%x %d\n", mAttribute, mAttribute);
-//    GItemProcess::SpawnItem(mGameState, mIp, mAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    gGame->SetState(GAME_STATE_VICTORY);
     return EFalse;
   }
   // maybe drop item
