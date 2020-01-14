@@ -14,6 +14,8 @@ public:
 
 private:
   GDebugMenuContainer *mContainer;
+  TRGB mSavedPalette[256];
+
 };
 
 #endif //GENUS_GDEBUGMENUSTATE_H

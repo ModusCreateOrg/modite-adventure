@@ -13,7 +13,9 @@ GGameOver::GGameOver(GGameState *aGameState) {
     mSavedPalette[color] = c;
     // convert color to grayscale color
     TUint8 max = MAX(c.b, MAX(c.r, c.g));
-    c.r = c.g = c.b = max;
+//    c.r = c.g = c.b = max;
+    c.r = c.g = c.b = (max > 0) ? (max * .25) : 0;
+
     // set grayscale color in palette
     gDisplay.SetColor(color, c);
   }
@@ -52,13 +54,13 @@ static void center(const char *s, TInt y, TBool inverse = EFalse) {
 // return EFalse when menu is done
 TBool GGameOver::Run() {
   BBitmap *b = gDisplay.renderBitmap;
-  TInt x = 4, y = 10, line_height = 18;
+  TInt x = 4, y = 20, line_height = 24;
   TInt statesMax = 1;
 
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 
-  center("You are dead", y);
+  center("You Failed", y);
   y += line_height * 2;
 
   center("Try again", y, mState == 0);

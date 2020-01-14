@@ -137,6 +137,7 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     mRespawnAt[1] = aY;
 
     if (aExitingLevel == 0) {
+      printf("aExitingLevel == 0\n");
       return;
     }
 
@@ -223,6 +224,7 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     }
     Panic("Could not find dungeon entrance %d\n", aExitingDungeon);
   }
+
 }
 
 TBool GPlayerProcess::IsLedge() {

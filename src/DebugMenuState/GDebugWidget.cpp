@@ -6,9 +6,9 @@ GDebugWidget::~GDebugWidget() {}
 
 TInt GDebugWidget::Render(TInt aX, TInt aY) {
   aY += 20;
-  mText = (char *)(GGame::mDebug ? "HIDE DEBUG INFO" :"SHOW DEBUG INFO" );
+  mText = (char *)(GGame::mDebug ? "Hide Debug Info" :"Show Debug Info" );
   GButtonWidget::Render(aX, aY);
-  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
+  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight;
 }
 
 void GDebugWidget::Select() {

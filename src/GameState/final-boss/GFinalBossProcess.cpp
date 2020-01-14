@@ -14,13 +14,13 @@ enum {
   STATE_DEATH,
 };
 
-const TFloat WALK_VELOCITY = 1.0;
+const TFloat WALK_VELOCITY = 1.4;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 
-const TInt16 WALK_SPEED = 15;
+const TInt16 WALK_SPEED = 10;
 const TInt16 FIRE_SPEED = 30;
 const TInt16 HIT_SPEED = 5;
-const TInt16 IDLE_SPEED = 8;
+const TInt16 IDLE_SPEED = 1;
 const TInt16 ATTACK_SPEED = 5;
 
 
@@ -241,10 +241,10 @@ static ANIMSCRIPT fireRightAnimation[] = {
 };
 
 // constructor
-GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
+GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt16 aParams)
     : GProcess(aParams) {
   mGameState = aGameState;
-  mSprite = new GAnchorSprite(mGameState, 0, 0);
+  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
   mSprite->x = aX;
   mSprite->y = aY;
   mStep = 0;
@@ -261,6 +261,7 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
 
 // destructor
 GFinalBossProcess::~GFinalBossProcess() {
+  printf("GFinalBoss died!\n ");
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -307,18 +308,25 @@ void GFinalBossProcess::Fire(DIRECTION aDirection) {
   mDirection = aDirection;
   switch (aDirection) {
     case 0:
+      printf("earthProjectileAnimation\n");
       mSprite->StartAnimation(earthProjectileAnimation);
       break;
     case 1:
+      printf("waterProjectileAnimation\n");
+
       mSprite->StartAnimation(waterProjectileAnimation);
       break;
     case 2:
+      printf("fireProjectileAnimation\n");
       mSprite->StartAnimation(fireProjectileAnimation);
       break;
     case 3:
+      printf("energyProjectileAnimation\n");
       mSprite->StartAnimation(energyProjectileAnimation);
       break;
     default:
+      printf("DEFAULT energyProjectileAnimation\n");
+
       mSprite->StartAnimation(earthProjectileAnimation);
       break;
   }
@@ -496,20 +504,20 @@ TBool GFinalBossProcess::FireState() {
     TInt16 type = 0;
     switch (mDirection) {
       case 0:
-        type = ATTR_WIZARD_FIRE;
+        type = ATTR_WIZARD_EARTH;
         break;
       case 1:
         type = ATTR_WIZARD_WATER;
         break;
       case 2:
-        type = ATTR_WIZARD_ENERGY;
+        type = ATTR_WIZARD_FIRE;
         break;
       case 3:
-        type = ATTR_WIZARD_EARTH;
+        type = ATTR_WIZARD_ENERGY;
         break;
 
       default:
-        type = ATTR_WIZARD_ENERGY;
+        type = ATTR_WIZARD_EARTH;
         break;
     }
     TFloat xx = mSprite->x + 48,

@@ -7,7 +7,7 @@
 #include "GQuitWidget.h"
 #include "GOptionsWidget.h"
 
-GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("GAME PAUSED", aX, aY) {
+GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState) : GDialogWidget("Pause", aX, aY) {
   mGameState = aGameState;
   mTimer = 30;
   mState = GAME_MENU_PAUSE_STATE;
@@ -22,7 +22,7 @@ void GGameMenuContainer::State(GAME_MENU_STATE aState) {
 void GGameMenuContainer::PauseState() {
   Clear();
   State(GAME_MENU_KEEP_STATE);
-  mTitle = (char *)"Game Paused";
+  mTitle = (char *)"Pause";
 
   AddWidget((BWidget &) *new GResumeWidget());
   if (gGame->IsGameState() && !((GGameState *) gGameEngine)->IsBossRoom()) {
@@ -38,7 +38,7 @@ void GGameMenuContainer::PauseState() {
 void GGameMenuContainer::OptionsState() {
   Clear();
   State(GAME_MENU_KEEP_STATE);
-  mTitle = (char *)"Volume";
+  mTitle = (char *)"Options";
 
   AddWidget((BWidget &) *new GMusicWidget());
   AddWidget((BWidget &) *new GSfxWidget());
@@ -76,13 +76,13 @@ TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
   const TInt x = (SCREEN_WIDTH - (strlen(mTitle) * f->mWidth)) / 2;
 
-  if (--mTimer < 0) {
-    mTimer = 30;
-  } else if (mTimer >= 15) {
-    color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);
-  } else if (mTimer < 15) {
-    color = gWidgetTheme.GetInt(WIDGET_TITLE_FG);
-  }
+//  if (--mTimer < 0) {
+//    mTimer = 30;
+//  } else if (mTimer >= 15) {
+//    color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);
+//  } else if (mTimer < 15) {
+//    color = gWidgetTheme.GetInt(WIDGET_TITLE_FG);
+//  }
 
   gDisplay.renderBitmap->DrawStringShadow(
       ENull,
