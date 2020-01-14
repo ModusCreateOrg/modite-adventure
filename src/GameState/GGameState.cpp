@@ -461,14 +461,14 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx, yy, spikes_number--, DIRECTION_DOWN, "SPIKES");
         break;
 
-      case ATTR_METAL_DOOR_H:
+      case ATTR_METAL_GATE_H:
 #ifdef DEBUGME
         printf("METAL DOOR H at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
         GProcess::Spawn(this, op, ip, xx, yy + 30, params, DIRECTION_DOWN, "METAL DOOR HORIZONTAL");
         break;
 
-      case ATTR_METAL_DOOR_V:
+      case ATTR_METAL_GATE_V:
 #ifdef DEBUGME
         printf("METAL DOOR V at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
