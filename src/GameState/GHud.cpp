@@ -22,11 +22,15 @@ static const TRect gold_key(64, 400, 79, 415);
 
 // meter width:
 // 26, 70
-static const TInt METER_WIDTH = 50;
+static const TInt METER_WIDTH = 60;
 static const TInt METER_HEIGHT = 12;
 
 static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, TInt y, TFloat value, TFloat max) {
-  TInt w = value ? value / max * 42 : 0;
+  TFloat pct = (value / max);
+
+  const TInt innerWidth = METER_WIDTH - 2;
+
+  TInt w = (TInt)(pct *  innerWidth);
 
   screen->DrawRect(vp, x, y, x + METER_WIDTH - 1, y + METER_HEIGHT - 1, COLOR_METER_OUTLINE);
   screen->DrawFastHLine(vp, x + 1, y + 1, w, color);
