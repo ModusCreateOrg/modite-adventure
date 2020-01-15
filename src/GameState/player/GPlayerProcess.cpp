@@ -976,8 +976,8 @@ TBool GPlayerProcess::RunAfter() {
                hh = gViewPort->mRect.Height() / 2.0;
 
   // upper left corner of desired viewport position
-  TFloat xx = gViewPort->mWorldX = mSprite->x - ww,
-         yy = gViewPort->mWorldY = mSprite->y - hh;
+  TFloat xx = gViewPort->mWorldX = floor(mSprite->x - ww),
+         yy = gViewPort->mWorldY = floor(mSprite->y - hh);
 
   if (xx < 0) {
     gViewPort->mWorldX = 0;
