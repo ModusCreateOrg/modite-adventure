@@ -16,6 +16,7 @@ enum {
   GAME_STATE_RESUME_GAME,
   GAME_STATE_LOAD_SAVEGAME,
   GAME_STATE_QUIT,
+  GAME_STATE_VICTORY,
 };
 
 class GGame : public BApplication {
