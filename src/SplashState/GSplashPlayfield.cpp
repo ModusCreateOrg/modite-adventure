@@ -6,7 +6,8 @@ GSplashPlayfield::GSplashPlayfield() {
   mBackground = gResourceManager.GetBitmap(BKG_SLOT);
   gDisplay.SetPalette(mBackground);
   mFrame = 0;
-  mYStep = 3;
+  mYStep = 2;
+  mYPosition = 0;
   mAnimatedColorValue = -255;
 
   TUint16 width  = mBackground->Width(),
@@ -37,7 +38,15 @@ GSplashPlayfield::~GSplashPlayfield() {
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
 }
 
+
 void GSplashPlayfield::Render() {
+  // Wait a second
+  if (mFrame < FRAMES_PER_SECOND) {
+    gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
+    mFrame++;
+    return;
+  }
+
   TRect rect;
 
   rect.Width(mBackground->Width());
@@ -66,6 +75,10 @@ void GSplashPlayfield::Render() {
 }
 
 void GSplashPlayfield::Animate() {
+  if (mFrame < FRAMES_PER_SECOND) {
+    return;
+  }
+
   if (mYPosition < SCREEN_HEIGHT) {
     mYPosition += mYStep;
   }
@@ -77,6 +90,7 @@ void GSplashPlayfield::Animate() {
   // -1 means stop!
 
   if (mAnimatedColorValue > 0) {
+    mYStep = 3; // Speed up color anim
     mAnimatedColorValue -= mYStep;
 
     if (mAnimatedColorValue < 0) {
