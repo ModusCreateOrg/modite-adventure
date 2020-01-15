@@ -5,6 +5,7 @@
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
 
+// constructor
 GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType)
     : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
