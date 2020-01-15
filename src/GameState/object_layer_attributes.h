@@ -73,7 +73,7 @@ static inline TUint16 MAKE_OBJECT_ATTRIBUTE(TInt8 group, TInt8 order, TInt8 stat
 }
 
 // handy macro for generating the CODE to be used for the tile in Pro Motion
-static inline TUint16 MAKE_OBJECT_ATTRIBUTE(Uint64 item) {
+static inline TUint16 MAKE_OBJECT_ATTRIBUTE(TUint64 item) {
   struct OBJECT_ATTRIBUTE oa;
   oa.item.group = OA_GROUP_ITEM;
   oa.item.item = item;
