@@ -10,7 +10,7 @@ BITMAP charset_16x16.bmp
 #
 PATH resources/
 BITMAP splash.bmp
-BITMAP splash_sprites.bmp
+# BITMAP splash_sprites.bmp
 BITMAP title.bmp
 PALETTE test.pal
 
