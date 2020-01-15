@@ -122,9 +122,9 @@ TBool GDoorProcess::RunBefore() {
 }
 
 TBool GDoorProcess::RunAfter() {
-  mSprite->TestAndClearCType(STYPE_PLAYER);
+  mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
   if (mSprite2) {
-    mSprite2->TestAndClearCType(STYPE_PLAYER);
+    mSprite2->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
   }
 
   // if is in a group, we don't open on collisions.
