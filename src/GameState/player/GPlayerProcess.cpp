@@ -238,14 +238,14 @@ TBool GPlayerProcess::IsLedge() {
 TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
-      return mSprite->IsFloor(DIRECTION_UP, 0, -PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_UP, 0, MIN(-PLAYER_VELOCITY, mSprite->vy));
     case DIRECTION_DOWN:
-      return mSprite->IsFloor(DIRECTION_DOWN, 0, PLAYER_VELOCITY);
+      return mSprite->IsFloor(DIRECTION_DOWN, 0, MAX(PLAYER_VELOCITY, mSprite->vy));
     case DIRECTION_LEFT:
-      return mSprite->IsFloor(DIRECTION_LEFT, -PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_LEFT, MIN(-PLAYER_VELOCITY, mSprite->vx), 0);
     case DIRECTION_RIGHT:
     default:
-      return mSprite->IsFloor(DIRECTION_RIGHT, PLAYER_VELOCITY, 0);
+      return mSprite->IsFloor(DIRECTION_RIGHT, MAX(PLAYER_VELOCITY, mSprite->vx), 0);
   }
 }
 
