@@ -63,7 +63,7 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
     }
     mSlotRemapState[i] = EFalse;
   }
-  NextLevel(OVERWORLD_DUNGEON, 1);
+  NextLevel(3, 2);
 }
 
 // Constructor

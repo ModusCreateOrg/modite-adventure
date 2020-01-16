@@ -165,7 +165,12 @@ public:
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
     const TInt attr = GetAttribute(aWorldX, aWorldY);
 
-    return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
+    return attr == ATTR_FLOOR || attr == 15 || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
+  }
+
+  TBool IsSecretFloor(TFloat aWorldX, TFloat aWorldY) {
+    const TInt attr = GetAttribute(aWorldX, aWorldY);
+    return attr == 15;
   }
 
   TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {
