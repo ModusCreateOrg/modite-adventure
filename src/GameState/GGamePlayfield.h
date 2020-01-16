@@ -163,14 +163,26 @@ public:
   }
 
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
-    const TInt attr = GetAttribute(aWorldX, aWorldY);
+    const TInt col = TInt(FLOOR(aWorldX / TILESIZE)),
+              row = TInt(FLOOR(aWorldY / TILESIZE));
+    if (row > 0 && row < mMapHeight - 1 && col > 0 && col < mMapWidth - 1) {
+      const TInt attr = GetAttribute(aWorldX, aWorldY);
+      return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
+    }
+    if (row <= 0 && aWorldY > -24) {
+      return GetAttribute(0, col) == ATTR_FLOOR && GetAttribute(aWorldX, aWorldY + 24) == ATTR_FLOOR;
+    }
+    if (row >= mMapHeight - 1 && TInt(aWorldY) < mMapHeight * TILESIZE + 24) {
+      return GetAttribute(mMapHeight - 1, col) == ATTR_FLOOR && GetAttribute(aWorldX, aWorldY - 24) == ATTR_FLOOR;
+    }
+    if (col <= 0 && aWorldX > -24) {
+      return GetAttribute(row, 0) == ATTR_FLOOR && GetAttribute(aWorldX + 24, aWorldY) == ATTR_FLOOR;
+    }
+    if (col >= mMapWidth - 1 && TInt(aWorldX) < mMapWidth * TILESIZE + 24) {
+      return GetAttribute(row, mMapWidth - 1) == ATTR_FLOOR && GetAttribute(aWorldX - 24, aWorldY) == ATTR_FLOOR;
+    }
 
-    return attr == ATTR_FLOOR || attr == 15 || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
-  }
-
-  TBool IsSecretFloor(TFloat aWorldX, TFloat aWorldY) {
-    const TInt attr = GetAttribute(aWorldX, aWorldY);
-    return attr == 15;
+    return EFalse;
   }
 
   TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {

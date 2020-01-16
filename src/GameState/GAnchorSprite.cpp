@@ -79,10 +79,6 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   GetRect(r);
   r.Offset(aVx, aVy);
 
-  if (r.x1 < 0 || r.y1 < 0) {
-    return mGameState->mGamePlayfield->IsSecretFloor(r.x1 + FLOOR_ADJUST_LEFT, r.y1) && mGameState->mGamePlayfield->IsSecretFloor(r.x2 - FLOOR_ADJUST_RIGHT, r.y1);
-  }
-
   switch (aDirection) {
     case DIRECTION_UP:
       if (IsFloorTile(r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
