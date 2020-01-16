@@ -21,6 +21,10 @@
 #include "GameState/final-boss/GFinalBossProcess.h"
 #include "GameState/wizard/GWizardProcess.h"
 
+// DEBUG_FINALBOSS causes wizard span to be final boss spawn instead, to debug the final boss
+#define DEBUG_FINALBOSS
+#undef DEBUG_FINALBOSS
+
 void GProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mAttribute, sizeof(mAttribute));
   WriteCustomToStream(aStream); // write additional data, if any
@@ -132,10 +136,11 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_WIZARD_WATER:
       return aGameState->AddProcess(new GWizardProcess(aGameState, xx, yy, BOSS_SLOT, ip, ATTR_WIZARD_WATER, params, WATER_WIZARD_BMP_SPRITES));
     case ATTR_WIZARD_EARTH:
+#ifndef DEBUG_FINALBOSS
       return aGameState->AddProcess(new GWizardProcess(aGameState, xx, yy, BOSS_SLOT, ip, ATTR_WIZARD_EARTH, params, EARTH_WIZARD_BMP_SPRITES));
+#endif
     case ATTR_FINAL_BOSS:
-      printf("HERE\n");
-      return aGameState->AddProcess(new GFinalBossProcess(aGameState, xx, yy, BOSS_SLOT, ip, params));
+      return aGameState->AddProcess(new GFinalBossProcess(aGameState, xx, yy, ip, params));
   }
   return ENull;
 }

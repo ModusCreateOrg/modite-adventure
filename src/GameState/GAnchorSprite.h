@@ -24,27 +24,27 @@ enum ELEMENT {
 };
 
 const TFloat SPELLBOOK_MATRIX[4][4] = {
-     // water,   fire,  earth, energy
-        { 1.0,    1.0,    1.0,    1.0 }, // water
-        { 1.5,    1.0,    1.5,    1.5 }, // fire
-        { 1.0,    1.5,    1.0,    1.5 }, // earth
-        { 1.5,    1.5,    1.5,    1.0 }, // energy
+  // water,   fire,  earth, energy
+  { 1.0, 1.0, 1.0, 1.0 }, // water
+  { 1.5, 1.0, 1.5, 1.5 }, // fire
+  { 1.0, 1.5, 1.0, 1.5 }, // earth
+  { 1.5, 1.5, 1.5, 1.0 }, // energy
 };
 
 const TFloat RING_MATRIX[4][4] = {
-      // water,   fire,  earth, energy
-        { 1.0 ,   1.0 ,   1.0 ,   1.0  }, // water
-        { 1.25,   1.0 ,   1.25,   1.25 }, // fire
-        { 1.0 ,   1.25,   1.0 ,   1.25 }, // earth
-        { 1.25,   1.25,   1.25,   1.0  }, // energy
+  // water,   fire,  earth, energy
+  { 1.0, 1.0, 1.0, 1.0 },    // water
+  { 1.25, 1.0, 1.25, 1.25 }, // fire
+  { 1.0, 1.25, 1.0, 1.25 },  // earth
+  { 1.25, 1.25, 1.25, 1.0 }, // energy
 };
 
 const TFloat AMULET_MATRIX[4][4] = {
-      // water,   fire,  earth, energy
-        { 0.25,   2.0 ,   2.0 ,   2.0  }, // water
-        { 1.0 ,   0.25,   1.0 ,   1.0  }, // fire
-        { 1.0 ,   1.0 ,   0.25,   1.0  }, // earth
-        { 2.0 ,   1.0 ,   1.0 ,   0.25 }, // energy
+  // water,   fire,  earth, energy
+  { 0.25, 2.0, 2.0, 2.0 }, // water
+  { 1.0, 0.25, 1.0, 1.0 }, // fire
+  { 1.0, 1.0, 0.25, 1.0 }, // earth
+  { 2.0, 1.0, 1.0, 0.25 }, // energy
 };
 
 const TUint32 STYPE_OBJECT_BIT = STYPE_USER_BIT;
@@ -108,6 +108,7 @@ public:
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
+
 public:
   void Dump();
 
