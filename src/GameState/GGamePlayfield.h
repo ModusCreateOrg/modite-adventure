@@ -117,6 +117,8 @@ const TUint16 ATTR_RED_BOTTLE4 = 31;  // 100% full
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
 
+const TInt MAP_EDGE_OFFSET = 24;
+
 class GGamePlayfield : public BMapPlayfield {
 public:
   GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId);
@@ -169,24 +171,34 @@ public:
       const TInt attr = GetAttribute(aWorldX, aWorldY);
       return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
     }
-    if (row <= 0 && aWorldY > -24) {
-      return GetAttribute(0, col) == ATTR_FLOOR && GetAttribute(aWorldX, aWorldY + 24) == ATTR_FLOOR;
+    if (row <= 0 && aWorldY > -MAP_EDGE_OFFSET) {
+      const TInt attr = GetAttribute(0, col);
+      return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aWorldY < TILESIZE - MAP_EDGE_OFFSET);
     }
-    if (row >= mMapHeight - 1 && TInt(aWorldY) < mMapHeight * TILESIZE + 24) {
-      return GetAttribute(mMapHeight - 1, col) == ATTR_FLOOR && GetAttribute(aWorldX, aWorldY - 24) == ATTR_FLOOR;
+    if (row >= mMapHeight - 1 && TInt(aWorldY) < mMapHeight * TILESIZE + MAP_EDGE_OFFSET) {
+      const TInt attr = GetAttribute(mMapHeight - 1, col);
+      return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && TInt(aWorldY) > (mMapHeight - 1) * TILESIZE + MAP_EDGE_OFFSET);
     }
-    if (col <= 0 && aWorldX > -24) {
-      return GetAttribute(row, 0) == ATTR_FLOOR && GetAttribute(aWorldX + 24, aWorldY) == ATTR_FLOOR;
+    if (col <= 0 && aWorldX > -MAP_EDGE_OFFSET) {
+      const TInt attr = GetAttribute(row, 0);
+      return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && aWorldX < TILESIZE - MAP_EDGE_OFFSET);
     }
-    if (col >= mMapWidth - 1 && TInt(aWorldX) < mMapWidth * TILESIZE + 24) {
-      return GetAttribute(row, mMapWidth - 1) == ATTR_FLOOR && GetAttribute(aWorldX - 24, aWorldY) == ATTR_FLOOR;
+    if (col >= mMapWidth - 1 && TInt(aWorldX) < mMapWidth * TILESIZE + MAP_EDGE_OFFSET) {
+      const TInt attr = GetAttribute(row, mMapWidth - 1);
+      return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && TInt(aWorldX) > (mMapWidth - 1) * TILESIZE + MAP_EDGE_OFFSET);
     }
 
     return EFalse;
   }
 
   TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {
-    return GetAttribute(aWorldX, aWorldY) == ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
+    const TInt col = TInt(FLOOR(aWorldX / TILESIZE)),
+            row = TInt(FLOOR(aWorldY / TILESIZE));
+    if (row > 0 && row < mMapHeight - 1 && col > 0 && col < mMapWidth - 1) {
+      return GetAttribute(aWorldX, aWorldY) == ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
+    }
+
+    return EFalse;
   }
 
 public:
