@@ -60,6 +60,13 @@ public:
 
   TBool RunAfter() OVERRIDE;
 
+  // sfx
+protected:
+  virtual void SfxTakeDamage() {}
+  virtual void SfxDeath() {}
+  virtual void SfxTaunt() {}
+  virtual void SfxAttack() {}
+
 protected:
   // test if a wall in the specified direction from sprite's current location
   TBool IsWall(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);

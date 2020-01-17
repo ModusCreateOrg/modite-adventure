@@ -80,6 +80,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case ATTACK_STATE:
+      SfxAttack();
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -88,6 +89,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case HIT_STATE:
+      SfxTakeDamage();
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -104,9 +106,9 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case DEATH_STATE: {
+      SfxDeath();
       mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
-      gSoundPlayer.SfxEnemyDeath();
       auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
@@ -135,6 +137,7 @@ TBool GEnemyProcess::MaybeHit() {
     mSprite->ClearCType(STYPE_SPELL);
     if (mSprite->MaybeDamage(ETrue)) {
       mSprite->mInvulnerable = ETrue;
+      SfxTakeDamage();
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -144,6 +147,7 @@ TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     if (mSprite->MaybeDamage(EFalse)) {
+      SfxTakeDamage();
       mSprite->mInvulnerable = ETrue;
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
