@@ -352,6 +352,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
   RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
 
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
+
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
 
