@@ -437,6 +437,11 @@ void GTrollProcess::Idle(DIRECTION aDirection) {
   }
 }
 
+void GTrollProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GTrollProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

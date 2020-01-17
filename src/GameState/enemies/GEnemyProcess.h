@@ -11,6 +11,7 @@
 #include "GEnemyDeathOverlayProcess.h"
 
 const TInt16 ATTACK_TIME = 1 * FRAMES_PER_SECOND;
+const TInt16 TAUNT_TIME = 4 * FRAMES_PER_SECOND;
 
 enum {
   IDLE_STATE,
@@ -19,6 +20,7 @@ enum {
   HIT_STATE,
   DEATH_STATE,
   SPELL_STATE, // hit with magic spell
+  TAUNT_STATE,
 };
 
 static const char *stateMessages[] = {
@@ -28,6 +30,7 @@ static const char *stateMessages[] = {
   "HIT STATE",
   "DEATH STATE",
   "SPELL STATE",
+  "TAUNT STATE",
 };
 
 class GEnemyProcess : public GProcess {
@@ -52,6 +55,9 @@ protected:
   TInt16 mHitPoints;
   TFloat mVelocity;
   TInt mRangeX, mRangeY;
+
+  TBool mTaunt;
+  TInt16 mTauntTimer;
 
   GAnchorSprite *mPlayerSprite;
 
@@ -87,6 +93,9 @@ protected:
 
   virtual void Idle(DIRECTION aDirection) = 0;
   TBool IdleState();
+
+  virtual void Taunt(DIRECTION aDirection) = 0;
+  TBool TauntState();
 
   virtual void Walk(DIRECTION aDirection) = 0;
   TBool WalkState();

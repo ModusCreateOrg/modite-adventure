@@ -394,6 +394,11 @@ void GSpiderProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
 }
 
+void GSpiderProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GSpiderProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

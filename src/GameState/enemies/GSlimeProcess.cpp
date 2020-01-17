@@ -437,6 +437,12 @@ void GSlimeProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
 }
 
+void GSlimeProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
+
 void GSlimeProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

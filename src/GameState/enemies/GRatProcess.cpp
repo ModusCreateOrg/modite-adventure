@@ -511,6 +511,11 @@ void GRatProcess::Idle(DIRECTION aDirection) {
   }
 }
 
+void GRatProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GRatProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

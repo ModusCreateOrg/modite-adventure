@@ -799,6 +799,11 @@ void GGoblinProcess::Idle(DIRECTION aDirection) {
   }
 }
 
+void GGoblinProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GGoblinProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

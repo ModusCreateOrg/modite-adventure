@@ -374,6 +374,11 @@ void GGoblinSniperProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
 }
 
+void GGoblinSniperProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;

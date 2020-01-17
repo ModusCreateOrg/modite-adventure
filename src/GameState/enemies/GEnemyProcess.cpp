@@ -32,6 +32,8 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
+  mTaunt = ETrue;
+  mTauntTimer = TAUNT_TIME;
 
   mEnemyDeathOverlayProcess = ENull;
   mSpellOverlayProcess = ENull;
@@ -72,6 +74,13 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vx = 0;
       mSprite->vy = 0;
       Idle(aDirection);
+      break;
+
+    case TAUNT_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      Taunt(aDirection);
       break;
 
     case WALK_STATE:
@@ -231,8 +240,15 @@ TBool GEnemyProcess::MaybeAttack() {
   return EFalse;
 }
 
-TBool GEnemy::MaybeTaunt() {
-  return EFalse;
+TBool GEnemyProcess::MaybeTaunt() {
+  if (!mTaunt) {
+    return EFalse;
+  }
+  if (--mTauntTimer > 0) {
+    return EFalse;
+  }
+  NewState(TAUNT_STATE, mSprite->mDirection);
+  return ETrue;
 }
 
 TBool GEnemyProcess::AttackState() {
@@ -341,6 +357,10 @@ TBool GEnemyProcess::IdleState() {
     return ETrue;
   }
 
+  if (MaybeTaunt()) {
+    return ETrue;
+  }
+
   if (MaybeAttack()) {
     return ETrue;
   }
@@ -365,12 +385,26 @@ TBool GEnemyProcess::IdleState() {
   return ETrue;
 }
 
+TBool GEnemyProcess::TauntState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+  if (mSprite->AnimDone()) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+  return ETrue;
+}
+
 TBool GEnemyProcess::WalkState() {
   if (MaybeAttack()) {
     return ETrue;
   }
 
   if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeTaunt()) {
     return ETrue;
   }
 
@@ -407,6 +441,8 @@ TBool GEnemyProcess::RunBefore() {
   }
   switch (mState) {
     case IDLE_STATE:
+      return IdleState();
+    case TAUNT_STATE:
       return IdleState();
     case WALK_STATE:
       return WalkState();
