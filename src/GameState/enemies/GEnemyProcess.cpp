@@ -83,6 +83,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 #ifdef DEBUGME
       printf("new state TAUNT\n");
 #endif
+      SfxTaunt();
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
