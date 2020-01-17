@@ -21,18 +21,20 @@ public:
 protected:
   void Idle(DIRECTION aDirection);
   void Walk(DIRECTION aDirection);
-  void Fire(DIRECTION aDirection);
+  void Projectile(DIRECTION aDirection);
+  void Teleport(DIRECTION aDirection);
   void Hit(DIRECTION aDirection);
   void Spell(DIRECTION aDirection);
   void Death(DIRECTION aDirection);
 
 protected:
-  TBool MaybeFire();
+  TBool MaybeAttack();
   TBool MaybeHit();
 
   TBool IdleState();
   TBool WalkState();
-  TBool FireState();
+  TBool ProjectileState();
+  TBool TeleportState();
   TBool HitState();
   TBool SpellState();
   TBool DeathState();
@@ -49,6 +51,7 @@ protected:
 protected:
   TInt mStateTimer;
   TInt mAttackTimer;
+  TBool mAttackType;
   TInt mHitTimer;
   void SetAttackTimer() { mAttackTimer = 5 * 60; }
 };

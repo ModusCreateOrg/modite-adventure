@@ -67,6 +67,17 @@ enum {
   FIRE_WIZARD_PILLAR_SLOT,
   ENERGY_WIZARD_PILLAR_SLOT,
 
+  // FINAL BOSS
+  EARTH_FINAL_BOSS_PROJECTILE_SLOT,
+  WATER_FINAL_BOSS_PROJECTILE_SLOT,
+  FIRE_FINAL_BOSS_PROJECTILE_SLOT,
+  ENERGY_FINAL_BOSS_PROJECTILE_SLOT,
+
+  EARTH_FINAL_BOSS_PILLAR_SLOT,
+  WATER_FINAL_BOSS_PILLAR_SLOT,
+  FIRE_FINAL_BOSS_PILLAR_SLOT,
+  ENERGY_FINAL_BOSS_PILLAR_SLOT,
+
   // temporary slot
   TEMP_SLOT,
 
@@ -145,7 +156,6 @@ const TUint16 IMG_FIREBALL_EXPLODE = 5;
 // MID BOSS DEATH
 const TUint16 IMG_MID_BOSS_DEATH = 0;
 
-
 // WIZARD
 const TUint16 IMG_WIZARD_IDLE = 0;
 const TUint16 IMG_WIZARD_WALK_DOWN = 0;
@@ -170,6 +180,13 @@ const TUint16 IMG_FINAL_BOSS_IDLE = 0;
 const TUint16 IMG_FINAL_BOSS_WALK_DOWN = 0;
 const TUint16 IMG_FINAL_BOSS_WALK_RIGHT = 3;
 const TUint16 IMG_FINAL_BOSS_WALK_UP = 6;
+
+// FINAL BOSS PROJECTILE
+const TUint16 IMG_FINAL_BOSS_PROJECTILE = 0;
+const TUint16 IMG_FINAL_BOSS_PROJECTILE_EXPLODE = 5;
+
+// FINAL BOSS  PILLAR
+const TUint16 IMG_FINAL_BOSS_PILLAR = 0;
 
 // CHARA_SPIDER_BMP
 const TUint16 IMG_SPIDER_IDLE = 0;
@@ -279,16 +296,24 @@ const TUint16 IMG_TROLL_DAMAGE_UP = 40;
 const TUint16 IMG_ENEMY_DEATH = 0;
 
 // GLOBAL_OBJECT_LAYER_BMP
-const TUint16 IMG_WOOD_DOOR_H = 10;
-const TUint16 IMG_METAL_DOOR_H = 11;
+const TUint16 IMG_WOOD_DOOR_H_TOP = 10;      // Top
+const TUint16 IMG_WOOD_DOOR_H_BOTTOM = 20;   // Bottom. This is the code ATTR_WOOD_DOOR_H
+const TUint16 IMG_METAL_GATE_H_TOP = 11;     // Top
+const TUint16 IMG_METAL_GATE_H_BOTTOM = 21;  // Bottom. This is the code ATTR_METAL_GATE_H
+
 const TUint16 IMG_POT = 12;               // through 14
 const TUint16 IMG_SPIKES = 15;            // through 19
 const TUint16 IMG_CHEST = 22;             // closed, open is 23
 const TUint16 IMG_CRATE = 24;             // through 28
-const TUint16 IMG_WOOD_DOOR_V = 30;       // top, bottom is 30
-const TUint16 IMG_METAL_DOOR_V = 31;      // top, bottom is 31
+
+const TUint16 IMG_WOOD_DOOR_V_TOP = 30;       // Top.
+const TUint16 IMG_WOOD_DOOR_V_BOTTOM = 40;    // Bottom.
+const TUint16 IMG_METAL_GATE_V_TOP = 31;      // Top
+const TUint16 IMG_METAL_GATE_V_BOTTOM = 41;   // Bottom
+
 const TUint16 IMG_FLOOR_SWITCH = 32;      // grey, 33 is pressed
 const TUint16 IMG_FLOOR_SWITCH_WOOD = 34; // brown, 35 is pressed
+
 const TUint16 IMG_LEVER = 36;             // left, center = 36, right = 37
 const TUint16 IMG_STONE_STAIRS_DOWN = 48;
 const TUint16 IMG_STONE_STAIRS_UP = 49; // 39 is the upper sprite image for the very top stairs
@@ -315,23 +340,29 @@ const TUint16 IMG_GREEN_POTION1 = 110;
 const TUint16 IMG_GREEN_POTION2 = 111;
 const TUint16 IMG_BLUE_POTION1 = 112;
 const TUint16 IMG_BLUE_POTION2 = 113;
-const TUint16 IMG_EMPTY_BOTTLE = 114; // EMPTY
-const TUint16 IMG_HEART = 84; // EMPTY
-const TUint16 IMG_BLUE_BOTTLE1 = 120;   // 25% full
-const TUint16 IMG_BLUE_BOTTLE2 = 121;   // 50% full
-const TUint16 IMG_BLUE_BOTTLE3 = 122;   // 75% full
-const TUint16 IMG_BLUE_BOTTLE4 = 123;   // 100% full
-const TUint16 IMG_GREEN_BOTTLE1 = 124;  // 25% full
-const TUint16 IMG_GREEN_BOTTLE2 = 125;  // 50% full
-const TUint16 IMG_GREEN_BOTTLE3 = 126;  // 75% full
-const TUint16 IMG_GREEN_BOTTLE4 = 127;  // 100% full
+const TUint16 IMG_EMPTY_BOTTLE = 114;  // EMPTY
+const TUint16 IMG_HEART = 84;          // EMPTY
+const TUint16 IMG_BLUE_BOTTLE1 = 120;  // 25% full
+const TUint16 IMG_BLUE_BOTTLE2 = 121;  // 50% full
+const TUint16 IMG_BLUE_BOTTLE3 = 122;  // 75% full
+const TUint16 IMG_BLUE_BOTTLE4 = 123;  // 100% full
+const TUint16 IMG_GREEN_BOTTLE1 = 124; // 25% full
+const TUint16 IMG_GREEN_BOTTLE2 = 125; // 50% full
+const TUint16 IMG_GREEN_BOTTLE3 = 126; // 75% full
+const TUint16 IMG_GREEN_BOTTLE4 = 127; // 100% full
 
 //// RESERVED COLORS
-const TUint8 COLOR_SHADOW = 246;
-const TUint8 COLOR_SHMOO_RED = 247;
-const TUint8 COLOR_SHMOO_GREEN = 249;
-const TUint8 COLOR_EXPERIENCE = 250; // experience bar
-const TUint8 COLOR_HEALTH = 251;     // health bar
+const TUint8 COLOR_SHADOW = 241;
+const TUint8 COLOR_SHMOO_RED = 242;
+const TUint8 COLOR_SHMOO_GREEN = 243;
+const TUint8 COLOR_HUD_BG = 244;
+const TUint8 COLOR_METER_OUTLINE = 245;
+const TUint8 COLOR_HEALTH = 246;  // health bar
+const TUint8 COLOR_HEALTH2 = 247; // health bar
+const TUint8 COLOR_MAGIC = 248;
+const TUint8 COLOR_MAGIC2 = 249;
+const TUint8 COLOR_EXPERIENCE = 250;  // experience bar
+const TUint8 COLOR_EXPERIENCE2 = 251; // experience bar
 const TUint8 COLOR_SHMOO = 252;
 const TUint8 COLOR_TEXT_SHADOW = 253;
 const TUint8 COLOR_TEXT_BG = 254;

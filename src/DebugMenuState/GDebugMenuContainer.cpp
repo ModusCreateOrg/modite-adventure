@@ -37,8 +37,8 @@ void GDebugMenuContainer::SetState(TInt aState) {
     AddWidget((BWidget &) *new GDebugWidget());
     AddWidget((BWidget &) *new GHealthWidget());
     AddWidget((BWidget &) *new GManaWidget());
-    AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG LEVELS", DEBUG_LEVEL, this));
-    AddWidget((BWidget &) *new GDebugButtonWidget("DEBUG INVENTORY", DEBUG_INV, this));
+    AddWidget((BWidget &) *new GDebugButtonWidget("Dungeon Levels", DEBUG_LEVEL, this));
+    AddWidget((BWidget &) *new GDebugButtonWidget("Inventory", DEBUG_INV, this));
   } else if (mState == DEBUG_LEVEL) {
     mTitle = (char*)"DEBUG LEVELS";
     for (TUint8 i = 0; i < NUM_DUNGEONS; i++) {

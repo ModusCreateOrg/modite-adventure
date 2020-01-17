@@ -34,8 +34,8 @@ const TUint16 ATTR_CHEST = 6;
 const TUint16 ATTR_SPIKES = 7;
 const TUint16 ATTR_WOOD_DOOR_H = 8;   // horizontal
 const TUint16 ATTR_WOOD_DOOR_V = 9;   // vertical
-const TUint16 ATTR_METAL_DOOR_H = 10; // horizontal
-const TUint16 ATTR_METAL_DOOR_V = 11; // vertical
+const TUint16 ATTR_METAL_GATE_H = 10; // horizontal
+const TUint16 ATTR_METAL_GATE_V = 11; // vertical
 const TUint16 ATTR_LEVER = 12;        // tri state lever
 const TUint16 ATTR_FLOOR_SWITCH = 13;
 const TUint16 ATTR_FLOOR_SWITCH_WOOD = 14;
@@ -62,6 +62,10 @@ const TUint16 ATTR_WIZARD_WATER = 1006;
 const TUint16 ATTR_WIZARD_FIRE = 1007;
 const TUint16 ATTR_WIZARD_ENERGY = 1008;
 const TUint16 ATTR_FINAL_BOSS = 1009;
+const TUint16 ATTR_FINAL_BOSS_EARTH = 1005;
+const TUint16 ATTR_FINAL_BOSS_WATER = 1006;
+const TUint16 ATTR_FINAL_BOSS_FIRE = 1007;
+const TUint16 ATTR_FINAL_BOSS_ENERGY = 1008;
 
 
 

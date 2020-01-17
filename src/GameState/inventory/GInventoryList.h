@@ -43,6 +43,7 @@ public:
 
 public:
   void Dump();
+  void FullReset();
 
 public:
   TUint16 mCount; // number of items in list

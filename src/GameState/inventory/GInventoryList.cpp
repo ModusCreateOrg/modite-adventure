@@ -4,9 +4,13 @@
 #include "Items.h"
 
 GInventoryList::GInventoryList() : BList() {
+  FullReset();
+  //
+}
+
+void GInventoryList::FullReset() {
   Reset();
   mCount = 0;
-  //
 }
 
 void GInventoryList::DropItem(GInventoryItem *aItem) {

@@ -38,10 +38,10 @@ const TUint32 SFLAG_KNOCKBACK = 1 << SFLAG_KNOCKBACK_BIT;
 const TInt PRIORITY_BELOW = 500;
 
 // Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 1;
-const TFloat FLOOR_ADJUST_TOP = 1;
-const TFloat FLOOR_ADJUST_RIGHT = 1;
-const TFloat FLOOR_ADJUST_BOTTOM = 1;
+const TFloat FLOOR_ADJUST_LEFT = 2;
+const TFloat FLOOR_ADJUST_TOP = 2;
+const TFloat FLOOR_ADJUST_RIGHT = 2;
+const TFloat FLOOR_ADJUST_BOTTOM = 2;
 
 const TInt BASE_HIT_POINTS = 100;
 const TInt BASE_STRENGTH = 25;
@@ -82,6 +82,7 @@ public:
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
+
 public:
   void Dump();
 

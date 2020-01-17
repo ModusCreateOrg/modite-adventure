@@ -43,6 +43,7 @@ SET(MODITE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/src/GameMenuState
   ${CMAKE_SOURCE_DIR}/src/DebugMenuState
   ${CMAKE_SOURCE_DIR}/src/GameOverState
+  ${CMAKE_SOURCE_DIR}/src/VictoryState
   ${CMAKE_SOURCE_DIR}/src/MainMenuState
   ${CMAKE_SOURCE_DIR}/src/MainOptionsState
   ${CMAKE_SOURCE_DIR}/src/SplashState

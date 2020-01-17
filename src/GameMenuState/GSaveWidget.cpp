@@ -2,6 +2,8 @@
 
 GSaveWidget::GSaveWidget(GGameState *aGameState) : GButtonWidget("Save Progress") {
   mGameState = aGameState;
+  mHeight = 24;
+
 }
 
 GSaveWidget::~GSaveWidget() {}

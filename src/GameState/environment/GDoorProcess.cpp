@@ -9,54 +9,78 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
   mHorizontal = aHorizontal;
 
   if (mHorizontal) {
+    // Bottom Part (The controlling factor)
     mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-      aWood ? IMG_WOOD_DOOR_H : IMG_METAL_DOOR_H,
+      aWood ? IMG_WOOD_DOOR_H_BOTTOM : IMG_METAL_GATE_H_BOTTOM,
       STYPE_OBJECT);
-    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR 1" : "ENVIRONMENT HORIZONTAL METAL DOOR 1");
-    mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_DOOR_H;
-  }
-  else {
-    mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-      aWood ? IMG_WOOD_DOOR_V : IMG_METAL_DOOR_V,
-      STYPE_OBJECT);
-    mSprite->Name(aWood ? "ENVIRONMENT VERTICAL WOOD DOOR 1" : "ENVIRONMENT VERTICAL METAL DOOR 1");
-    mAttribute = aWood ? ATTR_WOOD_DOOR_V : ATTR_METAL_DOOR_V;
-  }
 
-  mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
+    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR BOTTOM" : "ENVIRONMENT HORIZONTAL METAL GATE BOTTOM");
+    mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_GATE_H;
 
-  mSprite->w = 32;
-  mSprite->h = (mHorizontal ? 32 : 64);
-  mSprite->cx = -16;
-  mSprite->x = aX;
-  mSprite->y = aY + (mHorizontal ? 2.0 : 3.0);
-  mGameState->AddSprite(mSprite);
-//  mSprite->SetWall(ETrue);
+    mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
 
-  if (!mHorizontal) {
-    mSprite->SetWall(ETrue);
-  }
+    mSprite->w = 32;
+    mSprite->h = 64;
+    mSprite->cx = -16;
+    mSprite->x = aX;
+    mSprite->y = aY + (mHorizontal ? 2.0 : 3.0);
 
-  if (!mHorizontal) {
+    // Top Part
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-      aWood ? IMG_WOOD_DOOR_V - 10 : IMG_METAL_DOOR_V - 10, STYPE_OBJECT);
+                                 aWood ? IMG_WOOD_DOOR_H_TOP : IMG_METAL_GATE_H_TOP, STYPE_OBJECT);
 
-    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL DOOR 2");
+    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL GATE 2");
     mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
 
-    mSprite2->w = 32;
-    mSprite2->h = 64;
+    mSprite2->w = mSprite->w;
+    mSprite2->h = 32;
     mSprite2->cx = -16;
+    mSprite2->cy = 32;
+    mSprite2->y = mSprite->y - 32;
+    mSprite2->x = mSprite->x;
+
+  }
+  else {
+    // Bottom Part (The controlling factor)
+    mSprite = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+                                aWood ? IMG_WOOD_DOOR_V_BOTTOM : IMG_METAL_GATE_V_BOTTOM,
+                                STYPE_OBJECT);
+
+    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR BOTTOM" : "ENVIRONMENT HORIZONTAL METAL GATE BOTTOM");
+    mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_GATE_H;
+
+    mSprite->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
+
+    mSprite->w = 16;
+    mSprite->h = 64;
+    mSprite->cx = 0;
+    mSprite->x = aX;
+    mSprite->y = aY + (mHorizontal ? 2.0 : 3.0);
+
+    // Top Part
+    mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
+                                 aWood ? IMG_WOOD_DOOR_V_TOP : IMG_METAL_GATE_V_TOP, STYPE_OBJECT);
+
+    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR TOP" : "IGNORE VERTICAL METAL GATE TOP");
+    mSprite2->SetCMask(STYPE_PBULLET | STYPE_PLAYER | STYPE_ENEMY);
+
+    mSprite2->w = mSprite->w;
+    mSprite2->h = 32;
+//    mSprite2->cx = mSprite->cx;
     mSprite2->cy = 32;
     mSprite2->x = mSprite->x;
     mSprite2->y = mSprite->y - 32;
-    mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
-    mGameState->AddSprite(mSprite2);
-    if (!mHorizontal) {
-      mSprite2->SetWall(ETrue);
-    }
   }
+
+
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
+  mGameState->AddSprite(mSprite);
+
+  // Top Part (The candy)
+
+  mSprite2->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
+  mGameState->AddSprite(mSprite2);
+
 }
 
 GDoorProcess::~GDoorProcess() {
@@ -98,9 +122,9 @@ TBool GDoorProcess::RunBefore() {
 }
 
 TBool GDoorProcess::RunAfter() {
-  mSprite->TestAndClearCType(STYPE_PLAYER);
+  mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
   if (mSprite2) {
-    mSprite2->TestAndClearCType(STYPE_PLAYER);
+    mSprite2->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
   }
 
   // if is in a group, we don't open on collisions.

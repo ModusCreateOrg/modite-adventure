@@ -24,7 +24,7 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mLevel, sizeof(mLevel));
   stream.Write(&mNextLevel, sizeof(mNextLevel));
   stream.Write(&mExperience, sizeof(mExperience));
-  stream.Write(&mHitPoints, sizeof(mHitPoints));
+//  stream.Write(&mHitPoints, sizeof(mHitPoints));
   stream.Write(&mMaxHitPoints, sizeof(mMaxHitPoints));
   stream.Write(&mHealthPotion, sizeof(mHealthPotion));
   stream.Write(&mManaPotion, sizeof(mManaPotion));
@@ -51,7 +51,7 @@ void GPlayer::ReadFromStream(BMemoryStream &stream) {
   stream.Read(&mLevel, sizeof(mLevel));
   stream.Read(&mNextLevel, sizeof(mNextLevel));
   stream.Read(&mExperience, sizeof(mExperience));
-  stream.Read(&mHitPoints, sizeof(mHitPoints));
+//  stream.Read(&mHitPoints, sizeof(mHitPoints));
   stream.Read(&mMaxHitPoints, sizeof(mMaxHitPoints));
   stream.Read(&mHealthPotion, sizeof(mHealthPotion));
   stream.Read(&mManaPotion, sizeof(mManaPotion));

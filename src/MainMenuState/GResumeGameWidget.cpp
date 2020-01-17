@@ -1,7 +1,7 @@
 #include "GResumeGameWidget.h"
 #include "common/GSavedGameList.h"
 
-GResumeGameWidget::GResumeGameWidget() : GButtonWidget("RESUME GAME", -1) {
+GResumeGameWidget::GResumeGameWidget() : GButtonWidget("Resume Game", -1) {
   gSavedGameList.LoadSavedGameList();
 }
 

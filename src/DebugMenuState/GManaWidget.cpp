@@ -6,7 +6,7 @@ static const TRange health_options = {
   0, 100, 25
 };
 
-GManaWidget::GManaWidget() : GSoundSliderWidget("MANA", &health_options, COLOR_TEXT, COLOR_TEXT_BG) {
+GManaWidget::GManaWidget() : GSoundSliderWidget("Mana", &health_options, COLOR_TEXT, COLOR_TEXT_BG) {
   mHeight = 25;
 }
 
@@ -20,7 +20,7 @@ TInt GManaWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
 TInt GManaWidget::Render(TInt aX, TInt aY) {
   aY += mHeight;
   mSelectedValue = GPlayer::mManaPotion;
-  GSoundSliderWidget::Render(aX, aY);
+  GSoundSliderWidget::Render(aX + 10, aY);
   return 4;
 }
 

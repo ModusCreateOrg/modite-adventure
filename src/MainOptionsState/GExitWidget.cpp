@@ -1,6 +1,6 @@
 #include "GExitWidget.h"
 
-GExitWidget::GExitWidget() : GButtonWidget("EXIT") {}
+GExitWidget::GExitWidget() : GButtonWidget("Back") {}
 
 GExitWidget::~GExitWidget() {}
 
