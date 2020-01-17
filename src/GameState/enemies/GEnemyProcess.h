@@ -11,7 +11,6 @@
 #include "GEnemyDeathOverlayProcess.h"
 
 const TInt16 ATTACK_TIME = 1 * FRAMES_PER_SECOND;
-const TInt16 TAUNT_TIME = 4 * FRAMES_PER_SECOND;
 
 enum {
   IDLE_STATE,
@@ -38,6 +37,9 @@ public:
   GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute);
 
   ~GEnemyProcess() OVERRIDE;
+
+protected:
+  TInt TauntTime() { return Random(4, 8) * FRAMES_PER_SECOND; }
 
 protected:
   GGameState *mGameState;

@@ -7,6 +7,9 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
@@ -33,7 +36,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
   mTaunt = ETrue;
-  mTauntTimer = TAUNT_TIME;
+  mTauntTimer = TauntTime();
 
   mEnemyDeathOverlayProcess = ENull;
   mSpellOverlayProcess = ENull;
@@ -77,6 +80,9 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case TAUNT_STATE:
+#ifdef DEBUGME
+      printf("new state TAUNT\n");
+#endif
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -247,6 +253,7 @@ TBool GEnemyProcess::MaybeTaunt() {
   if (--mTauntTimer > 0) {
     return EFalse;
   }
+  mTauntTimer = TauntTime();
   NewState(TAUNT_STATE, mSprite->mDirection);
   return ETrue;
 }
@@ -386,10 +393,19 @@ TBool GEnemyProcess::IdleState() {
 }
 
 TBool GEnemyProcess::TauntState() {
+#ifdef DEBUGME
+      printf("TauntState\n");
+#endif
   if (MaybeHit()) {
+#ifdef DEBUGME
+      printf("TauntState HIT\n");
+#endif
     return ETrue;
   }
   if (mSprite->AnimDone()) {
+#ifdef DEBUGME
+      printf("TauntState -> idle\n");
+#endif
     NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
@@ -443,7 +459,7 @@ TBool GEnemyProcess::RunBefore() {
     case IDLE_STATE:
       return IdleState();
     case TAUNT_STATE:
-      return IdleState();
+      return TauntState();
     case WALK_STATE:
       return WalkState();
     case ATTACK_STATE:

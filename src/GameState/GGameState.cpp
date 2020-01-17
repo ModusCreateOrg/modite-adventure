@@ -106,6 +106,8 @@ void GGameState::TryAgain(TBool aExitDungeon) {
 
   // Reset the level
   LoadLevel(mName, mLevel, mTileMapId);
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
+
 
   // Restore respawn coords
   GPlayerProcess::mRespawnAt[0] = respawnAt[0];
@@ -156,12 +158,14 @@ void GGameState::PreRender() {
 
       if (mGamePlayfield->MosaicDone()) {
         LoadLevel(mName, mNextLevel, mNextTileMapId);
+
       }
     }
     else {
       LoadLevel(mName, mNextLevel, mNextTileMapId);
     }
   }
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
 }
 
 /*******************************************************************************
@@ -351,8 +355,6 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   RemapSlot(SPELL_FIRE_BMP, SPELL_FIRE_SLOT, IMAGE_64x64);
   RemapSlot(SPELL_WATER_BMP, SPELL_WATER_SLOT, IMAGE_64x64);
   RemapSlot(ENEMY_DEATH_BMP, ENEMY_DEATH_SLOT, IMAGE_32x32);
-
-  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
 
   GPlayer::mProcess = new GPlayerProcess(this);
   AddProcess(GPlayer::mProcess);
