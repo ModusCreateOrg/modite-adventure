@@ -231,6 +231,10 @@ TBool GEnemyProcess::MaybeAttack() {
   return EFalse;
 }
 
+TBool GEnemy::MaybeTaunt() {
+  return EFalse;
+}
+
 TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {

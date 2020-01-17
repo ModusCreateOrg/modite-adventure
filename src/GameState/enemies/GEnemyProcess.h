@@ -80,6 +80,8 @@ protected:
 
   TBool MaybeHit();
 
+  TBool MaybeTaunt();
+
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection);
 
