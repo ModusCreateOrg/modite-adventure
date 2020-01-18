@@ -133,7 +133,7 @@ void GEnemyProcess::OverlayAnimationComplete() {
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (mSprite->MaybeDamage(ETrue)) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -143,7 +143,7 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (mSprite->MaybeDamage(EFalse)) {
+    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mSprite->mInvulnerable = ETrue;
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -231,14 +231,14 @@ TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (mSprite->MaybeDamage(ETrue)) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    mSprite->MaybeDamage(EFalse);
+    GPlayer::MaybeDamage(mSprite, EFalse);
     if (mSprite->mHitPoints <= 0) {
       NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;

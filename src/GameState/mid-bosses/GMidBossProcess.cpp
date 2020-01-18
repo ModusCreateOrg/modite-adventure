@@ -250,9 +250,8 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 TBool GMidBossProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (!mSprite->mInvulnerable) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
-      mSprite->MaybeDamage(ETrue);
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -261,10 +260,9 @@ TBool GMidBossProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (!mSprite->mInvulnerable) {
+    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
-      mSprite->MaybeDamage(EFalse);
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
           NewState(MB_HIT_STATE, DIRECTION_LEFT);

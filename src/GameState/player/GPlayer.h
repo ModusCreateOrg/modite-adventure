@@ -18,6 +18,30 @@ class GPlayerProcess;
 
 const TInt DEFAULT_PLAYER_HITPOINTS = 200;
 
+const TFloat SPELLBOOK_MATRIX[4][4] = {
+        // water,   fire,  earth, energy
+        { 1.0,    1.0,    1.0,    1.0 }, // water
+        { 1.5,    1.0,    1.5,    1.5 }, // fire
+        { 1.0,    1.5,    1.0,    1.5 }, // earth
+        { 1.5,    1.5,    1.5,    1.0 }, // energy
+};
+
+const TFloat RING_MATRIX[4][4] = {
+        // water,   fire,  earth, energy
+        { 1.0 ,   1.0 ,   1.0 ,   1.0  }, // water
+        { 1.25,   1.0 ,   1.25,   1.25 }, // fire
+        { 1.0 ,   1.25,   1.0 ,   1.25 }, // earth
+        { 1.25,   1.25,   1.25,   1.0  }, // energy
+};
+
+const TFloat AMULET_MATRIX[4][4] = {
+        // water,   fire,  earth, energy
+        { 0.25,   2.0 ,   2.0 ,   2.0  }, // water
+        { 1.0 ,   0.25,   1.0 ,   1.0  }, // fire
+        { 1.0 ,   1.0 ,   0.25,   1.0  }, // earth
+        { 2.0 ,   1.0 ,   1.0 ,   0.25 }, // energy
+};
+
 struct GEquipped {
   GInventoryItem *mAmulet,
     *mRing,
@@ -67,6 +91,8 @@ struct GPlayer {
       mHitPoints = mMaxHitPoints;
     }
   }
+
+  static TBool MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell);
 
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);

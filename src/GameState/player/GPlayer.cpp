@@ -1,3 +1,4 @@
+#include <GameState/status/GStatProcess.h>
 #include "GPlayer.h"
 #include "Items.h"
 
@@ -95,4 +96,70 @@ TUint16 GPlayer::GetSpellSlot() {
       Panic("Invalid spell");
   }
   return 0;
+}
+
+TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
+  if (!aSprite->mInvulnerable) {
+    TInt hitAmount = mHitStrength;
+    ELEMENT hitElement = ELEMENT_NONE;
+    if (aIsSpell) {
+      if (mEquipped.mSpellbook) {
+        switch (mEquipped.mSpellbook->mItemNumber) {
+          case ITEM_BLUE_SPELLBOOK:
+            hitElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_SPELLBOOK:
+            hitElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_SPELLBOOK:
+            hitElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_SPELLBOOK:
+            hitElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (hitElement && aSprite->mElement) {
+          hitAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][hitElement - 1];
+        } else {
+          hitAmount *= SPELL_HIT_BONUS;
+        }
+      }
+    } else {
+      if (mEquipped.mRing) {
+        switch (mEquipped.mRing->mItemNumber) {
+          case ITEM_BLUE_RING:
+            hitElement = ELEMENT_WATER;
+            break;
+          case ITEM_RED_RING:
+            hitElement = ELEMENT_FIRE;
+            break;
+          case ITEM_GREEN_RING:
+            hitElement = ELEMENT_EARTH;
+            break;
+          case ITEM_YELLOW_RING:
+            hitElement = ELEMENT_ENERGY;
+            break;
+          default:
+            break;
+        }
+        if (hitElement && aSprite->mElement) {
+          hitAmount *= RING_MATRIX[aSprite->mElement - 1][hitElement - 1];
+        } else {
+          hitAmount *= RING_HIT_BONUS;
+        }
+      }
+    }
+    // Random +/- 20% damage modifier
+    hitAmount = (hitAmount * Random(80, 120)) / 100;
+    aSprite->mHitPoints -= hitAmount;
+    auto *p = new GStatProcess(aSprite->x + 68, aSprite->y + 32, "%d", hitAmount);
+    p->SetMessageType(STAT_ENEMY_HIT);
+    aSprite->mGameState->AddProcess(p);
+    gSoundPlayer.SfxEnemyTakeDamage();
+
+    return ETrue;
+  }
+  return EFalse;
 }
