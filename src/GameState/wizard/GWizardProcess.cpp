@@ -210,6 +210,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mAttackType = EFalse;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
+  GPlayer::mActiveBoss = mSprite;
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -218,6 +219,7 @@ GWizardProcess::~GWizardProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+  GPlayer::mActiveBoss = ENull;
 }
 
 void GWizardProcess::SetAttackTimer() {

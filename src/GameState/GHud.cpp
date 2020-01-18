@@ -25,6 +25,8 @@ static const TRect gold_key(64, 400, 79, 415);
 static const TInt METER_WIDTH = 60;
 static const TInt METER_HEIGHT = 12;
 
+static const TInt STAT_WIDTH = 200;
+
 static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, TInt y, TFloat value, TFloat max) {
   TFloat pct = (value / max);
 
@@ -106,5 +108,19 @@ void GHud::Render() {
   }
   if (GPlayer::mInventoryList.FindItem(ITEM_GOLD_KEY)) {
     screen->DrawBitmapTransparent(&vp, b, gold_key, 294, 0);
+  }
+
+  GAnchorSprite *s = GPlayer::mActiveBoss;
+  if (s) {
+    TInt h = gViewPort->mRect.Height();
+    gDisplay.renderBitmap->DrawString(gViewPort, s->Name(), gFont16x16, 30, h - 32, COLOR_TEXT_SHADOW,
+                                      COLOR_TEXT_TRANSPARENT, 0);
+    gDisplay.renderBitmap->DrawString(gViewPort, s->Name(), gFont16x16, 29, h - 33, COLOR_TEXT,
+                                      COLOR_TEXT_TRANSPARENT, 0);
+    gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
+    if (s->mHitPoints > 0) {
+      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + s->mHitPoints * STAT_WIDTH / s->mMaxHitPoints,
+                                      h - 12, COLOR_HEALTH);
+    }
   }
 }
