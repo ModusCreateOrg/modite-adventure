@@ -34,7 +34,6 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
     y += 8;
   }
 
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   switch (mMessageType) {
     case STAT_PLAYER_HIT:
       return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_RED, COLOR_TEXT_TRANSPARENT, -6);
