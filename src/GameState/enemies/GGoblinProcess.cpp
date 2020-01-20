@@ -10,6 +10,7 @@
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
+const TInt TAUNT_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
@@ -35,14 +36,14 @@ const TFloat VELOCITY = 1.5 / FACTOR;
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
 
-ANIMSCRIPT idleAnimation[] = {
+static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ALABEL,
-  ASTEP(40, IMG_GOBLIN_IDLE),
+  ASTEP(40, IMG_GOBLIN_IDLE + 0),
   ASTEP(4, IMG_GOBLIN_IDLE + 1),
   ASTEP(40, IMG_GOBLIN_IDLE + 2),
   ASTEP(4, IMG_GOBLIN_IDLE + 1),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT selectAnimation[] = {
@@ -51,7 +52,25 @@ static ANIMSCRIPT selectAnimation[] = {
   ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 0),
   ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 1),
   ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 2),
-  ALOOP
+  ALOOP,
+};
+
+static ANIMSCRIPT tauntAnimation[] = {
+  ABITMAP(GOBLIN_SLOT),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 0),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 1),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 4),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 5),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 6),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 5),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 6),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 5),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 4),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 2),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 1),
+  ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 0),
+  AEND,
 };
 
 static ANIMSCRIPT deathAnimation[] = {
@@ -64,7 +83,7 @@ static ANIMSCRIPT deathAnimation[] = {
   ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_UP + 0),
   AFLIP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
   ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
-  AEND
+  AEND,
 };
 
 /*
@@ -80,7 +99,7 @@ static ANIMSCRIPT idleDownAnimation[] = {
   ALABEL,
   ADELTA(0, 1),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
@@ -89,7 +108,7 @@ static ANIMSCRIPT walkDownAnimation1[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
   ADELTA(0, 2),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkDownAnimation2[] = {
@@ -98,7 +117,7 @@ static ANIMSCRIPT walkDownAnimation2[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 2),
   ADELTA(0, 1),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackDownAnimation[] = {
@@ -117,7 +136,7 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_DOWN + 3),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_DOWN + 0),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackComboDownAnimation[] = {
@@ -159,7 +178,7 @@ static ANIMSCRIPT attackComboDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 2),
   ADELTA(2, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackQuickDownAnimation[] = {
@@ -202,22 +221,28 @@ static ANIMSCRIPT attackQuickDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 2),
   ADELTA(2, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
   ADELTA(2, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 1),
   ADELTA(0, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 2),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 3),
-  AEND
+  AFILL(-1),
+  AEND,
 };
 
 /*
@@ -234,7 +259,7 @@ static ANIMSCRIPT idleLeftAnimation[] = {
   ALABEL,
   ADELTA(-4, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
@@ -243,7 +268,7 @@ static ANIMSCRIPT walkLeftAnimation1[] = {
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
   ADELTA(-9, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
@@ -252,7 +277,7 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
   ADELTA(-6, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackLeftAnimation[] = {
@@ -271,7 +296,7 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
   ADELTA(0, 0),
   AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 0),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackComboLeftAnimation[] = {
@@ -313,7 +338,7 @@ static ANIMSCRIPT attackComboLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(-8, 0),
   AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackQuickLeftAnimation[] = {
@@ -356,22 +381,28 @@ static ANIMSCRIPT attackQuickLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(-8, 0),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(-4, 0),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
   ADELTA(-4, 0),
+  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 1),
   ADELTA(0, 0),
+  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 2),
   ADELTA(-4, 0),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  AEND
+  AFILL(-1),
+  AEND,
 };
 
 /*
@@ -388,7 +419,7 @@ static ANIMSCRIPT idleRightAnimation[] = {
   ALABEL,
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
@@ -397,7 +428,7 @@ static ANIMSCRIPT walkRightAnimation1[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
   ADELTA(2, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkRightAnimation2[] = {
@@ -406,7 +437,7 @@ static ANIMSCRIPT walkRightAnimation2[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
   ADELTA(2, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackRightAnimation[] = {
@@ -425,7 +456,7 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 0),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackComboRightAnimation[] = {
@@ -467,7 +498,7 @@ static ANIMSCRIPT attackComboRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(4, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackQuickRightAnimation[] = {
@@ -510,22 +541,28 @@ static ANIMSCRIPT attackQuickRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(4, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
   ADELTA(0, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
   ADELTA(-4, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 1),
   ADELTA(-4, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 2),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
-  AEND
+  AFILL(-1),
+  AEND,
 };
 
 /*
@@ -542,7 +579,7 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ALABEL,
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  ALOOP
+  ALOOP,
 };
 
 static ANIMSCRIPT walkUpAnimation1[] = {
@@ -551,7 +588,7 @@ static ANIMSCRIPT walkUpAnimation1[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 0),
   ADELTA(-2, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 1),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT walkUpAnimation2[] = {
@@ -560,7 +597,7 @@ static ANIMSCRIPT walkUpAnimation2[] = {
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 2),
   ADELTA(-4, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackUpAnimation[] = {
@@ -579,9 +616,8 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
   ADELTA(4, 0),
   ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_UP + 0),
-  AEND
+  AEND,
 };
-
 
 static ANIMSCRIPT attackComboUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
@@ -623,7 +659,7 @@ static ANIMSCRIPT attackComboUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
   ADELTA(-3, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT attackQuickUpAnimation[] = {
@@ -666,22 +702,28 @@ static ANIMSCRIPT attackQuickUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
   ADELTA(-3, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
-  AEND
+  AEND,
 };
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(-2, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 3),
   ADELTA(-2, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 0),
   ADELTA(0, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 1),
   ADELTA(0, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 2),
   ADELTA(-2, 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 3),
-  AEND
+  AFILL(-1),
+  AEND,
 };
 
 static ANIMSCRIPT hitSpellAnimation[] = {
@@ -756,6 +798,11 @@ void GGoblinProcess::Idle(DIRECTION aDirection) {
   }
 }
 
+void GGoblinProcess::Taunt(DIRECTION aDirection) {
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(tauntAnimation);
+}
+
 void GGoblinProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
@@ -809,7 +856,8 @@ void GGoblinProcess::Attack(DIRECTION aDirection) {
         Panic("GGoblinProcess no attack direction\n");
         break;
     }
-  } else if (attackType == 2) {
+  }
+  else if (attackType == 2) {
     switch (mSprite->mDirection) {
       case DIRECTION_UP:
         mSprite->StartAnimation(attackQuickUpAnimation);
@@ -827,7 +875,8 @@ void GGoblinProcess::Attack(DIRECTION aDirection) {
         Panic("GGoblinProcess no attack direction\n");
         break;
     }
-  } else {
+  }
+  else {
     switch (mSprite->mDirection) {
       case DIRECTION_UP:
         mSprite->StartAnimation(attackComboUpAnimation);

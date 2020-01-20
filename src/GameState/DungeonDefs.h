@@ -41,7 +41,7 @@ struct TDungeonInfo gDungeonDefs[] = {
         -1, // 6
         -1, // 7
         -1, // 8
-        -1, // 9
+        -1, // 9 
         -1 // EMPTY -- no level 10 evar!!
       },
     }
@@ -777,6 +777,26 @@ struct TDungeonInfo gDungeonDefs[] = {
         OW9_DGN4_9216_OW9_DGN4_L7_MAP, // 7
         OW9_DGN4_9216_OW9_DGN4_L8_MAP, // 8
         OW9_DGN4_9216_OW9_DGN4_L9_MAP, // 9
+        -1 // EMPTY -- no level 10 evar!!
+      },
+    }
+  },
+  // OVERWORLD 9 Dungeon 5 (Also Dev Dungeon!!).
+  {
+    "OW9_DGN4_9216",
+    {
+      GLOBAL_OBJECT_LAYER_BMP,
+      {
+        OWX_DEVDGN_9472_OWX_DEVDGN_L1_MAP, // 0
+        OWX_DEVDGN_9472_OWX_DEVDGN_L1_MAP, // 1
+        OWX_DEVDGN_9472_OWX_DEVDGN_L2_MAP, // 2
+        OWX_DEVDGN_9472_OWX_DEVDGN_L3_MAP, // 3
+        OWX_DEVDGN_9472_OWX_DEVDGN_L4_MAP, // 4
+        OWX_DEVDGN_9472_OWX_DEVDGN_L5_MAP, // 5
+        OWX_DEVDGN_9472_OWX_DEVDGN_L6_MAP, // 6
+        OWX_DEVDGN_9472_OWX_DEVDGN_L7_MAP, // 7
+        OWX_DEVDGN_9472_OWX_DEVDGN_L8_MAP, // 8
+        OWX_DEVDGN_9472_OWX_DEVDGN_L9_MAP, // 9
         -1 // EMPTY -- no level 10 evar!!
       },
     }

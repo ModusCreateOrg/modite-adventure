@@ -17,6 +17,7 @@ protected:
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
+  void Taunt(DIRECTION aDirection) OVERRIDE;
   void Walk(DIRECTION aDirection) OVERRIDE;
   void Attack(DIRECTION aDirection) OVERRIDE;
   void Hit(DIRECTION aDirection) OVERRIDE;
