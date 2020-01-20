@@ -122,11 +122,17 @@ static ANIMSCRIPT attackDownAnimation[] = {
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(BAT_SLOT),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 3),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 1),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_DOWN + 3),
+  AFILL(-1),
   AEND,
 };
 
@@ -185,11 +191,17 @@ static ANIMSCRIPT attackLeftAnimation[] = {
 
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(BAT_SLOT),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 0),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 1),
+  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 2),
+  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AFILL(-1),
   AEND,
 };
 
@@ -248,11 +260,17 @@ static ANIMSCRIPT attackRightAnimation[] = {
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(BAT_SLOT),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 1),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_RIGHT + 3),
+  AFILL(-1),
   AEND,
 };
 
@@ -311,11 +329,17 @@ static ANIMSCRIPT attackUpAnimation[] = {
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(BAT_SLOT),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 3),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 0),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 1),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_BAT_DAMAGE_UP + 3),
+  AFILL(-1),
   AEND,
 };
 
@@ -353,6 +377,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->SetStatMultipliers(1.8, 2.0, 1.0);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
+  mTaunt = EFalse; // bat does not taunt
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -386,6 +411,10 @@ void GBatProcess::Idle(DIRECTION aDirection) {
       Panic("GBatProcess no Idle direction\n");
       break;
   }
+}
+
+void GBatProcess::Taunt(DIRECTION aDirection) {
+  // Bat does not taunt
 }
 
 void GBatProcess::Land(DIRECTION aDirection) {

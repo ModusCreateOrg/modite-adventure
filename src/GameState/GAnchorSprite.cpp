@@ -161,7 +161,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   if (GGame::mDebug && !Clipped()) {
     // render sprite border if sprite is visible
     if (flags & SFLAG_RENDER) {
-      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_TEXT);
+      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_WHITE);
       gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
       gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
     }
