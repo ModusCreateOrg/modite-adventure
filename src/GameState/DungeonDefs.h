@@ -41,7 +41,7 @@ struct TDungeonInfo gDungeonDefs[] = {
         -1, // 6
         -1, // 7
         -1, // 8
-        -1, // 9
+        -1, // 9 
         -1 // EMPTY -- no level 10 evar!!
       },
     }
