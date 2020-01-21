@@ -17,9 +17,11 @@ const TFloat GRAVITY = 15.0 / FRAMES_PER_SECOND; // for falling, arrow dropping,
 // NOTE: Map layer is only used for tile numbers to render.  The codes are ignored.
 
 //// MAP ATTRIBUTE LAYER
-const TUint16 ATTR_FLOOR = 0;
-const TUint16 ATTR_WALL = 8;
-const TUint16 ATTR_LEDGE = 10;
+const TUint16 ATTR_FLOOR_NW = 1 << 0;
+const TUint16 ATTR_FLOOR_NE = 1 << 1;
+const TUint16 ATTR_FLOOR_SW = 1 << 2;
+const TUint16 ATTR_FLOOR_SE = 1 << 3;
+const TUint16 ATTR_LEDGE = 1 << 4;
 
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
@@ -162,18 +164,25 @@ public:
     return TUint16(GetCell(aRow, aCol) >> 16);
   }
 
-  TBool IsWall(TFloat aWorldX, TFloat aWorldY) {
-    return GetAttribute(aWorldX, aWorldY) == ATTR_WALL;
-  }
-
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
-    const TInt attr = GetAttribute(aWorldX, aWorldY);
-
-    return attr == ATTR_FLOOR || (attr == ATTR_LEDGE && (TInt(aWorldY) % 32 <= 8));
+    const TUint16 attr = GetAttribute(aWorldX, aWorldY);
+    if (TInt(aWorldX) % 32 < 16) {
+      if (TInt(aWorldY) % 32 < 16) {
+        return attr & ATTR_FLOOR_NW;
+      } else {
+        return attr & ATTR_FLOOR_SW;
+      }
+    } else {
+      if (TInt(aWorldY) % 32 < 16) {
+        return attr & ATTR_FLOOR_NE;
+      } else {
+        return attr & ATTR_FLOOR_SE;
+      }
+    }
   }
 
   TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {
-    return GetAttribute(aWorldX, aWorldY) == ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
+    return GetAttribute(aWorldX, aWorldY) & ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
   }
 
 public:

@@ -64,7 +64,7 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
 void GAnchorSprite::SetWall(TBool aState) {
   TUint16 attribute = mGameState->mGamePlayfield->GetAttribute(x, y);
   if (aState) {
-    SetAttribute(ATTR_WALL);
+    SetAttribute(0);
   }
   else {
     SetAttribute(mAttributeSave);
