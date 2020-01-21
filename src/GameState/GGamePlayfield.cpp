@@ -10,6 +10,14 @@ GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
     mGroupDone[s] = mGroupState[s] = EFalse;
   }
   mMosaicTimer = 0;
+
+  TRGB *source = gDisplay.renderBitmap->GetPalette();
+  for (TInt color = 0; color < 255; color++) {
+    TRGB c = source[color];
+    mSavedPalette[color] = c;
+    gDisplay.SetColor(color, 0,0,0);
+  }
+
 }
 
 GGamePlayfield::~GGamePlayfield() {
@@ -28,19 +36,57 @@ void GGamePlayfield::Render() {
         pixels[y * SCREEN_WIDTH + x] = pixels[(y - (y - r.y1) % mosaicWidth) * SCREEN_WIDTH + (x - (x - r.x1) % mosaicWidth)];
       }
     }
+
+
+    TFloat pct = (((TFloat)mosaicWidth / 21) - 1) * -1;
+    if (pct < 0 || pct == -0) {
+      pct =0;
+    }
+
+    for (TInt color = 0; color < 255; color++) {
+      TRGB c = mSavedPalette[color];
+
+      TRGB newC;
+
+      TUint16 red =  (TFloat)c.r * pct;
+      newC.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
+
+      TUint16 green =  (TFloat)c.g * pct;
+      newC.g = (TUint8)((green > 0xFF) ? 0xFF : green);
+
+      TUint16 blue =  (TFloat)c.b * pct;
+      newC.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
+
+      gDisplay.SetColor(color, newC);
+    }
+
     mMosaicTimer--;
   }
 }
 
 void GGamePlayfield::StartMosaicIn() {
   if (!mMosaicTimer) {
+    // Cache colors
+    TRGB *source = gDisplay.renderBitmap->GetPalette();
+    for (TInt color = 0; color < 255; color++) {
+      TRGB c = source[color];
+      mSavedPalette[color] = c;
+      gDisplay.SetColor(color, 0,0,0);
+    }
+
     mMosaicTimer = MOSAIC_DURATION;
     mMosaicIn = ETrue;
   }
 }
 
+
 void GGamePlayfield::StartMosaicOut() {
   if (!mMosaicTimer) {
+    TRGB *source = gDisplay.renderBitmap->GetPalette();
+    for (TInt color = 0; color < 255; color++) {
+      TRGB c = source[color];
+      mSavedPalette[color] = c;
+    }
     mMosaicTimer = MOSAIC_DURATION;
     mMosaicIn = EFalse;
   }
