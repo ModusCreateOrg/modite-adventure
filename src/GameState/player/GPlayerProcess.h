@@ -94,7 +94,6 @@ protected:
   TUint16 mState;
   TUint16 mStep;
   TUint16 mStepFrame;
-  TFloat mMomentum;
 };
 
 #endif // MODITE_GPLAYERPROCESS_H
