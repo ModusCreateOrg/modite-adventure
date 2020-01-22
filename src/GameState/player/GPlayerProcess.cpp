@@ -652,15 +652,6 @@ TBool GPlayerProcess::MaybeWalk() {
     return EFalse;
   }
 
-  if ((newVy < 0 && !CanWalk(DIRECTION_UP)) ||
-      (newVy > 0 && !CanWalk(DIRECTION_DOWN))) {
-    newVy = 0;
-  }
-  if ((newVx < 0 && !CanWalk(DIRECTION_LEFT)) ||
-      (newVx > 0 && !CanWalk(DIRECTION_RIGHT))) {
-    newVx = 0;
-  }
-
   if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
     if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
       newVy *= 2.0;
@@ -671,6 +662,33 @@ TBool GPlayerProcess::MaybeWalk() {
     }
   }
 
+  TRect r;
+  mSprite->GetRect(r);
+  if ((newVy < 0 && !CanWalk(DIRECTION_UP)) ||
+      (newVy > 0 && !CanWalk(DIRECTION_DOWN))) {
+    if (newVx == 0) {
+      if (newVy < 0 && mPlayfield->IsFloor(r.x1, r.y1 + newVy) != mPlayfield->IsFloor(r.x2, r.y1 + newVy)) {
+        newVx = mPlayfield->IsFloor(r.x1, r.y1 + newVy) ? newVy : -newVy;
+      }
+      if (newVy > 0 && mPlayfield->IsFloor(r.x1, r.y2 + newVy) != mPlayfield->IsFloor(r.x2, r.y2 + newVy)) {
+        newVx = mPlayfield->IsFloor(r.x1, r.y2 + newVy) ? -newVy : newVy;
+      }
+    }
+    newVy = 0;
+  }
+  if ((newVx < 0 && !CanWalk(DIRECTION_LEFT)) ||
+      (newVx > 0 && !CanWalk(DIRECTION_RIGHT))) {
+    if (newVy == 0) {
+      if (newVx < 0 && mPlayfield->IsFloor(r.x1 + newVx, r.y1) != mPlayfield->IsFloor(r.x1 + newVx, r.y2)) {
+        newVy = mPlayfield->IsFloor(r.x1 + newVx, r.y1) ? newVx : -newVx;
+      }
+      if (newVx > 0 && mPlayfield->IsFloor(r.x2 + newVx, r.y1) != mPlayfield->IsFloor(r.x2 + newVx, r.y2)) {
+        newVy = mPlayfield->IsFloor(r.x2 + newVx, r.y1) ? -newVx : newVx;
+      }
+    }
+    newVx = 0;
+  }
+
   mSprite->vy = newVy;
   mSprite->vx = newVx;
 
@@ -678,10 +696,8 @@ TBool GPlayerProcess::MaybeWalk() {
     NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
-  else {
-    if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
-      NewState(WALK_STATE, newDirection);
-    }
+  else if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
+    NewState(WALK_STATE, newDirection);
   }
   return ETrue;
 }

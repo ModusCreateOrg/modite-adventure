@@ -123,6 +123,8 @@ const TUint16 ATTR_RED_BOTTLE4 = 31;  // 100% full
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
 
+const TInt FLOOR_RESOLUTION = 16; // minimum thickness of walls
+
 class GGamePlayfield : public BMapPlayfield {
 public:
   GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId);
