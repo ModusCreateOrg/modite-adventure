@@ -17,11 +17,15 @@ const TFloat GRAVITY = 15.0 / FRAMES_PER_SECOND; // for falling, arrow dropping,
 // NOTE: Map layer is only used for tile numbers to render.  The codes are ignored.
 
 //// MAP ATTRIBUTE LAYER
-const TUint16 ATTR_FLOOR_NW = 1 << 0;
-const TUint16 ATTR_FLOOR_NE = 1 << 1;
-const TUint16 ATTR_FLOOR_SW = 1 << 2;
-const TUint16 ATTR_FLOOR_SE = 1 << 3;
-const TUint16 ATTR_LEDGE = 1 << 4;
+const TUint16 ATTR_ROTATE_90 = 1u << 0u;
+const TUint16 ATTR_ROTATE_180 = 1u << 1u;
+const TUint16 ATTR_INVERT = 1u << 2u;
+const TUint16 ATTR_FULL_FLOOR = 0;
+const TUint16 ATTR_LEDGE = 1;
+const TUint16 ATTR_THIN_WALL = 2;
+const TUint16 ATTR_CORNER_IN = 3;
+const TUint16 ATTR_CORNER_OUT = 4;
+const TUint16 ATTR_CORNER_DIAGONAL = 5;
 
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
@@ -123,7 +127,7 @@ const TUint16 ATTR_RED_BOTTLE4 = 31;  // 100% full
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
 
-const TInt FLOOR_RESOLUTION = 16; // minimum thickness of walls
+const TInt WALL_THICKNESS = 8; // minimum thickness of walls
 
 class GGamePlayfield : public BMapPlayfield {
 public:
@@ -168,23 +172,35 @@ public:
 
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
     const TUint16 attr = GetAttribute(aWorldX, aWorldY);
-    if (TInt(aWorldX) % 32 < 16) {
-      if (TInt(aWorldY) % 32 < 16) {
-        return attr & ATTR_FLOOR_NW;
-      } else {
-        return attr & ATTR_FLOOR_SW;
-      }
-    } else {
-      if (TInt(aWorldY) % 32 < 16) {
-        return attr & ATTR_FLOOR_NE;
-      } else {
-        return attr & ATTR_FLOOR_SE;
-      }
+    TInt x = TInt(aWorldX) % TILESIZE, y = TInt(aWorldY) % TILESIZE, tmp;
+    TBool inverted = attr & ATTR_INVERT;
+    if (attr & ATTR_ROTATE_90) {
+      tmp = x;
+      x = y;
+      y = TILESIZE - tmp;
+    }
+    if (attr & ATTR_ROTATE_180) {
+      x = TILESIZE - x;
+      y = TILESIZE - y;
+    }
+    switch (attr >> 3u) {
+      case ATTR_FULL_FLOOR:
+      default:
+        return !inverted;
+      case ATTR_THIN_WALL:
+      case ATTR_LEDGE:
+        return inverted ^ (x > WALL_THICKNESS);
+      case ATTR_CORNER_IN:
+        return inverted ^ (x > WALL_THICKNESS && y > WALL_THICKNESS);
+      case ATTR_CORNER_OUT:
+        return inverted ^ (x > WALL_THICKNESS || y > WALL_THICKNESS);
+      case ATTR_CORNER_DIAGONAL:
+        return inverted ^ (x + y < TILESIZE - WALL_THICKNESS);
     }
   }
 
   TBool IsLedge(TFloat aWorldX, TFloat aWorldY) {
-    return GetAttribute(aWorldX, aWorldY) & ATTR_LEDGE && (TInt(aWorldY) % 32 >= 8);
+    return GetAttribute(aWorldX, aWorldY) >> 3u == ATTR_LEDGE;
   }
 
 public:

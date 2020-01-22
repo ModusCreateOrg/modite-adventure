@@ -664,29 +664,29 @@ TBool GPlayerProcess::MaybeWalk() {
 
   TRect r;
   mSprite->GetRect(r);
-  if ((newVy < 0 && !CanWalk(DIRECTION_UP)) ||
-      (newVy > 0 && !CanWalk(DIRECTION_DOWN))) {
-    if (newVx == 0) {
-      if (newVy < 0 && mPlayfield->IsFloor(r.x1, r.y1 + newVy) != mPlayfield->IsFloor(r.x2, r.y1 + newVy)) {
-        newVx = mPlayfield->IsFloor(r.x1, r.y1 + newVy) ? newVy : -newVy;
-      }
-      if (newVy > 0 && mPlayfield->IsFloor(r.x1, r.y2 + newVy) != mPlayfield->IsFloor(r.x2, r.y2 + newVy)) {
-        newVx = mPlayfield->IsFloor(r.x1, r.y2 + newVy) ? -newVy : newVy;
-      }
-    }
-    newVy = 0;
-  }
   if ((newVx < 0 && !CanWalk(DIRECTION_LEFT)) ||
       (newVx > 0 && !CanWalk(DIRECTION_RIGHT))) {
     if (newVy == 0) {
-      if (newVx < 0 && mPlayfield->IsFloor(r.x1 + newVx, r.y1) != mPlayfield->IsFloor(r.x1 + newVx, r.y2)) {
-        newVy = mPlayfield->IsFloor(r.x1 + newVx, r.y1) ? newVx : -newVx;
+      if (newVx < 0 && mPlayfield->IsFloor(r.x1 + newVx, r.y1 + FLOOR_ADJUST_TOP) != mPlayfield->IsFloor(r.x1 + newVx, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+        newVy = mPlayfield->IsFloor(r.x1 + newVx, r.y1 + FLOOR_ADJUST_TOP) ? newVx : -newVx;
       }
-      if (newVx > 0 && mPlayfield->IsFloor(r.x2 + newVx, r.y1) != mPlayfield->IsFloor(r.x2 + newVx, r.y2)) {
-        newVy = mPlayfield->IsFloor(r.x2 + newVx, r.y1) ? -newVx : newVx;
+      if (newVx > 0 && mPlayfield->IsFloor(r.x2 + newVx, r.y1 + FLOOR_ADJUST_TOP) != mPlayfield->IsFloor(r.x2 + newVx, r.y2 - FLOOR_ADJUST_BOTTOM)) {
+        newVy = mPlayfield->IsFloor(r.x2 + newVx, r.y1 + FLOOR_ADJUST_TOP) ? -newVx : newVx;
       }
     }
     newVx = 0;
+  }
+  if ((newVy < 0 && !CanWalk(DIRECTION_UP)) ||
+      (newVy > 0 && !CanWalk(DIRECTION_DOWN))) {
+    if (newDirection == DIRECTION_UP || newDirection == DIRECTION_DOWN) {
+      if (newVy < 0 && mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y1 + newVy) != mPlayfield->IsFloor(r.x2 - FLOOR_ADJUST_LEFT, r.y1 + newVy)) {
+        newVx = mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y1 + newVy) ? newVy : -newVy;
+      }
+      if (newVy > 0 && mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y2 + newVy) != mPlayfield->IsFloor(r.x2 - FLOOR_ADJUST_LEFT, r.y2 + newVy)) {
+        newVx = mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y2 + newVy) ? -newVy : newVy;
+      }
+    }
+    newVy = 0;
   }
 
   mSprite->vy = newVy;

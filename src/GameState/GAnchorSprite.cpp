@@ -86,7 +86,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += FLOOR_RESOLUTION) {
+      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
         if (!IsFloorTile(i, r.y1)) {
           return EFalse;
         }
@@ -94,21 +94,21 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1);
     case DIRECTION_SPELL:
     case DIRECTION_DOWN:
-      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += FLOOR_RESOLUTION) {
+      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
         if (!IsFloorTile(i, r.y2)) {
           return EFalse;
         }
       }
       return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
     case DIRECTION_LEFT:
-      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += FLOOR_RESOLUTION) {
+      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
         if (!IsFloorTile(r.x1, i)) {
           return EFalse;
         }
       }
       return IsFloorTile(r.x1, r.y2 - FLOOR_ADJUST_BOTTOM);
     case DIRECTION_RIGHT:
-      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += FLOOR_RESOLUTION) {
+      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
         if (!IsFloorTile(r.x2, i)) {
           return EFalse;
         }
