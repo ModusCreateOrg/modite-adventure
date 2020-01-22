@@ -1,5 +1,6 @@
 #include "GGamePlayfield.h"
 #include "GResources.h"
+#include "GHud.h"
 
 GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
   : BMapPlayfield(aViewPort, aTileMapId, TILESET_SLOT, ETrue) {
@@ -10,6 +11,8 @@ GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
     mGroupDone[s] = mGroupState[s] = EFalse;
   }
   mMosaicTimer = 0;
+
+  GHud::SetColors();
 
   TRGB *source = gDisplay.renderBitmap->GetPalette();
   for (TInt color = 0; color < 255; color++) {
@@ -66,6 +69,7 @@ void GGamePlayfield::Render() {
 
 void GGamePlayfield::StartMosaicIn() {
   if (!mMosaicTimer) {
+    GHud::SetColors();
     // Cache colors
     TRGB *source = gDisplay.renderBitmap->GetPalette();
     for (TInt color = 0; color < 255; color++) {

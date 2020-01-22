@@ -5,6 +5,7 @@
 
 class GHud {
 public:
+  static void SetColors();
   static void Render();
 };
 
