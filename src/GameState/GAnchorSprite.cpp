@@ -66,7 +66,7 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
 void GAnchorSprite::SetWall(TBool aState) {
   TUint16 attribute = mGameState->mGamePlayfield->GetAttribute(x, y);
   if (aState) {
-    SetAttribute(ATTR_WALL);
+    SetAttribute(0);
   }
   else {
     SetAttribute(mAttributeSave);
@@ -88,26 +88,34 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
   switch (aDirection) {
     case DIRECTION_UP:
-      if (IsFloorTile(r.x1 + FLOOR_ADJUST_LEFT, r.y1) && IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1)) {
-        return ETrue;
+      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
+        if (!IsFloorTile(i, r.y1)) {
+          return EFalse;
+        }
       }
-      break;
+      return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1);
     case DIRECTION_SPELL:
     case DIRECTION_DOWN:
-      if (IsFloorTile(r.x1 + FLOOR_ADJUST_LEFT, r.y2) && IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y2)) {
-        return ETrue;
+      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
+        if (!IsFloorTile(i, r.y2)) {
+          return EFalse;
+        }
       }
-      break;
+      return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
     case DIRECTION_LEFT:
-      if (IsFloorTile(r.x1, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(r.x1, r.y2 - FLOOR_ADJUST_BOTTOM)) {
-        return ETrue;
+      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
+        if (!IsFloorTile(r.x1, i)) {
+          return EFalse;
+        }
       }
-      break;
+      return IsFloorTile(r.x1, r.y2 - FLOOR_ADJUST_BOTTOM);
     case DIRECTION_RIGHT:
-      if (IsFloorTile(r.x2, r.y1 + FLOOR_ADJUST_TOP) && IsFloorTile(r.x2, r.y2 - FLOOR_ADJUST_BOTTOM)) {
-        return ETrue;
+      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
+        if (!IsFloorTile(r.x2, i)) {
+          return EFalse;
+        }
       }
-      break;
+      return IsFloorTile(r.x2, r.y2 - FLOOR_ADJUST_BOTTOM);
   }
 
   return EFalse;

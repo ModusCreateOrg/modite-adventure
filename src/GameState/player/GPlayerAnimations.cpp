@@ -171,15 +171,6 @@ ANIMSCRIPT walkDownAnimation2[] = {
   AEND,
 };
 
-ANIMSCRIPT skidDownAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(1, -2),
-  ASTEP(HITSPEED, IMG_DAMAGE_DOWN + 1),
-  ADELTA(2, -2),
-  ASTEP(HITSPEED, IMG_DAMAGE_DOWN + 2),
-  ALOOP
-};
-
 ANIMSCRIPT swordDownAnimation[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(2, -2),
@@ -277,15 +268,6 @@ ANIMSCRIPT walkLeftAnimation2[] = {
   ADELTA(-10, -4),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 0),
   AEND,
-};
-
-ANIMSCRIPT skidLeftAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(6, 0),
-  AFLIP(HITSPEED, IMG_DAMAGE_RIGHT + 1),
-  ADELTA(0, 2),
-  AFLIP(HITSPEED, IMG_DAMAGE_RIGHT + 2),
-  ALOOP
 };
 
 ANIMSCRIPT swordLeftAnimation[] = {
@@ -387,15 +369,6 @@ ANIMSCRIPT walkRightAnimation2[] = {
   AEND,
 };
 
-ANIMSCRIPT skidRightAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(0, 0),
-  ASTEP(HITSPEED, IMG_DAMAGE_RIGHT + 1),
-  ADELTA(0, 2),
-  ASTEP(HITSPEED, IMG_DAMAGE_RIGHT + 2),
-  ALOOP
-};
-
 ANIMSCRIPT swordRightAnimation[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(1, -2),
@@ -493,15 +466,6 @@ ANIMSCRIPT walkUpAnimation2[] = {
   ADELTA(0, -4),
   ASTEP(WALKSPEED, IMG_WALK_UP + 0),
   AEND,
-};
-
-ANIMSCRIPT skidUpAnimation[] = {
-  ABITMAP(PLAYER_SLOT),
-  ADELTA(1, 0),
-  ASTEP(HITSPEED, IMG_DAMAGE_UP + 1),
-  ADELTA(0, 0),
-  ASTEP(HITSPEED, IMG_DAMAGE_UP + 2),
-  ALOOP
 };
 
 ANIMSCRIPT swordUpAnimation[] = {

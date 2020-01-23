@@ -19,6 +19,7 @@ GPlayerProcess *GPlayer::mProcess;
 GAnchorSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
+GAnchorSprite *GPlayer::mActiveBoss;
 
 void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mLevel, sizeof(mLevel));

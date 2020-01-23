@@ -1,4 +1,4 @@
-#ifndef GUHD_H
+#ifndef GHUD_H
 #define GHUD_H
 
 #include <BTypes.h>

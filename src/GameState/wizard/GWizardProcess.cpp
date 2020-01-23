@@ -210,6 +210,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mAttackType = EFalse;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
+  GPlayer::mActiveBoss = mSprite;
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -218,6 +219,7 @@ GWizardProcess::~GWizardProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+  GPlayer::mActiveBoss = ENull;
 }
 
 void GWizardProcess::SetAttackTimer() {
@@ -340,6 +342,7 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 TBool GWizardProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
+
     if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
 
@@ -459,7 +462,7 @@ TBool GWizardProcess::ProjectileState() {
     mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[1], mType));
     mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[2], mType));
 
-    
+
     mSprite->StartAnimation(projectileAnimation2);
     mStep++;
     return ETrue;
