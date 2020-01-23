@@ -55,6 +55,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
     default:
       break;
   }
+  GPlayer::mActiveBoss = mSprite;
 
 //  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
@@ -65,6 +66,7 @@ GMidBossProcess::~GMidBossProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+  GPlayer::mActiveBoss = ENull;
 }
 
 TBool GMidBossProcess::RunBefore() {

@@ -8,7 +8,7 @@ GGameOver::GGameOver(GGameState *aGameState) {
   mGameState = aGameState;
   // save palette
   TRGB *source = gDisplay.renderBitmap->GetPalette();
-  for (TInt color = 0; color < COLOR_TEXT; color++) {
+  for (TInt color = 0; color <= COLOR_TEXT; color++) {
     TRGB c = source[color];
     mSavedPalette[color] = c;
     // convert color to grayscale color
@@ -84,7 +84,7 @@ TBool GGameOver::Run() {
 
   if (gControls.WasPressed(BUTTON_SELECT | BUTTON_START | BUTTONA)) {
     // restore palette
-    for (TInt color = 0; color < COLOR_TEXT; color++) {
+    for (TInt color = 0; color <= COLOR_TEXT; color++) {
       TRGB c = mSavedPalette[color];
       gDisplay.SetColor(color, c);
     }
