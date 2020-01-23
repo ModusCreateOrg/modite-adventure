@@ -40,33 +40,25 @@ void GGamePlayfield::Render() {
       }
     }
 
-//    var delta = max - min;
-//    return function (val) {
-//      return (val - min) / delta;
-//    };
-    TFloat pct = (((TFloat)mosaicWidth / 21) - 1) * -1;
-    if (pct < 0 || pct == -0) {
-      pct = 0;
-    }
 
-    printf("mosaicWidth %i, pct %f\n", mosaicWidth, pct);
+    // Normalize mosaic width to the range of 21 and 1.
+    // Record it as a percentage
+    TFloat pct = (1 - ((TFloat)mosaicWidth - 1) / 20);
 
 
-    for (TInt color = 0; color < 255; color++) {
+S    for (TInt color = 0; color < 255; color++) {
       TRGB c = mSavedPalette[color];
 
-      TRGB newC;
-
       TUint16 red =  (TFloat)c.r * pct;
-      newC.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
+      c.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
 
       TUint16 green =  (TFloat)c.g * pct;
-      newC.g = (TUint8)((green > 0xFF) ? 0xFF : green);
+      c.g = (TUint8)((green > 0xFF) ? 0xFF : green);
 
       TUint16 blue =  (TFloat)c.b * pct;
-      newC.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
+      c.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
 
-      gDisplay.SetColor(color, newC);
+      gDisplay.SetColor(color, c);
     }
 
     mMosaicTimer--;
