@@ -1,5 +1,6 @@
 #include "GGamePlayfield.h"
 #include "GResources.h"
+#include "GHud.h"
 
 GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
   : BMapPlayfield(aViewPort, aTileMapId, TILESET_SLOT, ETrue) {
@@ -10,6 +11,16 @@ GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
     mGroupDone[s] = mGroupState[s] = EFalse;
   }
   mMosaicTimer = 0;
+
+  GHud::SetColors();
+
+  TRGB *source = gDisplay.renderBitmap->GetPalette();
+  for (TInt color = 0; color < 255; color++) {
+    TRGB c = source[color];
+    mSavedPalette[color] = c;
+    gDisplay.SetColor(color, 0,0,0);
+  }
+
 }
 
 GGamePlayfield::~GGamePlayfield() {
@@ -28,19 +39,56 @@ void GGamePlayfield::Render() {
         pixels[y * SCREEN_WIDTH + x] = pixels[(y - (y - r.y1) % mosaicWidth) * SCREEN_WIDTH + (x - (x - r.x1) % mosaicWidth)];
       }
     }
+
+
+    // Normalize mosaic width to the range of 21 and 1.
+    // Record it as a percentage
+    TFloat pct = (1 - ((TFloat)mosaicWidth - 1) / 20);
+
+
+S    for (TInt color = 0; color < 255; color++) {
+      TRGB c = mSavedPalette[color];
+
+      TUint16 red =  (TFloat)c.r * pct;
+      c.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
+
+      TUint16 green =  (TFloat)c.g * pct;
+      c.g = (TUint8)((green > 0xFF) ? 0xFF : green);
+
+      TUint16 blue =  (TFloat)c.b * pct;
+      c.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
+
+      gDisplay.SetColor(color, c);
+    }
+
     mMosaicTimer--;
   }
 }
 
 void GGamePlayfield::StartMosaicIn() {
   if (!mMosaicTimer) {
+    GHud::SetColors();
+    // Cache colors
+    TRGB *source = gDisplay.renderBitmap->GetPalette();
+    for (TInt color = 0; color < 255; color++) {
+      TRGB c = source[color];
+      mSavedPalette[color] = c;
+      gDisplay.SetColor(color, 0,0,0);
+    }
+
     mMosaicTimer = MOSAIC_DURATION;
     mMosaicIn = ETrue;
   }
 }
 
+
 void GGamePlayfield::StartMosaicOut() {
   if (!mMosaicTimer) {
+    TRGB *source = gDisplay.renderBitmap->GetPalette();
+    for (TInt color = 0; color < 255; color++) {
+      TRGB c = source[color];
+      mSavedPalette[color] = c;
+    }
     mMosaicTimer = MOSAIC_DURATION;
     mMosaicIn = EFalse;
   }

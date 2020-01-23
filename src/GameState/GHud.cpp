@@ -15,8 +15,7 @@ static const TRect fire(48, 384, 48 + 15, 399);
 static const TRect earth(32, 400, 32 + 15, 415);
 static const TRect energy(48, 400, 48 + 15, 415);
 
-// TODO: @jaygarcia no silver or godld key images on GLOBAL_OBJECT_LAYER.bmp
-// TODO: add them and then adjust these rects
+
 static const TRect silver_key(64, 384, 79,399);
 static const TRect gold_key(64, 400, 79, 415);
 
@@ -59,6 +58,19 @@ static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, T
   screen->WritePixel(x + METER_WIDTH - 2, y + METER_HEIGHT - 2, COLOR_METER_OUTLINE);
 }
 
+void GHud::SetColors() {
+
+  printf("GHud::SetColors()\n");
+  gDisplay.renderBitmap->SetColor(COLOR_HUD_BG, 0, 0, 0);
+  gDisplay.renderBitmap->SetColor(COLOR_METER_OUTLINE, 64, 64, 64);     // outline color for meter
+  gDisplay.renderBitmap->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);      // light
+  gDisplay.renderBitmap->SetColor(COLOR_HEALTH2, 0xff, 0x59, 0x43);     // dark
+  gDisplay.renderBitmap->SetColor(COLOR_MAGIC, 0x63, 0xab, 0xf1);       // light
+  gDisplay.renderBitmap->SetColor(COLOR_MAGIC2, 0x43, 0x7b, 0xf0);      // dark
+  gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE, 0x6c, 0xd8, 0x20);  // light
+  gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
+}
+
 void GHud::Render() {
   BBitmap *b = gResourceManager.GetBitmap(ENVIRONMENT_SLOT),
           *screen = gDisplay.renderBitmap;
@@ -68,14 +80,6 @@ void GHud::Render() {
   vp.SetRect(rect);
   gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_HUD_BG);
 
-  screen->SetColor(COLOR_HUD_BG, 0, 0, 0);
-  screen->SetColor(COLOR_METER_OUTLINE, 64, 64, 64);     // outline color for meter
-  screen->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);      // light
-  screen->SetColor(COLOR_HEALTH2, 0xff, 0x59, 0x43);     // dark
-  screen->SetColor(COLOR_MAGIC, 0x63, 0xab, 0xf1);       // light
-  screen->SetColor(COLOR_MAGIC2, 0x43, 0x7b, 0xf0);      // dark
-  screen->SetColor(COLOR_EXPERIENCE, 0x6c, 0xd8, 0x20);  // light
-  screen->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
 
   screen->DrawBitmapTransparent(&vp, b, heart, 8, 0);
   render_meter(&vp, screen, COLOR_HEALTH, 26, 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);

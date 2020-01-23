@@ -103,13 +103,13 @@ void GSplashPlayfield::Animate() {
       TRGB newC;
 
       TUint16 red =  c.r + (TUint8)mAnimatedColorValue;
-      newC.r =   (TUint8)((red > 0xFF) ? 0xFF :  red);
+      newC.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
 
       TUint16 green =  c.g + (TUint8)mAnimatedColorValue;
-      newC.g =  (TUint8)((green > 0xFF) ? 0xFF : green);
+      newC.g = (TUint8)((green > 0xFF) ? 0xFF : green);
 
       TUint16 blue =  c.b + (TUint8)mAnimatedColorValue;
-      newC.b =  (TUint8)((blue > 0xFF) ? 0xFF : blue);
+      newC.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
 
       gDisplay.SetColor(color, newC);
     }

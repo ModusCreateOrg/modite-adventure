@@ -31,6 +31,8 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mCollided = ENull;
   mShadow = TRect();
   mElement = ELEMENT_NONE;
+  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -153,7 +155,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     }
 
     // render shadow beneath sprite
-    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+//    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
     TFloat screenX = x - aViewPort->mWorldX;
     TFloat screenY = y - aViewPort->mWorldY;
