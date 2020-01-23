@@ -40,11 +40,17 @@ void GGamePlayfield::Render() {
       }
     }
 
-
+//    var delta = max - min;
+//    return function (val) {
+//      return (val - min) / delta;
+//    };
     TFloat pct = (((TFloat)mosaicWidth / 21) - 1) * -1;
     if (pct < 0 || pct == -0) {
-      pct =0;
+      pct = 0;
     }
+
+    printf("mosaicWidth %i, pct %f\n", mosaicWidth, pct);
+
 
     for (TInt color = 0; color < 255; color++) {
       TRGB c = mSavedPalette[color];
