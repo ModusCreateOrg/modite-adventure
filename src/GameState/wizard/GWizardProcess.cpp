@@ -345,6 +345,7 @@ TBool GWizardProcess::MaybeHit() {
 
     if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
+
       if (mSprite->mHitPoints <= 0) {
         printf("WIZARD  DEATH\n");
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
