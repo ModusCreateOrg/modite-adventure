@@ -45,8 +45,7 @@ void GGamePlayfield::Render() {
     // Record it as a percentage
     TFloat pct = (1 - ((TFloat)mosaicWidth - 1) / 20);
 
-
-S    for (TInt color = 0; color < 255; color++) {
+    for (TInt color = 0; color < 255; color++) {
       TRGB c = mSavedPalette[color];
 
       TUint16 red =  (TFloat)c.r * pct;
