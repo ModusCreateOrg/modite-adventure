@@ -82,10 +82,6 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   GetFloatRect(r);
   r.Offset(aVx, aVy);
 
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
-
   switch (aDirection) {
     case DIRECTION_UP:
       for (TInt i = r.x1; i < r.x2; i += WALL_THICKNESS) {
