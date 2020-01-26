@@ -43,31 +43,56 @@ const TFloat AMULET_MATRIX[4][4] = {
 };
 
 struct GEquipped {
-  GInventoryItem *mAmulet,
-    *mRing,
+  GInventoryItem
+    *mWaterAmulet,
+    *mFireAmulet,
+    *mEarthAmulet,
+    *mEnergyAmulet,
+
+    *mWaterRing,
+    *mFireRing,
+    *mEarthRing,
+    *mEnergyRing,
+
+    *mSpellBook,
+
     *mGloves,
     *mBoots,
-    *mWeapon,
-    *mSpellbook;
+    *mSword;
+
+  void Init() {
+    mWaterAmulet = ENull;
+    mFireAmulet = ENull;
+    mEarthAmulet = ENull;
+    mEnergyAmulet= ENull;
+
+    mWaterRing = ENull;
+    mFireRing = ENull;
+    mEarthRing = ENull;
+    mEnergyRing = ENull;
+
+    mSpellBook = ENull;
+
+    mGloves = ENull;
+    mBoots = ENull;
+    mSword = ENull;
+  }
 };
 
 struct GPlayer {
   static void Init() {
     printf("Init GPlayer\n");
+    mInventoryList.FullReset();
     mLevel = 1;
     mNextLevel = 100;
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
-    mHitStrength = 35;
+    mAttackStrength = 35;
     mHealthPotion = mManaPotion = 100;
+
     //
-    mEquipped.mAmulet = ENull;
-    mEquipped.mRing = ENull;
-    mEquipped.mGloves = ENull;
-    mEquipped.mBoots = ENull;
-    mEquipped.mWeapon = ENull;
-    mEquipped.mSpellbook = ENull;
+    mEquipped.Init();
 
     mGameOver = EFalse;
     mActiveBoss = ENull;
@@ -81,7 +106,7 @@ struct GPlayer {
       mNextLevel += 100 + (mLevel - 1) * 50;
       mMaxHitPoints += 40;
       mHitPoints = mMaxHitPoints;
-      mHitStrength += 7;
+      mAttackStrength += 7;
     }
   }
 
@@ -101,7 +126,7 @@ struct GPlayer {
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
-  static TInt32 mHitStrength;
+  static TInt32 mAttackStrength;
   static TInt32 mHealthPotion, mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;

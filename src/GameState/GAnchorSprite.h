@@ -47,7 +47,7 @@ const TInt BASE_HIT_POINTS = 100;
 const TInt BASE_STRENGTH = 25;
 const TInt BASE_EXPERIENCE = 20;
 
-static const TFloat SPELL_HIT_BONUS = 1.1;
+static const TFloat SPELL_ATTACK_BONUS = 1.1;
 static const TFloat RING_HIT_BONUS = 1.1;
 
 class GAnchorSprite : public BAnimSprite {
@@ -99,7 +99,7 @@ public:
   GAnchorSprite *mCollided;
   TInt16 mLevel, mExperience;
   TInt16 mHitPoints, mMaxHitPoints;
-  TInt32 mHitStrength;
+  TInt32 mAttackStrength;
   TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
   TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame

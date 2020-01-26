@@ -994,6 +994,7 @@ TBool GGameState::SaveState() {
 }
 
 TBool GGameState::LoadState(const char *aGameName) {
+  GPlayer::Init();
   GPlayer::mInventoryList.FullReset();
 
   printf("\n======= BEGIN %s =======\n", __FUNCTION__);

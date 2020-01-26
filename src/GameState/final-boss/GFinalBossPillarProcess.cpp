@@ -95,7 +95,7 @@ GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat 
   mFollowPlayer = aFollowPlayer;
   //  mSprite->SetCMask(STYPE_PLAYER);
   //  mSprite->SetFlags(SFLAG_CHECK);
-  mSprite->mHitStrength = 55;
+  mSprite->mAttackStrength = 55;
   mGameState->AddSprite(mSprite);
   switch (aSlot) {
     case FIRE_FINAL_BOSS_PILLAR_SLOT:

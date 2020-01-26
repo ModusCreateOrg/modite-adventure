@@ -49,7 +49,7 @@ GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, TFloat aX, TF
   mFollowPlayer = aFollowPlayer;
 //  mSprite->SetCMask(STYPE_PLAYER);
 //  mSprite->SetFlags(SFLAG_CHECK);
-  mSprite->mHitStrength = 55;
+  mSprite->mAttackStrength = 55;
   mGameState->AddSprite(mSprite);
   mSprite->StartAnimation(pillarSpawn);
   mExploding = EFalse;
