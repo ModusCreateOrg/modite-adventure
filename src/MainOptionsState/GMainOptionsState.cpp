@@ -36,12 +36,12 @@ public:
 
 public:
     TBool RunBefore() {
-      mContainer->Render(80, 60);
-      mContainer->Run();
       return ETrue;
     }
 
     TBool RunAfter() {
+      mContainer->Render(80, 60);
+      mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_MENU);
 #ifdef ENABLE_AUDIO
