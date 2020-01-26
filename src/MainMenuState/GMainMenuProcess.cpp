@@ -15,12 +15,12 @@ void GMainMenuProcess::ResetTimer() {
 }
 
 TBool GMainMenuProcess::RunBefore() {
-  mContainer->Render(120, 120);
-  mContainer->Run();
   return ETrue;
 }
 
 TBool GMainMenuProcess::RunAfter() {
+  mContainer->Render(120, 120);
+  mContainer->Run();
   if (gControls.WasPressed(BUTTON_START)) {
     gGame->SetState(GAME_STATE_GAME);
     return EFalse;
