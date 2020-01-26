@@ -7,6 +7,9 @@
 #include "common/GSpellOverlayProcess.h"
 #include "GEnemyDeathOverlayProcess.h"
 
+#define DEBUGME
+#undef DEBUGME
+
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
@@ -32,6 +35,8 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mStartX = mStartY = 0;
   mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
+  mTaunt = ETrue;
+  mTauntTimer = TauntTime();
 
   mEnemyDeathOverlayProcess = ENull;
   mSpellOverlayProcess = ENull;
@@ -74,12 +79,24 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Idle(aDirection);
       break;
 
+    case TAUNT_STATE:
+#ifdef DEBUGME
+      printf("new state TAUNT\n");
+#endif
+      SfxTaunt();
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      Taunt(aDirection);
+      break;
+
     case WALK_STATE:
       mStep = 1 - mStep;
       Walk(aDirection);
       break;
 
     case ATTACK_STATE:
+      SfxAttack();
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -88,6 +105,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case HIT_STATE:
+      SfxTakeDamage();
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -104,9 +122,9 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case DEATH_STATE: {
+      SfxDeath();
       mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
-      gSoundPlayer.SfxEnemyDeath();
       auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
@@ -133,8 +151,9 @@ void GEnemyProcess::OverlayAnimationComplete() {
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (mSprite->MaybeDamage(ETrue)) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       mSprite->mInvulnerable = ETrue;
+      SfxTakeDamage();
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -143,7 +162,8 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (mSprite->MaybeDamage(EFalse)) {
+    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
+      SfxTakeDamage();
       mSprite->mInvulnerable = ETrue;
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
@@ -227,18 +247,30 @@ TBool GEnemyProcess::MaybeAttack() {
   return EFalse;
 }
 
+TBool GEnemyProcess::MaybeTaunt() {
+  if (!mTaunt) {
+    return EFalse;
+  }
+  if (--mTauntTimer > 0) {
+    return EFalse;
+  }
+  mTauntTimer = TauntTime();
+  NewState(TAUNT_STATE, mSprite->mDirection);
+  return ETrue;
+}
+
 TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (mSprite->MaybeDamage(ETrue)) {
+    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    mSprite->MaybeDamage(EFalse);
+    GPlayer::MaybeDamage(mSprite, EFalse);
     if (mSprite->mHitPoints <= 0) {
       NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;
@@ -333,6 +365,10 @@ TBool GEnemyProcess::IdleState() {
     return ETrue;
   }
 
+  if (MaybeTaunt()) {
+    return ETrue;
+  }
+
   if (MaybeAttack()) {
     return ETrue;
   }
@@ -357,12 +393,35 @@ TBool GEnemyProcess::IdleState() {
   return ETrue;
 }
 
+TBool GEnemyProcess::TauntState() {
+#ifdef DEBUGME
+      printf("TauntState\n");
+#endif
+  if (MaybeHit()) {
+#ifdef DEBUGME
+      printf("TauntState HIT\n");
+#endif
+    return ETrue;
+  }
+  if (mSprite->AnimDone()) {
+#ifdef DEBUGME
+      printf("TauntState -> idle\n");
+#endif
+    NewState(IDLE_STATE, mSprite->mDirection);
+  }
+  return ETrue;
+}
+
 TBool GEnemyProcess::WalkState() {
   if (MaybeAttack()) {
     return ETrue;
   }
 
   if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeTaunt()) {
     return ETrue;
   }
 
@@ -400,6 +459,8 @@ TBool GEnemyProcess::RunBefore() {
   switch (mState) {
     case IDLE_STATE:
       return IdleState();
+    case TAUNT_STATE:
+      return TauntState();
     case WALK_STATE:
       return WalkState();
     case ATTACK_STATE:

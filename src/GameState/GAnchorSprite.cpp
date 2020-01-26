@@ -31,6 +31,8 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mCollided = ENull;
   mShadow = TRect();
   mElement = ELEMENT_NONE;
+  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+
 }
 
 GAnchorSprite::~GAnchorSprite() {
@@ -152,7 +154,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     }
 
     // render shadow beneath sprite
-    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+//    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
     TFloat screenX = x - aViewPort->mWorldX;
     TFloat screenY = y - aViewPort->mWorldY;
@@ -168,7 +170,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   if (GGame::mDebug && !Clipped()) {
     // render sprite border if sprite is visible
     if (flags & SFLAG_RENDER) {
-      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_TEXT);
+      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_WHITE);
       gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
       gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
     }
@@ -221,72 +223,6 @@ void GAnchorSprite::SetLevel(TInt aLevel) {
   mHitPoints = mMaxHitPoints;
   mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
-}
-
-TBool GAnchorSprite::MaybeDamage(TBool aSpell) {
-  if (!mInvulnerable) {
-    TInt hitAmount = GPlayer::mHitStrength;
-    ELEMENT hitElement = ELEMENT_NONE;
-    if (aSpell) {
-      if (GPlayer::mEquipped.mSpellbook) {
-        switch (GPlayer::mEquipped.mSpellbook->mItemNumber) {
-          case ITEM_BLUE_SPELLBOOK:
-            hitElement = ELEMENT_WATER;
-            break;
-          case ITEM_RED_SPELLBOOK:
-            hitElement = ELEMENT_FIRE;
-            break;
-          case ITEM_GREEN_SPELLBOOK:
-            hitElement = ELEMENT_EARTH;
-            break;
-          case ITEM_YELLOW_SPELLBOOK:
-            hitElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-        if (hitElement && mElement) {
-          hitAmount *= SPELLBOOK_MATRIX[mElement - 1][hitElement - 1];
-        } else {
-          hitAmount *= SPELL_HIT_BONUS;
-        }
-      }
-    } else {
-      // Random +/- 20% damage modifier
-      hitAmount = (hitAmount * Random(80, 120)) / 100;
-      if (GPlayer::mEquipped.mRing) {
-        switch (GPlayer::mEquipped.mRing->mItemNumber) {
-          case ITEM_BLUE_RING:
-            hitElement = ELEMENT_WATER;
-            break;
-          case ITEM_RED_RING:
-            hitElement = ELEMENT_FIRE;
-            break;
-          case ITEM_GREEN_RING:
-            hitElement = ELEMENT_EARTH;
-            break;
-          case ITEM_YELLOW_RING:
-            hitElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-        if (hitElement && mElement) {
-          hitAmount *= RING_MATRIX[mElement - 1][hitElement - 1];
-        } else {
-          hitAmount *= RING_HIT_BONUS;
-        }
-      }
-    }
-    mHitPoints -= hitAmount;
-    auto *p = new GStatProcess(x + 68, y + 32, "%d", hitAmount);
-    p->SetMessageType(STAT_ENEMY_HIT);
-    mGameState->AddProcess(p);
-    gSoundPlayer.SfxEnemyTakeDamage();
-
-    return ETrue;
-  }
-  return EFalse;
 }
 
 void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {

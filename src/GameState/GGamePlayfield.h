@@ -216,6 +216,7 @@ protected:
   TUint32 mTileMapId;
   TInt mMosaicTimer;
   TBool mMosaicIn;
+  TRGB mSavedPalette[256];
 };
 
 #endif //MODITE_GGAMEPLAYFIELD_H
