@@ -106,6 +106,8 @@ void GGameState::TryAgain(TBool aExitDungeon) {
 
   // Reset the level
   LoadLevel(mName, mLevel, mTileMapId);
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
+
 
   // Restore respawn coords
   GPlayerProcess::mRespawnAt[0] = respawnAt[0];
@@ -156,12 +158,14 @@ void GGameState::PreRender() {
 
       if (mGamePlayfield->MosaicDone()) {
         LoadLevel(mName, mNextLevel, mNextTileMapId);
+
       }
     }
     else {
       LoadLevel(mName, mNextLevel, mNextTileMapId);
     }
   }
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
 }
 
 /*******************************************************************************
@@ -917,7 +921,7 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
     printf("Remapped bitmap %d to slot %d, screen colors used %d\n", aBMP, aSlot, screen->CountUsedColors());
 #endif
   }
-  gDisplay.SetPalette(screen->GetPalette());
+  gDisplay.SetPalette(screen->GetPalette(), 0, screen->CountUsedColors());
 }
 
 TBool GGameState::SaveState() {

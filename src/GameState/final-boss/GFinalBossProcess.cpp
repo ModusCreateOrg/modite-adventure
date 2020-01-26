@@ -299,6 +299,7 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mAttackType = EFalse;
   SetAttackTimer();
   SetState(STATE_IDLE, DIRECTION_DOWN);
+  GPlayer::mActiveBoss = mSprite;
 };
 
 // destructor
@@ -311,6 +312,7 @@ GFinalBossProcess::~GFinalBossProcess() {
     delete mSprite;
     mSprite = ENull;
   }
+  GPlayer::mActiveBoss = ENull;
 }
 
 void GFinalBossProcess::Idle(DIRECTION aDirection) {

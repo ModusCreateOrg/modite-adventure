@@ -26,7 +26,7 @@ GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) 
       WIDGET_END_TAG);
 
   TRGB *source = gDisplay.renderBitmap->GetPalette();
-  for (TInt color = 0; color < COLOR_TEXT; color++) {
+  for (TInt color = 0; color <= COLOR_TEXT; color++) {
     TRGB c = source[color];
     mSavedPalette[color] = c;
     // convert color to grayscale color

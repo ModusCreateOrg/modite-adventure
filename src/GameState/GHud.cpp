@@ -15,8 +15,7 @@ static const TRect fire(48, 384, 48 + 15, 399);
 static const TRect earth(32, 400, 32 + 15, 415);
 static const TRect energy(48, 400, 48 + 15, 415);
 
-// TODO: @jaygarcia no silver or godld key images on GLOBAL_OBJECT_LAYER.bmp
-// TODO: add them and then adjust these rects
+
 static const TRect silver_key(64, 384, 79,399);
 static const TRect gold_key(64, 400, 79, 415);
 
@@ -24,6 +23,8 @@ static const TRect gold_key(64, 400, 79, 415);
 // 26, 70
 static const TInt METER_WIDTH = 60;
 static const TInt METER_HEIGHT = 12;
+
+static const TInt STAT_WIDTH = 200;
 
 static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, TInt y, TFloat value, TFloat max) {
   TFloat pct = (value / max);
@@ -57,6 +58,19 @@ static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, T
   screen->WritePixel(x + METER_WIDTH - 2, y + METER_HEIGHT - 2, COLOR_METER_OUTLINE);
 }
 
+void GHud::SetColors() {
+
+  printf("GHud::SetColors()\n");
+  gDisplay.renderBitmap->SetColor(COLOR_HUD_BG, 0, 0, 0);
+  gDisplay.renderBitmap->SetColor(COLOR_METER_OUTLINE, 64, 64, 64);     // outline color for meter
+  gDisplay.renderBitmap->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);      // light
+  gDisplay.renderBitmap->SetColor(COLOR_HEALTH2, 0xff, 0x59, 0x43);     // dark
+  gDisplay.renderBitmap->SetColor(COLOR_MAGIC, 0x63, 0xab, 0xf1);       // light
+  gDisplay.renderBitmap->SetColor(COLOR_MAGIC2, 0x43, 0x7b, 0xf0);      // dark
+  gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE, 0x6c, 0xd8, 0x20);  // light
+  gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
+}
+
 void GHud::Render() {
   BBitmap *b = gResourceManager.GetBitmap(ENVIRONMENT_SLOT),
           *screen = gDisplay.renderBitmap;
@@ -66,14 +80,6 @@ void GHud::Render() {
   vp.SetRect(rect);
   gDisplay.renderBitmap->FillRect(&vp, vp.mRect, COLOR_HUD_BG);
 
-  screen->SetColor(COLOR_HUD_BG, 0, 0, 0);
-  screen->SetColor(COLOR_METER_OUTLINE, 64, 64, 64);     // outline color for meter
-  screen->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);      // light
-  screen->SetColor(COLOR_HEALTH2, 0xff, 0x59, 0x43);     // dark
-  screen->SetColor(COLOR_MAGIC, 0x63, 0xab, 0xf1);       // light
-  screen->SetColor(COLOR_MAGIC2, 0x43, 0x7b, 0xf0);      // dark
-  screen->SetColor(COLOR_EXPERIENCE, 0x6c, 0xd8, 0x20);  // light
-  screen->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
 
   screen->DrawBitmapTransparent(&vp, b, heart, 8, 0);
   render_meter(&vp, screen, COLOR_HEALTH, 26, 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
@@ -106,5 +112,19 @@ void GHud::Render() {
   }
   if (GPlayer::mInventoryList.FindItem(ITEM_GOLD_KEY)) {
     screen->DrawBitmapTransparent(&vp, b, gold_key, 294, 0);
+  }
+
+  GAnchorSprite *s = GPlayer::mActiveBoss;
+  if (s) {
+    TInt h = gViewPort->mRect.Height();
+    gDisplay.renderBitmap->DrawStringShadow(gViewPort, s->Name(), gFont16x16, 30, h - 32, COLOR_TEXT, COLOR_TEXT_SHADOW,
+                                      COLOR_TEXT_TRANSPARENT);
+    gDisplay.renderBitmap->DrawFastHLine(gViewPort, 21, h - 11, STAT_WIDTH + 1, COLOR_METER_OUTLINE);
+    gDisplay.renderBitmap->DrawFastVLine(gViewPort, 22 + STAT_WIDTH, h - 15, 5, COLOR_METER_OUTLINE);
+    gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
+    if (s->mHitPoints > 0) {
+      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + s->mHitPoints * STAT_WIDTH / s->mMaxHitPoints,
+                                      h - 12, COLOR_HEALTH2);
+    }
   }
 }

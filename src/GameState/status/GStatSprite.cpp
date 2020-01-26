@@ -34,7 +34,6 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
     y += 8;
   }
 
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   TUint8 color;
   switch (mMessageType) {
     case STAT_PLAYER_HIT:

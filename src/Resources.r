@@ -187,6 +187,10 @@ TMX OW9_DGN3_8960.txt
 PATH resources/tilemaps/OW9_DGN4_9216
 TMX OW9_DGN4_9216.txt
 
+# Dev Dungeons
+PATH resources/tilemaps/OWX_DevDGN_9472
+TMX OWX_DevDGN_9472.txt
+
 #
 # PATH resources/tilemaps-new/256
 # TMX overworld.txt

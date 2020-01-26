@@ -19,6 +19,7 @@ enum {
   HIT_STATE,
   DEATH_STATE,
   SPELL_STATE, // hit with magic spell
+  TAUNT_STATE,
 };
 
 static const char *stateMessages[] = {
@@ -28,6 +29,7 @@ static const char *stateMessages[] = {
   "HIT STATE",
   "DEATH STATE",
   "SPELL STATE",
+  "TAUNT STATE",
 };
 
 class GEnemyProcess : public GProcess {
@@ -35,6 +37,9 @@ public:
   GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute);
 
   ~GEnemyProcess() OVERRIDE;
+
+protected:
+  TInt TauntTime() { return Random(4, 8) * FRAMES_PER_SECOND; }
 
 protected:
   GGameState *mGameState;
@@ -53,12 +58,22 @@ protected:
   TFloat mVelocity;
   TInt mRangeX, mRangeY;
 
+  TBool mTaunt;
+  TInt16 mTauntTimer;
+
   GAnchorSprite *mPlayerSprite;
 
 public:
   TBool RunBefore() OVERRIDE;
 
   TBool RunAfter() OVERRIDE;
+
+  // sfx
+protected:
+  virtual void SfxTakeDamage() {}
+  virtual void SfxDeath() {}
+  virtual void SfxTaunt() {}
+  virtual void SfxAttack() {}
 
 protected:
   // test if a wall in the specified direction from sprite's current location
@@ -73,11 +88,16 @@ protected:
 
   TBool MaybeHit();
 
+  TBool MaybeTaunt();
+
 protected:
   virtual void NewState(TUint16 aState, DIRECTION aDirection);
 
   virtual void Idle(DIRECTION aDirection) = 0;
   TBool IdleState();
+
+  virtual void Taunt(DIRECTION aDirection) = 0;
+  TBool TauntState();
 
   virtual void Walk(DIRECTION aDirection) = 0;
   TBool WalkState();

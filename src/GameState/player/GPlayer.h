@@ -71,6 +71,7 @@ struct GPlayer {
     mEquipped.mSpellbook = ENull;
 
     mGameOver = EFalse;
+    mActiveBoss = ENull;
   }
 
   static void AddExperience(TInt aExperience) {
@@ -112,6 +113,7 @@ struct GPlayer {
   static GGameState *mGameState;
   static GEquipped mEquipped;
   static TBool mGameOver;
+  static GAnchorSprite *mActiveBoss;
 
   static void Dump();
 };
