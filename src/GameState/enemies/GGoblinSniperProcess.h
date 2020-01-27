@@ -13,6 +13,7 @@ public:
   ~GGoblinSniperProcess() OVERRIDE;
 
 protected:
+  TBool MaybeAttack() OVERRIDE;
   void Idle(DIRECTION aDirection) OVERRIDE;
   void Taunt(DIRECTION aDirection) OVERRIDE;
   void Walk(DIRECTION aDirection) OVERRIDE;
