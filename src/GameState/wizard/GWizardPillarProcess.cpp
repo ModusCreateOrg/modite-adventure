@@ -1,20 +1,30 @@
 #include "GWizardPillarProcess.h"
 #include "GPlayer.h"
 
-const TInt16 PILLAR_SPEED = 4;
+const TInt16 PILLAR_SPEED = 2 * FACTOR;
+const TUint16 EXPLODE_DELAY = 30 * FACTOR;
 
 static ANIMSCRIPT pillarAnimation[] = {
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
   ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
   ALOOP,
 };
 
 static ANIMSCRIPT explodeAnimation[] = {
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ANULL(PILLAR_SPEED * 4),
+  ASIZE(-8, 8, 24, 16),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 2),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 4),
+  ATYPE(STYPE_DEFAULT),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 5),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 6),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 7),
@@ -40,15 +50,15 @@ GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, TFloat aX, TF
   mSprite = new GAnchorSprite(mGameState, BOSS_PILLAR_SLOT, 0);
   mSprite->x = aX;
   mSprite->y = aY;
-  mSprite->w = 24;
-  mSprite->h = 24;
-  mSprite->cy = 0;
-  mSprite->cx = -8;
+  mSprite->w = 16;
+  mSprite->h = 8;
+  mSprite->cy = 4;
+  mSprite->cx = 0;
   mSprite->vy = 0;
 //  mSprite->type = STYPE_EBULLET;
   mFollowPlayer = aFollowPlayer;
-//  mSprite->SetCMask(STYPE_PLAYER);
-//  mSprite->SetFlags(SFLAG_CHECK);
+  mSprite->SetCMask(STYPE_PLAYER);
+  mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->mHitStrength = 55;
   mGameState->AddSprite(mSprite);
   mSprite->StartAnimation(pillarSpawn);
@@ -66,7 +76,7 @@ GWizardPillarProcess::~GWizardPillarProcess() {
 }
 
 TBool GWizardPillarProcess::RunBefore() {
-  if (mSprite->Clipped() || (mExploding && mSprite->AnimDone())) {
+  if (mExploding && mSprite->AnimDone()) {
     return EFalse;
   }
 
@@ -111,12 +121,6 @@ TBool GWizardPillarProcess::RunBefore() {
 
   }
 
-  if (mFrame > 30) {
-    mSprite->SetCMask(STYPE_PLAYER);
-    mSprite->SetFlags(SFLAG_CHECK);
-    mSprite->type = STYPE_EBULLET;
-  }
-
   mFrame++;
 
 
@@ -125,8 +129,7 @@ TBool GWizardPillarProcess::RunBefore() {
 
 TBool GWizardPillarProcess::RunAfter() {
   if (!mExploding) {
-    const TUint16 mFrameMax = 20;
-    if (mFrame > mFrameMax) {
+    if (mFrame > EXPLODE_DELAY) {
       mSprite->StartAnimation(explodeAnimation);
       return mExploding = ETrue;
     }

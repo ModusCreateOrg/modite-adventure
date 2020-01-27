@@ -6,6 +6,16 @@
 #include "GGameState.h"
 #include "common/GSpellOverlayProcess.h"
 
+enum {
+  STATE_IDLE,
+  STATE_WALK,
+  STATE_PROJECTILE,
+  STATE_TELEPORT,
+  STATE_ILLUSION,
+  STATE_SPELL,
+  STATE_DEATH,
+};
+
 class GWizardProcess : public GProcess {
 public:
   GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet);
@@ -14,6 +24,10 @@ public:
 public:
   TBool RunBefore();
   TBool RunAfter();
+
+  TBool IllusionDone() {
+    return mState != STATE_ILLUSION;
+  }
 
   void DeathAnimationDone(){
     mDeathCounter--;
@@ -28,22 +42,21 @@ protected:
   void SetAttackTimer();
 
 protected:
-  TBool MaybeHit();
+  TBool MaybeDamage();
+  TBool MaybeDeath();
   TBool MaybeAttack();
 
   void Idle(DIRECTION aDirection);
   TBool IdleState();
   void Walk(DIRECTION aDirection);
   TBool WalkState();
-  void Projectile(DIRECTION aDirection);
+  void Projectile();
   TBool ProjectileState();
-  void Teleport(DIRECTION aDirection);
+  void Teleport();
   TBool TeleportState();
-  void Hit(DIRECTION aDirection);
-  TBool HitState();
-  void Spell(DIRECTION aDirection);
-  TBool SpellState();
-  void Death(DIRECTION aDirection);
+  void Illusion();
+  TBool IllusionState();
+  void Death();
   TBool DeathState();
 
 protected:
@@ -51,16 +64,16 @@ protected:
   TUint16 mSlot;
   TInt mIp;
   TInt mType;
-  TInt16 aSpriteSheet;
+  TInt16 mSpriteSheet;
   DIRECTION mDirection;
   TFloat mStartX, mStartY;
 
 protected:
   TInt mState;
   TInt mStep;
-  TBool mAttackType;
+  TInt mAttackType;
   TInt mDeathCounter, mSpellCounter;
-  TInt mStateTimer, mAttackTimer, mHitTimer;
+  TInt mStateTimer, mAttackTimer, mHitTimer, mBlinkTimer;
 };
 
 #endif
