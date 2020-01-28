@@ -16,14 +16,16 @@ const TInt16 WALK_SPEED = 4 * FACTOR;
 const TFloat WALK_VELOCITY = 1.25;
 const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
+const TInt HEAL_RATE = 50; // amount to heal per second during illusion spell
 
 static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(1, IMG_WIZARD_IDLE + 3),
+  ASTEP(1, IMG_WIZARD_WALK_DOWN + 3),
   AEND,
 };
 
 static ANIMSCRIPT channelingAnimation[] = {
+  ABITMAP(BOSS_SLOT),
   ALABEL,
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
@@ -91,11 +93,30 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(IDLE_SPEED, IMG_WIZARD_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_WIZARD_WALK_DOWN + 1),
   AEND,
 };
 
 static ANIMSCRIPT projectileAnimation1[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE_START),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  AEND,
+};
+
+static ANIMSCRIPT projectileAnimation2[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE_START),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
+  AEND,
+};
+
+static ANIMSCRIPT teleportAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE_START),
@@ -107,46 +128,14 @@ static ANIMSCRIPT projectileAnimation1[] = {
   AEND,
 };
 
-static ANIMSCRIPT projectileAnimation2[] = {
-  ABITMAP(BOSS_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 1),
-  AEND,
-};
-
-static ANIMSCRIPT teleportAnimation1[] = {
-  ABITMAP(BOSS_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_FIRE_START),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
-  AEND,
-};
-
 static ANIMSCRIPT teleportAnimation2[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(300, IMG_WIZARD_WALK_DOWN),
-  AEND,
-};
-
-static ANIMSCRIPT teleportAnimation3[] = {
-  ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 6),
-  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE_START),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   AEND,
 };
@@ -193,6 +182,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
+  mBlinkTimer = 0;
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -207,6 +197,30 @@ GWizardProcess::~GWizardProcess() {
 void GWizardProcess::SetAttackTimer() {
 //  mAttackTimer = 5;
   mAttackTimer = Random(1, 30);
+}
+
+void GWizardProcess::RandomLocation() {
+  TInt nTries = 0;
+  // searches random directions from the wizard's spawn point,
+  // tries 10 times to move to a location not near the player
+  do {
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
+    TFloat dx = RandomFloat() * 8 - 4;
+    TFloat dy = Random() % 1 ? 4 : -4;
+    if (Random() % 1) {
+      TFloat tmp = dx;
+      dx = dy;
+      dy = tmp;
+    }
+    TInt i = 0;
+    while (mSprite->IsFloor(DIRECTION_DOWN, dx * i, dy * i) &&
+           mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
+      i++;
+    }
+    mSprite->x = mStartX + dx * i * RandomFloat();
+    mSprite->y = mStartY + dy * i * RandomFloat();
+  } while (nTries++ < 10 && ABS(mSprite->x - GPlayer::mSprite->x) < 64 && ABS(mSprite->y - GPlayer::mSprite->y) < 64);
 }
 
 // start wizard idle in specified direction
@@ -263,23 +277,13 @@ void GWizardProcess::Teleport() {
 
 void GWizardProcess::Illusion() {
   mSprite->vx = mSprite->vy = 0;
-  TFloat theta0 = M_PI * 4 * RandomFloat(), theta, dx, dy;
-  mSprite->x = mStartX;
-  mSprite->y = mStartY;
   for (TInt i = 0; i < 8; i++) {
-    theta = theta0 + i * M_PI_4;
-    dx = 64 * SIN(theta);
-    dy = 64 * COS(theta);
-    if (i) {
-      auto *p = new GWizardDecoyProcess(mGameState, this, mStartX + dx, mStartY + dy, mSpriteSheet);
-      mGameState->AddProcess(p);
-    } else {
-      mSprite->x = mStartX + dx;
-      mSprite->y = mStartY + dy;
-    }
-
+    RandomLocation();
+    auto *p = new GWizardDecoyProcess(mGameState, this, mSprite->x, mSprite->y, mSpriteSheet);
+    mGameState->AddProcess(p);
   }
-  mSprite->StartAnimation(idleAnimation);
+  mSprite->StartAnimation(channelingAnimation);
+  mStateTimer = FRAMES_PER_SECOND * 3;
 }
 
 void GWizardProcess::Death() {
@@ -361,32 +365,18 @@ TBool GWizardProcess::MaybeDamage() {
 }
 
 TBool GWizardProcess::MaybeAttack() {
-  if (--mAttackTimer < 0) {
-    switch (mAttackType) {
-      case 0:
-        printf("Attack! %s\n", "TELEPORT");
-        SetState(STATE_TELEPORT, mDirection);
-        break;
-      case 1:
-        printf("Attack! %s\n", "PROJECTILE");
-        SetState(STATE_PROJECTILE, mDirection);
-        break;
-      default:
-        printf("Attack! %s\n", "ILLUSION");
-        SetState(STATE_ILLUSION, mDirection);
-        break;
-    }
-    mAttackType = 0;
-    return ETrue;
-  }
-  return EFalse;
+  printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
+//    SetState(STATE_TELEPORT, mDirection);
+  SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
+  mAttackType = !mAttackType;
+  return ETrue;
 }
 
 TBool GWizardProcess::MaybeDeath() {
   if (mSprite->mHitPoints <= 0) {
     printf("WIZARD DEATH\n");
     mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-    SetState(STATE_DEATH, mSprite->mDirection);
+    SetState(STATE_DEATH, mDirection);
     return ETrue;
   }
   return EFalse;
@@ -394,6 +384,10 @@ TBool GWizardProcess::MaybeDeath() {
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
+  if (ABS(mSprite->x - GPlayer::mSprite->x) < 64 && ABS(mSprite->y - GPlayer::mSprite->y) < 64) {
+    SetState(STATE_TELEPORT, mDirection);
+  }
+
   MaybeDamage();
 
   if (MaybeDeath()) {
@@ -472,33 +466,18 @@ TBool GWizardProcess::ProjectileState() {
 }
 
 TBool GWizardProcess::TeleportState() {
+  if (mSprite->TestCType(STYPE_PBULLET)) {
+    mSprite->ClearCType(STYPE_PBULLET);
+    RandomLocation();
+    mStep++;
+    return ETrue;
+  }
   MaybeDamage();
 
   if (MaybeDeath()) {
     return ETrue;
   }
 
-  // check to see if wizard has met a wall
-  TBool canWalkUp = mSprite->CanWalk(DIRECTION_UP, mSprite->vx, mSprite->vy),
-        canWalkLt = mSprite->CanWalk(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
-        canWalkRt = mSprite->CanWalk(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
-        canWalkDn = mSprite->CanWalk(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
-
-
-  // Bound around the room while the player is being attacked by the spikes/pillars
-  if (! canWalkUp) {
-    mSprite->vy *= -1;
-  }
-  if (! canWalkDn) {
-    mSprite->vy *= -1;
-  }
-
-  if (! canWalkLt) {
-    mSprite->vx *= -1;
-  }
-  if (! canWalkRt) {
-    mSprite->vx *= -1;
-  }
 
 
 //
@@ -511,24 +490,14 @@ TBool GWizardProcess::TeleportState() {
 
 
   if (!mStep) {
-    mSprite->StartAnimation(teleportAnimation2);
-    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK); // Let's not hit the player.
+    RandomLocation();
+    // illusion sometimes when below 75% health
+    if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && Random() % 2) {
+      printf("Illusion\n");
+      SetState(STATE_ILLUSION, mDirection);
+      return ETrue;
+    }
     mStep++;
-
-//    int nTries = 0;
-    while (mSprite->vx == 0) {
-//      nTries ++;
-      mSprite->vx = (TFloat)Random(-3, 3);
-    }
-//    printf("nTries VX = %i\n", nTries);
-
-//    nTries = 0;
-    while (mSprite->vy == 0) {
-//      nTries++;
-      mSprite->vy = (TFloat)Random(-3, 3);
-    }
-//    printf("nTries VX = %i\n", nTries);
-
 
     // spawn pillars
     for (TInt n = 0; n < 8; n++) {
@@ -547,12 +516,11 @@ TBool GWizardProcess::TeleportState() {
 
     return ETrue;
   }
-  else if (mStep == 1 && --mStateTimer < 1) {
-    mState++;
-    mSprite->StartAnimation(teleportAnimation3);
+  else if (mStep == 1) {
+    mStep++;
+    mSprite->StartAnimation(teleportAnimation2);
   }
   else {
-    mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
     SetAttackTimer();
     SetState(STATE_IDLE, mDirection);
   }
@@ -561,10 +529,16 @@ TBool GWizardProcess::TeleportState() {
 }
 
 TBool GWizardProcess::IllusionState() {
-  if (MaybeDamage()) {
+  if (MaybeDamage() || mSprite->mHitPoints == mSprite->mMaxHitPoints) {
     SetState(STATE_IDLE, mDirection);
   }
-
+  if (mStateTimer-- < 0) {
+    mStateTimer = FRAMES_PER_SECOND;
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mSprite->mMaxHitPoints - mSprite->mHitPoints));
+    p->SetMessageType(STAT_HEAL);
+    mSprite->mGameState->AddProcess(p);
+    mSprite->mHitPoints = MIN(mSprite->mHitPoints + HEAL_RATE, mSprite->mMaxHitPoints);
+  }
   return ETrue;
 }
 

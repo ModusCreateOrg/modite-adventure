@@ -40,6 +40,7 @@ public:
 protected:
   void SetState(TInt aState, DIRECTION aDirection);
   void SetAttackTimer();
+  void RandomLocation();
 
 protected:
   TBool MaybeDamage();
