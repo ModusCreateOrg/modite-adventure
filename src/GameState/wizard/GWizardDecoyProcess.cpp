@@ -6,11 +6,12 @@ const TInt16 ATTACK_SPEED = 2 * FACTOR;
 static ANIMSCRIPT channelingAnimation[] = {
   ABITMAP(BOSS_SLOT),
   ALABEL,
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
   ALOOP,
 };
 
@@ -39,7 +40,8 @@ TBool GWizardDecoyProcess::RunBefore() {
 }
 
 TBool GWizardDecoyProcess::RunAfter() {
-  if (mParent->IllusionDone()) {
+  if (!mParent->IsChanneling()) {
+
     return EFalse;
   }
   return ETrue;

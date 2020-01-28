@@ -25,8 +25,8 @@ public:
   TBool RunBefore();
   TBool RunAfter();
 
-  TBool IllusionDone() {
-    return mState != STATE_ILLUSION;
+  TBool IsChanneling() { // wizard is sustaining active spell (keep associated processes alive)
+    return mChanneling;
   }
 
   void DeathAnimationDone(){
@@ -75,6 +75,7 @@ protected:
   TInt mAttackType;
   TInt mDeathCounter, mSpellCounter;
   TInt mStateTimer, mAttackTimer, mHitTimer, mBlinkTimer;
+  TBool mChanneling;
 };
 
 #endif

@@ -27,11 +27,12 @@ static ANIMSCRIPT idleAnimation[] = {
 static ANIMSCRIPT channelingAnimation[] = {
   ABITMAP(BOSS_SLOT),
   ALABEL,
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
   ALOOP,
 };
 
@@ -183,6 +184,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
   mBlinkTimer = 0;
+  mChanneling = EFalse;
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -200,6 +202,7 @@ void GWizardProcess::SetAttackTimer() {
 }
 
 void GWizardProcess::RandomLocation() {
+  mChanneling = EFalse;
   TInt nTries = 0;
   // searches random directions from the wizard's spawn point,
   // tries 10 times to move to a location not near the player
@@ -207,8 +210,8 @@ void GWizardProcess::RandomLocation() {
     mSprite->x = mStartX;
     mSprite->y = mStartY;
     TFloat dx = RandomFloat() * 8 - 4;
-    TFloat dy = Random() % 1 ? 4 : -4;
-    if (Random() % 1) {
+    TFloat dy = (Random() & 1u) ? 4 : -4;
+    if (Random() & 1u) {
       TFloat tmp = dx;
       dx = dy;
       dy = tmp;
@@ -218,9 +221,9 @@ void GWizardProcess::RandomLocation() {
            mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
       i++;
     }
-    mSprite->x = mStartX + dx * i * RandomFloat();
-    mSprite->y = mStartY + dy * i * RandomFloat();
-  } while (nTries++ < 10 && ABS(mSprite->x - GPlayer::mSprite->x) < 64 && ABS(mSprite->y - GPlayer::mSprite->y) < 64);
+    mSprite->x = mStartX + dx * i * SQRT(RandomFloat());
+    mSprite->y = mStartY + dy * i * SQRT(RandomFloat());
+  } while (nTries++ < 10 && (ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64));
 }
 
 // start wizard idle in specified direction
@@ -229,6 +232,7 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleAnimation);
   mSprite->mInvulnerable = EFalse;
+  mStateTimer = FRAMES_PER_SECOND * 2;
 }
 
 // start wizard walking in specified direction
@@ -283,6 +287,7 @@ void GWizardProcess::Illusion() {
     mGameState->AddProcess(p);
   }
   mSprite->StartAnimation(channelingAnimation);
+  mChanneling = ETrue;
   mStateTimer = FRAMES_PER_SECOND * 3;
 }
 
@@ -303,6 +308,7 @@ void GWizardProcess::Death() {
 // change wizard state
 void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
   mState = aState;
+  mStep = 0;
   mDirection = aDirection;
   // set animation
   switch (mState) {
@@ -344,6 +350,7 @@ TBool GWizardProcess::MaybeDamage() {
       p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
       mGameState->AddProcess(p);
       mBlinkTimer = FRAMES_PER_SECOND / 4;
+      mChanneling = EFalse;
       return ETrue;
     }
   }
@@ -353,6 +360,7 @@ TBool GWizardProcess::MaybeDamage() {
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mBlinkTimer = FRAMES_PER_SECOND / 4;
+      mChanneling = EFalse;
       return ETrue;
     }
   }
@@ -365,11 +373,14 @@ TBool GWizardProcess::MaybeDamage() {
 }
 
 TBool GWizardProcess::MaybeAttack() {
-  printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
+  if (--mAttackTimer < 0) {
+    printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
 //    SetState(STATE_TELEPORT, mDirection);
-  SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
-  mAttackType = !mAttackType;
-  return ETrue;
+    SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
+    mAttackType = !mAttackType;
+    return ETrue;
+  }
+  return EFalse;
 }
 
 TBool GWizardProcess::MaybeDeath() {
@@ -384,7 +395,7 @@ TBool GWizardProcess::MaybeDeath() {
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
-  if (ABS(mSprite->x - GPlayer::mSprite->x) < 64 && ABS(mSprite->y - GPlayer::mSprite->y) < 64) {
+  if (ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
     SetState(STATE_TELEPORT, mDirection);
   }
 
@@ -466,14 +477,18 @@ TBool GWizardProcess::ProjectileState() {
 }
 
 TBool GWizardProcess::TeleportState() {
-  if (mSprite->TestCType(STYPE_PBULLET)) {
+  if (!mStep && mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     RandomLocation();
     mStep++;
+    mSprite->StartAnimation(teleportAnimation2);
     return ETrue;
   }
-  MaybeDamage();
-
+  if (MaybeDamage()) {
+    SetAttackTimer();
+    SetState(STATE_IDLE, mDirection);
+    return ETrue;
+  }
   if (MaybeDeath()) {
     return ETrue;
   }
@@ -484,45 +499,36 @@ TBool GWizardProcess::TeleportState() {
 //  //  SetState(STATE_IDLE, DIRECTION_DOWN);
 //  //  return ETrue;
 //  }
-  if (!mSprite->AnimDone()) {
-    return ETrue;
-  }
 
 
-  if (!mStep) {
+  if (!mStep && mSprite->AnimDone()) {
     RandomLocation();
+    mChanneling = ETrue;
     // illusion sometimes when below 75% health
-    if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && Random() % 2) {
+    if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && (Random() & 1u)) {
       printf("Illusion\n");
       SetState(STATE_ILLUSION, mDirection);
       return ETrue;
     }
     mStep++;
+    mSprite->StartAnimation(channelingAnimation);
 
     // spawn pillars
     for (TInt n = 0; n < 8; n++) {
       // Follows Player if water or fire
       if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
-        mGameState->AddProcess(new GWizardPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, ETrue, (n * 30)));
+        mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, ETrue, (n * 30)));
       }
       else {
         TInt pillarX = mSprite->x + Random(-64, 64),
              pillarY = mSprite->y + Random(-64, 64);
 
-        mGameState->AddProcess(new GWizardPillarProcess(mGameState, pillarX, pillarY, EFalse, 0));
+        mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, pillarX, pillarY, EFalse, 0));
       }
 
     }
 
     return ETrue;
-  }
-  else if (mStep == 1) {
-    mStep++;
-    mSprite->StartAnimation(teleportAnimation2);
-  }
-  else {
-    SetAttackTimer();
-    SetState(STATE_IDLE, mDirection);
   }
 
   return ETrue;
