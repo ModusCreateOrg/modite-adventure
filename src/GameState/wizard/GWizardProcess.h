@@ -19,11 +19,11 @@ enum {
 class GWizardProcess : public GProcess {
 public:
   GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet);
-  ~GWizardProcess();
+  ~GWizardProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
   TBool IsChanneling() { // wizard is sustaining active spell (keep associated processes alive)
     return mChanneling;
@@ -34,8 +34,8 @@ public:
   }
 
 public:
-  void WriteToStream(BMemoryStream &aStream);
-  void ReadFromStream(BMemoryStream &aStream);
+  void WriteToStream(BMemoryStream &aStream) OVERRIDE;
+  void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
 
 protected:
   void SetState(TInt aState, DIRECTION aDirection);
@@ -72,7 +72,6 @@ protected:
 protected:
   TInt mState;
   TInt mStep;
-  TInt mAttackType;
   TInt mDeathCounter, mSpellCounter;
   TInt mStateTimer, mAttackTimer, mHitTimer, mBlinkTimer;
   TBool mChanneling;
