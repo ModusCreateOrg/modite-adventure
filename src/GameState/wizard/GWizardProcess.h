@@ -72,6 +72,7 @@ protected:
 protected:
   TInt mState;
   TInt mStep;
+  TInt mAttackType;
   TInt mDeathCounter, mSpellCounter;
   TInt mStateTimer, mAttackTimer, mHitTimer, mBlinkTimer;
   TBool mChanneling;

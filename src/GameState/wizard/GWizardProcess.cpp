@@ -102,12 +102,13 @@ static ANIMSCRIPT projectileAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE_START),
+  ALABEL,
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
-  AEND,
+  ALOOP,
 };
 
 static ANIMSCRIPT projectileAnimation2[] = {
@@ -179,6 +180,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mStep = 0;
   mDeathCounter = 0;
   mSpellCounter = 0;
+  mAttackType = 0;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
@@ -197,7 +199,7 @@ GWizardProcess::~GWizardProcess() {
 
 void GWizardProcess::SetAttackTimer() {
 //  mAttackTimer = 5;
-  mAttackTimer = Random(0, 2 * FRAMES_PER_SECOND);
+  mAttackTimer = Random(1 * FRAMES_PER_SECOND, 3 * FRAMES_PER_SECOND);
 }
 
 void GWizardProcess::RandomLocation() {
@@ -269,6 +271,9 @@ void GWizardProcess::Projectile() {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(projectileAnimation1);
   mStep = 0;
+  mStateTimer = FRAMES_PER_SECOND;
+  mAttackType = Random(0, 2);
+  mChanneling = mAttackType != 1;
 }
 
 void GWizardProcess::Teleport() {
@@ -394,13 +399,16 @@ TBool GWizardProcess::MaybeDeath() {
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
-  if (ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
+  if (MaybeDamage() && ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
     SetState(STATE_TELEPORT, mDirection);
+    return ETrue;
   }
 
-  MaybeDamage();
-
   if (MaybeDeath()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
     return ETrue;
   }
 
@@ -448,30 +456,50 @@ TBool GWizardProcess::ProjectileState() {
     return ETrue;
   }
 
-  if (!mSprite->AnimDone()) {
+  if (mStep < 360) {
+    if (mStateTimer-- <= 0) {
+      TFloat xx = mSprite->x + 16,
+              yy = mSprite->y - 16,
+              angle = 2 * M_PI;
+      switch (mAttackType) {
+        default:
+        case 0:
+          angle *= TFloat(mStep) / 360;
+          mStep += 120;
+          mStateTimer = FRAMES_PER_SECOND / 4;
+          break;
+        case 1:
+          angle *= TFloat(mStep) / 360;
+          mStep += 60;
+          mStateTimer = FRAMES_PER_SECOND / 4;
+          break;
+        case 2:
+          angle *= TFloat(mStep) / 360 - 720; // negative angle signals projectile should not be launched at player
+          mStep += 24;
+          mStateTimer = FRAMES_PER_SECOND / 15;
+          break;
+      }
+      xx += COS(angle) * 24;
+      yy += SIN(angle) * 16 + 8;
+
+      mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, xx, yy, angle, mType));
+    }
     return ETrue;
   }
-  if (!mStep) {
-    // fire 1-3 projectiled
-    TFloat xx = mSprite->x + 16,
-           yy = mSprite->y - 16;
 
-    // Angles are in radians
-    const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
-    const TFloat step = 45. * (M_PI/180);
-    const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[0], mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[1], mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[2], mType));
-
-
+  if (mStep == 360) {
+    mChanneling = EFalse;
     mSprite->StartAnimation(projectileAnimation2);
     mStep++;
     return ETrue;
   }
-  SetAttackTimer();
-  SetState(STATE_IDLE, mDirection);
+
+  if (mSprite->AnimDone()) {
+    SetAttackTimer();
+    SetState(STATE_IDLE, mDirection);
+    return ETrue;
+  }
+
   return ETrue;
 }
 
@@ -530,7 +558,7 @@ TBool GWizardProcess::IllusionState() {
     SetState(STATE_IDLE, mDirection);
   }
   if (mStateTimer-- < 0) {
-    mStateTimer = FRAMES_PER_SECOND;
+    mStateTimer = FRAMES_PER_SECOND * 3;
     auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mSprite->mMaxHitPoints - mSprite->mHitPoints));
     p->SetMessageType(STAT_HEAL);
     mSprite->mGameState->AddProcess(p);
