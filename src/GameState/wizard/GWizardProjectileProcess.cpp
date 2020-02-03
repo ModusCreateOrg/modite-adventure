@@ -3,7 +3,7 @@
 #include "GWizardProjectileProcess.h"
 
 const TFloat PROJECTILE_VELOCITY = 3;
-const TInt PROJECTILE_DELAY = 1 * FRAMES_PER_SECOND;
+const TInt PROJECTILE_DELAY = 0.5 * FRAMES_PER_SECOND;
 
 const TInt16 PROJECTILE_SPEED = 4;
 const TInt16 EXPLODE_SPEED = 2;
@@ -202,8 +202,8 @@ TBool GWizardProjectileProcess::RunAfter() {
     case 2:
       mSprite->vx = mSprite->vy = PROJECTILE_VELOCITY;
       if (mAngle < 0) { // launch directly outward if angle is negative
-        mSprite->vx *= COS(mAngle);
-        mSprite->vy *= SIN(mAngle);
+        mSprite->vx *= SIN(mAngle);
+        mSprite->vy *= COS(mAngle);
       } else {
         TFloat xx = mSprite->x - 16,
                 yy = mSprite->y + 0;

@@ -10,6 +10,7 @@ enum {
   STATE_IDLE,
   STATE_WALK,
   STATE_PROJECTILE,
+  STATE_PILLAR,
   STATE_TELEPORT,
   STATE_ILLUSION,
   STATE_SPELL,
@@ -53,6 +54,8 @@ protected:
   TBool WalkState();
   void Projectile();
   TBool ProjectileState();
+  void Pillar();
+  TBool PillarState();
   void Teleport();
   TBool TeleportState();
   void Illusion();

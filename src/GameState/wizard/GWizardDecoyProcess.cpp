@@ -22,6 +22,11 @@ GWizardDecoyProcess::GWizardDecoyProcess(GGameState *aGameState, GWizardProcess 
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mSprite->x = aX;
   mSprite->y = aY;
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
+  mSprite->mDy = -4;
+  mSprite->cx = -4;
+  mSprite->w = 36;
+  mSprite->h = 20;
   aGameState->AddSprite(mSprite);
   mSprite->StartAnimation(channelingAnimation);
   printf("Decoy spawned %f, %f\n", aX, aY);
