@@ -279,6 +279,11 @@ void GWizardProcess::Pillar() {
   mSprite->StartAnimation(channelingAnimation);
   mChanneling = ETrue;
   mStateTimer = 0;
+  for (TInt n = 0; n < 6; n++) {
+    TFloat angle = n * M_PI / 3;
+
+    mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, 40, EFalse));
+  }
 }
 
 void GWizardProcess::Teleport() {
@@ -383,6 +388,7 @@ TBool GWizardProcess::MaybeDamage() {
     mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
   }
+
   return EFalse;
 }
 
@@ -407,7 +413,7 @@ TBool GWizardProcess::MaybeDeath() {
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
-  if (mAttackTimer < FRAMES_PER_SECOND && ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
+  if (mAttackTimer < 1.5 * FRAMES_PER_SECOND && ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
     SetState(STATE_TELEPORT, mDirection);
     return ETrue;
   }
@@ -468,9 +474,7 @@ TBool GWizardProcess::ProjectileState() {
 
   if (mStep < 360) {
     if (mStateTimer-- <= 0) {
-      TFloat xx = mSprite->x + 16,
-              yy = mSprite->y - 16,
-              angle = 2 * M_PI;
+      TFloat angle = 2 * M_PI;
       switch (mAttackType) {
         default:
         case 0:
@@ -489,10 +493,7 @@ TBool GWizardProcess::ProjectileState() {
           mStateTimer = FRAMES_PER_SECOND / 15;
           break;
       }
-      xx += SIN(angle) * 24;
-      yy += COS(angle) * 16 + 8;
-
-      mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, xx, yy, angle, mType));
+      mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, angle, mType));
     }
     return ETrue;
   }
@@ -532,7 +533,7 @@ TBool GWizardProcess::PillarState() {
     } else {
       for (TInt n = 0; n < 8; n++) {
         TFloat angle = RandomFloat() * 2 * M_PI,
-                distance = Random(32, 96);
+                distance = Random(50, 100);
 
         mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, distance, EFalse, FRAMES_PER_SECOND * 4));
         mStateTimer = 2 * FRAMES_PER_SECOND;
@@ -557,14 +558,6 @@ TBool GWizardProcess::TeleportState() {
   if (MaybeDeath()) {
     return ETrue;
   }
-
-
-
-//
-//  //  SetState(STATE_IDLE, DIRECTION_DOWN);
-//  //  return ETrue;
-//  }
-
 
   if (mSprite->AnimDone()) {
     if (mStep == 0) {

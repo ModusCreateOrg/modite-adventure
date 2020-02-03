@@ -123,7 +123,7 @@ void GWizardProjectileProcess::StartExplodeAnimation() {
   }
 }
 // consructor
-GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute)
+GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aAngle, TInt16 aAttribute)
     : GProcess(0, 0) {
 
   mAttribute = aAttribute;
@@ -153,8 +153,8 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWiza
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->mHitStrength = mParent->mSprite->mHitStrength;
 
-  mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->x = mParent->mSprite->x + SIN(aAngle) * 24 + 16;
+  mSprite->y = mParent->mSprite->y + COS(aAngle) * 16 - 8;
 //   mSprite->x = aParent->mSprite->x + 16;
 //   mSprite->y = aParent->mSprite->y;
   mSprite->w = 16;

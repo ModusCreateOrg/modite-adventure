@@ -65,7 +65,7 @@ GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, GWizardProces
     mSprite->x = GPlayer::mSprite->mLastX + 16;
     mSprite->y = GPlayer::mSprite->mLastY + 1; // prevent starting hidden behind player
   } else {
-    mSprite->x = mParent->mSprite->x + COS(aAngle) * aDistance;
+    mSprite->x = mParent->mSprite->x + COS(aAngle) * aDistance * 1.5 + 16;
     mSprite->y = mParent->mSprite->y + SIN(aAngle) * aDistance;
   }
   mSprite->SetCMask(STYPE_PLAYER);

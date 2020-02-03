@@ -6,7 +6,7 @@
 
 class GWizardProjectileProcess : public GProcess {
 public:
-  GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute);
+  GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aAngle, TInt16 aAttribute);
   ~GWizardProjectileProcess() OVERRIDE;
 
 public:
