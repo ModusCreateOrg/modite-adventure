@@ -40,7 +40,7 @@ public:
 protected:
   TBool IsLedge();
 
-  TBool CanWalk(DIRECTION aDirection);
+  TBool CanWalk(TFloat aVx, TFloat aVy);
 
   void StartKnockback();
 

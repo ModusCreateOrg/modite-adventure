@@ -78,47 +78,42 @@ TBool GAnchorSprite::IsFloorTile(TFloat aX, TFloat aY) {
 }
 
 TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  TRect r;
-  GetRect(r);
+  GFloatRect r;
+  GetFloatRect(r);
   r.Offset(aVx, aVy);
-
-  if (r.x1 < 0 || r.y1 < 0) {
-    return EFalse;
-  }
 
   switch (aDirection) {
     case DIRECTION_UP:
-      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
+      for (TInt i = r.x1; i < r.x2; i += WALL_THICKNESS) {
         if (!IsFloorTile(i, r.y1)) {
           return EFalse;
         }
       }
-      return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y1);
-    case DIRECTION_SPELL:
+      return IsFloorTile(r.x2, r.y1);
     case DIRECTION_DOWN:
-      for (TInt i = r.x1 + FLOOR_ADJUST_LEFT; i < r.x2 - FLOOR_ADJUST_RIGHT; i += WALL_THICKNESS) {
+      for (TInt i = r.x1; i < r.x2; i += WALL_THICKNESS) {
         if (!IsFloorTile(i, r.y2)) {
           return EFalse;
         }
       }
-      return IsFloorTile(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
+      return IsFloorTile(r.x2, r.y2);
     case DIRECTION_LEFT:
-      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
+      for (TInt i =r.y1; i < r.y2; i += WALL_THICKNESS) {
         if (!IsFloorTile(r.x1, i)) {
           return EFalse;
         }
       }
-      return IsFloorTile(r.x1, r.y2 - FLOOR_ADJUST_BOTTOM);
+      return IsFloorTile(r.x1, r.y2);
     case DIRECTION_RIGHT:
-      for (TInt i = r.y1 + FLOOR_ADJUST_TOP; i < r.y2 - FLOOR_ADJUST_BOTTOM; i += WALL_THICKNESS) {
+      for (TInt i = r.y1; i < r.y2; i += WALL_THICKNESS) {
         if (!IsFloorTile(r.x2, i)) {
           return EFalse;
         }
       }
-      return IsFloorTile(r.x2, r.y2 - FLOOR_ADJUST_BOTTOM);
+      return IsFloorTile(r.x2, r.y2);
+    default:
+      return EFalse;
   }
-
-  return EFalse;
 }
 
 void GAnchorSprite::Move() {
@@ -224,6 +219,10 @@ void GAnchorSprite::SetLevel(TInt aLevel) {
   mHitPoints = mMaxHitPoints;
   mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
+}
+
+void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
+  aRect.Set(x + cx + w / 2.0, y + cy - h, x + cx + w + w / 2.0, y + cy);
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {

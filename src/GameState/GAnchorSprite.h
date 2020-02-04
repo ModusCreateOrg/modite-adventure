@@ -37,18 +37,34 @@ const TUint32 SFLAG_KNOCKBACK = 1 << SFLAG_KNOCKBACK_BIT;
 
 const TInt PRIORITY_BELOW = 500;
 
-// Sprite box is adjusted by these (smaller) to make walking (avoid wall collision) more generous
-const TFloat FLOOR_ADJUST_LEFT = 2;
-const TFloat FLOOR_ADJUST_TOP = 2;
-const TFloat FLOOR_ADJUST_RIGHT = 2;
-const TFloat FLOOR_ADJUST_BOTTOM = 2;
-
 const TInt BASE_HIT_POINTS = 100;
 const TInt BASE_STRENGTH = 25;
 const TInt BASE_EXPERIENCE = 20;
 
 static const TFloat SPELL_HIT_BONUS = 1.1;
 static const TFloat RING_HIT_BONUS = 1.1;
+
+struct GFloatRect {
+  TFloat x1, y1, x2, y2;
+  GFloatRect() {
+    this->x1 = 0.0;
+    this->y1 = 0.0;
+    this->x2 = 0.0;
+    this->y2 = 0.0;
+  }
+  void Set(TFloat aX1, TFloat aY1, TFloat aX2, TFloat aY2) {
+    this->x1 = aX1;
+    this->y1 = aY1;
+    this->x2 = aX2;
+    this->y2 = aY2;
+  }
+  void Offset(TFloat aDX, TFloat aDY) {
+    x1 += aDX;
+    y1 += aDY;
+    x2 += aDX;
+    y2 += aDY;
+  }
+};
 
 class GAnchorSprite : public BAnimSprite {
 public:
@@ -78,6 +94,8 @@ public:
   void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
 
   void ResetShadow();
+
+  void GetFloatRect(GFloatRect &aRect);
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
