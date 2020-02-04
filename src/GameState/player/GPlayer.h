@@ -15,6 +15,7 @@ class GPlayerProcess;
 #include "GAnchorSprite.h"
 #include "GResources.h"
 #include "inventory/GInventoryList.h"
+#include "GStatProcess.h"
 
 const TInt DEFAULT_PLAYER_HITPOINTS = 200;
 
@@ -111,6 +112,9 @@ struct GPlayer {
   }
 
   static void AddHitPoints(TInt aMoreHitpoints) {
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints));
+    p->SetMessageType(STAT_HEAL);
+    mSprite->mGameState->AddProcess(p);
     mHitPoints += aMoreHitpoints;
     if (mHitPoints > mMaxHitPoints) {
       mHitPoints = mMaxHitPoints;

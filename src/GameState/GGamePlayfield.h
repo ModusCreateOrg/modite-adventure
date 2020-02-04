@@ -127,7 +127,7 @@ const TUint16 ATTR_RED_BOTTLE4 = 31;  // 100% full
 const TInt MOSAIC_DURATION = 0.5 * FRAMES_PER_SECOND;
 const TInt MOSAIC_INTENSITY = 20;
 
-const TInt WALL_THICKNESS = 8; // minimum thickness of walls
+const TInt WALL_THICKNESS = 12; // minimum thickness of walls
 
 class GGamePlayfield : public BMapPlayfield {
 public:
@@ -172,30 +172,40 @@ public:
 
   TBool IsFloor(TFloat aWorldX, TFloat aWorldY) {
     const TUint16 attr = GetAttribute(aWorldX, aWorldY);
+    const TInt col = TInt(FLOOR(aWorldX / TILESIZE)),
+            row = TInt(FLOOR(aWorldY / TILESIZE));
     TInt x = TInt(aWorldX) % TILESIZE, y = TInt(aWorldY) % TILESIZE, tmp;
-    TBool inverted = attr & ATTR_INVERT;
-    if (attr & ATTR_ROTATE_90) {
-      tmp = x;
-      x = y;
-      y = TILESIZE - tmp;
+    if (row >= 0 && row <= mMapHeight - 1 && col >= 0 && col <= mMapWidth - 1) {
+      TBool inverted = attr & ATTR_INVERT;
+      if (attr & ATTR_ROTATE_90) {
+        tmp = x;
+        x = y;
+        y = TILESIZE - tmp;
+      }
+      if (attr & ATTR_ROTATE_180) {
+        x = TILESIZE - x;
+        y = TILESIZE - y;
+      }
+      switch (attr >> 3u) {
+        case ATTR_FULL_FLOOR:
+        default:
+          return !inverted;
+        case ATTR_THIN_WALL:
+        case ATTR_LEDGE:
+          return inverted ^ (x > WALL_THICKNESS);
+        case ATTR_CORNER_IN:
+          return inverted ^ (x > WALL_THICKNESS && y > WALL_THICKNESS);
+        case ATTR_CORNER_OUT:
+          return inverted ^ (x > WALL_THICKNESS || y > WALL_THICKNESS);
+        case ATTR_CORNER_DIAGONAL:
+          return inverted ^ (x + y < TILESIZE - WALL_THICKNESS);
+      }
     }
-    if (attr & ATTR_ROTATE_180) {
-      x = TILESIZE - x;
-      y = TILESIZE - y;
-    }
-    switch (attr >> 3u) {
-      case ATTR_FULL_FLOOR:
-      default:
-        return !inverted;
-      case ATTR_THIN_WALL:
-      case ATTR_LEDGE:
-        return inverted ^ (x > WALL_THICKNESS);
-      case ATTR_CORNER_IN:
-        return inverted ^ (x > WALL_THICKNESS && y > WALL_THICKNESS);
-      case ATTR_CORNER_OUT:
-        return inverted ^ (x > WALL_THICKNESS || y > WALL_THICKNESS);
-      case ATTR_CORNER_DIAGONAL:
-        return inverted ^ (x + y < TILESIZE - WALL_THICKNESS);
+    else {
+      return (row == -1 && y > -WALL_THICKNESS) ||
+             (row == mMapHeight && y <= WALL_THICKNESS) ||
+             (col == -1 && x > -WALL_THICKNESS) ||
+             (col == mMapWidth && x <= WALL_THICKNESS);
     }
   }
 
