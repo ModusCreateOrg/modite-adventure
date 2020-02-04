@@ -8,7 +8,7 @@ TUint32 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
 
-TInt GPlayer::mHitStrength;
+TInt GPlayer::mAttackStrength;
 TInt GPlayer::mHealthPotion;
 TInt GPlayer::mManaPotion;
 
@@ -33,18 +33,35 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
 
   // Equipped
   TUint16 v;
-  v = mEquipped.mAmulet ? mEquipped.mAmulet->mItemNumber : 0;
+  v = mEquipped.mWaterAmulet ? mEquipped.mWaterAmulet->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
-  v = mEquipped.mRing ? mEquipped.mRing->mItemNumber : 0;
+  v = mEquipped.mFireAmulet ? mEquipped.mFireAmulet->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
+  v = mEquipped.mEarthAmulet ? mEquipped.mEarthAmulet->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mEnergyAmulet ? mEquipped.mEnergyAmulet->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+
+  v = mEquipped.mWaterRing ? mEquipped.mWaterRing->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mFireRing ? mEquipped.mFireRing->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mEarthRing ? mEquipped.mEarthRing->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+  v = mEquipped.mEnergyRing ? mEquipped.mEnergyRing->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+
+
+  v = mEquipped.mSpellBook ? mEquipped.mSpellBook->mItemNumber : 0;
+  stream.Write(&v, sizeof(v));
+
   v = mEquipped.mGloves ? mEquipped.mGloves->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
   v = mEquipped.mBoots ? mEquipped.mBoots->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
-  v = mEquipped.mWeapon ? mEquipped.mWeapon->mItemNumber : 0;
+  v = mEquipped.mSword ? mEquipped.mSword->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
-  v = mEquipped.mSpellbook ? mEquipped.mSpellbook->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
+
 
 }
 
@@ -61,36 +78,52 @@ void GPlayer::ReadFromStream(BMemoryStream &stream) {
   // Equipped
   TUint16 v;
   stream.Read(&v, sizeof(v));
-  mEquipped.mAmulet = mInventoryList.FindItem(v);
+  mEquipped.mWaterAmulet = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
-  mEquipped.mRing = mInventoryList.FindItem(v);
+  mEquipped.mFireAmulet = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
+  mEquipped.mEarthAmulet = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mEnergyAmulet = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+
+  mEquipped.mWaterRing = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mFireRing = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mEarthRing = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+  mEquipped.mEnergyRing = mInventoryList.FindItem(v);
+  stream.Read(&v, sizeof(v));
+
+
   mEquipped.mGloves = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
   mEquipped.mBoots = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
-  mEquipped.mWeapon = mInventoryList.FindItem(v);
+  mEquipped.mSword = mInventoryList.FindItem(v);
+
   stream.Read(&v, sizeof(v));
-  mEquipped.mSpellbook = mInventoryList.FindItem(v);
+  mEquipped.mSpellBook = mInventoryList.FindItem(v);
 }
 
 void GPlayer::Dump() {
   printf("GPlayer\n");
   printf("%-32.32s: %d,%d/%d\n", "mLevel,mNextLevel, mExperience", mLevel, mNextLevel, mExperience);
-  printf("%-32.32s: %d,%d/%d\n", "mHitPoints, mMaxHitPoints, mHitStrength", mHitPoints, mMaxHitPoints, mHitStrength);
+  printf("%-32.32s: %d,%d/%d\n", "mHitPoints, mMaxHitPoints, mAttackStrength", mHitPoints, mMaxHitPoints, mAttackStrength);
   printf("%-32.32s: %d,%d\n", "mHealthPotion, mManaPotion", mHealthPotion, mManaPotion);
   mInventoryList.Dump();
 }
 
 TUint16 GPlayer::GetSpellSlot() {
-  switch (GPlayer::mEquipped.mSpellbook->mItemNumber) {
-    case ITEM_BLUE_SPELLBOOK:
+  switch (GPlayer::mEquipped.mSpellBook->mItemNumber) {
+    case ITEM_WATER_SPELLBOOK:
       return SPELL_WATER_SLOT;
-    case ITEM_RED_SPELLBOOK:
+    case ITEM_FIRE_SPELLBOOK:
       return SPELL_FIRE_SLOT;
-    case ITEM_GREEN_SPELLBOOK:
+    case ITEM_EARTH_SPELLBOOK:
       return SPELL_EARTH_SLOT;
-    case ITEM_YELLOW_SPELLBOOK:
+    case ITEM_ENERGY_SPELLBOOK:
       return SPELL_ELECTRICITY_SLOT;
     default:
       Panic("Invalid spell");
@@ -100,61 +133,59 @@ TUint16 GPlayer::GetSpellSlot() {
 
 TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
   if (!aSprite->mInvulnerable) {
-    TInt hitAmount = mHitStrength;
-    ELEMENT hitElement = ELEMENT_NONE;
+    TInt attackAmount = mAttackStrength;
+
+    ELEMENT attackElement = ELEMENT_NONE;
     if (aIsSpell) {
-      if (mEquipped.mSpellbook) {
-        switch (mEquipped.mSpellbook->mItemNumber) {
-          case ITEM_BLUE_SPELLBOOK:
-            hitElement = ELEMENT_WATER;
+      if (mEquipped.mSpellBook) {
+        switch (mEquipped.mSpellBook->mItemNumber) {
+          case ITEM_WATER_SPELLBOOK:
+            attackElement = ELEMENT_WATER;
             break;
-          case ITEM_RED_SPELLBOOK:
-            hitElement = ELEMENT_FIRE;
+          case ITEM_FIRE_SPELLBOOK:
+            attackElement = ELEMENT_FIRE;
             break;
-          case ITEM_GREEN_SPELLBOOK:
-            hitElement = ELEMENT_EARTH;
+          case ITEM_EARTH_SPELLBOOK:
+            attackElement = ELEMENT_EARTH;
             break;
-          case ITEM_YELLOW_SPELLBOOK:
-            hitElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-        if (hitElement && aSprite->mElement) {
-          hitAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][hitElement - 1];
-        } else {
-          hitAmount *= SPELL_HIT_BONUS;
-        }
-      }
-    } else {
-      if (mEquipped.mRing) {
-        switch (mEquipped.mRing->mItemNumber) {
-          case ITEM_BLUE_RING:
-            hitElement = ELEMENT_WATER;
-            break;
-          case ITEM_RED_RING:
-            hitElement = ELEMENT_FIRE;
-            break;
-          case ITEM_GREEN_RING:
-            hitElement = ELEMENT_EARTH;
-            break;
-          case ITEM_YELLOW_RING:
-            hitElement = ELEMENT_ENERGY;
+          case ITEM_ENERGY_SPELLBOOK:
+            attackElement = ELEMENT_ENERGY;
             break;
           default:
             break;
         }
-        if (hitElement && aSprite->mElement) {
-          hitAmount *= RING_MATRIX[aSprite->mElement - 1][hitElement - 1];
+
+        if (attackElement && aSprite->mElement) {
+          attackAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][attackElement - 1];
         } else {
-          hitAmount *= RING_HIT_BONUS;
+          attackAmount *= SPELL_ATTACK_BONUS;
         }
       }
     }
+    else {
+
+      // Be able to attack a mid-boss with a like ring
+      if (mEquipped.mWaterRing && aSprite->mElement == ELEMENT_WATER) {
+        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_WATER - 1];
+      }
+      else if (mEquipped.mEarthRing && aSprite->mElement == ELEMENT_EARTH) {
+        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_EARTH - 1];
+      }
+      else if (mEquipped.mFireRing && aSprite->mElement == ELEMENT_FIRE) {
+        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_FIRE - 1];
+      }
+      else if (mEquipped.mEnergyRing && aSprite->mElement == ELEMENT_ENERGY) {
+        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_ENERGY - 1];
+      }
+      else {
+        attackAmount *= RING_HIT_BONUS;
+      }
+
+    }
     // Random +/- 20% damage modifier
-    hitAmount = (hitAmount * Random(80, 120)) / 100;
-    aSprite->mHitPoints -= hitAmount;
-    auto *p = new GStatProcess(aSprite->x + 68, aSprite->y + 32, "%d", hitAmount);
+    attackAmount = (attackAmount * Random(80, 120)) / 100;
+    aSprite->mHitPoints -= attackAmount;
+    auto *p = new GStatProcess(aSprite->x + 68, aSprite->y + 32, "%d", attackAmount);
     p->SetMessageType(STAT_ENEMY_HIT);
     aSprite->mGameState->AddProcess(p);
     gSoundPlayer.SfxEnemyTakeDamage();

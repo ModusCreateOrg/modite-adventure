@@ -76,27 +76,48 @@ void GInventory::RenderInventory() {
     bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
     if (gControls.WasPressed(BUTTONA)) {
       switch (selected->mItemNumber) {
-        case ITEM_BLUE_BRACELET:
-        case ITEM_RED_BRACELET:
-        case ITEM_GREEN_BRACELET:
-        case ITEM_YELLOW_BRACELET:
-          GPlayer::mEquipped.mAmulet = selected;
+        case ITEM_WATER_AMULET:
+          GPlayer::mEquipped.mWaterAmulet = selected;
           mMode = MODE_EQUIPPED;
           break;
-        case ITEM_BLUE_RING:
-        case ITEM_RED_RING:
-        case ITEM_GREEN_RING:
-        case ITEM_YELLOW_RING:
-          GPlayer::mEquipped.mRing = selected;
+        case ITEM_FIRE_AMULET:
+          GPlayer::mEquipped.mFireAmulet = selected;
           mMode = MODE_EQUIPPED;
           break;
-        case ITEM_BLUE_SPELLBOOK:
-        case ITEM_RED_SPELLBOOK:
-        case ITEM_GREEN_SPELLBOOK:
-        case ITEM_YELLOW_SPELLBOOK:
-          GPlayer::mEquipped.mSpellbook = selected;
+        case ITEM_EARTH_AMULET:
+          GPlayer::mEquipped.mEarthAmulet = selected;
           mMode = MODE_EQUIPPED;
           break;
+        case ITEM_ENERGY_AMULET:
+          GPlayer::mEquipped.mEnergyAmulet = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+
+        case ITEM_WATER_RING:
+          GPlayer::mEquipped.mWaterRing = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+        case ITEM_FIRE_RING:
+          GPlayer::mEquipped.mFireRing = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+        case ITEM_EARTH_RING:
+          GPlayer::mEquipped.mEarthRing = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+        case ITEM_ENERGY_RING:
+          GPlayer::mEquipped.mEnergyRing = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+
+        case ITEM_WATER_SPELLBOOK:
+        case ITEM_FIRE_SPELLBOOK:
+        case ITEM_EARTH_SPELLBOOK:
+        case ITEM_ENERGY_SPELLBOOK:
+          GPlayer::mEquipped.mSpellBook = selected;
+          mMode = MODE_EQUIPPED;
+          break;
+
         case ITEM_BOOTS:
           GPlayer::mEquipped.mBoots = selected;
           mMode = MODE_EQUIPPED;
@@ -106,7 +127,8 @@ void GInventory::RenderInventory() {
           mMode = MODE_EQUIPPED;
           break;
         case ITEM_SWORD:
-          GPlayer::mEquipped.mWeapon = selected;
+          GPlayer::mEquipped.mSword = selected;
+          GPlayer::mAttackStrength += 20;
           mMode = MODE_EQUIPPED;
           break;
         case ITEM_BLUE_POTION1:
@@ -221,16 +243,18 @@ void GInventory::RenderEquipped() {
 
   BBitmap *bm = gDisplay.renderBitmap;
 
-  bm->DrawString(mViewPort, "EQUPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
+  bm->DrawString(mViewPort, "EQUIPPED", gFont16x16, 160 - 7 * 12 / 2, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -4);
   y += 32;
 
-  render_equipped_item("Weapon", GPlayer::mEquipped.mWeapon, mViewPort, x, y);
+//  printf("**** TODO: Render inventory screen ***\n");
+
+  render_equipped_item("Weapon", GPlayer::mEquipped.mSword, mViewPort, x, y);
   y += 18;
-  render_equipped_item("Spells", GPlayer::mEquipped.mSpellbook, mViewPort, x, y);
+  render_equipped_item("Spells", GPlayer::mEquipped.mSpellBook, mViewPort, x, y);
   y += 18;
-  render_equipped_item("Amulet", GPlayer::mEquipped.mAmulet, mViewPort, x, y);
+  render_equipped_item("Amulet", GPlayer::mEquipped.mEarthAmulet, mViewPort, x, y);
   y += 18;
-  render_equipped_item("Ring", GPlayer::mEquipped.mRing, mViewPort, x, y);
+  render_equipped_item("Ring", GPlayer::mEquipped.mEarthRing, mViewPort, x, y);
   y += 18;
   render_equipped_item("Gloves", GPlayer::mEquipped.mGloves, mViewPort, x, y);
   y += 18;

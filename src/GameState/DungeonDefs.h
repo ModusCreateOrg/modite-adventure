@@ -57,12 +57,12 @@ struct TDungeonInfo gDungeonDefs[] = {
         OW1_DGN2_512_OW1_DGN2_L1_MAP, // 1
         OW1_DGN2_512_OW1_DGN2_L2_MAP, // 2
         OW1_DGN2_512_OW1_DGN2_L3_MAP, // 3
-        OW1_DGN2_512_OW1_DGN2_L4_MAP, // 4
-        OW1_DGN2_512_OW1_DGN2_L5_MAP, // 5
-        OW1_DGN2_512_OW1_DGN2_L6_MAP, // 6
-        OW1_DGN2_512_OW1_DGN2_L7_MAP, // 7
-        OW1_DGN2_512_OW1_DGN2_L8_MAP, // 8
-        OW1_DGN2_512_OW1_DGN2_L9_MAP, // 9
+        -1, // 4
+        -1, // 5
+        -1, // 6
+        -1, // 7
+        -1, // 8
+        -1, // 9
         -1 // EMPTY -- no level 10 evar!!
       },
     }

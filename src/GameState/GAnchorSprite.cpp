@@ -217,7 +217,7 @@ void GAnchorSprite::SetLevel(TInt aLevel) {
   mLevel = aLevel;
   mMaxHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
   mHitPoints = mMaxHitPoints;
-  mHitStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
+  mAttackStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
   mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
 }
 

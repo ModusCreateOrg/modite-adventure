@@ -26,7 +26,7 @@ const TUint16 SPELL_STATE = 9;
 
 // To make the player blink and be invulnerable, a second Process is spawned to
 // countdown the invulnerable time.  At the start, the player's mSprite is set to
-// involunerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
+// invulnerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
 // cause a blinking effect
 const TInt16 BLINK_TIME = 16; // 267ms
 
@@ -335,16 +335,16 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       gSoundPlayer.SfxPlayerSlash();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(swordUpAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordUpAnimationWithGloves : swordUpAnimationNoGloves);
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(swordDownAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordDownAnimationWithGloves : swordDownAnimationNoGloves);
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(swordLeftAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordLeftAnimationWithGloves : swordLeftAnimationNoGloves);
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(swordRightAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordRightAnimationWithGloves : swordRightAnimationNoGloves);
           break;
         default:
           Panic("GPlayerProcess no SWORD_STATE direction\n");
@@ -410,7 +410,7 @@ TBool GPlayerProcess::MaybeSpell() {
     return EFalse;
   }
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook) {
+    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellBook) {
       if (GPlayer::mManaPotion >= 25) {
         GPlayer::mManaPotion -= 25;
       }
@@ -437,7 +437,7 @@ TBool GPlayerProcess::MaybeHit() {
     TInt hitAmount = 0;
 
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-      hitAmount = other->mHitStrength;
+      hitAmount = other->mAttackStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -517,28 +517,29 @@ TBool GPlayerProcess::MaybeHit() {
       TInt state = HIT_LIGHT_STATE;
       // Random +/- 20% variation
       hitAmount = (hitAmount * Random(80, 120)) / 100;
-      if (GPlayer::mEquipped.mAmulet && other->mElement) {
-        ELEMENT armorElement = ELEMENT_NONE;
-        switch (GPlayer::mEquipped.mAmulet->mItemNumber) {
-          case ITEM_BLUE_BRACELET:
-            armorElement = ELEMENT_WATER;
-            break;
-          case ITEM_RED_BRACELET:
-            armorElement = ELEMENT_FIRE;
-            break;
-          case ITEM_GREEN_BRACELET:
-            armorElement = ELEMENT_EARTH;
-            break;
-          case ITEM_YELLOW_BRACELET:
-            armorElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-        if (armorElement) {
-          hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
-        }
+
+      ELEMENT armorElement = ELEMENT_NONE;
+
+      if (other->mElement == ELEMENT_WATER && GPlayer::mEquipped.mWaterAmulet) {
+        armorElement = ELEMENT_WATER;
       }
+
+      if (other->mElement == ELEMENT_EARTH && GPlayer::mEquipped.mEarthAmulet) {
+        armorElement = ELEMENT_EARTH;
+      }
+
+      if (other->mElement == ELEMENT_FIRE && GPlayer::mEquipped.mFireAmulet) {
+        armorElement = ELEMENT_FIRE;
+      }
+
+      if (other->mElement == ELEMENT_ENERGY && GPlayer::mEquipped.mEnergyAmulet) {
+        armorElement = ELEMENT_ENERGY;
+      }
+
+      if (armorElement) {
+        hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
+      }
+
       GPlayer::mHitPoints -= hitAmount;
       mSprite->mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);

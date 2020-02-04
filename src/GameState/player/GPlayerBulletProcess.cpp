@@ -6,13 +6,13 @@ const TInt VELOCITY = 4;
 
 class BulletSprite : public GAnchorSprite {
 public:
-  BulletSprite(GGameState *aGameState) : GAnchorSprite(aGameState, 0, PLAYER_SLOT) {
-    Name("PLAYER BULLET");
-    type = STYPE_PBULLET;
-    SetCMask(STYPE_ENEMY | STYPE_OBJECT);
-    SetFlags(SFLAG_CHECK);
-    ClearFlags(SFLAG_RENDER | SFLAG_ANCHOR);
-  }
+    BulletSprite(GGameState *aGameState) : GAnchorSprite(aGameState, 0, PLAYER_SLOT) {
+      Name("PLAYER BULLET");
+      type = STYPE_PBULLET;
+      SetCMask(STYPE_ENEMY | STYPE_OBJECT);
+      SetFlags(SFLAG_CHECK);
+      ClearFlags(SFLAG_RENDER | SFLAG_ANCHOR);
+    }
 };
 
 GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection)
@@ -20,33 +20,34 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
   mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
   mSprite->type = STYPE_PBULLET;
-  mSprite->mHitStrength = GPlayer::mHitStrength;
+  mSprite->mAttackStrength = GPlayer::mAttackStrength;
+
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->w = 30;
       mSprite->h = 8;
-      mSprite->vy = -VELOCITY;
-      mRange = 48;
+      mSprite->vy = GPlayer::mEquipped.mGloves ? (-VELOCITY - 5) : -VELOCITY;
+      mRange = GPlayer::mEquipped.mGloves ? 24 : 48;
       break;
     case DIRECTION_DOWN:
       mSprite->w = 30;
       mSprite->h = 8;
-      mSprite->vy = VELOCITY;
-      mRange = 30;
+      mSprite->vy = GPlayer::mEquipped.mGloves ? (VELOCITY + 5) :  VELOCITY;
+      mRange = GPlayer::mEquipped.mGloves ? 15 : 30;
       break;
     case DIRECTION_LEFT:
       mSprite->w = 8;
       mSprite->h = 26;
-      mSprite->vx = -VELOCITY;
+      mSprite->vx = GPlayer::mEquipped.mGloves ? (-VELOCITY - 5) : -VELOCITY;
       mSprite->cy = -8;
-      mRange = 40;
+      mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
       break;
     case DIRECTION_RIGHT:
       mSprite->w = 8;
       mSprite->h = 26;
-      mSprite->vx = VELOCITY;
+      mSprite->vx = GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY;
       mSprite->cy = -8;
-      mRange = 40;
+      mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
       break;
     default:
       mRange = 0;
