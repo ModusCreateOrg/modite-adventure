@@ -71,7 +71,7 @@ GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, GWizardProces
   mSprite->SetCMask(STYPE_PLAYER);
   mSprite->ClearFlags(SFLAG_CHECK);
   mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
-  mSprite->mHitStrength = mParent->mSprite->mHitStrength;
+  mSprite->mAttackStrength = mParent->mSprite->mAttackStrength;
   mGameState->AddSprite(mSprite);
   mSprite->StartAnimation(warningAnimation);
   mExploding = EFalse;

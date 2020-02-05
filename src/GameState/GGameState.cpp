@@ -172,6 +172,33 @@ void GGameState::PreRender() {
  *******************************************************************************
  *******************************************************************************/
 
+void GGameState::PositionCamera() {
+  // position viewport to follow player
+  TFloat maxx = MapWidth(),
+          maxy = MapHeight();
+
+  // half viewport size
+  const TFloat ww = gViewPort->mRect.Width() / 2.0,
+          hh = gViewPort->mRect.Height() / 2.0;
+
+  // upper left corner of desired viewport position
+  TFloat xx = gViewPort->mWorldX = TInt(GPlayer::mSprite->x - ww) + 32,
+          yy = gViewPort->mWorldY = TInt(GPlayer::mSprite->y - hh) - 8;
+
+  if (xx < 0) {
+    gViewPort->mWorldX = 0;
+  }
+  else if (xx > maxx) {
+    gViewPort->mWorldX = maxx;
+  }
+  if (yy < 0) {
+    gViewPort->mWorldY = 0;
+  }
+  else if (yy > maxy) {
+    gViewPort->mWorldY = maxy;
+  }
+}
+
 static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {
 //  BBitmap *screen = gDisplay.renderBitmap;
 //
@@ -994,6 +1021,7 @@ TBool GGameState::SaveState() {
 }
 
 TBool GGameState::LoadState(const char *aGameName) {
+  GPlayer::Init();
   GPlayer::mInventoryList.FullReset();
 
   printf("\n======= BEGIN %s =======\n", __FUNCTION__);

@@ -465,7 +465,7 @@ TBool GFinalBossProcess::MaybeHit() {
       mSprite->mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
       // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
       mSprite->mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);
@@ -488,7 +488,7 @@ TBool GFinalBossProcess::MaybeHit() {
       mSprite->Nudge(); // move sprite so it's not on top of player
       mSprite->mInvulnerable = ETrue;
       // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mHitStrength + round(RandomFloat() * GPlayer::mHitStrength / 2);
+      TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
       mSprite->mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);

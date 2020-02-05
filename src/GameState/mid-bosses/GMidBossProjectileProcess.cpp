@@ -61,7 +61,7 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFl
   mSprite = new ProjectileSprite(mGameState);
   mSprite->Name("IGNORE MID BOSS PROJECTILE");
   mSprite->type = STYPE_EBULLET;
-  mSprite->mHitStrength = 55;
+  mSprite->mAttackStrength = 55;
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->w = 16;

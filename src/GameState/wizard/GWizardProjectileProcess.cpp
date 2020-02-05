@@ -151,7 +151,7 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState, GWiza
   mSprite->type = STYPE_EBULLET;
   mSprite->SetCMask(STYPE_PLAYER);
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
-  mSprite->mHitStrength = mParent->mSprite->mHitStrength;
+  mSprite->mAttackStrength = mParent->mSprite->mAttackStrength;
 
   mSprite->x = mParent->mSprite->x + SIN(aAngle) * 24 + 16;
   mSprite->y = mParent->mSprite->y + COS(aAngle) * 16 - 8;

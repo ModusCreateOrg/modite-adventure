@@ -26,7 +26,7 @@ const TUint16 SPELL_STATE = 9;
 
 // To make the player blink and be invulnerable, a second Process is spawned to
 // countdown the invulnerable time.  At the start, the player's mSprite is set to
-// involunerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
+// invulnerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
 // cause a blinking effect
 const TInt16 BLINK_TIME = 16; // 267ms
 
@@ -94,9 +94,9 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN
   mSprite->Name("PLAYER");
   mSprite->type = STYPE_PLAYER;
   mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
-  mSprite->w = 26;
+  mSprite->w = 24;
   mSprite->h = 16;
-  mSprite->cx = 7;
+  mSprite->cx = 8;
   mSprite->cy = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
@@ -230,22 +230,18 @@ TBool GPlayerProcess::IsLedge() {
   TRect r;
   mSprite->GetRect(r);
 
-  return mPlayfield->IsLedge(r.x1 + FLOOR_ADJUST_LEFT, r.y2) ||
-         mPlayfield->IsLedge(r.x2 - FLOOR_ADJUST_RIGHT, r.y2);
+  return mPlayfield->IsLedge(r.x1, r.y2) ||
+         mPlayfield->IsLedge(r.x2, r.y2);
 }
 
-TBool GPlayerProcess::CanWalk(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      return mSprite->IsFloor(DIRECTION_UP, 0, MIN(-PLAYER_VELOCITY, mSprite->vy));
-    case DIRECTION_DOWN:
-      return mSprite->IsFloor(DIRECTION_DOWN, 0, MAX(PLAYER_VELOCITY, mSprite->vy));
-    case DIRECTION_LEFT:
-      return mSprite->IsFloor(DIRECTION_LEFT, MIN(-PLAYER_VELOCITY, mSprite->vx), 0);
-    case DIRECTION_RIGHT:
-    default:
-      return mSprite->IsFloor(DIRECTION_RIGHT, MAX(PLAYER_VELOCITY, mSprite->vx), 0);
+TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
+  if ((aVx < 0 && !mSprite->IsFloor(DIRECTION_LEFT, aVx, aVy)) ||
+      (aVx > 0 && !mSprite->IsFloor(DIRECTION_RIGHT, aVx, aVy)) ||
+      (aVy < 0 && !mSprite->IsFloor(DIRECTION_UP, aVx, aVy)) ||
+      (aVy > 0 && !mSprite->IsFloor(DIRECTION_DOWN, aVx, aVy))) {
+    return EFalse;
   }
+  return ETrue;
 }
 
 void GPlayerProcess::StartKnockback() {
@@ -267,12 +263,10 @@ void GPlayerProcess::StartKnockback() {
       velocity += ABS(other->vy);
     }
 
-    if ((dx < 0 && CanWalk(DIRECTION_LEFT)) ||
-        (dx > 0 && CanWalk(DIRECTION_RIGHT))) {
+    if (CanWalk(dx, 0)) {
       mSprite->vx = velocity * (dx / (ABS(dx) + ABS(dy)));
     }
-    if ((dy < 0 && CanWalk(DIRECTION_UP)) ||
-        (dy > 0 && CanWalk(DIRECTION_DOWN))) {
+    if (CanWalk(0, dy)) {
       mSprite->vy = velocity * (dy / (ABS(dx) + ABS(dy)));
     }
   }
@@ -341,16 +335,16 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       gSoundPlayer.SfxPlayerSlash();
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(swordUpAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordUpAnimationWithGloves : swordUpAnimationNoGloves);
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(swordDownAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordDownAnimationWithGloves : swordDownAnimationNoGloves);
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(swordLeftAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordLeftAnimationWithGloves : swordLeftAnimationNoGloves);
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(swordRightAnimation);
+          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordRightAnimationWithGloves : swordRightAnimationNoGloves);
           break;
         default:
           Panic("GPlayerProcess no SWORD_STATE direction\n");
@@ -416,7 +410,7 @@ TBool GPlayerProcess::MaybeSpell() {
     return EFalse;
   }
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellbook) {
+    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellBook) {
       if (GPlayer::mManaPotion >= 25) {
         GPlayer::mManaPotion -= 25;
       }
@@ -443,7 +437,7 @@ TBool GPlayerProcess::MaybeHit() {
     TInt hitAmount = 0;
 
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-      hitAmount = other->mHitStrength;
+      hitAmount = other->mAttackStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
         switch (other->mDirection) {
           case DIRECTION_UP:
@@ -523,28 +517,29 @@ TBool GPlayerProcess::MaybeHit() {
       TInt state = HIT_LIGHT_STATE;
       // Random +/- 20% variation
       hitAmount = (hitAmount * Random(80, 120)) / 100;
-      if (GPlayer::mEquipped.mAmulet && other->mElement) {
-        ELEMENT armorElement = ELEMENT_NONE;
-        switch (GPlayer::mEquipped.mAmulet->mItemNumber) {
-          case ITEM_BLUE_BRACELET:
-            armorElement = ELEMENT_WATER;
-            break;
-          case ITEM_RED_BRACELET:
-            armorElement = ELEMENT_FIRE;
-            break;
-          case ITEM_GREEN_BRACELET:
-            armorElement = ELEMENT_EARTH;
-            break;
-          case ITEM_YELLOW_BRACELET:
-            armorElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-        if (armorElement) {
-          hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
-        }
+
+      ELEMENT armorElement = ELEMENT_NONE;
+
+      if (other->mElement == ELEMENT_WATER && GPlayer::mEquipped.mWaterAmulet) {
+        armorElement = ELEMENT_WATER;
       }
+
+      if (other->mElement == ELEMENT_EARTH && GPlayer::mEquipped.mEarthAmulet) {
+        armorElement = ELEMENT_EARTH;
+      }
+
+      if (other->mElement == ELEMENT_FIRE && GPlayer::mEquipped.mFireAmulet) {
+        armorElement = ELEMENT_FIRE;
+      }
+
+      if (other->mElement == ELEMENT_ENERGY && GPlayer::mEquipped.mEnergyAmulet) {
+        armorElement = ELEMENT_ENERGY;
+      }
+
+      if (armorElement) {
+        hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
+      }
+
       GPlayer::mHitPoints -= hitAmount;
       mSprite->mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
@@ -624,7 +619,7 @@ TBool GPlayerProcess::MaybeWalk() {
     newDirection = DIRECTION_DOWN;
   }
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
-    if (ABS(newVy) > 0) {
+    if (newVy) {
       newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
       newVy = newVy * sqrt(2) / 2;
     }
@@ -636,7 +631,7 @@ TBool GPlayerProcess::MaybeWalk() {
     }
   }
   else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
-    if (ABS(newVy) > 0) {
+    if (newVy) {
       newVx = PLAYER_VELOCITY * sqrt(2) / 2;
       newVy = newVy * sqrt(2) / 2;
     }
@@ -662,31 +657,55 @@ TBool GPlayerProcess::MaybeWalk() {
     }
   }
 
-  TRect r;
-  mSprite->GetRect(r);
-  if ((newVx < 0 && !CanWalk(DIRECTION_LEFT)) ||
-      (newVx > 0 && !CanWalk(DIRECTION_RIGHT))) {
+  GFloatRect r;
+  mSprite->GetFloatRect(r);
+  if (newVx && !CanWalk(newVx, 0)) {
     if (newVy == 0) {
-      if (newVx < 0 && mPlayfield->IsFloor(r.x1 + newVx, r.y1 + FLOOR_ADJUST_TOP) != mPlayfield->IsFloor(r.x1 + newVx, r.y2 - FLOOR_ADJUST_BOTTOM)) {
-        newVy = mPlayfield->IsFloor(r.x1 + newVx, r.y1 + FLOOR_ADJUST_TOP) ? newVx : -newVx;
+      if (newVx < 0 && mSprite->IsFloorTile(r.x1 + newVx, r.y1) != mSprite->IsFloorTile(r.x1 + newVx, r.y2)) {
+        newVx = newVx * sqrt(2) / 2;
+        newVy = mSprite->IsFloorTile(r.x1 + newVx, r.y1) ? newVx : -newVx;
       }
-      if (newVx > 0 && mPlayfield->IsFloor(r.x2 + newVx, r.y1 + FLOOR_ADJUST_TOP) != mPlayfield->IsFloor(r.x2 + newVx, r.y2 - FLOOR_ADJUST_BOTTOM)) {
-        newVy = mPlayfield->IsFloor(r.x2 + newVx, r.y1 + FLOOR_ADJUST_TOP) ? -newVx : newVx;
+      if (newVx > 0 && mSprite->IsFloorTile(r.x2 + newVx, r.y1) != mSprite->IsFloorTile(r.x2 + newVx, r.y2)) {
+        newVx = newVx * sqrt(2) / 2;
+        newVy = mSprite->IsFloorTile(r.x2 + newVx, r.y1) ? -newVx : newVx;
       }
     }
-    newVx = 0;
   }
-  if ((newVy < 0 && !CanWalk(DIRECTION_UP)) ||
-      (newVy > 0 && !CanWalk(DIRECTION_DOWN))) {
+  if (newVy && !CanWalk(0, newVy)) {
     if (newDirection == DIRECTION_UP || newDirection == DIRECTION_DOWN) {
-      if (newVy < 0 && mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y1 + newVy) != mPlayfield->IsFloor(r.x2 - FLOOR_ADJUST_LEFT, r.y1 + newVy)) {
-        newVx = mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y1 + newVy) ? newVy : -newVy;
+      if (newVy < 0 && mSprite->IsFloorTile(r.x1, r.y1 + newVy) != mSprite->IsFloorTile(r.x2, r.y1 + newVy)) {
+        newVy = newVy * sqrt(2) / 2;
+        newVx = mSprite->IsFloorTile(r.x1, r.y1 + newVy) ? newVy : -newVy;
       }
-      if (newVy > 0 && mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y2 + newVy) != mPlayfield->IsFloor(r.x2 - FLOOR_ADJUST_LEFT, r.y2 + newVy)) {
-        newVx = mPlayfield->IsFloor(r.x1 + FLOOR_ADJUST_RIGHT, r.y2 + newVy) ? -newVy : newVy;
+      if (newVy > 0 && mSprite->IsFloorTile(r.x1, r.y2 + newVy) != mSprite->IsFloorTile(r.x2, r.y2 + newVy)) {
+        newVy = newVy * sqrt(2) / 2;
+        newVx = mSprite->IsFloorTile(r.x1, r.y2 + newVy) ? -newVy : newVy;
       }
     }
-    newVy = 0;
+  }
+
+  if (!CanWalk(newVx, newVy)) {
+    if (CanWalk(newVx, 0)) {
+      TFloat savedVx = newVx;
+      while (newVx && !CanWalk(newVx, newVy)) {
+        newVx = newVx > 0 ? MAX(0, newVx - 1) : MIN(0, newVx + 1);
+      }
+      while (newVy && !CanWalk(newVx, newVy)) {
+        newVx = savedVx;
+        newVy = newVy > 0 ? MAX(0, newVy - 1) : MIN(0, newVy + 1);
+      }
+    } else if (CanWalk(0, newVy)) {
+      TFloat savedVy = newVy;
+      while (newVy && !CanWalk(newVx, newVy)) {
+        newVy = newVy > 0 ? MAX(0, newVy - 1) : MIN(0, newVy + 1);
+      }
+      while (newVx && !CanWalk(newVx, newVy)) {
+        newVy = savedVy;
+        newVx = newVx > 0 ? MAX(0, newVx - 1) : MIN(0, newVx + 1);
+      }
+    } else {
+      newVx = newVy = 0;
+    }
   }
 
   mSprite->vy = newVy;
@@ -876,14 +895,12 @@ TBool GPlayerProcess::HitState() {
     mSprite->Nudge();
   }
 
-  if ((mSprite->vx < 0 && !CanWalk(DIRECTION_LEFT)) ||
-      (mSprite->vx > 0 && !CanWalk(DIRECTION_RIGHT))) {
+  if (mSprite->vx && !CanWalk(mSprite->vx, 0)) {
     mSprite->vx = 0;
   } else if (ABS(mSprite->vx) > PLAYER_FRICTION) {
     mSprite->vx -= PLAYER_FRICTION * (mSprite->vx / (ABS(mSprite->vx) + ABS(mSprite->vy)));
   }
-  if ((mSprite->vy < 0 && !CanWalk(DIRECTION_UP)) ||
-      (mSprite->vy > 0 && !CanWalk(DIRECTION_DOWN))) {
+  if (mSprite->vy && !CanWalk(0, mSprite->vy)) {
     mSprite->vy = 0;
   } else if (ABS(mSprite->vy) > PLAYER_FRICTION) {
     mSprite->vy -= PLAYER_FRICTION * (mSprite->vy / (ABS(mSprite->vx) + ABS(mSprite->vy)));
@@ -925,31 +942,6 @@ TBool GPlayerProcess::RunBefore() {
 }
 
 TBool GPlayerProcess::RunAfter() {
-  // position viewport to follow player
-  TFloat maxx = mGameState->MapWidth(),
-         maxy = mGameState->MapHeight();
-
-  // half viewport size
-  const TFloat ww = gViewPort->mRect.Width() / 2.0,
-               hh = gViewPort->mRect.Height() / 2.0;
-
-  // upper left corner of desired viewport position
-  TFloat xx = gViewPort->mWorldX = floor(mSprite->x - ww),
-         yy = gViewPort->mWorldY = floor(mSprite->y - hh);
-
-  if (xx < 0) {
-    gViewPort->mWorldX = 0;
-  }
-  else if (xx > maxx) {
-    gViewPort->mWorldX = maxx;
-  }
-  if (yy < 0) {
-    gViewPort->mWorldY = 0;
-  }
-  else if (yy > maxy) {
-    gViewPort->mWorldY = maxy;
-  }
-
   mSprite->mCollided = ENull;
   mSprite->cType = 0;
 
