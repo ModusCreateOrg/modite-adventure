@@ -14,7 +14,7 @@ GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat 
   mSprite->type = STYPE_EBULLET;
   mSprite->SetCMask(STYPE_PLAYER);
   mSprite->SetFlags(SFLAG_CHECK);
-  mSprite->mHitStrength = PROJECTILE_DAMAGE;
+  mSprite->mAttackStrength = PROJECTILE_DAMAGE;
 
   mSprite->x = aX;
   mSprite->y = aY;
