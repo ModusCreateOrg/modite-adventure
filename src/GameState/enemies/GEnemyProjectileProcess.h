@@ -10,11 +10,13 @@ public:
   ~GEnemyProjectileProcess();
 
 public:
+  void ConfigSprite(TFloat aAngle, TBool aParry = EFalse);
   TBool RunBefore() OVERRIDE;
   TBool RunAfter() OVERRIDE;
 
 protected:
   TInt mTimer;
+  TFloat mAngle;
 };
 
 #endif

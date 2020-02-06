@@ -9,7 +9,7 @@ public:
     BulletSprite(GGameState *aGameState) : GAnchorSprite(aGameState, 0, PLAYER_SLOT) {
       Name("PLAYER BULLET");
       type = STYPE_PBULLET;
-      SetCMask(STYPE_ENEMY | STYPE_OBJECT);
+      SetCMask(STYPE_ENEMY | STYPE_OBJECT | STYPE_EBULLET);
       SetFlags(SFLAG_CHECK);
       ClearFlags(SFLAG_RENDER | SFLAG_ANCHOR);
     }
@@ -77,7 +77,7 @@ TBool GPlayerBulletProcess::RunAfter() {
   if (!mSprite->mGameState->mGamePlayfield->IsFloor(mSprite->x + mSprite->w / 2, mSprite->y + mSprite->h / 2)) {
     return EFalse;
   }
-  if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
     return EFalse;
   }
   mAge++;

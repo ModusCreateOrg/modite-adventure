@@ -9,8 +9,8 @@
 class GGoblinSniperProcess : public GEnemyProcess {
 public:
   GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam);
-
   ~GGoblinSniperProcess() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
 protected:
   TBool MaybeAttack() OVERRIDE;

@@ -523,3 +523,10 @@ TBool GGoblinSniperProcess::MaybeAttack() {
   mAttackTimer = 1;
   return EFalse;
 }
+
+TBool GGoblinSniperProcess::RunAfter() {
+  // Make sniper stationary (turret) for debugging
+  // mSprite->vx = 0;
+  // mSprite->vy = 0;
+  return GEnemyProcess::RunAfter();
+}
