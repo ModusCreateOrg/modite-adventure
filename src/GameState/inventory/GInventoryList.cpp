@@ -29,7 +29,51 @@ void GInventoryList::PickupItem(TInt aItemNumber) {
       return;
     }
   }
+
   AddItem(new GInventoryItem(aItemNumber, this));
+
+  // Auto equip rings, amulets, sword, glove and boots
+  switch (aItemNumber) {
+    case ITEM_WATER_AMULET:
+      GPlayer::mEquipped.mWaterAmulet = FindItem(aItemNumber);
+      break;
+    case ITEM_FIRE_AMULET:
+      GPlayer::mEquipped.mFireAmulet = FindItem(aItemNumber);
+      break;
+    case ITEM_EARTH_AMULET:
+      GPlayer::mEquipped.mEarthAmulet = FindItem(aItemNumber);
+      break;
+    case ITEM_ENERGY_AMULET:
+      GPlayer::mEquipped.mEnergyAmulet = FindItem(aItemNumber);
+      break;
+
+    case ITEM_WATER_RING:
+      GPlayer::mEquipped.mWaterRing = FindItem(aItemNumber);
+      break;
+    case ITEM_FIRE_RING:
+      GPlayer::mEquipped.mFireRing = FindItem(aItemNumber);
+      break;
+    case ITEM_EARTH_RING:
+      GPlayer::mEquipped.mEarthRing = FindItem(aItemNumber);
+      break;
+    case ITEM_ENERGY_RING:
+      GPlayer::mEquipped.mEnergyRing = FindItem(aItemNumber);
+      break;
+
+    case ITEM_BOOTS:
+      GPlayer::mEquipped.mBoots = FindItem(aItemNumber);
+      break;
+    case ITEM_GLOVES:
+      GPlayer::mEquipped.mGloves = FindItem(aItemNumber);
+      break;
+    case ITEM_SWORD:
+      GPlayer::mEquipped.mSword = FindItem(aItemNumber);
+      break;
+
+    default:
+        ;
+      break;
+  }
 }
 
 GInventoryItem *GInventoryList::FindItem(TInt16 aItemNumber) {

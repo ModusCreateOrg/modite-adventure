@@ -24,12 +24,12 @@ public:
 
 public:
     TBool RunBefore() {
-      mContainer->Render(30, 20);
-      mContainer->Run();
       return ETrue;
     }
 
     TBool RunAfter() {
+      mContainer->Render(30, 20);
+      mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_OPTIONS);
         // TODO: @jaygarcia

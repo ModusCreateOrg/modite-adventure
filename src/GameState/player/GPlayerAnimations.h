@@ -2,7 +2,9 @@
 #define MODITE_GPLAYERANIMATIONS_H
 
 const TInt16 WALKSPEED = 3 * FACTOR;
-const TInt16 SWORDSPEED = 3 * FACTOR;
+const TInt16 SWORDSPEED = (TInt16)(3.2 * FACTOR);
+const TInt16 SWORDSPEED_WITH_GLOVE = (TInt16)(2.7 * FACTOR);
+
 const TInt16 HITSPEED = 2 * FACTOR;
 
 extern ANIMSCRIPT idleAnimation[];
@@ -25,9 +27,8 @@ extern ANIMSCRIPT spellOverlayAnimation[];
 extern ANIMSCRIPT idleDownAnimation[];
 extern ANIMSCRIPT walkDownAnimation1[];
 extern ANIMSCRIPT walkDownAnimation2[];
-extern ANIMSCRIPT skidDownAnimation[];
-extern ANIMSCRIPT swordDownAnimation[]; // attack
-extern ANIMSCRIPT swordDownNoBulletAnimation[]; // attack next to wall
+extern ANIMSCRIPT swordDownAnimationNoGloves[]; // attack
+extern ANIMSCRIPT swordDownAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightDownAnimation[]; // attacked
 extern ANIMSCRIPT hitMediumDownAnimation[]; // attacked
 extern ANIMSCRIPT hitHardDownAnimation[]; // attacked
@@ -36,9 +37,8 @@ extern ANIMSCRIPT hitHardDownAnimation[]; // attacked
 extern ANIMSCRIPT idleLeftAnimation[];
 extern ANIMSCRIPT walkLeftAnimation1[];
 extern ANIMSCRIPT walkLeftAnimation2[];
-extern ANIMSCRIPT skidLeftAnimation[];
-extern ANIMSCRIPT swordLeftAnimation[]; // attack
-extern ANIMSCRIPT swordLeftNoBulletAnimation[]; // attack next to wall
+extern ANIMSCRIPT swordLeftAnimationNoGloves[]; // attack
+extern ANIMSCRIPT swordLeftAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightLeftAnimation[]; // attacked
 extern ANIMSCRIPT hitMediumLeftAnimation[]; // attacked
 extern ANIMSCRIPT hitHardLeftAnimation[]; // attacked
@@ -47,9 +47,8 @@ extern ANIMSCRIPT hitHardLeftAnimation[]; // attacked
 extern ANIMSCRIPT idleRightAnimation[];
 extern ANIMSCRIPT walkRightAnimation1[];
 extern ANIMSCRIPT walkRightAnimation2[];
-extern ANIMSCRIPT skidRightAnimation[];
-extern ANIMSCRIPT swordRightAnimation[]; // attack
-extern ANIMSCRIPT swordRightNoBulletAnimation[]; // attack next to wall
+extern ANIMSCRIPT swordRightAnimationNoGloves[]; // attack
+extern ANIMSCRIPT swordRightAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightRightAnimation[]; // attacked
 extern ANIMSCRIPT hitMediumRightAnimation[]; // attacked
 extern ANIMSCRIPT hitHardRightAnimation[]; // attacked
@@ -58,9 +57,8 @@ extern ANIMSCRIPT hitHardRightAnimation[]; // attacked
 extern ANIMSCRIPT idleUpAnimation[];
 extern ANIMSCRIPT walkUpAnimation1[];
 extern ANIMSCRIPT walkUpAnimation2[];
-extern ANIMSCRIPT skidUpAnimation[];
-extern ANIMSCRIPT swordUpAnimation[]; // attack
-extern ANIMSCRIPT swordUpNoBulletAnimation[]; // attack next to wall
+extern ANIMSCRIPT swordUpAnimationNoGloves[]; // attack
+extern ANIMSCRIPT swordUpAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightUpAnimation[]; // attacked
 extern ANIMSCRIPT hitMediumUpAnimation[]; // attacked
 extern ANIMSCRIPT hitHardUpAnimation[]; // attacked

@@ -34,15 +34,20 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
     y += 8;
   }
 
+  TUint8 color;
   switch (mMessageType) {
     case STAT_PLAYER_HIT:
-      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_RED, COLOR_TEXT_TRANSPARENT, -6);
+      color = COLOR_SHMOO_RED;
+      break;
     case STAT_EXPERIENCE:
     case STAT_HEAL:
-      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO_GREEN, COLOR_TEXT_TRANSPARENT, -6);
+      color = COLOR_SHMOO_GREEN;
+      break;
     case STAT_ENEMY_HIT:
     case STAT_INFO:
     default:
-      return gDisplay.renderBitmap->DrawString(aViewPort, mMessage, mFont, screenX, screenY, COLOR_SHMOO, COLOR_TEXT_TRANSPARENT, -6);
+      color = COLOR_SHMOO;
+      break;
   }
+  return gDisplay.renderBitmap->DrawStringShadow(aViewPort, mMessage, mFont, screenX, screenY, color, COLOR_TEXT_SHADOW, COLOR_TEXT_TRANSPARENT, -6);
 }
