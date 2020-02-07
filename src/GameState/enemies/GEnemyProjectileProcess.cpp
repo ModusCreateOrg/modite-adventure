@@ -279,6 +279,7 @@ TBool GEnemyProjectileProcess::RunAfter() {
       mSprite->vx = mSprite->vy = 0;
       mTimer = PROJECTILE_EXPIRE;
     } else if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
+      TODO: @jaygarcia -- SFX here
       printf("PLAYER HIT PROJECTILE\n");
       mSprite->type = STYPE_PBULLET;
       mSprite->cMask = STYPE_ENEMY | STYPE_OBJECT;
