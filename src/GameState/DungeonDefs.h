@@ -783,7 +783,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   },
   // OVERWORLD 9 Dungeon 5 (Also Dev Dungeon!!).
   {
-    "OW9_DGN4_9216",
+    "OWX_DEVDGN_9472",
     {
       GLOBAL_OBJECT_LAYER_BMP,
       {
