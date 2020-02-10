@@ -6,8 +6,8 @@
 
 class GWizardProjectileProcess : public GProcess {
 public:
-  GWizardProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute);
-  ~GWizardProjectileProcess();
+  GWizardProjectileProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aAngle, TInt16 aAttribute);
+  ~GWizardProjectileProcess() OVERRIDE;
 
 public:
   TBool RunBefore() OVERRIDE;
@@ -20,8 +20,9 @@ protected:
 protected:
   TInt mStep;
   TInt mTimer;
+  TFloat mAngle;
   TInt16 mAttribute;
-  TBool mExploding;
+  GWizardProcess *mParent;
 };
 
 #endif

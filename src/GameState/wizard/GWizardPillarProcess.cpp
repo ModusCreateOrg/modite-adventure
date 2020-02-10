@@ -1,21 +1,42 @@
 #include "GWizardPillarProcess.h"
 #include "GPlayer.h"
 
-const TInt16 PILLAR_SPEED = 4;
+const TInt16 PILLAR_SPEED = 2 * FACTOR;
 
-static ANIMSCRIPT pillarAnimation[] = {
+static ANIMSCRIPT warningAnimation[] = {
+  ABITMAP(BOSS_PILLAR_SLOT),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ADELTA(2, -4),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ADELTA(0, -4),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ADELTA(-2, -4),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
+  ADELTA(0, -4),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 0),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
-  ALOOP,
+  AEND,
 };
 
 static ANIMSCRIPT explodeAnimation[] = {
+  ABITMAP(BOSS_PILLAR_SLOT),
+  ATYPE(STYPE_EBULLET),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 2),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 4),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 5),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 4),
+  ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 3),
+  AEND,
+};
+
+static ANIMSCRIPT collapseAnimation[] = {
+  ABITMAP(BOSS_PILLAR_SLOT),
+  ATYPE(STYPE_DEFAULT),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 6),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 7),
   ASTEP(PILLAR_SPEED, IMG_WIZARD_PILLAR + 8),
@@ -25,36 +46,36 @@ static ANIMSCRIPT explodeAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT pillarSpawn[] = {
-  ABITMAP(BOSS_PILLAR_SLOT),
-  ALABEL,
-  ANULL(180),
-  AEND,
-};
-
 // constructor
-GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TBool aFollowPlayer, TInt aStartDelay = 0)
+GWizardPillarProcess::GWizardPillarProcess(GGameState *aGameState, GWizardProcess *aParent, TFloat aAngle, TFloat aDistance, TBool aFollowPlayer, TUint16 aMaxDuration)
     : GProcess(0, 0) {
   mGameState = aGameState;
+  mParent = aParent;
+  mMaxDuration = aMaxDuration;
   mSaveToStream = EFalse;
-  mSprite = new GAnchorSprite(mGameState, BOSS_PILLAR_SLOT, 0);
-  mSprite->x = aX;
-  mSprite->y = aY;
-  mSprite->w = 24;
-  mSprite->h = 24;
+  mSprite = new GAnchorSprite(mGameState, 0, BOSS_PILLAR_SLOT);
+  mSprite->w = 16;
+  mSprite->h = 8;
+  mSprite->mDy = -4;
   mSprite->cy = 0;
-  mSprite->cx = -8;
-  mSprite->vy = 0;
+  mSprite->cx = 0;
 //  mSprite->type = STYPE_EBULLET;
   mFollowPlayer = aFollowPlayer;
-//  mSprite->SetCMask(STYPE_PLAYER);
-//  mSprite->SetFlags(SFLAG_CHECK);
-  mSprite->mAttackStrength = 55;
+  if (mFollowPlayer) {
+    mSprite->x = GPlayer::mSprite->mLastX + 16;
+    mSprite->y = GPlayer::mSprite->mLastY + 1; // prevent starting hidden behind player
+  } else {
+    mSprite->x = mParent->mSprite->x + COS(aAngle) * aDistance * 1.5 + 16;
+    mSprite->y = mParent->mSprite->y + SIN(aAngle) * aDistance;
+  }
+  mSprite->SetCMask(STYPE_PLAYER);
+  mSprite->ClearFlags(SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
+  mSprite->mAttackStrength = mParent->mSprite->mAttackStrength;
   mGameState->AddSprite(mSprite);
-  mSprite->StartAnimation(pillarSpawn);
+  mSprite->StartAnimation(warningAnimation);
   mExploding = EFalse;
   mFrame = 0;
-  mStartDelay = (aStartDelay > 0) ? (30 + aStartDelay) : 0;
 }
 
 GWizardPillarProcess::~GWizardPillarProcess() {
@@ -66,75 +87,44 @@ GWizardPillarProcess::~GWizardPillarProcess() {
 }
 
 TBool GWizardPillarProcess::RunBefore() {
-  if (mSprite->Clipped() || (mExploding && mSprite->AnimDone())) {
-    return EFalse;
-  }
-
-  if (! mFollowPlayer && !mSprite->CanWalk(DIRECTION_UP, 0, -10)) {
-    printf("REJECTED DIRECTION_UP\n");
-    return EFalse;
-  }
-
-  if (! mFollowPlayer && !mSprite->CanWalk(DIRECTION_RIGHT, 32, 0)) {
-    printf("REJECTED DIRECTION_RIGHT\n");
-
-    return EFalse;
-  }
-
-  if (! mFollowPlayer && !mSprite->CanWalk(DIRECTION_LEFT, -32, 0)) {
-    printf("REJECTED DIRECTION_LEFT\n");
-
-    return EFalse;
-  }
-
-
-  if (! mFollowPlayer && !mSprite->CanWalk(DIRECTION_DOWN, 0, 10)) {
-    printf("REJECTED DIRECTION_DOWN\n");
-
-    return EFalse;
-  }
-
-  if (mStartDelay > 0) {
-    mStartDelay--;
-
-
-    if (mFollowPlayer) {
-
-      mSprite->x = GPlayer::mSprite->x + 16;
-      mSprite->y = GPlayer::mSprite->y;
+  if (!mSprite->CanWalk(DIRECTION_UP, 0, 0) || !mSprite->CanWalk(DIRECTION_DOWN, 0, 0)) {
+    mSprite->StartAnimation(collapseAnimation);
+    mFollowPlayer = EFalse;
+    mExploding = ETrue;
+    if (mFrame == 0) {
+      printf("PILLAR OBSTRUCTED\n");
+      return EFalse;
     }
-    return ETrue;
   }
 
-  if (mFrame == 0 && ! mExploding) {
-    mSprite->StartAnimation(pillarAnimation);
-
+  if (mFollowPlayer) {
+    mSprite->x = ((mSprite->x * 20 * FACTOR) + GPlayer::mSprite->mLastX + 16) / (20 * FACTOR + 1);
+    mSprite->y = ((mSprite->y * 20 * FACTOR) + GPlayer::mSprite->mLastY) / (20 * FACTOR + 1);
   }
-
-  if (mFrame > 30) {
-    mSprite->SetCMask(STYPE_PLAYER);
-    mSprite->SetFlags(SFLAG_CHECK);
-    mSprite->type = STYPE_EBULLET;
-  }
-
-  mFrame++;
-
 
   return ETrue;
 }
 
 TBool GWizardPillarProcess::RunAfter() {
-  if (!mExploding) {
-    const TUint16 mFrameMax = 20;
-    if (mFrame > mFrameMax) {
-      mSprite->StartAnimation(explodeAnimation);
-      return mExploding = ETrue;
-    }
+  mFrame++;
+  if (!mExploding && mSprite->TestAndClearCType(STYPE_PLAYER)) {
+    mSprite->StartAnimation(collapseAnimation);
+  }
 
-    if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
-      mSprite->StartAnimation(explodeAnimation);
-      mExploding = ETrue;
+  if (mSprite->AnimDone()) {
+    if (mExploding) {
+      return EFalse;
+    } else {
+      mSprite->SetFlags(SFLAG_CHECK);
+      if (mParent->IsChanneling() && mFrame < mMaxDuration) {
+        mSprite->StartAnimation(explodeAnimation);
+        mFollowPlayer = EFalse;
+      } else {
+        mSprite->StartAnimation(collapseAnimation);
+        mExploding = ETrue;
+      }
     }
   }
+
   return ETrue;
 }
