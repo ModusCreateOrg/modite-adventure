@@ -84,7 +84,7 @@ protected:
   virtual TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
 protected:
-  TBool MaybeAttack();
+  virtual TBool MaybeAttack();
 
   TBool MaybeHit();
 

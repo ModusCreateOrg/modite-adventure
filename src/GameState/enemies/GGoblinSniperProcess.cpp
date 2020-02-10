@@ -1,4 +1,6 @@
 #include "GGoblinSniperProcess.h"
+#include "GEnemyProjectileProcess.h"
+#include "GPlayer.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -12,12 +14,14 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt TAUNT_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 5 * FACTOR;
+const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
-const TInt WALK_SPEED = 5 * FACTOR;
+const TInt WALK_SPEED = 2 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = 4 / FACTOR;
+const TFloat ATTACK_DISTANCE = 6 * TILESIZE;
+const TFloat FLEE_DISTANCE = 3 * TILESIZE;
 
 // region  ANIMATIONS {{{
 
@@ -120,11 +124,8 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(GOBLIN_SNIPER_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 0),
-  ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 1),
-  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 1),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 2),
   AEND
 };
@@ -179,11 +180,8 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(GOBLIN_SNIPER_SLOT),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 3),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
-  ATYPE(STYPE_EBULLET),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
+  AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
   AEND
 };
@@ -238,11 +236,8 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(GOBLIN_SNIPER_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 3),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
-  ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
-  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
   AEND
 };
@@ -297,11 +292,8 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(GOBLIN_SNIPER_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 3),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 0),
-  ATYPE(STYPE_EBULLET),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 1),
-  ATYPE(STYPE_ENEMY),
+  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_UP + 1),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 2),
   AEND
 };
@@ -347,6 +339,8 @@ static ANIMSCRIPT hitSpellAnimation[] = {
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
     : GEnemyProcess(aGameState, aIp, GOBLIN_SNIPER_SLOT, aParam, VELOCITY, ATTR_GOBLIN_SNIPER) {
+  mGameState = aGameState;
+
   mSprite->Name("ENEMY GOBLIN SNIPER");
   mSprite->x = aX;
   mSprite->y = aY;
@@ -408,6 +402,27 @@ void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
 }
 
 void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
+
+  // fire 1-3 projectiled
+  TFloat xx = mSprite->x,
+         yy = mSprite->y;
+
+  // Angles are in radians
+  const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
+
+  TInt attackType = Random() & TUint8(3);
+
+  // 25% chance for multi-arrow attack
+  if (attackType < 3) {
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer));
+  } else {
+    const TFloat step = 22.5 * (M_PI/180);
+    const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0]));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1]));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2]));
+  }
+
   switch (mSprite->mDirection) {
     case DIRECTION_UP:
       mSprite->StartAnimation(attackUpAnimation);
@@ -452,4 +467,66 @@ void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
 
 void GGoblinSniperProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
+}
+
+TBool GGoblinSniperProcess::MaybeAttack() {
+  if (mPlayerSprite->mInvulnerable) {
+    return EFalse;
+  }
+
+  const TFloat distance = sqrt(pow(GPlayer::mSprite->x - mSprite->x, 2) + pow(GPlayer::mSprite->y - mSprite->y, 2));
+
+#ifdef DEBUG_MODE
+  // printf("Distance from sniper to player %f\n", distance);
+#endif
+
+  if (distance > ATTACK_DISTANCE || distance < FLEE_DISTANCE) {
+    return EFalse;
+  }
+
+  TRect myRect, hisRect;
+  mSprite->GetRect(myRect);
+  mPlayerSprite->GetRect(hisRect);
+
+  if (ABS(myRect.y2 - hisRect.y2) < ABS(myRect.x1 - hisRect.x1)) {
+    if (myRect.x1 >= hisRect.x2) {
+      // to right of player
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_LEFT);
+      }
+      return ETrue;
+    }
+    if (myRect.x2 <= hisRect.x1) {
+      // to left of player
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_RIGHT);
+      }
+      return ETrue;
+    }
+  } else {
+    if (myRect.y1 >= hisRect.y2) {
+      // below player
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_UP);
+      }
+      return ETrue;
+    }
+    if (myRect.y2 <= hisRect.y1) {
+      // above player
+      if (--mAttackTimer <= 0) {
+        NewState(ATTACK_STATE, DIRECTION_DOWN);
+      }
+      return ETrue;
+    }
+  }
+
+  mAttackTimer = 1;
+  return EFalse;
+}
+
+TBool GGoblinSniperProcess::RunAfter() {
+  // Make sniper stationary (turret) for debugging
+  // mSprite->vx = 0;
+  // mSprite->vy = 0;
+  return GEnemyProcess::RunAfter();
 }
