@@ -158,16 +158,16 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite = new GAnchorSprite(mGameState, 0, aSlot);
   switch (mType) {
     case ATTR_WIZARD_EARTH:
-      mSprite->Name("Ikuyim, Earth Wizard");
+      mSprite->Name("Ikuyim");
       break;
     case ATTR_WIZARD_WATER:
-      mSprite->Name("Asakust, Water Wizard");
+      mSprite->Name("Asakust");
       break;
     case ATTR_WIZARD_FIRE:
-      mSprite->Name("Imagak, Fire Wizard");
+      mSprite->Name("Imagak");
       break;
     case ATTR_WIZARD_ENERGY:
-      mSprite->Name("Atanok, Energy Wizard");
+      mSprite->Name("Atanok");
       break;
     default:
       Panic("Invalid wizard type");
