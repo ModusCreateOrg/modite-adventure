@@ -156,7 +156,22 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSaveToStream = ETrue;
   //
   mSprite = new GAnchorSprite(mGameState, 0, aSlot);
-  mSprite->Name("WIZARD");
+  switch (mType) {
+    case ATTR_WIZARD_EARTH:
+      mSprite->Name("Ikuyim, Earth Wizard");
+      break;
+    case ATTR_WIZARD_WATER:
+      mSprite->Name("Asakust, Water Wizard");
+      break;
+    case ATTR_WIZARD_FIRE:
+      mSprite->Name("Imagak, Fire Wizard");
+      break;
+    case ATTR_WIZARD_ENERGY:
+      mSprite->Name("Atanok, Energy Wizard");
+      break;
+    default:
+      Panic("Invalid wizard type");
+  }
   mSpriteSheet = aSpriteSheet;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mSprite->type = STYPE_ENEMY;
@@ -474,6 +489,7 @@ TBool GWizardProcess::ProjectileState() {
 
   if (mStep < 360) {
     if (mStateTimer-- <= 0) {
+      // TODO: @jaygarcia SfxWizardCreateProjectile
       TFloat angle = 2 * M_PI;
       switch (mAttackType) {
         default:
@@ -489,8 +505,8 @@ TBool GWizardProcess::ProjectileState() {
           break;
         case 2:
           angle *= TFloat(mStep) / 360 - 720; // negative angle signals projectile should not be launched at player
-          mStep += 24;
-          mStateTimer = FRAMES_PER_SECOND / 15;
+          mStep += 40;
+          mStateTimer = FRAMES_PER_SECOND / 8;
           break;
       }
       mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, angle, mType));
@@ -516,6 +532,7 @@ TBool GWizardProcess::ProjectileState() {
 
 TBool GWizardProcess::PillarState() {
   if (MaybeDamage()) {
+    // TODO: @jaygarcia SfxWizardSpellInterrupt
     mChanneling = EFalse;
     SetAttackTimer();
     SetState(STATE_IDLE, mDirection);
@@ -523,6 +540,7 @@ TBool GWizardProcess::PillarState() {
   }
 
   if (mStateTimer-- < 0) {
+    // TODO: @jaygarcia SfxWizardCreatePillar
 
     // spawn pillars
     if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
@@ -548,6 +566,7 @@ TBool GWizardProcess::PillarState() {
 TBool GWizardProcess::TeleportState() {
   --mAttackTimer;
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
+    // TODO: @jaygarcia SfxWizardTeleport
     RandomLocation();
     mSprite->StartAnimation(teleportAnimation2);
     mStep++;
@@ -561,6 +580,7 @@ TBool GWizardProcess::TeleportState() {
 
   if (mSprite->AnimDone()) {
     if (mStep == 0) {
+      // TODO: @jaygarcia SfxWizardTeleport
       RandomLocation();
       // illusion sometimes when below 75% health
       if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && (Random() & 1u)) {
@@ -580,10 +600,12 @@ TBool GWizardProcess::TeleportState() {
 
 TBool GWizardProcess::IllusionState() {
   if (MaybeDamage() || mSprite->mHitPoints == mSprite->mMaxHitPoints) {
+    // TODO: @jaygarcia SfxWizardSpellInterrupt
     mChanneling = EFalse;
     SetState(STATE_IDLE, mDirection);
   }
   if (mStateTimer-- < 0) {
+    // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
     mStateTimer = FRAMES_PER_SECOND * 3;
     auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mSprite->mMaxHitPoints - mSprite->mHitPoints));
     p->SetMessageType(STAT_HEAL);

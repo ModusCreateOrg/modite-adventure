@@ -117,7 +117,7 @@ void GHud::Render() {
   GAnchorSprite *s = GPlayer::mActiveBoss;
   if (s) {
     TInt h = gViewPort->mRect.Height();
-    gDisplay.renderBitmap->DrawStringShadow(gViewPort, s->Name(), gFont16x16, 30, h - 32, COLOR_TEXT, COLOR_TEXT_SHADOW,
+    gDisplay.renderBitmap->DrawStringShadow(gViewPort, s->Name(), gFont8x8, 21, h - 24, COLOR_TEXT, COLOR_TEXT_SHADOW,
                                       COLOR_TEXT_TRANSPARENT);
     gDisplay.renderBitmap->DrawFastHLine(gViewPort, 21, h - 11, STAT_WIDTH + 1, COLOR_METER_OUTLINE);
     gDisplay.renderBitmap->DrawFastVLine(gViewPort, 22 + STAT_WIDTH, h - 15, 5, COLOR_METER_OUTLINE);

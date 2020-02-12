@@ -251,7 +251,7 @@ void GGameState::PostRender() {
   }
 
   if (mText[0]) {
-    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, gViewPort->mRect.Height() - 10, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+    gDisplay.renderBitmap->DrawString(gViewPort, mText, gFont8x8, 4, 4, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
   }
 #endif
 }
