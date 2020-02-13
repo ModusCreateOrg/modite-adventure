@@ -6,31 +6,34 @@
 #include "GStatProcess.h"
 #include "GPlayer.h"
 #include "GItemProcess.h"
+#include "GWizardDecoyProcess.h"
 
 #define DEBUGME
 //#undef DEBUGME
 
-const TInt16 IDLE_SPEED = 8;
-const TInt16 WALK_SPEED = 8;
+const TInt16 IDLE_SPEED = 4 * FACTOR;
+const TInt16 WALK_SPEED = 4 * FACTOR;
 const TFloat WALK_VELOCITY = 1.25;
-const TInt16 ATTACK_SPEED = 5;
-const TInt16 HIT_SPEED = 5;
+const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
-
-enum {
-  STATE_IDLE,
-  STATE_WALK,
-  STATE_PROJECTILE,
-  STATE_TELEPORT,
-  STATE_HIT,
-  STATE_SPELL,
-  STATE_DEATH,
-};
+const TInt HEAL_RATE = 100; // amount to heal per three seconds during illusion spell
 
 static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(1, IMG_WIZARD_IDLE + 3),
+  ASTEP(1, IMG_WIZARD_WALK_DOWN + 3),
   AEND,
+};
+
+static ANIMSCRIPT channelingAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ALABEL,
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE + 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_FIRE + 3),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE + 1),
+  ALOOP,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
@@ -89,85 +92,51 @@ static ANIMSCRIPT walkRightAnimation2[] = {
   AEND,
 };
 
-static ANIMSCRIPT hitAnimation[] = {
-  ABITMAP(BOSS_SLOT),
-
-  AFILL(COLOR_TEXT),
-  ASTEP(HIT_SPEED, IMG_WIZARD_IDLE + 1),
-
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_WIZARD_IDLE + 1),
-
-  AFILL(COLOR_TEXT),
-  ASTEP(HIT_SPEED, IMG_WIZARD_IDLE + 1),
-
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_WIZARD_IDLE + 1),
-
-  ASTEP(HIT_SPEED * 4, IMG_WIZARD_IDLE + 3),
-  ASTEP(HIT_SPEED * 4, IMG_WIZARD_IDLE + 1),
-  AEND,
-};
-
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(IDLE_SPEED, IMG_WIZARD_IDLE + 1),
+  ASTEP(IDLE_SPEED, IMG_WIZARD_WALK_DOWN + 1),
   AEND,
 };
 
 static ANIMSCRIPT projectileAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 7),
+  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_FIRE_START),
+  ALABEL,
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
-  AEND,
+  ALOOP,
 };
 
 static ANIMSCRIPT projectileAnimation2[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE_START),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   AEND,
 };
 
 static ANIMSCRIPT teleportAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 4, IMG_WIZARD_WALK_DOWN + 7),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE_START),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
-  ANULL(1),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
   AEND,
 };
 
 static ANIMSCRIPT teleportAnimation2[] = {
   ABITMAP(BOSS_SLOT),
-  ANULL(300),
-  AEND,
-};
-
-static ANIMSCRIPT teleportAnimation3[] = {
-  ABITMAP(BOSS_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 4),
+  ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 3),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 2),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 1),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_FIRE + 0),
-  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 6),
-  ASTEP(ATTACK_SPEED * 6, IMG_WIZARD_IDLE + 1),
+  ASTEP(ATTACK_SPEED * 2, IMG_WIZARD_FIRE_START),
   ASTEP(ATTACK_SPEED, IMG_WIZARD_WALK_DOWN + 0),
   AEND,
 };
@@ -187,19 +156,35 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSaveToStream = ETrue;
   //
   mSprite = new GAnchorSprite(mGameState, 0, aSlot);
-  mSprite->Name("WIZARD");
+  switch (mType) {
+    case ATTR_WIZARD_EARTH:
+      mSprite->Name("Ikuyim");
+      break;
+    case ATTR_WIZARD_WATER:
+      mSprite->Name("Asakust");
+      break;
+    case ATTR_WIZARD_FIRE:
+      mSprite->Name("Imagak");
+      break;
+    case ATTR_WIZARD_ENERGY:
+      mSprite->Name("Atanok");
+      break;
+    default:
+      Panic("Invalid wizard type");
+  }
+  mSpriteSheet = aSpriteSheet;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mSprite->type = STYPE_ENEMY;
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
-//  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
-  mSprite->SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK);
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
   mSprite->x = aX;
   mSprite->y = aY;
-  mSprite->cx = 2;
+  mSprite->mDy = -4;
+  mSprite->cx = -4;
   mSprite->cy = 0;
-  mSprite->w = 30;
-  mSprite->h = 24;
-  mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
+  mSprite->w = 36;
+  mSprite->h = 20;
+  mSprite->SetStatMultipliers(10.0, 3.0, 10.0);
   mGameState->AddSprite(mSprite);
   //
   mHitTimer = HIT_SPAM_TIME;
@@ -207,10 +192,12 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mStep = 0;
   mDeathCounter = 0;
   mSpellCounter = 0;
-  mAttackType = EFalse;
+  mAttackType = 0;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
+  mBlinkTimer = 0;
+  mChanneling = EFalse;
 }
 
 GWizardProcess::~GWizardProcess() {
@@ -224,7 +211,32 @@ GWizardProcess::~GWizardProcess() {
 
 void GWizardProcess::SetAttackTimer() {
 //  mAttackTimer = 5;
-  mAttackTimer = Random(1, 30);
+  mAttackTimer = Random(2 * FRAMES_PER_SECOND, 3 * FRAMES_PER_SECOND);
+}
+
+void GWizardProcess::RandomLocation() {
+  mChanneling = EFalse;
+  TInt nTries = 0;
+  // searches random directions from the wizard's spawn point,
+  // tries 10 times to move to a location not near the player
+  do {
+    mSprite->x = mStartX;
+    mSprite->y = mStartY;
+    TFloat dx = RandomFloat() * 8 - 4;
+    TFloat dy = (Random() & 1u) ? 4 : -4;
+    if (Random() & 1u) {
+      TFloat tmp = dx;
+      dx = dy;
+      dy = tmp;
+    }
+    TInt i = 0;
+    while (mSprite->IsFloor(DIRECTION_DOWN, dx * i, dy * i) &&
+           mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
+      i++;
+    }
+    mSprite->x = mStartX + dx * i * SQRT(RandomFloat()) * 0.8;
+    mSprite->y = mStartY + dy * i * SQRT(RandomFloat()) * 0.8;
+  } while (nTries++ < 10 && (ABS(mSprite->x - GPlayer::mSprite->mLastX) < 96 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 96));
 }
 
 // start wizard idle in specified direction
@@ -233,6 +245,7 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleAnimation);
   mSprite->mInvulnerable = EFalse;
+  mStateTimer = FRAMES_PER_SECOND * 2;
 }
 
 // start wizard walking in specified direction
@@ -265,39 +278,54 @@ void GWizardProcess::Walk(DIRECTION aDirection) {
   }
 }
 
-void GWizardProcess::Projectile(DIRECTION aDirection) {
+void GWizardProcess::Projectile() {
   printf("Projectile\n");
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(projectileAnimation1);
   mStep = 0;
+  mStateTimer = FRAMES_PER_SECOND * 0.5;
+  mAttackType = Random(0, 2);
+  mChanneling = mAttackType != 1;
 }
 
-void GWizardProcess::Teleport(DIRECTION aDirection) {
+void GWizardProcess::Pillar() {
+  printf("Pillar\n");
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->StartAnimation(channelingAnimation);
+  mChanneling = ETrue;
+  mStateTimer = 0;
+  for (TInt n = 0; n < 6; n++) {
+    TFloat angle = n * M_PI / 3;
+
+    mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, 40, EFalse));
+  }
+}
+
+void GWizardProcess::Teleport() {
   printf("Teleport\n");
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(teleportAnimation1);
   mStep = 0;
-  mSprite->mInvulnerable = ETrue;
 }
 
-void GWizardProcess::Hit(DIRECTION aDirection) {
+void GWizardProcess::Illusion() {
+  printf("Illusion\n");
   mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
+  for (TInt i = 0; i < 8; i++) {
+    RandomLocation();
+    auto *p = new GWizardDecoyProcess(mGameState, this, mSprite->x, mSprite->y, mSpriteSheet);
+    mGameState->AddProcess(p);
+  }
+  mSprite->StartAnimation(channelingAnimation);
+  mChanneling = ETrue;
+  mStateTimer = FRAMES_PER_SECOND * 3;
+  mBlinkTimer = 0;
+  mSprite->mFill = -1;
 }
 
-void GWizardProcess::Spell(DIRECTION aDirection) {
+void GWizardProcess::Death() {
   mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
-  mSpellCounter += 2;
-  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-  //  mSpellOverlayProcess = p;
-  mGameState->AddProcess(p);
-  p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
-  mGameState->AddProcess(p);
-}
-
-void GWizardProcess::Death(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
+  mChanneling = EFalse;
   mSprite->StartAnimation(deathAnimation);
   // get coordinates for explosion placement
   TRect r;
@@ -313,6 +341,7 @@ void GWizardProcess::Death(DIRECTION aDirection) {
 // change wizard state
 void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
   mState = aState;
+  mStep = 0;
   mDirection = aDirection;
   // set animation
   switch (mState) {
@@ -323,64 +352,49 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
       Walk(mDirection);
       break;
     case STATE_PROJECTILE:
-      Projectile(mDirection);
+      Projectile();
+      break;
+    case STATE_PILLAR:
+      Pillar();
       break;
     case STATE_TELEPORT:
-      Teleport(mDirection);
+      Teleport();
       break;
-    case STATE_HIT:
-      Hit(mDirection);
+    case STATE_ILLUSION:
+      Illusion();
       break;
     case STATE_DEATH:
-      Death(mDirection);
+      Death();
       break;
     default:
       Panic("GWizardProcess: invalid SetState(%d)\n", mState);
   }
 }
 
-TBool GWizardProcess::MaybeHit() {
+TBool GWizardProcess::MaybeDamage() {
+  if (mBlinkTimer-- > 0) {
+    mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
+  }
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
 
     if (GPlayer::MaybeDamage(mSprite, ETrue)) {
-      mSprite->mInvulnerable = ETrue;
-
-      if (mSprite->mHitPoints <= 0) {
-        printf("WIZARD  DEATH\n");
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
-      SetState(STATE_SPELL, mSprite->mDirection);
+      mSprite->vx = mSprite->vy = 0;
+      mSpellCounter += 2;
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+      mGameState->AddProcess(p);
+      p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
+      mGameState->AddProcess(p);
+      mBlinkTimer = FRAMES_PER_SECOND / 4;
       return ETrue;
     }
   }
 
-  GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
-      mSprite->mInvulnerable = ETrue;
-      if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
-      }
-      switch (other->mDirection) {
-        case DIRECTION_RIGHT:
-          SetState(STATE_HIT, DIRECTION_LEFT);
-          break;
-        case DIRECTION_LEFT:
-          SetState(STATE_HIT, DIRECTION_RIGHT);
-          break;
-        case DIRECTION_UP:
-          SetState(STATE_HIT, DIRECTION_DOWN);
-          break;
-        case DIRECTION_DOWN:
-          SetState(STATE_HIT, DIRECTION_UP);
-          break;
-        default:
-          Panic("GWizardProcess no hit direction\n");
-          break;
-      }
+      mBlinkTimer = FRAMES_PER_SECOND / 4;
       return ETrue;
     }
   }
@@ -388,7 +402,6 @@ TBool GWizardProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_PLAYER)) {
     mSprite->ClearCType(STYPE_PLAYER);
     mSprite->Nudge();
-    return ETrue;
   }
 
   return EFalse;
@@ -396,10 +409,18 @@ TBool GWizardProcess::MaybeHit() {
 
 TBool GWizardProcess::MaybeAttack() {
   if (--mAttackTimer < 0) {
-    printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
-//    SetState(STATE_TELEPORT, mDirection);
-    SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
-    mAttackType = !mAttackType;
+    printf("Attack!\n");
+    SetState(Random() & 1u ? STATE_PROJECTILE : STATE_PILLAR, mDirection);
+    return ETrue;
+  }
+  return EFalse;
+}
+
+TBool GWizardProcess::MaybeDeath() {
+  if (mSprite->mHitPoints <= 0) {
+    printf("WIZARD DEATH\n");
+    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+    SetState(STATE_DEATH, mDirection);
     return ETrue;
   }
   return EFalse;
@@ -407,27 +428,42 @@ TBool GWizardProcess::MaybeAttack() {
 
 // called each frame while wizard is idle
 TBool GWizardProcess::IdleState() {
-  if (MaybeHit()) {
+  if (mAttackTimer < 1.5 * FRAMES_PER_SECOND && ABS(mSprite->x - GPlayer::mSprite->mLastX) < 64 && ABS(mSprite->y - GPlayer::mSprite->mLastY) < 64) {
+    SetState(STATE_TELEPORT, mDirection);
     return ETrue;
   }
+
+  MaybeDamage();
+
+  if (MaybeDeath()) {
+    return ETrue;
+  }
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
   if (--mStateTimer < 1) {
     mStateTimer = 60;
     for (TInt i = 0; i < 10; i++) {
-      DIRECTION d = (Random() & 1) ? DIRECTION_RIGHT : DIRECTION_LEFT;
+      DIRECTION d = (Random() & 1u) ? DIRECTION_RIGHT : DIRECTION_LEFT;
       if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
         SetState(STATE_WALK, d);
         return ETrue;
       }
     }
-    SetState(STATE_WALK, (Random() & 1) ? DIRECTION_RIGHT : DIRECTION_LEFT);
+    SetState(STATE_WALK, (Random() & 1u) ? DIRECTION_RIGHT : DIRECTION_LEFT);
   }
   return ETrue;
 }
 
 TBool GWizardProcess::WalkState() {
-  if (MaybeHit()) {
+  MaybeDamage();
+
+  if (MaybeDeath()) {
     return ETrue;
   }
+
   if (MaybeAttack()) {
     return ETrue;
   }
@@ -445,159 +481,136 @@ TBool GWizardProcess::WalkState() {
 }
 
 TBool GWizardProcess::ProjectileState() {
-  if (!mSprite->AnimDone()) {
+  MaybeDamage();
+
+  if (MaybeDeath()) {
     return ETrue;
   }
-  if (!mStep) {
-    // fire 1-3 projectiled
-    TFloat xx = mSprite->x + 16,
-           yy = mSprite->y - 16;
 
-    // Angles are in radians
-    const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
-    const TFloat step = 45. * (M_PI/180);
-    const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
+  if (mStep < 360) {
+    if (mStateTimer-- <= 0) {
+      // TODO: @jaygarcia SfxWizardCreateProjectile
+      TFloat angle = 2 * M_PI;
+      switch (mAttackType) {
+        default:
+        case 0:
+          angle *= TFloat(mStep) / 360;
+          mStep += 120;
+          mStateTimer = FRAMES_PER_SECOND / 4;
+          break;
+        case 1:
+          angle *= TFloat(mStep) / 360;
+          mStep += 60;
+          mStateTimer = FRAMES_PER_SECOND / 4;
+          break;
+        case 2:
+          angle *= TFloat(mStep) / 360 - 720; // negative angle signals projectile should not be launched at player
+          mStep += 40;
+          mStateTimer = FRAMES_PER_SECOND / 8;
+          break;
+      }
+      mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, angle, mType));
+    }
+    return ETrue;
+  }
 
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[0], mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[1], mType));
-    mGameState->AddProcess(new GWizardProjectileProcess(mGameState, xx, yy, angles[2], mType));
-
-
+  if (mStep == 360) {
+    mChanneling = EFalse;
     mSprite->StartAnimation(projectileAnimation2);
     mStep++;
     return ETrue;
   }
-  SetAttackTimer();
-  SetState(STATE_IDLE, mDirection);
+
+  if (mSprite->AnimDone()) {
+    SetAttackTimer();
+    SetState(STATE_IDLE, mDirection);
+    return ETrue;
+  }
+
+  return ETrue;
+}
+
+TBool GWizardProcess::PillarState() {
+  if (MaybeDamage()) {
+    // TODO: @jaygarcia SfxWizardSpellInterrupt
+    mChanneling = EFalse;
+    SetAttackTimer();
+    SetState(STATE_IDLE, mDirection);
+    return ETrue;
+  }
+
+  if (mStateTimer-- < 0) {
+    // TODO: @jaygarcia SfxWizardCreatePillar
+
+    // spawn pillars
+    if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
+      // Follows Player if water or fire
+      mGameState->AddProcess(
+              new GWizardPillarProcess(mGameState, this, 0, 0, ETrue, FRAMES_PER_SECOND * 6));
+      mStateTimer = 0.3 * FRAMES_PER_SECOND;
+    } else {
+      for (TInt n = 0; n < 8; n++) {
+        TFloat angle = RandomFloat() * 2 * M_PI,
+                distance = Random(50, 100);
+
+        mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, distance, EFalse, FRAMES_PER_SECOND * 4));
+        mStateTimer = 2 * FRAMES_PER_SECOND;
+      }
+
+    }
+  }
+
   return ETrue;
 }
 
 TBool GWizardProcess::TeleportState() {
-
-
-  // check to see if wizard has met a wall
-  TBool canWalkUp = mSprite->CanWalk(DIRECTION_UP, mSprite->vx, mSprite->vy),
-        canWalkLt = mSprite->CanWalk(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
-        canWalkRt = mSprite->CanWalk(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
-        canWalkDn = mSprite->CanWalk(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
-
-
-  // Bound around the room while the player is being attacked by the spikes/pillars
-  if (! canWalkUp) {
-    mSprite->vy *= -1;
-  }
-  if (! canWalkDn) {
-    mSprite->vy *= -1;
-  }
-
-  if (! canWalkLt) {
-    mSprite->vx *= -1;
-  }
-  if (! canWalkRt) {
-    mSprite->vx *= -1;
-  }
-
-
-//
-//  //  SetState(STATE_IDLE, DIRECTION_DOWN);
-//  //  return ETrue;
-//  }
-  if (!mSprite->AnimDone()) {
-    return ETrue;
-  }
-
-
-  if (!mStep) {
+  --mAttackTimer;
+  if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
+    // TODO: @jaygarcia SfxWizardTeleport
+    RandomLocation();
     mSprite->StartAnimation(teleportAnimation2);
-    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK); // Let's not hit the player.
     mStep++;
+  }
 
-//    int nTries = 0;
-    while (mSprite->vx == 0) {
-//      nTries ++;
-      mSprite->vx = (TFloat)Random(-3, 3);
-    }
-//    printf("nTries VX = %i\n", nTries);
+  MaybeDamage();
 
-//    nTries = 0;
-    while (mSprite->vy == 0) {
-//      nTries++;
-      mSprite->vy = (TFloat)Random(-3, 3);
-    }
-//    printf("nTries VX = %i\n", nTries);
-
-
-    // spawn pillars
-    for (TInt n = 0; n < 8; n++) {
-      // Follows Player if water or fire
-      if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
-        mGameState->AddProcess(new GWizardPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, ETrue, (n * 30)));
-      }
-      else {
-        TInt pillarX = mSprite->x + Random(-64, 64),
-             pillarY = mSprite->y + Random(-64, 64);
-
-        mGameState->AddProcess(new GWizardPillarProcess(mGameState, pillarX, pillarY, EFalse, 0));
-      }
-
-    }
-
+  if (MaybeDeath()) {
     return ETrue;
-  }
-  else if (mStep == 1 && --mStateTimer < 1) {
-    mState++;
-    mSprite->StartAnimation(teleportAnimation3);
-  }
-  else {
-    mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
-    SetAttackTimer();
-    SetState(STATE_IDLE, mDirection);
-  }
-
-  return ETrue;
-}
-
-TBool GWizardProcess::HitState() {
-#ifdef __CHICKEN_MODE__
-  mSprite->mHitPoints = 0;
-#endif
-
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
-    mSprite->Nudge();
-  }
-
-  if (mHitTimer < 0) {
-    mHitTimer = HIT_SPAM_TIME;
-    mSprite->mInvulnerable = EFalse;
-    mSprite->ClearCType(STYPE_PBULLET);
-    SetState(STATE_TELEPORT, DIRECTION_DOWN);
   }
 
   if (mSprite->AnimDone()) {
-    if (mSprite->mHitPoints <= 0) {
-      SetState(STATE_DEATH, mSprite->mDirection);
-    }
-    else {
-      mSprite->mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      SetState(STATE_IDLE, mSprite->mDirection);
+    if (mStep == 0) {
+      // TODO: @jaygarcia SfxWizardTeleport
+      RandomLocation();
+      // illusion sometimes when below 75% health
+      if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && (Random() & 1u)) {
+        SetState(STATE_ILLUSION, mDirection);
+        return ETrue;
+      }
+      mSprite->StartAnimation(teleportAnimation2);
+      mStep++;
+    } else {
+      SetState(STATE_IDLE, mDirection);
+      return ETrue;
     }
   }
 
   return ETrue;
 }
 
-TBool GWizardProcess::SpellState() {
-  if (mSprite->AnimDone() && mSpellCounter <= 0) {
-    if (mSprite->mHitPoints <= 0) {
-      SetState(STATE_DEATH, mSprite->mDirection);
-    }
-    else {
-      mSprite->mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      SetState(STATE_IDLE, mSprite->mDirection);
-    }
+TBool GWizardProcess::IllusionState() {
+  if (MaybeDamage() || mSprite->mHitPoints == mSprite->mMaxHitPoints) {
+    // TODO: @jaygarcia SfxWizardSpellInterrupt
+    mChanneling = EFalse;
+    SetState(STATE_IDLE, mDirection);
+  }
+  if (mStateTimer-- < 0) {
+    // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
+    mStateTimer = FRAMES_PER_SECOND * 3;
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mSprite->mMaxHitPoints - mSprite->mHitPoints));
+    p->SetMessageType(STAT_HEAL);
+    mSprite->mGameState->AddProcess(p);
+    mSprite->mHitPoints = MIN(mSprite->mHitPoints + HEAL_RATE, mSprite->mMaxHitPoints);
   }
   return ETrue;
 }
@@ -626,12 +639,12 @@ TBool GWizardProcess::RunBefore() {
       return WalkState();
     case STATE_PROJECTILE:
       return ProjectileState();
+    case STATE_PILLAR:
+      return PillarState();
     case STATE_TELEPORT:
       return TeleportState();
-    case STATE_HIT:
-      return HitState();
-    case STATE_SPELL:
-      return SpellState();
+    case STATE_ILLUSION:
+      return IllusionState();
     case STATE_DEATH:
       return DeathState();
     default:
