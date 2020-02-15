@@ -693,7 +693,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         // always explosion (for any enemy)
         RemapSlot(MID_BOSS_DEATH_EXPLOSION_BMP, BOSS_DEATH_SLOT, IMAGE_64x64);
         // Sprite sheet for enemy
-        RemapSlot(MID_BOSS_FIRE_BMP, BOSS_SLOT, IMAGE_128x128);
+        RemapSlot(MID_BOSS_ENERGY_BMP, BOSS_SLOT, IMAGE_128x128);
         // Sprite sheet for enemy projectiles
         RemapSlot(MID_BOSS_ENERGY_PROJECTILE_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
 

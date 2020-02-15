@@ -29,7 +29,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->x = aX;
   mSprite->y = aY;
   mSprite->cx = 20;
-  mSprite->cy = 0;
+  mSprite->cy = 8;
   mSprite->w = 44;
   mSprite->h = 24;
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
@@ -106,8 +106,6 @@ TBool GMidBossProcess::RunAfter() {
 void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mDx = 0;
-  mSprite->mDy = 0;
 
   // Reset blinking for all new states
   mSprite->Fill(-1);
@@ -118,10 +116,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       mStateTimer = Random(15, 180);
       mSprite->type = STYPE_ENEMY;
       Idle(aDirection);
@@ -138,8 +132,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case MB_MOVE_STATE:
       mStep = 0;
-      mSprite->x += 32;
-      mSprite->y -= 32;
       mStateTimer = BOUNCE_TIME * FRAMES_PER_SECOND;
       mSprite->type = STYPE_EBULLET;
       mSprite->SetFlags(SFLAG_CHECK);
@@ -153,10 +145,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       // will take 60 frames (1 second) to return to start
       mSprite->vx = (mStartX - mSprite->x) / 60;
       mSprite->vy = (mStartY - mSprite->y) / 60;
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       Return(aDirection);
       break;
 
@@ -164,30 +152,18 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
-      mSprite->ResetShadow();
       Revert(aDirection);
+      mSprite->ResetShadow();
       mSprite->SetFlags(SFLAG_KNOCKBACK);
       break;
 
     case MB_WALK_STATE:
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       mStep = 1 - mStep;
       mStateTimer = Random(30, 270);
       Walk(aDirection);
       break;
 
     case MB_ATTACK_STATE:
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -196,10 +172,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case MB_HIT_STATE:
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
@@ -208,10 +180,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case MB_SPELL_STATE:
-      mSprite->cx = 20;
-      mSprite->cy = 8;
-      mSprite->w = 44;
-      mSprite->h = 24;
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
