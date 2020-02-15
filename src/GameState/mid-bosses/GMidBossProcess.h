@@ -43,7 +43,7 @@ protected:
   TBool MaybeBounce();
 
 protected:
-  virtual void NewState(TUint16 aState, DIRECTION aDirection);
+  void NewState(TUint16 aState, DIRECTION aDirection);
 
   virtual void Idle(DIRECTION aDirection) = 0;
   TBool IdleState();

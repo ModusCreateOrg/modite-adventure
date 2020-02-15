@@ -19,14 +19,15 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mGameState = aGameState;
   mDropsItemAttribute = aDropsItemAttribute;
   mPlayfield = mGameState->mGamePlayfield;
-  mStartX = aX;
-  mStartY = aY;
   mHitTimer = HIT_SPAM_TIME;
+  mAttackTimer = 0;
+  mStateTimer = 0;
+  mStep = 0;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
-  mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->x = mStartX = aX;
+  mSprite->y = mStartY = aY;
   mSprite->cx = 20;
   mSprite->cy = 8;
   mSprite->w = 44;
@@ -37,6 +38,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
+  mSpellOverlayProcess = ENull;
   mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
   switch (aAttribute) {
     case ATTR_MID_BOSS_WATER:
