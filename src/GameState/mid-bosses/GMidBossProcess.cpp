@@ -24,7 +24,6 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mHitTimer = HIT_SPAM_TIME;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
-  mSprite->Name("MID BOSS");
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
   mSprite->x = aX;
   mSprite->y = aY;
@@ -42,15 +41,19 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   switch (aAttribute) {
     case ATTR_MID_BOSS_WATER:
       mSprite->mElement = ELEMENT_WATER;
+      mSprite->Name("Iuy");
       break;
     case ATTR_MID_BOSS_FIRE:
       mSprite->mElement = ELEMENT_FIRE;
+      mSprite->Name("Ustir");
       break;
     case ATTR_MID_BOSS_EARTH:
       mSprite->mElement = ELEMENT_EARTH;
+      mSprite->Name("Oim");
       break;
     case ATTR_MID_BOSS_ENERGY:
       mSprite->mElement = ELEMENT_ENERGY;
+      mSprite->Name("Igum");
       break;
     default:
       break;
