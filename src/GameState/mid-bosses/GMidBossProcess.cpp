@@ -18,6 +18,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mHitTimer = HIT_SPAM_TIME;
   mAttackTimer = 0;
   mStateTimer = 0;
+  mBlinkTimer = 0;
   mStep = 0;
 
   mSprite = new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
@@ -88,8 +89,6 @@ TBool GMidBossProcess::RunBefore() {
       return AttackState();
     case MB_CHARGE_STATE:
       return ChargeState();
-    case MB_HIT_STATE:
-      return HitState();
     case MB_DEATH_STATE:
       return DeathState();
     case MB_SPELL_STATE:
@@ -102,6 +101,9 @@ TBool GMidBossProcess::RunBefore() {
 TBool GMidBossProcess::RunAfter() {
   if (mHitTimer-- < 0) {
     mHitTimer = HIT_SPAM_TIME;
+  }
+  if (mBlinkTimer-- > 0) {
+    mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
   }
   return ETrue;
 }
@@ -183,14 +185,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Attack(aDirection);
       break;
 
-    case MB_HIT_STATE:
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      mSprite->ClearCMask(STYPE_EBULLET);
-      Hit(aDirection);
-      break;
-
     case MB_SPELL_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -205,7 +199,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
         p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
         mGameState->AddProcess(p);
       }
-      Hit(mSprite->mDirection);
       break;
 
     case MB_DEATH_STATE:
@@ -231,35 +224,15 @@ TBool GMidBossProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
     if (GPlayer::MaybeDamage(mSprite, ETrue)) {
-      mSprite->mInvulnerable = ETrue;
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
 
-  GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
-      mSprite->Nudge(); // move sprite so it's not on top of player
-      mSprite->mInvulnerable = ETrue;
-      switch (other->mDirection) {
-        case DIRECTION_RIGHT:
-          NewState(MB_HIT_STATE, DIRECTION_LEFT);
-          break;
-        case DIRECTION_LEFT:
-          NewState(MB_HIT_STATE, DIRECTION_RIGHT);
-          break;
-        case DIRECTION_UP:
-          NewState(MB_HIT_STATE, DIRECTION_DOWN);
-          break;
-        case DIRECTION_DOWN:
-          NewState(MB_HIT_STATE, DIRECTION_UP);
-          break;
-        default:
-          Panic("GMidBossProcess no hit direction\n");
-          break;
-      }
+      mBlinkTimer = BLINK_DURATION;
       return ETrue;
     }
   }
@@ -514,34 +487,6 @@ TBool GMidBossProcess::ChargeState() {
     MaybeBounce();
   }
   mSprite->TestAndClearCType(STYPE_PLAYER);
-
-  return ETrue;
-}
-
-TBool GMidBossProcess::HitState() {
-
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
-    mSprite->Nudge();
-  }
-
-  if (mHitTimer < 0) {
-    mHitTimer = HIT_SPAM_TIME;
-    mSprite->mInvulnerable = EFalse;
-    mSprite->ClearCType(STYPE_PBULLET);
-    NewState(MB_BALL_STATE, DIRECTION_DOWN);
-  }
-
-  if (mSprite->AnimDone()) {
-    if (mSprite->mHitPoints <= 0) {
-      NewState(MB_DEATH_STATE, mSprite->mDirection);
-    }
-    else {
-      mSprite->mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      NewState(MB_IDLE_STATE, mSprite->mDirection);
-    }
-  }
 
   return ETrue;
 }

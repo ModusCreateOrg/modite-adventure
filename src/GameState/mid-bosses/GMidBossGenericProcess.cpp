@@ -407,11 +407,6 @@ void GMidBossGenericProcess::Land(DIRECTION aDirection) {
   }
 }
 
-void GMidBossGenericProcess::Hit(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
-}
-
 void GMidBossGenericProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimation(deathAnimation);
 }

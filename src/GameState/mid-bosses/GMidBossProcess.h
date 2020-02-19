@@ -15,6 +15,7 @@ const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 3;
 const TFloat MID_BOSS_FRICTION = 0.1 / TFloat(FACTOR);
+const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
 
 enum {
   MB_IDLE_STATE,
@@ -25,7 +26,6 @@ enum {
   MB_REVERT_STATE, // revert back to original shape
   MB_ATTACK_STATE, // projectile attack
   MB_CHARGE_STATE,
-  MB_HIT_STATE,
   MB_DEATH_STATE,
   MB_SPELL_STATE, // hit with magic spell
 };
@@ -76,9 +76,6 @@ protected:
   virtual void Land(DIRECTION aDirection) = 0;
   TBool ChargeState();
 
-  virtual void Hit(DIRECTION aDirection) = 0;
-  TBool HitState();
-
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
 
@@ -107,6 +104,7 @@ protected:
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitTimer;
+  TInt16 mBlinkTimer;
   TInt mDeathCounter; // number of death animation processes spawned/outstanding
   TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };

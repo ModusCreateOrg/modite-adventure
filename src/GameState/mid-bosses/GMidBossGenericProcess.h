@@ -31,8 +31,6 @@ protected:
 
   void Land(DIRECTION aDirection) OVERRIDE;
 
-  void Hit(DIRECTION aDirection) OVERRIDE;
-
   void Death(DIRECTION aDirection) OVERRIDE;
 
   void Spell(DIRECTION aDirection) OVERRIDE;
