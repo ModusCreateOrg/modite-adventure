@@ -466,8 +466,8 @@ TBool GMidBossProcess::ChargeState() {
       Charge(direction);
     }
     if (mStateTimer == 0) {
-      mSprite->vx = VELOCITY * xx / hypot(xx, yy);
-      mSprite->vy = VELOCITY * yy / hypot(xx, yy);
+      mSprite->vx = CHARGE_VELOCITY * xx / hypot(xx, yy);
+      mSprite->vy = CHARGE_VELOCITY * yy / hypot(xx, yy);
       mSprite->type = STYPE_EBULLET;
     }
   } else if (mStateTimer == 0) {
@@ -476,6 +476,8 @@ TBool GMidBossProcess::ChargeState() {
     }
     if (MaybeBounce()) {
       mStateTimer++;
+      mSprite->vx *= VELOCITY / CHARGE_VELOCITY;
+      mSprite->vy *= VELOCITY / CHARGE_VELOCITY;
     }
     if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
       NewState(MB_IDLE_STATE, mSprite->mDirection);

@@ -11,6 +11,7 @@
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
 const TFloat VELOCITY = 2.0;
+const TFloat CHARGE_VELOCITY = 3.0;
 const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 3;
