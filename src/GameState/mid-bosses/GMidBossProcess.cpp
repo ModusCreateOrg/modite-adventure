@@ -7,10 +7,6 @@
 
 // see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
-const TFloat VELOCITY = 1.0;
-const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
-const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
-
 GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16  aDropsItemAttribute, TInt16 aSpriteSheet)
     : GProcess(aAttribute) {
   mIp = aIp;
@@ -90,6 +86,8 @@ TBool GMidBossProcess::RunBefore() {
       return WalkState();
     case MB_ATTACK_STATE:
       return AttackState();
+    case MB_CHARGE_STATE:
+      return ChargeState();
     case MB_HIT_STATE:
       return HitState();
     case MB_DEATH_STATE:
@@ -111,6 +109,7 @@ TBool GMidBossProcess::RunAfter() {
 void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+  mSprite->type = STYPE_ENEMY;
 
   // Reset blinking for all new states
   mSprite->Fill(-1);
@@ -166,6 +165,14 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mStep = 1 - mStep;
       mStateTimer = Random(30, 270);
       Walk(aDirection);
+      break;
+
+    case MB_CHARGE_STATE:
+      mStep = 0;
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      mStateTimer = -FRAMES_PER_SECOND;
+      Charge(aDirection);
       break;
 
     case MB_ATTACK_STATE:
@@ -257,12 +264,6 @@ TBool GMidBossProcess::MaybeHit() {
     }
   }
 
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
-    mSprite->Nudge();
-    return ETrue;
-  }
-
   return EFalse;
 }
 
@@ -296,6 +297,12 @@ TBool GMidBossProcess::IdleState() {
     // after 8 tries, we couldn't find a direction to walk.
     NewState(MB_IDLE_STATE, mSprite->mDirection);
   }
+
+  if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+    mSprite->Nudge();
+    return ETrue;
+  }
+
   return ETrue;
 }
 
@@ -455,6 +462,59 @@ TBool GMidBossProcess::RevertState() {
 }
 
 TBool GMidBossProcess::AttackState() {
+  return ETrue;
+}
+
+TBool GMidBossProcess::ChargeState() {
+  MaybeHit();
+
+  if (mStateTimer < 0) {
+    mStateTimer++;
+    TFloat xx = GPlayer::mSprite->x - mSprite->x - 32,
+      yy = GPlayer::mSprite->y - mSprite->y - 4;
+    DIRECTION direction;
+    if (yy < xx) {
+      direction = yy < -xx ? DIRECTION_UP : DIRECTION_RIGHT;
+    } else {
+      direction = yy < -xx ? DIRECTION_LEFT : DIRECTION_DOWN;
+    }
+    if (mSprite->AnimDone() || mSprite->mDirection != direction) {
+      mSprite->mDirection = direction;
+      Charge(direction);
+    }
+    if (mStateTimer == 0) {
+      mSprite->vx = VELOCITY * xx / hypot(xx, yy);
+      mSprite->vy = VELOCITY * yy / hypot(xx, yy);
+      mSprite->type = STYPE_EBULLET;
+    }
+  } else if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      Charge(mSprite->mDirection);
+    }
+    if (MaybeBounce()) {
+      mStateTimer++;
+    }
+    if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+      NewState(MB_IDLE_STATE, mSprite->mDirection);
+    }
+  } else if (mStateTimer < HOP_DURATION) {
+    mStateTimer++;
+    mSprite->mDy = GRAVITY * .5 * mStateTimer * (mStateTimer - HOP_DURATION);
+    MaybeBounce();
+  } else if (mStateTimer == HOP_DURATION) {
+    Land(mSprite->mDirection);
+    mStateTimer++;
+    MaybeBounce();
+  } else {
+    mSprite->vx *= 1 - MID_BOSS_FRICTION;
+    mSprite->vy *= 1 - MID_BOSS_FRICTION;
+    if (mSprite->AnimDone()) {
+      NewState(MB_IDLE_STATE, mSprite->mDirection);
+    }
+    MaybeBounce();
+  }
+  mSprite->TestAndClearCType(STYPE_PLAYER);
+
   return ETrue;
 }
 

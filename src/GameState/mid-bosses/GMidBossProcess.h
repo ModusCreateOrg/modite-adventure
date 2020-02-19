@@ -10,6 +10,11 @@
 #include "common/GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
+const TFloat VELOCITY = 2.0;
+const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
+const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
+const TInt HOP_DURATION = FRAMES_PER_SECOND / 3;
+const TFloat MID_BOSS_FRICTION = 0.1 / TFloat(FACTOR);
 
 enum {
   MB_IDLE_STATE,
@@ -19,6 +24,7 @@ enum {
   MB_RETURN_STATE, // returning to starting position
   MB_REVERT_STATE, // revert back to original shape
   MB_ATTACK_STATE, // projectile attack
+  MB_CHARGE_STATE,
   MB_HIT_STATE,
   MB_DEATH_STATE,
   MB_SPELL_STATE, // hit with magic spell
@@ -65,6 +71,10 @@ protected:
 
   virtual void Attack(DIRECTION aDirection) = 0;
   TBool AttackState();
+
+  virtual void Charge(DIRECTION aDirection) = 0;
+  virtual void Land(DIRECTION aDirection) = 0;
+  TBool ChargeState();
 
   virtual void Hit(DIRECTION aDirection) = 0;
   TBool HitState();

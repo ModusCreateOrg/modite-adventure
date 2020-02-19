@@ -2,7 +2,6 @@
 #include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
 
-const TFloat VELOCITY = 2.0;
 const TFloat BOUNCE_VELOCITY = 2.5;
 
 const TInt16 IDLE_SPEED = 10 * FACTOR;
@@ -65,6 +64,19 @@ static ANIMSCRIPT walkDownAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT landDownAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_DOWN + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ADELTA(0, 0),
@@ -78,6 +90,19 @@ static ANIMSCRIPT walkRightAnimation2[] = {
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 2),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT landRightAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_RIGHT + 1),
   AEND,
 };
 
@@ -99,6 +124,19 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT landLeftAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(2, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkLeftWaterAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ADELTA(0, 0),
@@ -112,6 +150,19 @@ static ANIMSCRIPT walkLeftWaterAnimation2[] = {
   ADELTA(0, 0),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 2),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT landLeftWaterAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
   AEND,
 };
 
@@ -133,6 +184,19 @@ static ANIMSCRIPT walkLeftFireAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT landLeftFireAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(-4, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(BOSS_SLOT),
   ADELTA(0, 0),
@@ -146,6 +210,19 @@ static ANIMSCRIPT walkUpAnimation2[] = {
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  AEND,
+};
+
+static ANIMSCRIPT landUpAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_UP + 1),
   AEND,
 };
 
@@ -208,37 +285,21 @@ void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->vy = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
       break;
     case DIRECTION_DOWN:
       mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
     case DIRECTION_LEFT:
       mSprite->vx = -VELOCITY;
-      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
-        case ATTR_MID_BOSS_WATER:
-          mSprite->StartAnimation(mStep ? walkLeftWaterAnimation1 : walkLeftWaterAnimation2);
-          break;
-        case ATTR_MID_BOSS_FIRE:
-          mSprite->StartAnimation(mStep ? walkLeftFireAnimation1 : walkLeftFireAnimation2);
-          break;
-        case ATTR_MID_BOSS_EARTH:
-        case ATTR_MID_BOSS_ENERGY:
-        default:
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-      }
       break;
     case DIRECTION_RIGHT:
       mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
     default:
       Panic("GMidBossGenericProcess no Walk direction\n");
       break;
   }
-  mStep = !mStep;
+  Charge(aDirection);
 }
 
 TBool GMidBossGenericProcess::MaybeAttack() {
@@ -279,6 +340,71 @@ void GMidBossGenericProcess::Revert(DIRECTION aDirection) {
 
 void GMidBossGenericProcess::Attack(DIRECTION aDirection) {
   mSprite->StartAnimation(idleAnimation);
+}
+
+void GMidBossGenericProcess::Charge(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+      break;
+    case DIRECTION_LEFT:
+      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
+        case ATTR_MID_BOSS_WATER:
+          mSprite->StartAnimation(mStep ? walkLeftWaterAnimation1 : walkLeftWaterAnimation2);
+          break;
+        case ATTR_MID_BOSS_FIRE:
+          mSprite->StartAnimation(mStep ? walkLeftFireAnimation1 : walkLeftFireAnimation2);
+          break;
+        case ATTR_MID_BOSS_EARTH:
+        case ATTR_MID_BOSS_ENERGY:
+        default:
+          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+          break;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+      break;
+    default:
+      Panic("GMidBossGenericProcess no Charge direction\n");
+      break;
+  }
+  mStep = !mStep;
+}
+
+void GMidBossGenericProcess::Land(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(landUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(landDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
+        case ATTR_MID_BOSS_WATER:
+          mSprite->StartAnimation(landLeftWaterAnimation);
+          break;
+        case ATTR_MID_BOSS_FIRE:
+          mSprite->StartAnimation(landLeftFireAnimation);
+          break;
+        case ATTR_MID_BOSS_EARTH:
+        case ATTR_MID_BOSS_ENERGY:
+        default:
+          mSprite->StartAnimation(landLeftAnimation);
+          break;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(landRightAnimation);
+      break;
+    default:
+      Panic("GMidBossGenericProcess no Land direction\n");
+      break;
+  }
 }
 
 void GMidBossGenericProcess::Hit(DIRECTION aDirection) {
