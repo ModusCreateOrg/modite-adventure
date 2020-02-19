@@ -90,6 +90,7 @@ public:
   void DeathAnimationDone() {
     mDeathCounter--;
   }
+  void OverlayAnimationComplete() OVERRIDE;
     void WriteToStream(BMemoryStream &aStream) OVERRIDE;
     void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
 protected:

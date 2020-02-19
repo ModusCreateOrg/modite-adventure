@@ -193,7 +193,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Spell(aDirection);
       {
         mSpellCounter += 2;
-        auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+        auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 22, mSprite->y + 1);
         mSpellOverlayProcess = p;
         mGameState->AddProcess(p);
         p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
@@ -524,6 +524,9 @@ TBool GMidBossProcess::SpellState() {
   return ETrue;
 }
 
+void GMidBossProcess::OverlayAnimationComplete() {
+  mSpellCounter--;
+}
 
 void GMidBossProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mIp, sizeof(mIp));
