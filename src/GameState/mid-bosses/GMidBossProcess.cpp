@@ -32,7 +32,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   // This might not work if the sprite positions of the mid boss bitmaps are radically different from one another
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   mGameState->AddSprite(mSprite);
-  mSprite->SetStatMultipliers(4.0, 1.2, 10.0);
+  mSprite->SetStatMultipliers(8.0, 3.0, 10.0);
   mDeathCounter = 0;
   mSpellCounter = 0;
   mSpellOverlayProcess = ENull;
@@ -257,25 +257,22 @@ TBool GMidBossProcess::IdleState() {
   }
 
   if (--mStateTimer < 0) {
-    switch (Random() & 10u) {
-      case 0:
-        NewState(MB_BALL_STATE, DIRECTION_DOWN);
-        return ETrue;
-      case 1:
-      case 2:
-      case 3:
-        NewState(MB_CHARGE_STATE, mSprite->mDirection);
-        return ETrue;
-      default:
-        DIRECTION direction = GAnchorSprite::RandomDirection();
-        TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY,
-          vy = direction == DIRECTION_UP ? -VELOCITY : VELOCITY;
+    if (!(Random() % 10)) {
+      NewState(MB_BALL_STATE, DIRECTION_DOWN);
+      return ETrue;
+    }
+    if (!(Random() % 3)) {
+      NewState(MB_CHARGE_STATE, mSprite->mDirection);
+      return ETrue;
+    }
 
-        if (mSprite->CanWalk(direction, vx, vy)) {
-          NewState(MB_WALK_STATE, direction);
-          return ETrue;
-        }
+    DIRECTION direction = GAnchorSprite::RandomDirection();
+    TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY,
+      vy = direction == DIRECTION_UP ? -VELOCITY : VELOCITY;
 
+    if (mSprite->CanWalk(direction, vx, vy)) {
+      NewState(MB_WALK_STATE, direction);
+      return ETrue;
     }
 
     NewState(MB_IDLE_STATE, mSprite->mDirection);
