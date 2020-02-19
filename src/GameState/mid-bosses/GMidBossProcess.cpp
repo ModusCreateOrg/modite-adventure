@@ -15,7 +15,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, T
   mGameState = aGameState;
   mDropsItemAttribute = aDropsItemAttribute;
   mPlayfield = mGameState->mGamePlayfield;
-  mHitTimer = HIT_SPAM_TIME;
+  mHitTimer = 0;
   mAttackTimer = 0;
   mStateTimer = 0;
   mBlinkTimer = 0;
@@ -100,7 +100,7 @@ TBool GMidBossProcess::RunBefore() {
 
 TBool GMidBossProcess::RunAfter() {
   if (mHitTimer-- < 0) {
-    mHitTimer = HIT_SPAM_TIME;
+    mHitTimer = 0;
   }
   if (mBlinkTimer-- > 0) {
     mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
@@ -225,6 +225,7 @@ TBool GMidBossProcess::MaybeHit() {
     mSprite->ClearCType(STYPE_SPELL);
     if (GPlayer::MaybeDamage(mSprite, ETrue)) {
       NewState(MB_SPELL_STATE, mSprite->mDirection);
+      mHitTimer += HIT_SPAM_TIME * 2;
       return ETrue;
     }
   }
@@ -233,6 +234,7 @@ TBool GMidBossProcess::MaybeHit() {
     mSprite->ClearCType(STYPE_PBULLET);
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       mBlinkTimer = BLINK_DURATION;
+      mHitTimer += HIT_SPAM_TIME;
       return ETrue;
     }
   }
@@ -249,25 +251,33 @@ TBool GMidBossProcess::IdleState() {
     return ETrue;
   }
 
+  if (mHitTimer > HIT_SPAM_TIME * 3) {
+    NewState(MB_BALL_STATE, DIRECTION_DOWN);
+    return ETrue;
+  }
+
   if (--mStateTimer < 0) {
-    if ((Random() & 7) == 0) {
-      NewState(MB_BALL_STATE, DIRECTION_DOWN);
-      return ETrue;
-    }
-
-    // TODO: rewrite this logic.  It doesn't need to loop.  It can try random direction, then the opposite
-    for (TInt retries = 0; retries < 8; retries++) {
-      DIRECTION direction = (Random() & 2) ? DIRECTION_LEFT : DIRECTION_RIGHT;
-
-      TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY;
-
-      if (mSprite->CanWalk(direction, vx, 0)) {
-        NewState(MB_WALK_STATE, direction);
+    switch (Random() & 10u) {
+      case 0:
+        NewState(MB_BALL_STATE, DIRECTION_DOWN);
         return ETrue;
-      }
+      case 1:
+      case 2:
+      case 3:
+        NewState(MB_CHARGE_STATE, mSprite->mDirection);
+        return ETrue;
+      default:
+        DIRECTION direction = GAnchorSprite::RandomDirection();
+        TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY,
+          vy = direction == DIRECTION_UP ? -VELOCITY : VELOCITY;
+
+        if (mSprite->CanWalk(direction, vx, vy)) {
+          NewState(MB_WALK_STATE, direction);
+          return ETrue;
+        }
+
     }
 
-    // after 8 tries, we couldn't find a direction to walk.
     NewState(MB_IDLE_STATE, mSprite->mDirection);
   }
 
