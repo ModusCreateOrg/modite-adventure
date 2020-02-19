@@ -251,23 +251,26 @@ void GPlayerProcess::StartKnockback() {
     TRect myRect, otherRect;
     mSprite->GetRect(myRect);
     other->GetRect(otherRect);
-    TFloat velocity = PLAYER_VELOCITY;
-    TFloat dx = (mSprite->x+myRect.x1+myRect.Width()) - (other->x+otherRect.x1+otherRect.Width()),
-            dy = (mSprite->y+myRect.y1+myRect.Height()) - (other->y+otherRect.y1+otherRect.Height());
+    TFloat dx = (mSprite->x + myRect.x1 + TFloat(myRect.Width()) / 2) - (other->x + otherRect.x1 + TFloat(otherRect.Width()) / 2),
+            dy = (mSprite->y + myRect.y1 + TFloat(myRect.Height()) / 2) - (other->y + otherRect.y1 + TFloat(otherRect.Height()) / 2);
+    TFloat newVx, newVy;
+
+    newVx = PLAYER_VELOCITY * dx / hypot(dx, dy);
+    newVy = PLAYER_VELOCITY * dy / hypot(dx, dy);
 
     // if other sprite is moving towards player, add its momentum to player knockback
     if (dx > 0 ^ other->vx < 0) {
-      velocity += ABS(other->vx);
+      newVx += other->vx;
     }
     if (dy > 0 ^ other->vy < 0) {
-      velocity += ABS(other->vy);
+      newVy += other->vy;
     }
 
-    if (CanWalk(dx, 0)) {
-      mSprite->vx = velocity * (dx / (ABS(dx) + ABS(dy)));
+    if (CanWalk(newVx, 0)) {
+      mSprite->vx = newVx;
     }
-    if (CanWalk(0, dy)) {
-      mSprite->vy = velocity * (dy / (ABS(dx) + ABS(dy)));
+    if (CanWalk(0, newVy)) {
+      mSprite->vy = newVy;
     }
   }
 }
