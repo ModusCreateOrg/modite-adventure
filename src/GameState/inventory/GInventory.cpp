@@ -20,6 +20,7 @@ GInventory::GInventory(BViewPort *aViewPort) : BGameEngine(aViewPort) {
   mPlayfield = new GInventoryPlayfield(this);
   mCurrentColumn = mCurrentRow = 0;
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
+  gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
 }
 
 
@@ -104,12 +105,17 @@ static void render_item_row(BViewPort *aViewPort, const char *aHeading, const TU
   for (TInt col = 0; col < 4; col++) {
     render_item_slot(aViewPort, aItemRow[col], aX, aY, aSelected == col, aShowCounter);
     if (aEquipped - 1 == col) {
-      bm->DrawFastHLine(aViewPort, aX - 2, aY - 2, 16, COLOR_WHITE);
-      bm->DrawFastVLine(aViewPort, aX - 2, aY - 1, 15, COLOR_WHITE);
-      bm->DrawFastHLine(aViewPort, aX + 18, aY + 33, 16, COLOR_WHITE);
-      bm->DrawFastVLine(aViewPort, aX + 33, aY + 18, 15, COLOR_WHITE);
+      // draw corners of square
+      bm->DrawFastHLine(aViewPort, aX - 2, aY - 2, 36, COLOR_WHITE);
+      bm->DrawFastHLine(aViewPort, aX - 2, aY + 33, 36, COLOR_WHITE);
+      bm->DrawFastVLine(aViewPort, aX - 2, aY - 1, 34, COLOR_WHITE);
+      bm->DrawFastVLine(aViewPort, aX + 33, aY - 1, 34, COLOR_WHITE);
+      bm->DrawFastHLine(aViewPort, aX + 8, aY - 2, 16, COLOR_TEXT_BG);
+      bm->DrawFastHLine(aViewPort, aX + 8, aY + 33, 16, COLOR_TEXT_BG);
+      bm->DrawFastVLine(aViewPort, aX - 2, aY + 8, 16, COLOR_TEXT_BG);
+      bm->DrawFastVLine(aViewPort, aX + 33, aY + 8, 16, COLOR_TEXT_BG);
     }
-    aX += 40;
+    aX += 38;
   }
 }
 
@@ -124,19 +130,30 @@ void GInventory::RenderInventory() {
   y += 48;
   render_item_row(mViewPort, "Ring", ITEM_LAYOUT[3], x, y, mCurrentRow == 3 ? mCurrentColumn : -1, GPlayer::mEquipped.mRingElement);
 
+  x = 160, y = 4;
   char buf[256];
   sprintf(buf, "Level: %d", GPlayer::mLevel);
-  bm->DrawString(mViewPort, buf, gFont8x8, 160, 4, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
-  bm->DrawString(mViewPort, "Health", gFont8x8, 160, 26, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
-  render_meter(mViewPort, bm, COLOR_HEALTH, 220, 24, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
-  bm->DrawString(mViewPort, "Magic", gFont8x8, 160, 46, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
-  render_meter(mViewPort, bm, COLOR_MAGIC, 220, 44, GPlayer::mManaPotion, 100);
+  bm->DrawString(mViewPort, buf, gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+  y += 20;
+  bm->DrawString(mViewPort, "Health", gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+  render_meter(mViewPort, bm, COLOR_HEALTH, x + 56, y - 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
+  y += 20;
+  bm->DrawString(mViewPort, "Magic", gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+  render_meter(mViewPort, bm, COLOR_MAGIC, x + 56, y - 2, GPlayer::mManaPotion, 100);
+  y += 20;
   sprintf(buf, "Attack: %d", GPlayer::mAttackStrength);
-  bm->DrawString(mViewPort, buf, gFont8x8, 160, 64, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+  bm->DrawString(mViewPort, buf, gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
 
-  bm->DrawString(mViewPort, "Exp.", gFont8x8, 160, 200, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
-  render_meter(mViewPort, bm, COLOR_EXPERIENCE, 220, 198, GPlayer::mExperience, GPlayer::mNextLevel);
+  x = SCREEN_WIDTH - 40;
+  render_item_slot(mViewPort, ITEM_GLOVES, x, y, EFalse);
+  y += 36;
+  render_item_slot(mViewPort, ITEM_SWORD, x, y, EFalse);
+  y += 36;
+  render_item_slot(mViewPort, ITEM_BOOTS, x, y, EFalse);
 
+  x = 160, y = 192;
+  bm->DrawString(mViewPort, "Exp.", gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
+  render_meter(mViewPort, bm, COLOR_EXPERIENCE, x + 56, y - 2, GPlayer::mExperience, GPlayer::mNextLevel);
   TRect srcRect;
   BSpriteInfo *info = GPlayer::mSprite->mSpriteSheet->GetSpriteInfo(GPlayer::mSprite->mImageNumber);
   srcRect.x1 = info->x1;
