@@ -120,6 +120,15 @@ TBool GInventoryList::UseItem(TInt16 aItemNumber) {
   }
 }
 
+TUint16 GInventoryList::ItemCount(TInt16 aItemNumber) {
+  for (GInventoryItem *i = First(); !End(i); i = Next(i)) {
+    if (i->mItemNumber == aItemNumber) {
+      return i->mCount;
+    }
+  }
+  return 0;
+}
+
 void GInventoryList::Dump() {
   // print inventory list to console
   printf("\n\nInventory (%d items)\n", mCount);
