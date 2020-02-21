@@ -35,29 +35,42 @@ void GInventoryList::PickupItem(TInt aItemNumber) {
   // Auto equip rings, amulets, sword, glove and boots
   switch (aItemNumber) {
     case ITEM_WATER_AMULET:
-      GPlayer::mEquipped.mWaterAmulet = FindItem(aItemNumber);
+      GPlayer::mEquipped.mAmuletElement = ELEMENT_WATER;
       break;
     case ITEM_FIRE_AMULET:
-      GPlayer::mEquipped.mFireAmulet = FindItem(aItemNumber);
+      GPlayer::mEquipped.mAmuletElement = ELEMENT_FIRE;
       break;
     case ITEM_EARTH_AMULET:
-      GPlayer::mEquipped.mEarthAmulet = FindItem(aItemNumber);
+      GPlayer::mEquipped.mAmuletElement = ELEMENT_EARTH;
       break;
     case ITEM_ENERGY_AMULET:
-      GPlayer::mEquipped.mEnergyAmulet = FindItem(aItemNumber);
+      GPlayer::mEquipped.mAmuletElement = ELEMENT_ENERGY;
       break;
 
     case ITEM_WATER_RING:
-      GPlayer::mEquipped.mWaterRing = FindItem(aItemNumber);
+      GPlayer::mEquipped.mRingElement = ELEMENT_WATER;
       break;
     case ITEM_FIRE_RING:
-      GPlayer::mEquipped.mFireRing = FindItem(aItemNumber);
+      GPlayer::mEquipped.mRingElement = ELEMENT_FIRE;
       break;
     case ITEM_EARTH_RING:
-      GPlayer::mEquipped.mEarthRing = FindItem(aItemNumber);
+      GPlayer::mEquipped.mRingElement = ELEMENT_EARTH;
       break;
     case ITEM_ENERGY_RING:
-      GPlayer::mEquipped.mEnergyRing = FindItem(aItemNumber);
+      GPlayer::mEquipped.mRingElement = ELEMENT_ENERGY;
+      break;
+
+    case ITEM_WATER_SPELLBOOK:
+      GPlayer::mEquipped.mSpellBookElement = ELEMENT_WATER;
+      break;
+    case ITEM_FIRE_SPELLBOOK:
+      GPlayer::mEquipped.mSpellBookElement = ELEMENT_FIRE;
+      break;
+    case ITEM_EARTH_SPELLBOOK:
+      GPlayer::mEquipped.mSpellBookElement = ELEMENT_EARTH;
+      break;
+    case ITEM_ENERGY_SPELLBOOK:
+      GPlayer::mEquipped.mSpellBookElement = ELEMENT_ENERGY;
       break;
 
     case ITEM_BOOTS:

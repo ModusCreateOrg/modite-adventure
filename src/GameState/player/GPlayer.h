@@ -44,35 +44,16 @@ const TFloat AMULET_MATRIX[4][4] = {
 };
 
 struct GEquipped {
+  ELEMENT mAmuletElement, mRingElement, mSpellBookElement;
   GInventoryItem
-    *mWaterAmulet,
-    *mFireAmulet,
-    *mEarthAmulet,
-    *mEnergyAmulet,
-
-    *mWaterRing,
-    *mFireRing,
-    *mEarthRing,
-    *mEnergyRing,
-
-    *mSpellBook,
-
     *mGloves,
     *mBoots,
     *mSword;
 
   void Init() {
-    mWaterAmulet = ENull;
-    mFireAmulet = ENull;
-    mEarthAmulet = ENull;
-    mEnergyAmulet= ENull;
-
-    mWaterRing = ENull;
-    mFireRing = ENull;
-    mEarthRing = ENull;
-    mEnergyRing = ENull;
-
-    mSpellBook = ENull;
+    mAmuletElement = ELEMENT_NONE;
+    mRingElement = ELEMENT_NONE;
+    mSpellBookElement = ELEMENT_NONE;
 
     mGloves = ENull;
     mBoots = ENull;

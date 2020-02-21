@@ -5,7 +5,6 @@
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
 #include "GResources.h"
-#include "Items.h"
 #include "GPlayerBulletProcess.h"
 
 #define DEBUGME
@@ -410,7 +409,7 @@ TBool GPlayerProcess::MaybeSpell() {
     return EFalse;
   }
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellBook) {
+    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellBookElement) {
       if (GPlayer::mManaPotion >= 25) {
         GPlayer::mManaPotion -= 25;
       }
@@ -518,26 +517,9 @@ TBool GPlayerProcess::MaybeHit() {
       // Random +/- 20% variation
       hitAmount = (hitAmount * Random(80, 120)) / 100;
 
-      ELEMENT armorElement = ELEMENT_NONE;
 
-      if (other->mElement == ELEMENT_WATER && GPlayer::mEquipped.mWaterAmulet) {
-        armorElement = ELEMENT_WATER;
-      }
-
-      if (other->mElement == ELEMENT_EARTH && GPlayer::mEquipped.mEarthAmulet) {
-        armorElement = ELEMENT_EARTH;
-      }
-
-      if (other->mElement == ELEMENT_FIRE && GPlayer::mEquipped.mFireAmulet) {
-        armorElement = ELEMENT_FIRE;
-      }
-
-      if (other->mElement == ELEMENT_ENERGY && GPlayer::mEquipped.mEnergyAmulet) {
-        armorElement = ELEMENT_ENERGY;
-      }
-
-      if (armorElement) {
-        hitAmount *= AMULET_MATRIX[armorElement - 1][other->mElement - 1];
+      if (GPlayer::mEquipped.mAmuletElement && other->mElement) {
+        hitAmount *= AMULET_MATRIX[GPlayer::mEquipped.mAmuletElement - 1][other->mElement - 1];
       }
 
       GPlayer::mHitPoints -= hitAmount;
@@ -648,7 +630,7 @@ TBool GPlayerProcess::MaybeWalk() {
   }
 
   if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
-    if (GPlayer::mEquipped.mBoots && GPlayer::mEquipped.mBoots->mItemNumber == ITEM_BOOTS) {
+    if (GPlayer::mEquipped.mBoots) {
       newVy *= 2.0;
       newVx *= 2.0;
     } else {

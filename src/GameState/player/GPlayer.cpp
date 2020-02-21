@@ -32,29 +32,10 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
   mInventoryList.WriteToStream(stream);
 
   // Equipped
+  stream.Write(&mEquipped.mAmuletElement, sizeof(mEquipped.mAmuletElement));
+  stream.Write(&mEquipped.mRingElement, sizeof(mEquipped.mRingElement));
+  stream.Write(&mEquipped.mSpellBookElement, sizeof(mEquipped.mSpellBookElement));
   TUint16 v;
-  v = mEquipped.mWaterAmulet ? mEquipped.mWaterAmulet->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mFireAmulet ? mEquipped.mFireAmulet->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mEarthAmulet ? mEquipped.mEarthAmulet->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mEnergyAmulet ? mEquipped.mEnergyAmulet->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-
-  v = mEquipped.mWaterRing ? mEquipped.mWaterRing->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mFireRing ? mEquipped.mFireRing->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mEarthRing ? mEquipped.mEarthRing->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-  v = mEquipped.mEnergyRing ? mEquipped.mEnergyRing->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-
-
-  v = mEquipped.mSpellBook ? mEquipped.mSpellBook->mItemNumber : 0;
-  stream.Write(&v, sizeof(v));
-
   v = mEquipped.mGloves ? mEquipped.mGloves->mItemNumber : 0;
   stream.Write(&v, sizeof(v));
   v = mEquipped.mBoots ? mEquipped.mBoots->mItemNumber : 0;
@@ -76,35 +57,16 @@ void GPlayer::ReadFromStream(BMemoryStream &stream) {
   mInventoryList.ReadFromStream(stream);
 
   // Equipped
+  stream.Read(&mEquipped.mAmuletElement, sizeof(mEquipped.mAmuletElement));
+  stream.Read(&mEquipped.mRingElement, sizeof(mEquipped.mRingElement));
+  stream.Read(&mEquipped.mSpellBookElement, sizeof(mEquipped.mSpellBookElement));
   TUint16 v;
   stream.Read(&v, sizeof(v));
-  mEquipped.mWaterAmulet = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mFireAmulet = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mEarthAmulet = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mEnergyAmulet = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-
-  mEquipped.mWaterRing = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mFireRing = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mEarthRing = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-  mEquipped.mEnergyRing = mInventoryList.FindItem(v);
-  stream.Read(&v, sizeof(v));
-
-
   mEquipped.mGloves = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
   mEquipped.mBoots = mInventoryList.FindItem(v);
   stream.Read(&v, sizeof(v));
   mEquipped.mSword = mInventoryList.FindItem(v);
-
-  stream.Read(&v, sizeof(v));
-  mEquipped.mSpellBook = mInventoryList.FindItem(v);
 }
 
 void GPlayer::Dump() {
@@ -116,14 +78,14 @@ void GPlayer::Dump() {
 }
 
 TUint16 GPlayer::GetSpellSlot() {
-  switch (GPlayer::mEquipped.mSpellBook->mItemNumber) {
-    case ITEM_WATER_SPELLBOOK:
+  switch (GPlayer::mEquipped.mSpellBookElement) {
+    case ELEMENT_WATER:
       return SPELL_WATER_SLOT;
-    case ITEM_FIRE_SPELLBOOK:
+    case ELEMENT_FIRE:
       return SPELL_FIRE_SLOT;
-    case ITEM_EARTH_SPELLBOOK:
+    case ELEMENT_EARTH:
       return SPELL_EARTH_SLOT;
-    case ITEM_ENERGY_SPELLBOOK:
+    case ELEMENT_ENERGY:
       return SPELL_ELECTRICITY_SLOT;
     default:
       Panic("Invalid spell");
@@ -135,47 +97,18 @@ TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
   if (!aSprite->mInvulnerable) {
     TInt attackAmount = mAttackStrength;
 
-    ELEMENT attackElement = ELEMENT_NONE;
     if (aIsSpell) {
-      if (mEquipped.mSpellBook) {
-        switch (mEquipped.mSpellBook->mItemNumber) {
-          case ITEM_WATER_SPELLBOOK:
-            attackElement = ELEMENT_WATER;
-            break;
-          case ITEM_FIRE_SPELLBOOK:
-            attackElement = ELEMENT_FIRE;
-            break;
-          case ITEM_EARTH_SPELLBOOK:
-            attackElement = ELEMENT_EARTH;
-            break;
-          case ITEM_ENERGY_SPELLBOOK:
-            attackElement = ELEMENT_ENERGY;
-            break;
-          default:
-            break;
-        }
-
-        if (attackElement && aSprite->mElement) {
-          attackAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][attackElement - 1];
-        } else {
-          attackAmount *= SPELL_ATTACK_BONUS;
-        }
+      if (mEquipped.mSpellBookElement && aSprite->mElement) {
+        attackAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][mEquipped.mSpellBookElement - 1];
+      } else {
+        attackAmount *= SPELL_ATTACK_BONUS;
       }
     }
     else {
 
       // Be able to attack a mid-boss with a like ring
-      if (mEquipped.mWaterRing && aSprite->mElement == ELEMENT_WATER) {
-        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_WATER - 1];
-      }
-      else if (mEquipped.mEarthRing && aSprite->mElement == ELEMENT_EARTH) {
-        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_EARTH - 1];
-      }
-      else if (mEquipped.mFireRing && aSprite->mElement == ELEMENT_FIRE) {
-        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_FIRE - 1];
-      }
-      else if (mEquipped.mEnergyRing && aSprite->mElement == ELEMENT_ENERGY) {
-        attackAmount *= RING_MATRIX[aSprite->mElement - 1][ELEMENT_ENERGY - 1];
+      if (mEquipped.mRingElement && aSprite->mElement) {
+        attackAmount *= RING_MATRIX[aSprite->mElement - 1][mEquipped.mRingElement - 1];
       }
       else {
         attackAmount *= RING_HIT_BONUS;
