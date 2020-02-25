@@ -1,32 +1,42 @@
 #ifndef GMIDBOSSPROCESS_H
 #define GMIDBOSSPROCESS_H
 
-// see https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
+// see
+// https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
 
-#include "GGameState.h"
-#include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
+#include "GGamePlayfield.h"
+#include "GGameState.h"
 #include "GProcess.h"
 #include "common/GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
+const TFloat VELOCITY = 1.5;
+const TFloat CHARGE_VELOCITY = 3.0;
+const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
+const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
+const TInt HOP_DURATION = FRAMES_PER_SECOND / 3;
+const TFloat MID_BOSS_FRICTION = 0.1 / TFloat(FACTOR);
+const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
 
 enum {
   MB_IDLE_STATE,
   MB_WALK_STATE,
   MB_BALL_STATE,   // change into ball
-  MB_MOVE_STATE,    // bounce of walls N times, hit player
+  MB_MOVE_STATE,   // bounce of walls N times, hit player
   MB_RETURN_STATE, // returning to starting position
   MB_REVERT_STATE, // revert back to original shape
   MB_ATTACK_STATE, // projectile attack
-  MB_HIT_STATE,
+  MB_CHARGE_STATE,
   MB_DEATH_STATE,
   MB_SPELL_STATE, // hit with magic spell
 };
 
 class GMidBossProcess : public GProcess {
 public:
-  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute, TInt16 aSpriteSheet);
+  GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot,
+                  TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute,
+                  TInt16 aSpriteSheet);
 
   ~GMidBossProcess() OVERRIDE;
 
@@ -42,8 +52,10 @@ protected:
 
   TBool MaybeBounce();
 
+  TBool MaybeDeath();
+
 protected:
-  virtual void NewState(TUint16 aState, DIRECTION aDirection);
+  void NewState(TUint16 aState, DIRECTION aDirection);
 
   virtual void Idle(DIRECTION aDirection) = 0;
   TBool IdleState();
@@ -66,8 +78,9 @@ protected:
   virtual void Attack(DIRECTION aDirection) = 0;
   TBool AttackState();
 
-  virtual void Hit(DIRECTION aDirection) = 0;
-  TBool HitState();
+  virtual void Charge(DIRECTION aDirection) = 0;
+  virtual void Land(DIRECTION aDirection) = 0;
+  TBool ChargeState();
 
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
@@ -76,15 +89,12 @@ protected:
   virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
-
-
-
 public:
-  void DeathAnimationDone() {
-    mDeathCounter--;
-  }
-    void WriteToStream(BMemoryStream &aStream) OVERRIDE;
-    void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
+  void DeathAnimationDone() { mDeathCounter--; }
+  void OverlayAnimationComplete() OVERRIDE;
+  void WriteToStream(BMemoryStream &aStream) OVERRIDE;
+  void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
+
 protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
@@ -97,6 +107,7 @@ protected:
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitTimer;
+  TInt16 mBlinkTimer;
   TInt mDeathCounter; // number of death animation processes spawned/outstanding
   TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };

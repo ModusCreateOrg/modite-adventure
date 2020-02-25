@@ -2,24 +2,25 @@
 #include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
 
-const TFloat VELOCITY = 2.0;
 const TFloat BOUNCE_VELOCITY = 2.5;
 
-const TInt16 IDLE_SPEED = 20;
-const TInt16 HIT_SPEED = 5;
-const TInt16 WALK_SPEED = 4;
-const TInt16 TRANSFORM_SPEED = 8;
-const TInt16 MOVE_SPEED = 4;
+const TInt16 IDLE_SPEED = 10 * FACTOR;
+const TInt16 HIT_SPEED = 2 * FACTOR;
+const TInt16 WALK_SPEED = 2 * FACTOR;
+const TInt16 TRANSFORM_SPEED = 4 * FACTOR;
+const TInt16 MOVE_SPEED = 2 * FACTOR;
 
 // region  ANIMATIONS {{{
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(IDLE_SPEED, IMG_MID_BOSS_IDLE + 1),
   AEND,
 };
 
 static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ALABEL,
   ASTEP(IDLE_SPEED, IMG_MID_BOSS_IDLE + 1),
   ASTEP(IDLE_SPEED, IMG_MID_BOSS_IDLE + 3),
@@ -28,6 +29,7 @@ static ANIMSCRIPT idleAnimation[] = {
 
 static ANIMSCRIPT hitAnimation[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
 
   AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_MID_BOSS_IDLE + 1),
@@ -48,6 +50,7 @@ static ANIMSCRIPT hitAnimation[] = {
 
 static ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
   AEND,
@@ -55,13 +58,28 @@ static ANIMSCRIPT walkDownAnimation1[] = {
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 2),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
   AEND,
 };
 
+static ANIMSCRIPT landDownAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_DOWN + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
   AEND,
@@ -69,27 +87,119 @@ static ANIMSCRIPT walkRightAnimation1[] = {
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 2),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
   AEND,
 };
 
+static ANIMSCRIPT landRightAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_RIGHT + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(4, 0),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 0),
+  ADELTA(2, 0),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
   AEND,
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 2),
+  ADELTA(2, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT landLeftAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(2, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(2, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT walkLeftWaterAnimation1[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT walkLeftWaterAnimation2[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 2),
   AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
   AEND,
 };
 
+static ANIMSCRIPT landLeftWaterAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT walkLeftFireAnimation1[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(-6, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 0),
+  ADELTA(-4, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT walkLeftFireAnimation2[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(-2, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 2),
+  ADELTA(-4, 0),
+  AFLIP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT landLeftFireAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(-4, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_LEFT + 1),
+  ADELTA(-4, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_LEFT + 1),
+  AEND,
+};
+
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
   AEND,
@@ -97,24 +207,43 @@ static ANIMSCRIPT walkUpAnimation1[] = {
 
 static ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
   AEND,
 };
 
+static ANIMSCRIPT landUpAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_MID_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_MID_BOSS_WALK_UP + 1),
+  AEND,
+};
+
 static ANIMSCRIPT transformAnimation[] = {
   ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
+  ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 1),
+  ASTEP(TRANSFORM_SPEED * 2, IMG_MID_BOSS_IDLE + 3),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 1),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 3),
+  ADELTA(0, 8),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 7),
+  ADELTA(0, 16),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 11),
   AEND,
 };
 
 static ANIMSCRIPT moveAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ADELTA(-32, 22),
-  ASIZE(0, 16, 32, 24),
+  ADELTA(0, 16),
+  ASIZE(32, 8, 32, 24),
   ALABEL,
   ASTEP(MOVE_SPEED, IMG_MID_BOSS_MOVE + 0),
   ASTEP(MOVE_SPEED, IMG_MID_BOSS_MOVE + 1),
@@ -127,7 +256,8 @@ static ANIMSCRIPT moveAnimation[] = {
 
 static ANIMSCRIPT revertAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASIZE(0, 8, 44, 24),
+  ADELTA(0, 0),
+  ASIZE(20, 8, 44, 24),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 11),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 7),
   ASTEP(TRANSFORM_SPEED, IMG_MID_BOSS_IDLE + 3),
@@ -155,25 +285,21 @@ void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->vy = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
       break;
     case DIRECTION_DOWN:
       mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
       break;
     case DIRECTION_LEFT:
       mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
       break;
     case DIRECTION_RIGHT:
       mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
       break;
     default:
       Panic("GMidBossGenericProcess no Walk direction\n");
       break;
   }
-  mStep = !mStep;
+  Charge(aDirection);
 }
 
 TBool GMidBossGenericProcess::MaybeAttack() {
@@ -216,9 +342,69 @@ void GMidBossGenericProcess::Attack(DIRECTION aDirection) {
   mSprite->StartAnimation(idleAnimation);
 }
 
-void GMidBossGenericProcess::Hit(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
+void GMidBossGenericProcess::Charge(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+      break;
+    case DIRECTION_LEFT:
+      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
+        case ATTR_MID_BOSS_WATER:
+          mSprite->StartAnimation(mStep ? walkLeftWaterAnimation1 : walkLeftWaterAnimation2);
+          break;
+        case ATTR_MID_BOSS_FIRE:
+          mSprite->StartAnimation(mStep ? walkLeftFireAnimation1 : walkLeftFireAnimation2);
+          break;
+        case ATTR_MID_BOSS_EARTH:
+        case ATTR_MID_BOSS_ENERGY:
+        default:
+          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
+          break;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
+      break;
+    default:
+      Panic("GMidBossGenericProcess no Charge direction\n");
+      break;
+  }
+  mStep = !mStep;
+}
+
+void GMidBossGenericProcess::Land(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      mSprite->StartAnimation(landUpAnimation);
+      break;
+    case DIRECTION_DOWN:
+      mSprite->StartAnimation(landDownAnimation);
+      break;
+    case DIRECTION_LEFT:
+      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
+        case ATTR_MID_BOSS_WATER:
+          mSprite->StartAnimation(landLeftWaterAnimation);
+          break;
+        case ATTR_MID_BOSS_FIRE:
+          mSprite->StartAnimation(landLeftFireAnimation);
+          break;
+        case ATTR_MID_BOSS_EARTH:
+        case ATTR_MID_BOSS_ENERGY:
+        default:
+          mSprite->StartAnimation(landLeftAnimation);
+          break;
+      }
+      break;
+    case DIRECTION_RIGHT:
+      mSprite->StartAnimation(landRightAnimation);
+      break;
+    default:
+      Panic("GMidBossGenericProcess no Land direction\n");
+      break;
+  }
 }
 
 void GMidBossGenericProcess::Death(DIRECTION aDirection) {

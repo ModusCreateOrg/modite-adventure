@@ -1,28 +1,32 @@
-#include "GProcess.h"
 #include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
+#include "GProcess.h"
 
 const TInt EXPLODE_SPEED = 5;
 
 static ANIMSCRIPT fireballExplodeAnimation[] = {
-  ABITMAP(BOSS_PROJECTILE_SLOT),
-  ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 0),
-  ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 1),
-  ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 2),
-  ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 3),
-  AEND
-};
+    ABITMAP(BOSS_PROJECTILE_SLOT),
+    ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 0),
+    ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 1),
+    ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 2),
+    ASTEP(EXPLODE_SPEED, IMG_FIREBALL_EXPLODE + 3),
+    AEND};
 
 class ProjectileSprite : public GAnchorSprite {
 public:
-  ProjectileSprite(GGameState *aGameState) : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, BOSS_PROJECTILE_SLOT, 0, STYPE_EBULLET) {
+  ProjectileSprite(GGameState *aGameState)
+      : GAnchorSprite(aGameState, PLAYER_PRIORITY - 1, BOSS_PROJECTILE_SLOT, 0,
+                      STYPE_EBULLET) {
     Name("PROJECTILE");
     mExploding = EFalse;
     mTimer = 128;
     type = STYPE_EBULLET;
-    SetCMask(STYPE_PLAYER);
+    SetCMask(
+        STYPE_PLAYER | STYPE_PBULLET |
+        STYPE_OBJECT); // collide with player, player attacks, and environment
     SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
-    mSpriteSheet = gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_PROJECTILE_BMP_SPRITES);
+    mSpriteSheet =
+        gResourceManager.LoadSpriteSheet(MID_BOSS_FIRE_PROJECTILE_BMP_SPRITES);
   }
 
 public:
@@ -37,17 +41,15 @@ public:
   void Animate() OVERRIDE {
     if (mExploding) {
       BAnimSprite::Animate();
-    }
-    else {
+    } else {
       mTimer--;
-      // instead of anim script, we just randomly choose an animation frame (for variety)
+      // instead of anim script, we just randomly choose an animation frame (for
+      // variety)
       mImageNumber = IMG_FIREBALL + Random(0, 4);
     }
   }
 
-  TBool TimedOut() {
-    return mTimer < 1;
-  }
+  TBool TimedOut() { return mTimer < 1; }
 
 protected:
   TBool mExploding;
@@ -56,7 +58,9 @@ protected:
 
 const TFloat FRAMES_TO_HIT_PLAYER = 60;
 
-GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY) : GProcess(ATTR_GONE) {
+GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState,
+                                                     TFloat aX, TFloat aY)
+    : GProcess(ATTR_GONE) {
   mGameState = aGameState;
   mSprite = new ProjectileSprite(mGameState);
   mSprite->Name("IGNORE MID BOSS PROJECTILE");
@@ -68,9 +72,11 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState, TFl
   mSprite->h = 8;
   mSprite->cy = 4;
   // aim fireball at player
-  const TFloat x1 = GPlayer::mSprite->x + 16 + (GPlayer::mSprite->vx * FRAMES_TO_HIT_PLAYER) + 16,
+  const TFloat x1 = GPlayer::mSprite->x + 16 +
+                    (GPlayer::mSprite->vx * FRAMES_TO_HIT_PLAYER) + 16,
                x2 = mSprite->x + 12,
-               y1 = GPlayer::mSprite->y - 16 + GPlayer::mSprite->vy * FRAMES_TO_HIT_PLAYER,
+               y1 = GPlayer::mSprite->y - 16 +
+                    GPlayer::mSprite->vy * FRAMES_TO_HIT_PLAYER,
                y2 = mSprite->y - 24;
 
   mSprite->vx = (x1 - x2) / FRAMES_TO_HIT_PLAYER;
@@ -97,10 +103,16 @@ TBool GMidBossProjectileProcess::RunBefore() {
 TBool GMidBossProjectileProcess::RunAfter() {
   // when mState is true, it means the fireball explosion is animating
   if (!mState) {
-    // these could all be one big if statement, but it's easier to edit this way so we can reorder the tests.
-    if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+    // these could all be one big if statement, but it's easier to edit this way
+    // so we can reorder the tests.
+    if (mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY)) {
       mSprite->Explode();
       mState = ETrue;
+    } else if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
+      mSprite->type = STYPE_PBULLET;
+      mSprite->cMask = STYPE_ENEMY | STYPE_OBJECT;
+      mSprite->vx *= -1;
+      mSprite->vy *= -1;
     }
     if (mSprite->TimedOut()) {
       mSprite->Explode();

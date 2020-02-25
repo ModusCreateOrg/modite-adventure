@@ -27,7 +27,9 @@ protected:
 
   void Attack(DIRECTION aDirection) OVERRIDE;
 
-  void Hit(DIRECTION aDirection) OVERRIDE;
+  void Charge(DIRECTION aDirection) OVERRIDE;
+
+  void Land(DIRECTION aDirection) OVERRIDE;
 
   void Death(DIRECTION aDirection) OVERRIDE;
 
