@@ -210,6 +210,8 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     break;
 
   case MB_DEATH_STATE:
+    mSprite->vx = 0;
+    mSprite->vy = 0;
     Death(aDirection);
     {
       // get coordinates for explosion placement
