@@ -361,15 +361,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->mDirection = DIRECTION_DOWN;
       break;
 
-    case QUAFF_STATE:
-      gSoundPlayer.SfxPlayerQuaffHealthPotion();
-      mSprite->vx = 0;
-      mSprite->vy = 0;
-      mStep = 0;
-      mSprite->StartAnimation(quaff1Animation);
-      mSprite->mDirection = DIRECTION_DOWN;
-      break;
-
     case SPELL_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
@@ -390,29 +381,13 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
  \____|_| |_/_/   \_\_| \_|\____|_____| |____/ |_/_/   \_\_| |_____|
  */
 
-TBool GPlayerProcess::MaybeQuaff() {
-  if (GPlayer::mGameOver) {
-    return EFalse;
-  }
-  if (gControls.WasPressed(CONTROL_QUAFF)) {
-    if (GPlayer::mHealthPotion > 0) {
-      GPlayer::mHealthPotion -= 25;
-      NewState(QUAFF_STATE, DIRECTION_DOWN);
-    }
-    return ETrue;
-  }
-  return EFalse;
-}
-
 TBool GPlayerProcess::MaybeSpell() {
   if (GPlayer::mGameOver) {
     return EFalse;
   }
   if (gControls.WasPressed(CONTROL_SPELL)) {
-    if (GPlayer::mManaPotion > 0 && GPlayer::mEquipped.mSpellBookElement) {
-      if (GPlayer::mManaPotion >= 25) {
-        GPlayer::mManaPotion -= 25;
-      }
+    if (GPlayer::mManaPotion >= 25 && GPlayer::mEquipped.mSpellBookElement) {
+      GPlayer::mManaPotion -= 25;
       NewState(SPELL_STATE, DIRECTION_DOWN);
     }
     return ETrue;
@@ -716,10 +691,6 @@ TBool GPlayerProcess::IdleState() {
     return ETrue;
   }
 
-  if (MaybeQuaff()) {
-    return ETrue;
-  }
-
   if (MaybeSpell()) {
     return ETrue;
   }
@@ -745,10 +716,6 @@ TBool GPlayerProcess::WalkState() {
     return ETrue;
   }
 
-  if (MaybeQuaff()) {
-    return ETrue;
-  }
-
   if (!MaybeWalk()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -769,36 +736,6 @@ TBool GPlayerProcess::SwordState() {
 
   if (mSprite->AnimDone()) {
     NewState(IDLE_STATE, mSprite->mDirection);
-  }
-  return ETrue;
-}
-
-TBool GPlayerProcess::QuaffState() {
-  switch (mStep) {
-    case 0:
-      if (mSprite->AnimDone()) {
-        mStep++;
-        mSprite2 = new GAnchorSprite(mGameState, PLAYER_HEAL_PRIORITY, PLAYER_HEAL_SLOT);
-        mSprite2->x = mSprite->x + 16;
-        mSprite2->y = mSprite->y + 1;
-        mSprite2->StartAnimation(quaffOverlayAnimation);
-        mGameState->AddSprite(mSprite2);
-      }
-      break;
-    case 1:
-      if (mSprite2->AnimDone()) {
-        mStep++;
-        mSprite->StartAnimation(quaff2Animation);
-        mSprite2->Remove();
-        delete mSprite2;
-        mSprite2 = ENull;
-      }
-      break;
-    case 2:
-      if (mSprite->AnimDone()) {
-        NewState(IDLE_STATE, DIRECTION_DOWN);
-      }
-      break;
   }
   return ETrue;
 }
@@ -914,8 +851,6 @@ TBool GPlayerProcess::RunBefore() {
     case HIT_MEDIUM_STATE:
     case HIT_LIGHT_STATE:
       return HitState();
-    case QUAFF_STATE:
-      return QuaffState();
     case SPELL_STATE:
       return SpellState();
     default:

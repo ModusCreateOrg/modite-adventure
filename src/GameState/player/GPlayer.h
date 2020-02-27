@@ -71,7 +71,7 @@ struct GPlayer {
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
     mAttackStrength = 35;
-    mHealthPotion = mManaPotion = 100;
+    mManaPotion = 100;
 
     //
     mEquipped.Init();
@@ -112,7 +112,7 @@ struct GPlayer {
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
   static TInt32 mAttackStrength;
-  static TInt32 mHealthPotion, mManaPotion; // 100, 75, 50, 25, 0 are possible values
+  static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
   static GAnchorSprite *mSprite;

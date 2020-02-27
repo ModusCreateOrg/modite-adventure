@@ -9,7 +9,6 @@ TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
 
 TInt GPlayer::mAttackStrength;
-TInt GPlayer::mHealthPotion;
 TInt GPlayer::mManaPotion;
 
 TBool GPlayer::mGameOver;
@@ -27,7 +26,6 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mExperience, sizeof(mExperience));
 //  stream.Write(&mHitPoints, sizeof(mHitPoints));
   stream.Write(&mMaxHitPoints, sizeof(mMaxHitPoints));
-  stream.Write(&mHealthPotion, sizeof(mHealthPotion));
   stream.Write(&mManaPotion, sizeof(mManaPotion));
   mInventoryList.WriteToStream(stream);
 
@@ -52,7 +50,6 @@ void GPlayer::ReadFromStream(BMemoryStream &stream) {
   stream.Read(&mExperience, sizeof(mExperience));
 //  stream.Read(&mHitPoints, sizeof(mHitPoints));
   stream.Read(&mMaxHitPoints, sizeof(mMaxHitPoints));
-  stream.Read(&mHealthPotion, sizeof(mHealthPotion));
   stream.Read(&mManaPotion, sizeof(mManaPotion));
   mInventoryList.ReadFromStream(stream);
 
@@ -73,7 +70,7 @@ void GPlayer::Dump() {
   printf("GPlayer\n");
   printf("%-32.32s: %d,%d/%d\n", "mLevel,mNextLevel, mExperience", mLevel, mNextLevel, mExperience);
   printf("%-32.32s: %d,%d/%d\n", "mHitPoints, mMaxHitPoints, mAttackStrength", mHitPoints, mMaxHitPoints, mAttackStrength);
-  printf("%-32.32s: %d,%d\n", "mHealthPotion, mManaPotion", mHealthPotion, mManaPotion);
+  printf("%-32.32s: %d\n", "mManaPotion", mManaPotion);
   mInventoryList.Dump();
 }
 
