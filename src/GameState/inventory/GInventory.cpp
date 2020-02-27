@@ -172,16 +172,25 @@ void GInventory::RenderInventory() {
   render_item_slot(mViewPort, ITEM_BOOTS, x, y, EFalse);
 
   GInventoryItem* selected = GPlayer::mInventoryList.FindItem(ITEM_LAYOUT[mCurrentRow][mCurrentColumn]);
+  TInt16 itemNumber = 0;
   if (selected) {
+    itemNumber = selected->mItemNumber;
+    if (((itemNumber == ITEM_RED_POTION1 || itemNumber == ITEM_RED_POTION2) &&
+         GPlayer::mHitPoints == GPlayer::mMaxHitPoints) ||
+        ((itemNumber == ITEM_BLUE_POTION1 || itemNumber == ITEM_BLUE_POTION2) && GPlayer::mManaPotion == 100)) {
+      itemNumber = 0;
+    }
+  }
+  if (itemNumber) {
     if (mCurrentRow == 0) {
-      sprintf(buf, "A to use %s", itemNames[selected->mItemNumber]);
+      sprintf(buf, "A to use %s", itemNames[itemNumber]);
     } else {
-      sprintf(buf, "A to equip %s", itemNames[selected->mItemNumber]);
+      sprintf(buf, "A to equip %s", itemNames[itemNumber]);
     }
     bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
   }
-  if (gControls.WasPressed(BUTTONA) && selected) {
-    switch (selected->mItemNumber) {
+  if (gControls.WasPressed(BUTTONA) && itemNumber) {
+    switch (itemNumber) {
       case ITEM_WATER_AMULET:
         GPlayer::mEquipped.mAmuletElement = ELEMENT_WATER;
         break;
@@ -230,7 +239,6 @@ void GInventory::RenderInventory() {
           selected->Remove();
           delete selected;
         }
-        gGame->ToggleInventory();
         break;
       case ITEM_BLUE_POTION2:
         GPlayer::mManaPotion = 100;
@@ -239,28 +247,22 @@ void GInventory::RenderInventory() {
           selected->Remove();
           delete selected;
         }
-        gGame->ToggleInventory();
         break;
       case ITEM_RED_POTION1:
-        GPlayer::mHealthPotion += 50;
-        if (GPlayer::mHealthPotion > 100) {
-          GPlayer::mHealthPotion = 100;
-        }
+        GPlayer::mHitPoints = MIN(GPlayer::mHitPoints + 50, GPlayer::mMaxHitPoints);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
           delete selected;
         }
-        gGame->ToggleInventory();
         break;
       case ITEM_RED_POTION2:
-        GPlayer::mHealthPotion = 100;
+        GPlayer::mHitPoints = MIN(GPlayer::mHitPoints + 100, GPlayer::mMaxHitPoints);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
           delete selected;
         }
-        gGame->ToggleInventory();
         break;
       default:
         break;
