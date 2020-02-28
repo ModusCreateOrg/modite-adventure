@@ -249,7 +249,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION1:
-        GPlayer::mHitPoints = MIN(GPlayer::mHitPoints + 50, GPlayer::mMaxHitPoints);
+        GPlayer::AddHitPoints(50);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
@@ -257,7 +257,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION2:
-        GPlayer::mHitPoints = MIN(GPlayer::mHitPoints + 100, GPlayer::mMaxHitPoints);
+        GPlayer::AddHitPoints(100);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
