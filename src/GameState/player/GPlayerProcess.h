@@ -55,7 +55,6 @@ protected:
 
   TBool MaybeFall();
 
-  TBool MaybeQuaff();
   TBool MaybeSpell();
 
 protected:

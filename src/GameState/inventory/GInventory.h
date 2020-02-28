@@ -16,12 +16,10 @@ public:
 
 protected:
   void RenderInventory();
-  void RenderEquipped();
 
 protected:
   GInventoryPlayfield *mPlayfield;
-  TInt mTop, mCurrent;
-  TInt mMode;
+  TInt mCurrentRow, mCurrentColumn;
 };
 
 #endif

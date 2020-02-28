@@ -90,22 +90,21 @@ void GHud::Render() {
   screen->DrawBitmapTransparent(&vp, b, sword, 168, 0);
   render_meter(&vp, screen, COLOR_EXPERIENCE, 169 + 20, 2, GPlayer::mExperience, GPlayer::mNextLevel);
 
-  const GInventoryItem *item = GPlayer::mEquipped.mSpellBook;
-  if (item) {
-    switch (item->mItemNumber) {
-      case ITEM_WATER_SPELLBOOK:
-        screen->DrawBitmapTransparent(&vp, b, water, 249, 0);
-        break;
-      case ITEM_ENERGY_SPELLBOOK:
-        screen->DrawBitmapTransparent(&vp, b, energy, 249, 0);
-        break;
-      case ITEM_FIRE_SPELLBOOK:
-        screen->DrawBitmapTransparent(&vp, b, fire, 249, 0);
-        break;
-      case ITEM_EARTH_SPELLBOOK:
-        screen->DrawBitmapTransparent(&vp, b, earth, 249, 0);
-        break;
-    }
+  switch (GPlayer::mEquipped.mSpellBookElement) {
+    case ELEMENT_WATER:
+      screen->DrawBitmapTransparent(&vp, b, water, 249, 0);
+      break;
+    case ELEMENT_FIRE:
+      screen->DrawBitmapTransparent(&vp, b, energy, 249, 0);
+      break;
+    case ELEMENT_ENERGY:
+      screen->DrawBitmapTransparent(&vp, b, fire, 249, 0);
+      break;
+    case ELEMENT_EARTH:
+      screen->DrawBitmapTransparent(&vp, b, earth, 249, 0);
+      break;
+    default:
+      break;
   }
   if (GPlayer::mInventoryList.FindItem(ITEM_SILVER_KEY)) {
     screen->DrawBitmapTransparent(&vp, b, silver_key, 278, 0);
