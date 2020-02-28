@@ -210,15 +210,11 @@ SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
 RAW EmptySong.xm
-RAW Countryside.xm
-RAW Cyberpunk.xm
+RAW Dungeon4.xm
+RAW Dungeon9.xm
 RAW GameOver.xm
-RAW Glacial_mountains.xm
 RAW Main_Menu.xm
-RAW Spaaace.xm
-RAW UnderWaterFantasy.xm
-RAW Under_Water.xm
-RAW EnterCredits.xm
+RAW Overworld.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/
