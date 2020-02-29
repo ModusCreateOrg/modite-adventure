@@ -70,6 +70,7 @@ struct GPlayer {
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
+    mHitPointsHealed = 0;
     mAttackStrength = 35;
     mManaPotion = 100;
 
@@ -92,10 +93,15 @@ struct GPlayer {
     }
   }
 
-  static void AddHitPoints(TInt aMoreHitpoints) {
-    auto *p = new GStatProcess(gGameEngine, mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints));
-    p->SetMessageType(STAT_HEAL);
-    gGameEngine->AddProcess(p);
+  static void AddHitPoints(TInt aMoreHitpoints, TBool aShowStat = ETrue) {
+    if (aShowStat) {
+      auto *p = new GStatProcess(gGameEngine, mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints + mHitPointsHealed));
+      p->SetMessageType(STAT_HEAL);
+      gGameEngine->AddProcess(p);
+      mHitPointsHealed = 0;
+    } else {
+      mHitPointsHealed += aMoreHitpoints;
+    }
     mHitPoints += aMoreHitpoints;
     if (mHitPoints > mMaxHitPoints) {
       mHitPoints = mMaxHitPoints;
@@ -110,7 +116,7 @@ struct GPlayer {
 
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;
-  static TInt16 mHitPoints, mMaxHitPoints;
+  static TInt16 mHitPoints, mMaxHitPoints, mHitPointsHealed;
   static TInt32 mAttackStrength;
   static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;

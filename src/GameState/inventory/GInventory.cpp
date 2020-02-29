@@ -249,7 +249,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION1:
-        GPlayer::AddHitPoints(50);
+        GPlayer::AddHitPoints(50, EFalse);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
@@ -257,7 +257,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION2:
-        GPlayer::AddHitPoints(100);
+        GPlayer::AddHitPoints(100, EFalse);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
@@ -298,6 +298,9 @@ void GInventory::RenderInventory() {
 
 void GInventory::PostRender() {
   if (gControls.WasPressed(BUTTONR)) {
+    if (GPlayer::mHitPointsHealed > 0) {
+      GPlayer::AddHitPoints(GPlayer::mHitPointsHealed);
+    }
     gGame->ToggleInventory();
   }
 
