@@ -1,6 +1,7 @@
 #include "GSpikesProcess.h"
 
 TInt GSpikesProcess::mNumber = 0;
+TInt GSpikesProcess::groups[255] = {0};
 
 const TUint16 SPIKE_SPEED = 3;
 
@@ -36,7 +37,8 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mGameState->AddSprite(mSprite);
   mState = EFalse;
   mTime = (7 * SPIKE_SPEED);
-  mTimer = mParam * mTime;
+  GSpikesProcess::groups[mParam]++;
+  mTimer = (GSpikesProcess::groups[mParam] - 1) * mTime;
 }
 
 GSpikesProcess::~GSpikesProcess() {
@@ -45,7 +47,7 @@ GSpikesProcess::~GSpikesProcess() {
 TBool GSpikesProcess::RunBefore() {
   if (mState) {
     if (mSprite->AnimDone()) {
-      mTimer = mTime * mNumber;
+      mTimer = mTime * GSpikesProcess::groups[mParam];
       mState = EFalse;
       mSprite->cType = 0;
     }

@@ -394,17 +394,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   BObjectProgram *program = mGamePlayfield->mObjectProgram;
 
   // count spikes
-  GSpikesProcess::mNumber = 0;
-  for (TInt ip = 0; ip < objectCount; ip++) {
-    TUint16 op = program[ip].mCode & TUint32(0xffff);
-
-    if (op == ATTR_SPIKES) {
-      GSpikesProcess::mNumber++;
-    }
-  }
-
   TBool startedPlayer = EFalse;
-  TInt16 spikes_number = GSpikesProcess::mNumber;
+  TInt16 spikes_number = 0;
+  TInt lastSpikeRow = 0;
+  TInt lastSpikeCol = 0;
   TInt eCount = 0;
 
   for (TInt ip = 0; ip < objectCount; ip++) {
@@ -502,7 +495,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SPIKES at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy, spikes_number--, DIRECTION_DOWN, "SPIKES");
+        if (ABS(row - lastSpikeRow) > 1 || ABS(col - lastSpikeCol) > 1) {
+          spikes_number++;
+        }
+        lastSpikeRow = row;
+        lastSpikeCol = col;
+        GProcess::Spawn(this, op, ip, xx, yy, spikes_number, DIRECTION_DOWN, "SPIKES");
         break;
 
       case ATTR_METAL_GATE_H:

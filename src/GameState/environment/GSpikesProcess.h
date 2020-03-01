@@ -16,6 +16,7 @@ public:
 
 public:
   static TInt mNumber;
+  static TInt groups[];
 
 protected:
   TBool mState;   // true if animating
