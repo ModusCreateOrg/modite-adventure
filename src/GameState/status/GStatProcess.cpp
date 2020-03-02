@@ -4,12 +4,23 @@
 
 const TInt TIMEOUT = FRAMES_PER_SECOND;
 
-GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
-  char msg[4096];
+GStatProcess::GStatProcess(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
   va_list args;
   va_start(args, aFmt);
-  vsprintf(msg, aFmt, args);
+  Init(aState, aX, aY, aFmt, args);
+  va_end(args);
+}
 
+GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
+  va_list args;
+  va_start(args, aFmt);
+  Init(gGame->CurrentState(), aX, aY, aFmt, args);
+  va_end(args);
+}
+
+void GStatProcess::Init(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, va_list args) {
+  char msg[4096];
+  vsprintf(msg, aFmt, args);
   mImageNumber = 0;
 //  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
   mSprite = new GStatSprite(STAT_SIZE_16x16, msg, mImageNumber);
@@ -17,7 +28,7 @@ GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProce
   mSprite->y = aY - 60 + Random() % 8;
   mSprite->vy = -1;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
-  gGame->CurrentState()->AddSprite(mSprite);
+  aState->AddSprite(mSprite);
   mTimeout = TIMEOUT;
 }
 
