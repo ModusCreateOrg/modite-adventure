@@ -82,7 +82,7 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
-  aResourceId = EMPTYSONG_XM;
+//  aResourceId = EMPTYSONG_XM;
   TBool music = BSoundPlayer::PlayMusic(aResourceId);
 //  printf("%s %i\n", __PRETTY_FUNCTION__, aResourceId);
   // BSoundPlayer::PlayMusic un-mutes the music
@@ -114,11 +114,9 @@ TBool GSoundPlayer::LoadEffects() {
     LoadEffect(effectsList[i], i);
   }
 
-// TODO: @mtintiuc
-//  SetMusicVolume(gOptions->music);
-//  SetEffectsVolume(gOptions->sfx);
-  SetMusicVolume(.15);
-  SetEffectsVolume(.15);
+  SetMusicVolume(gOptions->music);
+  SetEffectsVolume(gOptions->sfx);
+
   return ETrue;
 }
 
