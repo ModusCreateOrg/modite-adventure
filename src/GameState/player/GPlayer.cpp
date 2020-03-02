@@ -9,6 +9,7 @@ TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
 
 TInt GPlayer::mAttackStrength;
+TFloat GPlayer::mSwordCharge;
 TInt GPlayer::mHealthPotion;
 TInt GPlayer::mManaPotion;
 
@@ -16,7 +17,7 @@ TBool GPlayer::mGameOver;
 
 GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
-GAnchorSprite *GPlayer::mSprite;
+GPlayerSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
 GAnchorSprite *GPlayer::mActiveBoss;

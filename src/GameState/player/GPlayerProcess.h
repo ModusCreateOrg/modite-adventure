@@ -9,7 +9,7 @@ class BMemoryStream;
 
 //class GAnchorSprite;
 
-#include "GAnchorSprite.h"
+#include "GPlayerSprite.h"
 #include "GProcess.h"
 #include "GGame.h"
 
@@ -91,6 +91,7 @@ protected:
   GGameState *mGameState;
   GGamePlayfield *mPlayfield;
 //  GAnchorSprite *mSprite, *mSprite2;
+  GPlayerSprite *mSprite;
   TUint16 mState;
   TUint16 mStep;
   TUint16 mStepFrame;

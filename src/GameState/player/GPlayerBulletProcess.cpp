@@ -20,7 +20,7 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
   mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
   mSprite->type = STYPE_PBULLET;
-  mSprite->mAttackStrength = GPlayer::mAttackStrength;
+  mSprite->mAttackStrength = GPlayer::mAttackStrength * MAX(1, 1 + GPlayer::mSwordCharge);
 
   switch (aDirection) {
     case DIRECTION_UP:

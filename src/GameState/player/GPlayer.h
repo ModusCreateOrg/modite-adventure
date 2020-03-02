@@ -131,10 +131,11 @@ struct GPlayer {
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
   static TInt32 mAttackStrength;
+  static TFloat mSwordCharge;
   static TInt32 mHealthPotion, mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
-  static GAnchorSprite *mSprite;
+  static GPlayerSprite *mSprite;
   static GGameState *mGameState;
   static GEquipped mEquipped;
   static TBool mGameOver;

@@ -1,6 +1,6 @@
 #include "GPlayerProcess.h"
 #include "GPlayer.h"
-#include "GAnchorSprite.h"
+#include "GPlayerSprite.h"
 #include "GGamePlayfield.h"
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
@@ -90,17 +90,8 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN
   GPlayer::mSprite = mSprite = ENull;
 
   // initialize player sprite
-  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
-  mSprite->Name("PLAYER");
-  mSprite->type = STYPE_PLAYER;
-  mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
-  mSprite->w = 24;
-  mSprite->h = 16;
-  mSprite->cx = 8;
-  mSprite->cy = 0;
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
+  GPlayer::mSprite = mSprite = new GPlayerSprite(mGameState);
   mGameState->AddSprite(mSprite);
-  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 
   mSprite2 = ENull;
 
@@ -331,23 +322,24 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       }
       break;
     case SWORD_STATE:
-      mStep = 0;
       mSprite->vx = 0;
       mSprite->vy = 0;
 
-      gSoundPlayer.SfxPlayerSlash();
+      if (mStep) {
+        gSoundPlayer.SfxPlayerSlash();
+      }
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordUpAnimationWithGloves : swordUpAnimationNoGloves);
+          mSprite->StartAnimation(mStep ? (GPlayer::mEquipped.mGloves ? swordUpAnimationWithGloves : swordUpAnimationNoGloves) : swordChargeUpAnimation);
           break;
         case DIRECTION_DOWN:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordDownAnimationWithGloves : swordDownAnimationNoGloves);
+          mSprite->StartAnimation(mStep ? (GPlayer::mEquipped.mGloves ? swordDownAnimationWithGloves : swordDownAnimationNoGloves) : swordChargeDownAnimation);
           break;
         case DIRECTION_LEFT:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordLeftAnimationWithGloves : swordLeftAnimationNoGloves);
+          mSprite->StartAnimation(mStep ? (GPlayer::mEquipped.mGloves ? swordLeftAnimationWithGloves : swordLeftAnimationNoGloves) : swordChargeLeftAnimation);
           break;
         case DIRECTION_RIGHT:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordRightAnimationWithGloves : swordRightAnimationNoGloves);
+          mSprite->StartAnimation(mStep ? (GPlayer::mEquipped.mGloves ? swordRightAnimationWithGloves : swordRightAnimationNoGloves) : swordChargeRightAnimation);
           break;
         default:
           Panic("GPlayerProcess no SWORD_STATE direction\n");
@@ -589,14 +581,14 @@ TBool GPlayerProcess::MaybeSword() {
   if (GPlayer::mGameOver) {
     return ETrue;
   }
-  if (!gControls.WasPressed(CONTROL_FIRE)) {
-    return EFalse;
+  if (gControls.WasPressed(CONTROL_FIRE)) {
+    mStep = 0;
+    GPlayer::mSwordCharge = -0.5;
+    NewState(SWORD_STATE, mSprite->mDirection);
+    return ETrue;
   }
 
-  auto *p = (GProcess *)new GPlayerBulletProcess(mGameState, mSprite->mDirection);
-  mGameState->AddProcess(p);
-  NewState(SWORD_STATE, mSprite->mDirection);
-  return ETrue;
+  return EFalse;
 }
 
 TBool GPlayerProcess::MaybeFall() {
@@ -785,12 +777,48 @@ TBool GPlayerProcess::WalkState() {
 
 TBool GPlayerProcess::SwordState() {
   if (MaybeHit()) {
+    GPlayer::mSwordCharge = -1;
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
+  switch (mStep) {
+    case 0:
+      if (gControls.IsPressed(CONTROL_FIRE)) {
+        if (GPlayer::mSwordCharge < 1.02) {
+          GPlayer::mSwordCharge += 1.0 / FRAMES_PER_SECOND;
+        } else {
+          mStep++;
+        }
+        return ETrue;
+      }
+      mStep = 2;
+      break;
+    case 1:
+      if (gControls.IsPressed(CONTROL_FIRE)) {
+        if (GPlayer::mSwordCharge > 0.5) {
+          GPlayer::mSwordCharge -= 1.0 / FRAMES_PER_SECOND;
+        }
+        return ETrue;
+      }
+      mStep = 2;
+      break;
+    case 2:
+      NewState(SWORD_STATE, mSprite->mDirection);
+      if (GPlayer::mSwordCharge > 1.0) {
+        GPlayer::mSwordCharge = 2.0;
+      }
+      mGameState->AddProcess(new GPlayerBulletProcess(mGameState, mSprite->mDirection));
+      mStep++;
+      break;
+    case 3:
+    default:
+      if (mSprite->AnimDone()) {
+        GPlayer::mSwordCharge = -1;
+        NewState(IDLE_STATE, mSprite->mDirection);
+      }
+      break;
   }
+
   return ETrue;
 }
 
