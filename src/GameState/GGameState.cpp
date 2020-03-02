@@ -867,19 +867,22 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   }
 
   if (! is_same_dungeon) {
-    switch (mDungeon) {
-      case OVERWORLD_DUNGEON:
-        gSoundPlayer.PlayMusic(OVERWORLD_XM);
-        break;
-      case 4:
-        gSoundPlayer.PlayMusic(DUNGEON4_XM);
-        break;
-      case 9:
-        gSoundPlayer.PlayMusic(DUNGEON9_XM);
-        break;
-      default:
-        break;
+    TUint16 song = OVERWORLD_XM;
+
+
+    if (mNextDungeon >= 1 && mNextDungeon <= 4) {
+      song = DUNGEON4_XM;
+
     }
+    else if (mNextDungeon >= 13 && mNextDungeon <= 18) {
+      song = DUNGEON4_XM;
+    }
+    else if (mNextDungeon >= 36 && mNextDungeon <= 40) {
+      song = DUNGEON9_XM;
+    }
+
+    gSoundPlayer.PlayMusic(song);
+
   }
 
   mGamePlayfield->StartMosaicIn();
