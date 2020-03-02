@@ -865,6 +865,23 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
+
+  if (! is_same_dungeon) {
+    switch (mDungeon) {
+      case OVERWORLD_DUNGEON:
+        gSoundPlayer.PlayMusic(OVERWORLD_XM);
+        break;
+      case 4:
+        gSoundPlayer.PlayMusic(DUNGEON4_XM);
+        break;
+      case 9:
+        gSoundPlayer.PlayMusic(DUNGEON9_XM);
+        break;
+      default:
+        break;
+    }
+  }
+
   mGamePlayfield->StartMosaicIn();
 }
 
