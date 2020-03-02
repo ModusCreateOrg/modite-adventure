@@ -9,7 +9,7 @@
 #include "inventory/GItemProcess.h"
 
 const TInt ENVIRONMENT_PRIORITY_DEFAULT = 0;    // default priority
-const TInt ENVIRONMENT_PRIORITY_DOOR = -10;     // doors run after switches for group done logic to work
+const TInt ENVIRONMENT_PRIORITY_DOOR = 10;     // doors run after switches for group done logic to work
 
 class GEnvironmentProcess : public GProcess {
 public:
