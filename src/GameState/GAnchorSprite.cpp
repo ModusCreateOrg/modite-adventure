@@ -144,23 +144,31 @@ void GAnchorSprite::ResetShadow() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  if ((flags & SFLAG_RENDER_SHADOW) && (flags & SFLAG_RENDER) && !Clipped()) {
+  TBool ret;
+  if (TestFlags(SFLAG_RENDER_SHADOW) && TestFlags(SFLAG_RENDER)) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
     }
-
-    // render shadow beneath sprite
+    TRect r = mShadow;
+    r.Offset(x - aViewPort->mWorldX + aViewPort->mOffsetX, y - aViewPort->mWorldY + aViewPort->mOffsetY);
+    if (aViewPort->GetRect().Overlaps(r)) {
+      // render shadow beneath sprite
 //    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
-    TFloat screenX = x - aViewPort->mWorldX;
-    TFloat screenY = y - aViewPort->mWorldY;
-    for (TInt i = mShadow.y1; i < mShadow.y2; i++) {
-      TFloat chord = sqrt(pow(mShadow.Height() / 2, 2) - pow(i - ((mShadow.y1 + mShadow.y2) / 2), 2)) * 2 * mShadow.Width() / mShadow.Height();
-      gDisplay.renderBitmap->DrawFastHLine(aViewPort, screenX + mShadow.x1 + mShadow.Width() - TInt(chord / 2 + 1), screenY + i, chord, COLOR_SHADOW);
+      TFloat chord;
+      for (TInt i = 0; i < r.Height(); i++) {
+        chord = sqrt(i * (r.Height() - i)) * 2 * r.Width() / r.Height();
+        gDisplay.renderBitmap->DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
+          r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
+      }
+      ret = BAnimSprite::Render(aViewPort);
+      ClearFlags(SFLAG_CLIPPED);
+    } else {
+      ret = BAnimSprite::Render(aViewPort);
     }
+  } else {
+    ret = BAnimSprite::Render(aViewPort);
   }
-
-  TBool ret = BAnimSprite::Render(aViewPort);
 
 #ifdef DEBUG_MODE
   if (GGame::mDebug && !Clipped()) {
