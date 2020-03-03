@@ -52,6 +52,7 @@ static TUint16 FindSfxNumber(TUint16 aSfxFile) {
 
 static const TUint16 allSongs[] = {
   EMPTYSONG_XM,
+  LOGO_REVEAL_XM,
   MAIN_MENU_XM,
   GAMEOVER_XM,
   OVERWORLD_XM,

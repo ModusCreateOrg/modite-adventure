@@ -14,6 +14,8 @@ GMainMenuContainer::GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProc
 
   AddWidget((BWidget &) *new GButtonWidget("Options", GAME_STATE_MAIN_OPTIONS));
   AddWidget((BWidget &) *new GButtonWidget("Quit", GAME_STATE_QUIT));
+  gSoundPlayer.PlayMusic(MAIN_MENU_XM);
+
 }
 
 GMainMenuContainer::~GMainMenuContainer() {}

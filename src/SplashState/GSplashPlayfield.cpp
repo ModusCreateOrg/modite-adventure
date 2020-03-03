@@ -30,7 +30,7 @@ GSplashPlayfield::GSplashPlayfield() {
   gDisplay.SetColor(COLOR_TEXT_BG, 0,0,0);
 
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.PlayMusic(MAIN_MENU_XM);
+  gSoundPlayer.PlayMusic(LOGO_REVEAL_XM);
 #endif
 }
 

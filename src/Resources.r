@@ -215,6 +215,7 @@ RAW Dungeon9.xm
 RAW GameOver.xm
 RAW Main_Menu.xm
 RAW Overworld.xm
+RAW Logo_Reveal.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/
