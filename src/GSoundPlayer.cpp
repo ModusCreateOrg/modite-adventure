@@ -28,7 +28,15 @@ static const TUint16 effectsList[] = {
   SFX_ENEMY_TAKE_DAMAGE_WAV,
   SFX_PLAYFIELD_SPIKE_RAISE_WAV,
   SFX_ITEM_HEART_WAV,
-  SFX_ITEM_PICKUP_GENERIC_WAV
+  SFX_ITEM_PICKUP_GENERIC_WAV,
+  SFX_MIDBOSS_BOUNCE_WALL_WAV,
+  SFX_MIDBOSS_TRANSFORM_IN_WAV,
+  SFX_MIDBOSS_TRANSFORM_OUT_WAV,
+  SFX_MIDBOSS_ATTACK_ENERGY_WAV,
+  SFX_MIDBOSS_ATTACK_FIRE_WAV,
+  SFX_MIDBOSS_ATTACK_WATER_WAV,
+  SFX_MIDBOSS_ATTACK_EARTH_WAV,
+  SFX_DOOR_OPEN_WAV,
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
@@ -130,9 +138,8 @@ BRaw *GSoundPlayer::LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) 
 
 
 
-void GSoundPlayer::GenericPlaySfx(TUint16 aSfxNumber) {
+void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber) {
   PlaySfx(FindSfxNumber(aSfxNumber));
-
 }
 
 

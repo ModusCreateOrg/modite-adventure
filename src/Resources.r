@@ -237,3 +237,12 @@ RAW SFX_enemy_take_damage.wav
 RAW SFX_playfield_spike_raise.wav
 RAW SFX_item_heart.wav
 RAW SFX_item_pickup_generic.wav
+RAW SFX_midboss_bounce_wall.wav
+RAW SFX_midboss_transform_in.wav
+RAW SFX_midboss_transform_out.wav
+RAW SFX_midboss_attack_energy.wav
+RAW SFX_midboss_attack_fire.wav
+RAW SFX_midboss_attack_water.wav
+RAW SFX_midboss_attack_earth.wav
+RAW SFX_door_open.wav
+

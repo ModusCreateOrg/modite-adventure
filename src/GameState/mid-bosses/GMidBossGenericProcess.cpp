@@ -1,6 +1,7 @@
 #include "GMidBossGenericProcess.h"
 #include "GMidBossProjectileProcess.h"
 #include "GPlayer.h"
+#include "Resources.h"
 
 const TFloat BOUNCE_VELOCITY = 2.5;
 
@@ -312,6 +313,22 @@ TBool GMidBossGenericProcess::MaybeAttack() {
   mAttackTimer = MID_BOSS_ATTACK_TIME;
   GProcess *p = (GProcess *)new GMidBossProjectileProcess(mGameState, mSprite->x + 32, mSprite->y - 32);
   mGameState->AddProcess(p);
+  switch (mAttribute) {
+    case ATTR_MID_BOSS_ENERGY:
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV);
+      break;
+    case ATTR_MID_BOSS_EARTH:
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV);
+      break;
+    case ATTR_MID_BOSS_WATER:
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV);
+      break;
+    case ATTR_MID_BOSS_FIRE:
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV);
+      break;
+    default:
+      break;
+  }
   return ETrue;
 }
 
