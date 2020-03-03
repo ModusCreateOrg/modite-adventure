@@ -119,7 +119,6 @@ struct GPlayer {
   static TInt16 mHitPoints, mMaxHitPoints, mHitPointsHealed;
   static TInt32 mAttackStrength;
   static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
-  static TFloat mSwordCharge;
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
   static GPlayerSprite *mSprite;

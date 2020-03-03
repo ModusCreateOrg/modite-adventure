@@ -16,6 +16,11 @@ class BMemoryStream;
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 const TFloat PLAYER_FRICTION = 0.5 / TFloat(FACTOR);
 const TInt FALL_DURATION = 10 * FACTOR;
+const TInt CHARGE_START_DELAY = 0.6 * FRAMES_PER_SECOND;
+const TInt CHARGE_DURATION = 1.2 * FRAMES_PER_SECOND;
+const TInt PERFECT_CHARGE_WINDOW = 2 * FACTOR; // perfect charge window duration in frames
+const TFloat CHARGE_BONUS = 2.0; // damage multiplier for maximum charged sword
+const TFloat PERFECT_CHARGE_BONUS = 3.5; // damage multiplier for perfect charge
 
 class GPlayerProcess : public GProcess {
 public:
@@ -49,6 +54,7 @@ protected:
 
   TBool MaybeHit();
 
+  DIRECTION MaybeMove(TFloat aSpeed);
   TBool MaybeWalk();
 
   TBool MaybeSword();
@@ -59,8 +65,6 @@ protected:
 
 protected:
   TBool IdleState();
-
-  TBool QuaffState();
 
   TBool SpellState();
 

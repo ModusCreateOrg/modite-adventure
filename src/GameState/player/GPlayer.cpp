@@ -10,7 +10,6 @@ TInt16 GPlayer::mMaxHitPoints;
 TInt16 GPlayer::mHitPointsHealed;
 
 TInt GPlayer::mAttackStrength;
-TFloat GPlayer::mSwordCharge;
 TInt GPlayer::mManaPotion;
 
 TBool GPlayer::mGameOver;
@@ -94,7 +93,7 @@ TUint16 GPlayer::GetSpellSlot() {
 
 TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
   if (!aSprite->mInvulnerable) {
-    TInt attackAmount = mAttackStrength;
+    TInt attackAmount = aSprite->mCollided->mAttackStrength;
 
     if (aIsSpell) {
       if (mEquipped.mSpellBookElement && aSprite->mElement) {

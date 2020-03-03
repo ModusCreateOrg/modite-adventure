@@ -13,17 +13,22 @@ GPlayerSprite::GPlayerSprite(GGameState *aGameState) : GAnchorSprite(
   h = 16;
   cx = 8;
   cy = 0;
+  mSwordCharge = -1;
   mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 }
 
 TBool GPlayerSprite::Render(BViewPort *aViewPort) {
   TBool ret = GAnchorSprite::Render(aViewPort);
-  if (GPlayer::mSwordCharge > 0.0 && mHitPoints > 0) {
+  if (mSwordCharge > 0.0 && mHitPoints > 0) {
     TRect r = TRect(mRect.x1 + 16, mRect.y2 - 41, mRect.x2 - 16, mRect.y2 - 40);
-    TUint8 meterColor = GPlayer::mSwordCharge >= 2.0 ? COLOR_SHMOO_GREEN : COLOR_EXPERIENCE;
     gDisplay.renderBitmap->FillRect(aViewPort, r, COLOR_WHITE);
-    gDisplay.renderBitmap->FillRect(aViewPort, r.x1, r.y1, r.x1 + MIN(TFloat(r.Width() - 1) * GPlayer::mSwordCharge, r.Width() - 1), r.y2, meterColor);
+    gDisplay.renderBitmap->DrawRect(aViewPort, r.x1 - 1, r.y1 - 1, r.x2 + 1, r.y2 + 1, COLOR_METER_OUTLINE);
+    if (mSwordCharge >= 2.0) {
+      gDisplay.renderBitmap->FillRect(aViewPort, r, COLOR_SHMOO_GREEN);
+    } else {
+      gDisplay.renderBitmap->FillRect(aViewPort, r.x1, r.y1, r.x1 + MIN(TFloat(r.Width() - 1) * mSwordCharge, r.Width() - 1), r.y2, COLOR_EXPERIENCE);
+    }
   }
   return ret;
 }
