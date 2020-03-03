@@ -9,6 +9,7 @@
 #include "GameState/enemies/GRatProcess.h"
 #include "GameState/enemies/GSlimeProcess.h"
 #include "GameState/enemies/GTrollProcess.h"
+#include "GameState/enemies/GTurretProcess.h"
 #include "GameState/environment/GStairsProcess.h"
 #include "GameState/environment/GOverworldLevelTransitionProcess.h"
 #include "GameState/environment/GCrateProcess.h"
@@ -109,6 +110,8 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return aGameState->AddProcess(new GGoblinProcess(aGameState, ip, xx, yy, params));
     case ATTR_GOBLIN_SNIPER:
       return aGameState->AddProcess(new GGoblinSniperProcess(aGameState, ip, xx, yy, params));
+    case ATTR_TURRET:
+      return aGameState->AddProcess(new GTurretProcess(aGameState, ip, xx, yy, params));
     case ATTR_ORC:
       return aGameState->AddProcess(new GOrcProcess(aGameState, ip, xx, yy, params));
     case ATTR_RAT:
