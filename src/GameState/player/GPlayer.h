@@ -44,35 +44,16 @@ const TFloat AMULET_MATRIX[4][4] = {
 };
 
 struct GEquipped {
+  ELEMENT mAmuletElement, mRingElement, mSpellBookElement;
   GInventoryItem
-    *mWaterAmulet,
-    *mFireAmulet,
-    *mEarthAmulet,
-    *mEnergyAmulet,
-
-    *mWaterRing,
-    *mFireRing,
-    *mEarthRing,
-    *mEnergyRing,
-
-    *mSpellBook,
-
     *mGloves,
     *mBoots,
     *mSword;
 
   void Init() {
-    mWaterAmulet = ENull;
-    mFireAmulet = ENull;
-    mEarthAmulet = ENull;
-    mEnergyAmulet= ENull;
-
-    mWaterRing = ENull;
-    mFireRing = ENull;
-    mEarthRing = ENull;
-    mEnergyRing = ENull;
-
-    mSpellBook = ENull;
+    mAmuletElement = ELEMENT_NONE;
+    mRingElement = ELEMENT_NONE;
+    mSpellBookElement = ELEMENT_NONE;
 
     mGloves = ENull;
     mBoots = ENull;
@@ -89,8 +70,9 @@ struct GPlayer {
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
+    mHitPointsHealed = 0;
     mAttackStrength = 35;
-    mHealthPotion = mManaPotion = 100;
+    mManaPotion = 100;
 
     //
     mEquipped.Init();
@@ -111,10 +93,15 @@ struct GPlayer {
     }
   }
 
-  static void AddHitPoints(TInt aMoreHitpoints) {
-    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints));
-    p->SetMessageType(STAT_HEAL);
-    mSprite->mGameState->AddProcess(p);
+  static void AddHitPoints(TInt aMoreHitpoints, TBool aShowStat = ETrue) {
+    if (aShowStat) {
+      auto *p = new GStatProcess(gGameEngine, mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints + mHitPointsHealed));
+      p->SetMessageType(STAT_HEAL);
+      gGameEngine->AddProcess(p);
+      mHitPointsHealed = 0;
+    } else {
+      mHitPointsHealed += aMoreHitpoints;
+    }
     mHitPoints += aMoreHitpoints;
     if (mHitPoints > mMaxHitPoints) {
       mHitPoints = mMaxHitPoints;
@@ -129,10 +116,10 @@ struct GPlayer {
 
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;
-  static TInt16 mHitPoints, mMaxHitPoints;
+  static TInt16 mHitPoints, mMaxHitPoints, mHitPointsHealed;
   static TInt32 mAttackStrength;
+  static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static TFloat mSwordCharge;
-  static TInt32 mHealthPotion, mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
   static GPlayerSprite *mSprite;
