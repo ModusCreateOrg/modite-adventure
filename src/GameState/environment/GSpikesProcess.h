@@ -3,6 +3,8 @@
 
 #include "GEnvironmentProcess.h"
 
+const TInt MAX_SPIKE_GROUPS = 32;
+
 class GSpikesProcess : public GEnvironmentProcess {
 public:
   GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam);
@@ -15,7 +17,7 @@ public:
   TBool RunAfter() OVERRIDE;
 
 public:
-  static TInt mNumber;
+  static TInt mGroups[MAX_SPIKE_GROUPS];
 
 protected:
   TBool mState;   // true if animating
