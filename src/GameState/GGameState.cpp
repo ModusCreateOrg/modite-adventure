@@ -408,6 +408,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     }
   }
 
+  TInt16 spawnedBoss = -1;
 
   for (TInt ip = 0; ip < objectCount; ip++) {
 #ifdef DEBUGME
