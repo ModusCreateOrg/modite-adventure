@@ -56,6 +56,8 @@ static const TUint16 allSongs[] = {
   MAIN_MENU_XM,
   GAMEOVER_XM,
   OVERWORLD_XM,
+  BOSS_1_XM,
+  BOSS_2_XM,
   DUNGEON4_XM,
   DUNGEON9_XM
 };
@@ -81,7 +83,6 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
     mSongSlots[i] = *slot;
     FreeMem(slot);
   }
-
 
   PlayMusic(EMPTYSONG_XM);
 

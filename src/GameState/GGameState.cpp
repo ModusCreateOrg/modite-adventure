@@ -403,6 +403,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     }
   }
 
+  TInt16 spawnedBoss = -1;
   TBool startedPlayer = EFalse;
   TInt16 spikes_number = GSpikesProcess::mNumber;
   TInt eCount = 0;
@@ -701,6 +702,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS ENERGY");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_FIRE:
@@ -718,6 +721,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS FIRE");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_EARTH:
@@ -735,6 +740,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx - 64, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_WATER:
@@ -752,6 +759,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS WATER");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_WATER:
@@ -770,6 +779,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY WATER WIZARD");
+        spawnedBoss = op;
         break;
 
       case ATTR_WIZARD_FIRE:
@@ -788,6 +798,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY FIRE WIZARD");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_ENERGY:
@@ -806,6 +818,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY ENERGY WIZARD");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_EARTH:
@@ -825,6 +839,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY EARTH WIZARD");
+        spawnedBoss = op;
+
         break;
 #endif
 
@@ -854,6 +870,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "FINAL BOSS");
+        spawnedBoss = op;
+
         break;
 
       default:
@@ -866,28 +884,54 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
 
-  if (! is_same_dungeon) {
-    TUint16 song = OVERWORLD_XM;
+  PlayLevelMusic(mNextDungeon, spawnedBoss);
 
-
-    if (mNextDungeon >= 1 && mNextDungeon <= 4) {
-      song = DUNGEON4_XM;
-
-    }
-    else if (mNextDungeon >= 13 && mNextDungeon <= 18) {
-      song = DUNGEON4_XM;
-    }
-    else if (mNextDungeon >= 36 && mNextDungeon <= 40) {
-      song = DUNGEON9_XM;
-    }
-
-    gSoundPlayer.PlayMusic(song);
-
-  }
 
   mGamePlayfield->StartMosaicIn();
 }
 
+TBool GGameState::PlayMusicForCurrentLevel() {
+  PlayLevelMusic(mDungeon, -1);
+}
+TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
+
+
+
+  TUint16 song = EMPTYSONG_XM;
+
+  printf("->>>>>>>>>>>>> aNextDungeon = %i\n", aNextDungeon);
+
+  // For levels -- bosses get their own treatment!
+  if (aSpawnedBoss == -1) {
+    if (aNextDungeon == 0) {
+      song = OVERWORLD_XM;
+    }
+
+
+    if (aNextDungeon >= 2 && aNextDungeon <= 4) {
+      //      song = DUNGEON4_XM;
+
+    }
+    else if (aNextDungeon >= 13 && aNextDungeon <= 18) {
+      song = DUNGEON4_XM;
+    }
+    else if (aNextDungeon >= 36 && aNextDungeon <= 40) {
+      song = DUNGEON9_XM;
+    }
+  }
+  else {
+    if (aSpawnedBoss == ATTR_MID_BOSS_WATER || aSpawnedBoss == ATTR_MID_BOSS_ENERGY || aSpawnedBoss == ATTR_MID_BOSS_EARTH || aSpawnedBoss == ATTR_MID_BOSS_FIRE) {
+      song = BOSS_1_XM;
+    } else{
+      song = BOSS_2_XM;
+    }
+  }
+
+
+  gSoundPlayer.PlayMusic(song);
+
+  return ETrue;
+}
 /**
   * modify BObjectProgram, like when a door or chest has opened.
   *

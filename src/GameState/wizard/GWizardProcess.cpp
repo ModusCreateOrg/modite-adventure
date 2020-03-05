@@ -207,6 +207,8 @@ GWizardProcess::~GWizardProcess() {
     mSprite = ENull;
   }
   GPlayer::mActiveBoss = ENull;
+  gameState->PlayMusicForCurrentLevel();
+
 }
 
 void GWizardProcess::SetAttackTimer() {

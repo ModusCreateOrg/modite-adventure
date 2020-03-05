@@ -216,6 +216,8 @@ RAW GameOver.xm
 RAW Main_Menu.xm
 RAW Overworld.xm
 RAW Logo_Reveal.xm
+RAW Boss_1.xm
+RAW Boss_2.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/

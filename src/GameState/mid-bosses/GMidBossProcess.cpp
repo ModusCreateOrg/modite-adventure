@@ -5,6 +5,7 @@
 #include "GStatProcess.h"
 #include "common/GSpellOverlayProcess.h"
 #include "Resources.h"
+#include "GGame.h"
 
 // see
 // https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
@@ -76,6 +77,8 @@ GMidBossProcess::~GMidBossProcess() {
     mSprite = ENull;
   }
   GPlayer::mActiveBoss = ENull;
+  GGameState *gameState = (GGameState*)gGameEngine;
+  gameState->PlayMusicForCurrentLevel();
 }
 
 TBool GMidBossProcess::RunBefore() {
