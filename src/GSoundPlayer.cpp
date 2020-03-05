@@ -25,9 +25,10 @@ static const TUint16 effectsList[] = {
   SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV,
   SFX_PLAYER_TAKE_DAMAGE_WAV,
   SFX_PLAYER_DEATH_WAV,
+  SFX_ENEMY_ATTACK_WAV,
   SFX_ENEMY_DEATH_WAV,
   SFX_ENEMY_TAKE_DAMAGE_WAV,
-  SFX_PLAYFIELD_SPIKE_RAISE_WAV,
+  SFX_ENEMY_TAUNT_WAV,
   SFX_ITEM_HEART_WAV,
   SFX_ITEM_PICKUP_GENERIC_WAV,
   SFX_MIDBOSS_BOUNCE_WALL_WAV,
@@ -47,6 +48,8 @@ static TUint16 FindSfxNumber(TUint16 aSfxFile) {
       return (TUint16) i; // Should not go above UINT16_MAX
     }
   }
+  printf("WARNING :: Could not find SFX for ID %i\n", aSfxFile);
+
 
   return UINT16_MAX;
 }
@@ -180,40 +183,6 @@ void GSoundPlayer::SfxPlayerSlash(){
   PlaySfx(FindSfxNumber(SFX_PLAYER_SLASH_WAV));
 }
 
-void GSoundPlayer::SfxPlayerQuaffHealthPotion() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffWaterSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_WATER_SPELL_WAV));
-}
-
-void GSoundPlayer::SfxPlayerQuaffEarthSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_EARTH_SPELL_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffFireSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_FIRE_SPELL_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffEnergySpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV));
-}
-
-void GSoundPlayer::SfxPlayerTakeDamage() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_TAKE_DAMAGE_WAV));
-}
-
-
-// SFX Enemy (general)
-void GSoundPlayer::SfxEnemyDeath() {
-  PlaySfx(FindSfxNumber(SFX_ENEMY_DEATH_WAV));
-}
-void GSoundPlayer::SfxEnemyTakeDamage() {
-  PlaySfx(FindSfxNumber(SFX_ENEMY_TAKE_DAMAGE_WAV));
-}
-
-// SFX Playfield
-void GSoundPlayer::SfxPlayfieldSpikeRaise() {
-  PlaySfx(FindSfxNumber(SFX_PLAYFIELD_SPIKE_RAISE_WAV));
-}
 
 void GSoundPlayer::SfxItemHeart() {
   PlaySfx(FindSfxNumber(SFX_ITEM_HEART_WAV));

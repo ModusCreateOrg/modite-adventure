@@ -70,10 +70,18 @@ public:
 
   // sfx
 protected:
-  virtual void SfxTakeDamage() {}
-  virtual void SfxDeath() {}
-  virtual void SfxTaunt() {}
-  virtual void SfxAttack() {}
+  static void SfxTakeDamage() {}
+  static void SfxDeath() {
+    gSoundPlayer.TriggerSfx(SFX_ENEMY_DEATH_WAV);
+  }
+  static void SfxTaunt() {
+//    gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV);
+//    printf("Enemy Taunt\n");
+
+  }
+  static void SfxAttack() {
+    gSoundPlayer.TriggerSfx(SFX_ENEMY_ATTACK_WAV);
+  }
 
 protected:
   // test if a wall in the specified direction from sprite's current location

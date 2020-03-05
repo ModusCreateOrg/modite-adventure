@@ -510,7 +510,7 @@ TBool GPlayerProcess::MaybeHit() {
         mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
       }
 
-      gSoundPlayer.SfxPlayerTakeDamage();
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_TAKE_DAMAGE_WAV);
 
       mState = state;
 
