@@ -969,6 +969,8 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
 
 void GGameState::GameOver() {
   mGameOver = new GGameOver(this);
+  gSoundPlayer.PlayMusic(GAMEOVER_XM);
+  gSoundPlayer.TriggerSfx(SFX_PLAYER_DEATH_WAV);
   gControls.Reset();
   GPlayer::mGameOver = ETrue;
 }

@@ -235,6 +235,7 @@ RAW SFX_player_quaff_earth_spell.wav
 RAW SFX_player_quaff_fire_spell.wav
 RAW SFX_player_quaff_energy_spell.wav
 RAW SFX_player_take_damage.wav
+RAW SFX_player_death.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
 RAW SFX_playfield_spike_raise.wav
