@@ -60,7 +60,7 @@ static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, T
 
 void GHud::SetColors() {
 
-  printf("GHud::SetColors()\n");
+//  printf("GHud::SetColors()\n");
   gDisplay.renderBitmap->SetColor(COLOR_HUD_BG, 0, 0, 0);
   gDisplay.renderBitmap->SetColor(COLOR_METER_OUTLINE, 64, 64, 64);     // outline color for meter
   gDisplay.renderBitmap->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);      // light

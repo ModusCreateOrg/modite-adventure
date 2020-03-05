@@ -917,11 +917,7 @@ TBool GGameState::PlayMusicForCurrentLevel() {
 }
 TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
 
-
-
   TUint16 song = EMPTYSONG_XM;
-
-  printf("->>>>>>>>>>>>> aNextDungeon = %i\n", aNextDungeon);
 
   // For levels -- bosses get their own treatment!
   if (aSpawnedBoss == -1) {
