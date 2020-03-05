@@ -113,13 +113,17 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Hit(aDirection);
       break;
 
-    case SPELL_STATE:
+    case SPELL_STATE: {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      Spell(aDirection);
-      break;
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+      mSpellOverlayProcess = p;
+      mGameState->AddProcess(p);
+      mSprite->mDirection = DIRECTION_DOWN;
+      Spell(DIRECTION_DOWN);
+    } break;
 
     case DEATH_STATE: {
       SfxDeath();
@@ -133,14 +137,6 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     default:
       break;
   }
-}
-
-void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-  mSpellOverlayProcess = p;
-  mGameState->AddProcess(p);
-  mSprite->mDirection = DIRECTION_DOWN;
-  Hit(DIRECTION_SPELL);
 }
 
 void GEnemyProcess::OverlayAnimationComplete() {
@@ -165,23 +161,7 @@ TBool GEnemyProcess::MaybeHit() {
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       SfxTakeDamage();
       mSprite->mInvulnerable = ETrue;
-      switch (other->mDirection) {
-        case DIRECTION_RIGHT:
-          NewState(HIT_STATE, DIRECTION_LEFT);
-          break;
-        case DIRECTION_LEFT:
-          NewState(HIT_STATE, DIRECTION_RIGHT);
-          break;
-        case DIRECTION_UP:
-          NewState(HIT_STATE, DIRECTION_DOWN);
-          break;
-        case DIRECTION_DOWN:
-          NewState(HIT_STATE, DIRECTION_UP);
-          break;
-        default:
-          Panic("GEnemyProcess no MaybeHit() direction\n");
-          break;
-      }
+      NewState(HIT_STATE, GAnchorSprite::ReverseDirection(other->mDirection));
       return ETrue;
     }
   }

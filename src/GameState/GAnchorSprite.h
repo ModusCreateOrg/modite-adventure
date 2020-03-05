@@ -12,7 +12,6 @@ enum DIRECTION {
   DIRECTION_DOWN,
   DIRECTION_LEFT,
   DIRECTION_RIGHT,
-  DIRECTION_SPELL,
 };
 
 enum ELEMENT {
@@ -106,6 +105,10 @@ public:
 
 public:
   static DIRECTION RandomDirection();
+  static DIRECTION ReverseDirection(DIRECTION aDirection);
+
+  void StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection);
+  void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);
 
   TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
   // set the BMapPlayfield tile in map attribute

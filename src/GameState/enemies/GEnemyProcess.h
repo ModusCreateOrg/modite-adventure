@@ -111,7 +111,7 @@ protected:
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
 
-  void Spell(DIRECTION aDirection);
+  virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
   void OverlayAnimationComplete() OVERRIDE;

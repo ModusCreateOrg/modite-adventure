@@ -210,6 +210,58 @@ DIRECTION GAnchorSprite::RandomDirection() {
   }
 }
 
+DIRECTION GAnchorSprite::ReverseDirection(DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      return DIRECTION_DOWN;
+    case DIRECTION_DOWN:
+      return DIRECTION_UP;
+    case DIRECTION_LEFT:
+      return DIRECTION_RIGHT;
+    case DIRECTION_RIGHT:
+      return DIRECTION_LEFT;
+  }
+}
+
+void GAnchorSprite::StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      StartAnimation(aScriptGroup[DIRECTION_UP]);
+      break;
+    case DIRECTION_DOWN:
+      StartAnimation(aScriptGroup[DIRECTION_DOWN]);
+      break;
+    case DIRECTION_LEFT:
+      StartAnimation(aScriptGroup[DIRECTION_LEFT]);
+      break;
+    case DIRECTION_RIGHT:
+      StartAnimation(aScriptGroup[DIRECTION_RIGHT]);
+      break;
+    default:
+      Panic("No animation direction\n");
+      break;
+  }
+}
+
+void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      vy = -aSpeed;
+      break;
+    case DIRECTION_DOWN:
+      vy = aSpeed;
+      break;
+    case DIRECTION_LEFT:
+      vx = -aSpeed;
+      break;
+    case DIRECTION_RIGHT:
+      vx = aSpeed;
+      break;
+    default:
+      Panic("No move direction\n");
+  }
+}
+
 TBool GAnchorSprite::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   return IsFloor(aDirection, aVx, aVy);
 }
