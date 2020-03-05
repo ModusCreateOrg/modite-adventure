@@ -234,13 +234,7 @@ TBool GPlayerProcess::IsLedge() {
 }
 
 TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
-  if ((aVx < 0 && !mSprite->IsFloor(DIRECTION_LEFT, aVx, aVy)) ||
-      (aVx > 0 && !mSprite->IsFloor(DIRECTION_RIGHT, aVx, aVy)) ||
-      (aVy < 0 && !mSprite->IsFloor(DIRECTION_UP, aVx, aVy)) ||
-      (aVy > 0 && !mSprite->IsFloor(DIRECTION_DOWN, aVx, aVy))) {
-    return EFalse;
-  }
-  return ETrue;
+  return mSprite->CanWalk(aVx, aVy);
 }
 
 void GPlayerProcess::StartKnockback() {
@@ -365,13 +359,13 @@ TBool GPlayerProcess::MaybeHit() {
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
       hitAmount = other->mAttackStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::ReverseDirection(other->mDirection));
+        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
       else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::ReverseDirection(other->mDirection));
+        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
       else {
-        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::ReverseDirection(other->mDirection));
+        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
     }
 
@@ -687,8 +681,7 @@ TBool GPlayerProcess::FallState() {
     mSprite->StartAnimation(landAnimation);
   }
 
-  if (mSprite->IsFloor(DIRECTION_UP, 0, 0) &&
-      mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
+  if (mSprite->CanWalk(0, 0, ETrue)) {
     mSprite->vy = 0;
     if (mSprite->AnimDone()) {
       // land

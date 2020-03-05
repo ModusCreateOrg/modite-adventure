@@ -464,7 +464,7 @@ TBool GFinalBossProcess::MaybeHit() {
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
       }
-      SetState(STATE_HIT, GAnchorSprite::ReverseDirection(other->mDirection));
+      SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;
     }
   }
@@ -510,11 +510,11 @@ TBool GFinalBossProcess::WalkState() {
     return ETrue;
   }
 
-  if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
 #ifdef DEBUGME
     printf("Final Boss can't walk direction %s\n", direction_names[mDirection]);
 #endif
-    SetState(STATE_WALK, GAnchorSprite::ReverseDirection(mDirection));
+    SetState(STATE_WALK, GAnchorSprite::RotateDirection(mDirection, 2));
     return ETrue;
   }
 
@@ -564,10 +564,10 @@ TBool GFinalBossProcess::ProjectileState() {
 
 TBool GFinalBossProcess::TeleportState() {
   // check to see if boss has met a wall
-  TBool canWalkUp = mSprite->CanWalk(DIRECTION_UP, mSprite->vx, mSprite->vy),
-        canWalkLt = mSprite->CanWalk(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
-        canWalkRt = mSprite->CanWalk(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
-        canWalkDn = mSprite->CanWalk(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
+  TBool canWalkUp = mSprite->CanWalkInDirection(DIRECTION_UP, mSprite->vx, mSprite->vy),
+        canWalkLt = mSprite->CanWalkInDirection(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
+        canWalkRt = mSprite->CanWalkInDirection(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
+        canWalkDn = mSprite->CanWalkInDirection(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
 
   // Bound around the room while the player is being attacked by the spikes/pillars
   if (!canWalkUp) {

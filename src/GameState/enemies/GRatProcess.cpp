@@ -407,89 +407,21 @@ GRatProcess::~GRatProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+TBool GRatProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
-  switch (aDirection) {
-
-    case DIRECTION_UP:
-      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
-        return EFalse;
-      }
-      if (IsWall(DIRECTION_LEFT, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
-        return ETrue;
-      }
-      // no walls at all?  Move ot the nearest one.
-      if (!IsWall(DIRECTION_DOWN, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_DOWN:
-      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
-        return EFalse;
-      }
-      // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_UP, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_LEFT:
-      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
-        return EFalse;
-      }
-      // no wall to left, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_DOWN, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_RIGHT, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_RIGHT:
-      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
-        return EFalse;
-      }
-      // no wall to right, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_DOWN, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_LEFT, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    default:
-      Panic("Rat CanWalk invalid direction %d\n", aDirection);
-      break;
+  if (!mSprite->CanWalk(aVx, aVy)) {
+    return EFalse;
+  }
+  if (IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 1))) {
+    return ETrue;
+  }
+  if (IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 3))) {
+    return ETrue;
+  }
+  // no walls at all?  Move to the nearest one.
+  if (!IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 2))) {
+    mStateTimer++;
+    return ETrue;
   }
 
   return EFalse;

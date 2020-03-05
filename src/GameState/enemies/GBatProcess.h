@@ -13,7 +13,7 @@ public:
   ~GBatProcess() OVERRIDE;
 
 protected:
-  TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) OVERRIDE;
+  TBool CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) OVERRIDE;
   void NewState(TUint16 aState, DIRECTION aDirection) OVERRIDE;
   void Idle(DIRECTION aDirection) OVERRIDE;
   void Taunt(DIRECTION aDirection) OVERRIDE;

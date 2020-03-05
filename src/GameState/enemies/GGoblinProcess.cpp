@@ -812,6 +812,7 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
     mStateTimer = TInt16(TFloat(Random(3, 8)) * 32 / VELOCITY);
   }
   mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GGoblinProcess::Attack(DIRECTION aDirection) {

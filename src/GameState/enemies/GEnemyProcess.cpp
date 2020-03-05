@@ -52,12 +52,12 @@ GEnemyProcess::~GEnemyProcess() {
   mCount--;
 }
 
-TBool GEnemyProcess::IsWall(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
-  return !mSprite->IsFloor(aDirection, aDx, aDy);
+TBool GEnemyProcess::IsWallInDirection(DIRECTION aDirection) {
+  return !mSprite->CanWalkInDirection(aDirection);
 }
 
-TBool GEnemyProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  return mSprite->CanWalk(aDirection, aVx, aVy);
+TBool GEnemyProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  return mSprite->CanWalkInDirection(aDirection, aVx, aVy);
 }
 
 /*********************************************************************************
@@ -161,7 +161,7 @@ TBool GEnemyProcess::MaybeHit() {
     if (GPlayer::MaybeDamage(mSprite, EFalse)) {
       SfxTakeDamage();
       mSprite->mInvulnerable = ETrue;
-      NewState(HIT_STATE, GAnchorSprite::ReverseDirection(other->mDirection));
+      NewState(HIT_STATE, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;
     }
   }
@@ -357,10 +357,10 @@ TBool GEnemyProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = GAnchorSprite::RandomDirection();
-      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
-             vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
+      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : direction == DIRECTION_RIGHT ? mVelocity : 0,
+             vy = direction == DIRECTION_UP ? -mVelocity : direction == DIRECTION_DOWN ? mVelocity : 0;
 
-      if (CanWalk(direction, vx, vy)) {
+      if (CanWalkInDirection(direction, vx, vy)) {
         NewState(WALK_STATE, direction);
         return ETrue;
       }
@@ -412,7 +412,7 @@ TBool GEnemyProcess::WalkState() {
     return ETrue;
   }
 
-  if (!CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+  if (!CanWalkInDirection(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }

@@ -233,8 +233,7 @@ void GWizardProcess::RandomLocation() {
       dy = tmp;
     }
     TInt i = 0;
-    while (mSprite->IsFloor(DIRECTION_DOWN, dx * i, dy * i) &&
-           mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
+    while (mSprite->CanWalk(dx * i, dy * i, ETrue)) {
       i++;
     }
     mSprite->x = mStartX + dx * i * SQRT(RandomFloat()) * 0.8;
@@ -429,7 +428,7 @@ TBool GWizardProcess::IdleState() {
     mStateTimer = 60;
     for (TInt i = 0; i < 10; i++) {
       DIRECTION d = (Random() & 1u) ? DIRECTION_RIGHT : DIRECTION_LEFT;
-      if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
+      if (mSprite->CanWalk(d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
         SetState(STATE_WALK, d);
         return ETrue;
       }
@@ -451,7 +450,7 @@ TBool GWizardProcess::WalkState() {
   }
 
   // check to see if wizard has met a wall
-  if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     SetState(STATE_IDLE, DIRECTION_DOWN);
     return ETrue;
   }

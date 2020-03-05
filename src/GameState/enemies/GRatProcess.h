@@ -13,7 +13,7 @@ public:
   ~GRatProcess() OVERRIDE;
 
 protected:
-  TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat avY) OVERRIDE;
+  TBool CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat avY) OVERRIDE;
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;

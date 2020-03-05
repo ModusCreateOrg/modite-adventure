@@ -469,10 +469,10 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDy = 16 - TInt(mAltitude);
 }
 
-TBool GBatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+TBool GBatProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   if (mState == IDLE_STATE && (mAltitude < MAX_ALTITUDE || mLandTimer > 0)) {
     return EFalse;
   }
 
-  return GEnemyProcess::CanWalk(aDirection, aVx, aVy);
+  return GEnemyProcess::CanWalkInDirection(aDirection, aVx, aVy);
 }
