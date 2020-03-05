@@ -1,6 +1,6 @@
 #include "GSpikesProcess.h"
 
-TInt GSpikesProcess::mNumber = 0;
+TInt GSpikesProcess::mGroups[MAX_SPIKE_GROUPS] = {0};
 
 const TUint16 SPIKE_SPEED = 3;
 
@@ -36,7 +36,10 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mGameState->AddSprite(mSprite);
   mState = EFalse;
   mTime = (7 * SPIKE_SPEED);
-  mTimer = mParam * mTime;
+  mTimer = GSpikesProcess::mGroups[mParam] * mTime;
+
+  // inc number of spikes in group
+  GSpikesProcess::mGroups[mParam]++;
 }
 
 GSpikesProcess::~GSpikesProcess() {
@@ -45,7 +48,7 @@ GSpikesProcess::~GSpikesProcess() {
 TBool GSpikesProcess::RunBefore() {
   if (mState) {
     if (mSprite->AnimDone()) {
-      mTimer = mTime * mNumber;
+      mTimer = mTime * GSpikesProcess::mGroups[mParam];
       mState = EFalse;
       mSprite->cType = 0;
     }

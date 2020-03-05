@@ -392,21 +392,22 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
   TInt objectCount = mGamePlayfield->mObjectCount;
   BObjectProgram *program = mGamePlayfield->mObjectProgram;
+  TInt eCount = 0;
 
-  // count spikes
-  GSpikesProcess::mNumber = 0;
+  // Spikes operations
+  // Reset spike group counter on level load
+  memset(GSpikesProcess::mGroups, 0, sizeof(GSpikesProcess::mGroups));
+  TBool startedPlayer = EFalse;
+  TInt spikesMatrix[70][70] = {{0}}; // max level size
+  TInt16 spikeGroup = 1;
+
+  // Set spikes matrix
   for (TInt ip = 0; ip < objectCount; ip++) {
-    TUint16 op = program[ip].mCode & TUint32(0xffff);
-
-    if (op == ATTR_SPIKES) {
-      GSpikesProcess::mNumber++;
+    if ((program[ip].mCode & TUint32(0xffff)) == ATTR_SPIKES) {
+      spikesMatrix[program[ip].mRow][program[ip].mCol] = spikeGroup;
     }
   }
 
-  TInt16 spawnedBoss = -1;
-  TBool startedPlayer = EFalse;
-  TInt16 spikes_number = GSpikesProcess::mNumber;
-  TInt eCount = 0;
 
   for (TInt ip = 0; ip < objectCount; ip++) {
 #ifdef DEBUGME
@@ -503,7 +504,27 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SPIKES at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy, spikes_number--, DIRECTION_DOWN, "SPIKES");
+        // Check the surrounding tiles to the left and top for spikes
+        // if there aren't any increment group counter and set all spike tiles to it
+        if (
+            spikesMatrix[row-1][col] == 0 &&
+            spikesMatrix[row][col-1] == 0 &&
+            spikesMatrix[row-1][col-1] == 0 &&
+            spikesMatrix[row-1][col+1] == 0)
+        {
+          // Check adjecent node that wasn't processed yet, but could've been set
+          if (spikesMatrix[row+1][col-1] == 0) {
+            spikeGroup++;
+          }
+          spikesMatrix[row][col] = spikeGroup;
+        }
+
+        if (spikesMatrix[row+1][col] > 0) spikesMatrix[row+1][col] = spikesMatrix[row][col];
+        if (spikesMatrix[row][col + 1] > 0) spikesMatrix[row][col+1] = spikesMatrix[row][col];
+        if (spikesMatrix[row+1][col + 1] > 0) spikesMatrix[row+1][col+1] = spikesMatrix[row][col];
+        if (spikesMatrix[row+1][col - 1] > 0) spikesMatrix[row+1][col-1] = spikesMatrix[row][col];
+
+        GProcess::Spawn(this, op, ip, xx, yy, spikesMatrix[row][col], DIRECTION_DOWN, "SPIKES");
         break;
 
       case ATTR_METAL_GATE_H:
