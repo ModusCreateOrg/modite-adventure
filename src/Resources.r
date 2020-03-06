@@ -207,6 +207,9 @@ TMX OWX_DevDGN_9472.txt
 PATH resources/tilemaps/tilesets/
 SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 
+PATH resources/tilemaps/OW2_DGN1_1280/
+SPRITESHEET 32x32 OW2_DGN_OBJECT_LAYER.bmp
+
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
 RAW EmptySong.xm

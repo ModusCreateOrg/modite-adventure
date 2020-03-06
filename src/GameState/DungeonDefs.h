@@ -114,7 +114,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN1_1280",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 0
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
