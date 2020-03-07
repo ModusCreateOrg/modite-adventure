@@ -11,17 +11,13 @@
 
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
-const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 2 * FACTOR;
+const TInt IDLE_SPEED = 6 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
-const TInt WALK_SPEED = 2 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 4 / FACTOR;
 const TFloat ATTACK_DISTANCE = 6 * TILESIZE;
-const TFloat FLEE_DISTANCE = 3 * TILESIZE;
+const TInt MAX_HIT_STATE = 4;
 
 // region  ANIMATIONS {{{
 
@@ -44,290 +40,44 @@ const TFloat FLEE_DISTANCE = 3 * TILESIZE;
 ANIMSCRIPT idleAnimation[] = {
   ABITMAP(TURRET_SLOT),
   ALABEL,
-  ASTEP(40, IMG_GOBLIN_SNIPER_IDLE),
-  ASTEP(4, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(40, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ASTEP(4, IMG_GOBLIN_SNIPER_IDLE + 1),
+  ADELTA(0, 0),
+  ASIZE(10, 14, 22, 16),
+  ASTEP(IDLE_SPEED, 0),
+
+  ADELTA(0, -1),
+  ASIZE(11, 14, 21, 16),
+  // ASIZE(9, 14, 23, 16),
+  ASTEP(IDLE_SPEED, 0),
+
+  ADELTA(0, -2),
+  ASIZE(12, 14, 20, 16),
+  // ASIZE(8, 14, 24, 16),
+  ASTEP(IDLE_SPEED * 2, 0),
+
+  ADELTA(0, -1),
+  ASIZE(11, 14, 21, 16),
+  // ASIZE(9, 14, 23, 16),
+  ASTEP(IDLE_SPEED, 0),
+
+  ADELTA(0, 0),
+  ASIZE(10, 14, 22, 16),
+  ASTEP(IDLE_SPEED, 0),
+
+  ADELTA(0, 1),
+  ASIZE(9, 14, 23, 16),
+  // ASIZE(11, 14, 21, 16),
+  ASTEP(IDLE_SPEED, 0),
+
+  ADELTA(0, 2),
+  ASIZE(8, 14, 24, 16),
+  // ASIZE(12, 14, 20, 16),
+  ASTEP(IDLE_SPEED * 2, 0),
+
+  ADELTA(0, 1),
+  ASIZE(9, 14, 23, 16),
+  // ASIZE(11, 14, 21, 16),
+  ASTEP(IDLE_SPEED, 0),
   ALOOP
-};
-
-static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ALABEL,
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SNIPER_SELECTED + 2),
-  ALOOP
-};
-
-static ANIMSCRIPT tauntAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 4),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 5),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 6),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 5),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 6),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 5),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 4),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(TAUNT_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  AEND,
-};
-
-static ANIMSCRIPT deathAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
-  AEND
-};
-
-/*
- ____
-|  _ \  _____      ___ __
-| | | |/ _ \ \ /\ / / '_ \
-| |_| | (_) \ V  V /| | | |
-|____/ \___/ \_/\_/ |_| |_|
-*/
-
-static ANIMSCRIPT idleDownAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ALOOP
-};
-
-static ANIMSCRIPT walkDownAnimation1[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 1),
-  AEND
-};
-
-static ANIMSCRIPT walkDownAnimation2[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_DOWN + 3),
-  AEND
-};
-
-static ANIMSCRIPT attackDownAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 1),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_DOWN + 2),
-  AEND
-};
-
-static ANIMSCRIPT hitDownAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 0),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  AFILL(-1),
-  AEND
-};
-
-/*
- _          __ _
-| |    ___ / _| |_
-| |   / _ \ |_| __|
-| |__|  __/  _| |_
-|_____\___|_|  \__|
-
- */
-
-static ANIMSCRIPT idleLeftAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ALOOP
-};
-
-static ANIMSCRIPT walkLeftAnimation1[] = {
-  ABITMAP(TURRET_SLOT),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 1),
-  AEND
-};
-
-static ANIMSCRIPT walkLeftAnimation2[] = {
-  ABITMAP(TURRET_SLOT),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 2),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 3),
-  AEND
-};
-
-static ANIMSCRIPT attackLeftAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
-  AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
-  AFLIP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
-  AEND
-};
-
-static ANIMSCRIPT hitLeftAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  AFILL(COLOR_WHITE),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 0),
-  AFILL(COLOR_WHITE),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 1),
-  AFILL(-1),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 2),
-  AFILL(COLOR_WHITE),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
-  AEND
-};
-
-/*
- ____  _       _     _
-|  _ \(_) __ _| |__ | |_
-| |_) | |/ _` | '_ \| __|
-|  _ <| | (_| | | | | |_
-|_| \_\_|\__, |_| |_|\__|
-         |___/
- */
-
-static ANIMSCRIPT idleRightAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ALOOP
-};
-
-static ANIMSCRIPT walkRightAnimation1[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 1),
-  AEND
-};
-
-static ANIMSCRIPT walkRightAnimation2[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_RIGHT + 3),
-  AEND
-};
-
-static ANIMSCRIPT attackRightAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 1),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_RIGHT + 2),
-  AEND
-};
-
-static ANIMSCRIPT hitRightAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 0),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
-  AEND
-};
-
-/*
- _   _
-| | | |_ __
-| | | | '_ \
-| |_| | |_) |
- \___/| .__/
-      |_|
- */
-
-static ANIMSCRIPT idleUpAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ALABEL,
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 0),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 1),
-  ASTEP(IDLE_SPEED, IMG_GOBLIN_SNIPER_IDLE + 2),
-  ALOOP
-};
-
-static ANIMSCRIPT walkUpAnimation1[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 0),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 1),
-  AEND
-};
-
-static ANIMSCRIPT walkUpAnimation2[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 2),
-  ASTEP(WALK_SPEED, IMG_GOBLIN_SNIPER_WALK_UP + 3),
-  AEND
-};
-
-static ANIMSCRIPT attackUpAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_SNIPER_ATTACK_UP + 1),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_SNIPER_ATTACK_UP + 2),
-  AEND
-};
-
-static ANIMSCRIPT hitUpAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 3),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 0),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_UP + 3),
-  AFILL(-1),
-  AEND
-};
-
-static ANIMSCRIPT hitSpellAnimation[] = {
-  ABITMAP(TURRET_SLOT),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 1),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_SNIPER_DAMAGE_DOWN + 3),
-  AEND,
 };
 
 /* endregion }}} */
@@ -344,12 +94,19 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->Name("ENEMY TURRET");
   mSprite->x = aX;
   mSprite->y = aY;
+  mSprite->w = 22;
+  mSprite->h = 16;
+  mSprite->cx = 10;
+  mSprite->cy = 16;
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_SNIPER_BMP_SPRITES);
+  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CRYSTAL_BMP_SPRITES);
   mSprite->vx = mSprite->vy = 0;
 
+  mHitState = 0;
+  mTaunt = EFalse;
   NewState(IDLE_STATE, DIRECTION_DOWN);
+  mSprite->StartAnimation(idleAnimation);
 }
 
 GTurretProcess::~GTurretProcess() {
@@ -360,24 +117,30 @@ GTurretProcess::~GTurretProcess() {
   }
 }
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
+void GTurretProcess::NewState(TUint16 aState, DIRECTION aDirection) {
+  const TInt lastDx = mSprite->mDx;
+  const TInt lastDy = mSprite->mDy;
+  GEnemyProcess::NewState(aState, aDirection);
+  mSprite->mDx = lastDx;
+  mSprite->mDy = lastDy;
+}
 
 void GTurretProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
+  if (mSprite->AnimDone()) {
+    mSprite->StartAnimation(idleAnimation);
+  }
 }
 
 void GTurretProcess::Taunt(DIRECTION aDirection) {
-  mSprite->StartAnimation(tauntAnimation);
+  return;
 }
 
 void GTurretProcess::Walk(DIRECTION aDirection) {
-  // Turrets don't walk
+  return;
 }
 
 void GTurretProcess::Attack(DIRECTION aDirection) {
-
   // fire 1-3 projectiled
   TFloat xx = mSprite->x,
          yy = mSprite->y;
@@ -389,59 +152,43 @@ void GTurretProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angleToPlayer, ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0]));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1]));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2]));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[0], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[1], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[2], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
   }
 
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(attackUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(attackDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(attackLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(attackRightAnimation);
-      break;
-    default:
-      Panic("GTurretProcess no attack direction\n");
-      break;
-  }
+  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 void GTurretProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GTurretProcess no Hit direction\n");
-      break;
-  }
+  mStateTimer = 0;
 }
 
 void GTurretProcess::Death(DIRECTION aDirection) {
-  mSprite->StartAnimation(deathAnimation);
+  mSprite->ClearFlags(SFLAG_ANIMATE);
+}
+
+TBool GTurretProcess::HitState() {
+  if (--mStateTimer < 0) {
+    if (mHitState % 2 == 0) {
+      mSprite->mFill = -1;
+    } else {
+      mSprite->mFill = COLOR_WHITE;
+    }
+    mStateTimer = HIT_SPEED;
+    mHitState++;
+  }
+
+  if (mHitState > MAX_HIT_STATE) {
+    mHitState = 0;
+    mSprite->ClearFlags(SFLAG_ANIMATE);
+  }
+
+  return GEnemyProcess::HitState();
 }
 
 TBool GTurretProcess::MaybeAttack() {
@@ -455,7 +202,7 @@ TBool GTurretProcess::MaybeAttack() {
   // printf("Distance from sniper to player %f\n", distance);
 #endif
 
-  if (distance > ATTACK_DISTANCE || distance < FLEE_DISTANCE) {
+  if (distance > ATTACK_DISTANCE) {
     return EFalse;
   }
 
@@ -499,9 +246,7 @@ TBool GTurretProcess::MaybeAttack() {
   return EFalse;
 }
 
-TBool GTurretProcess::RunAfter() {
-  // Make sniper stationary (turret) for debugging
-  // mSprite->vx = 0;
-  // mSprite->vy = 0;
-  return GEnemyProcess::RunAfter();
+TBool GTurretProcess::RunBefore() {
+  mSprite->ResetShadow();
+  return GEnemyProcess::RunBefore();
 }

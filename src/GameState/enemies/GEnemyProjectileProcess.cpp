@@ -204,11 +204,11 @@ void GEnemyProjectileProcess::ConfigSprite(TFloat aAngle, TBool aParry) {
   mAngle = angle;
 }
 
-GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle)
+GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TUint16 aSlot, TUint16 aImg)
     : GProcess(0, 0) {
   mSaveToStream = EFalse;
 
-  mSprite = new GAnchorSprite(aGameState, 0, BOSS_PROJECTILE_SLOT);
+  mSprite = new GAnchorSprite(aGameState, 0, aSlot, aImg);
   mSprite->type = STYPE_EBULLET;
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT); // collide with player, player attacks, and environment
   mSprite->SetFlags(SFLAG_CHECK);
@@ -219,7 +219,11 @@ GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat 
   mSprite->y = aY;
   mSprite->w = 8;
   mSprite->h = 8;
-  ConfigSprite(aAngle);
+  if (aSlot == BOSS_PROJECTILE_SLOT) {
+    ConfigSprite(aAngle);
+  } else {
+    mAngle = aAngle;
+  }
 
   // Angles are in radians
   mSprite->vx = cos(mAngle) * PROJECTILE_VELOCITY;
@@ -284,7 +288,9 @@ TBool GEnemyProjectileProcess::RunAfter() {
       mSprite->type = STYPE_PBULLET;
       mSprite->cMask = STYPE_ENEMY | STYPE_OBJECT;
       mSprite->ClearFlags(SFLAG_FLIP | SFLAG_FLOP | SFLAG_LEFT | SFLAG_RIGHT);
-      ConfigSprite(mAngle > 0 ? mAngle - M_PI : mAngle + M_PI, ETrue);
+      if (mSprite->mBitmapSlot == BOSS_PROJECTILE_SLOT) {
+        ConfigSprite(mAngle > 0 ? mAngle - M_PI : mAngle + M_PI, ETrue);
+      }
       mSprite->vx *= -1;
       mSprite->vy *= -1;
       mTimer = PROJECTILE_TIMEOUT;

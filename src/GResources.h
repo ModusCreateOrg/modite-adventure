@@ -305,6 +305,7 @@ const TUint16 IMG_POT = 12;               // through 14
 const TUint16 IMG_SPIKES = 15;            // through 19
 const TUint16 IMG_CHEST = 22;             // closed, open is 23
 const TUint16 IMG_CRATE = 24;             // through 28
+const TUint16 IMG_CRYSTAL_PROJECTILE = 12;
 
 const TUint16 IMG_WOOD_DOOR_V_TOP = 30;       // Top.
 const TUint16 IMG_WOOD_DOOR_V_BOTTOM = 40;    // Bottom.
