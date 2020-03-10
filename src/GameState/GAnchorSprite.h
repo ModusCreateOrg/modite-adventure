@@ -119,9 +119,7 @@ public:
   TInt16 mHitPoints, mMaxHitPoints;
   TInt32 mAttackStrength;
   TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
-  TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame
-  TFloat mVelocity;
   TRect mShadow;
   TUint mAttributeSave;
   ELEMENT mElement;

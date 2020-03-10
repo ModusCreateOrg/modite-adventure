@@ -1,3 +1,4 @@
+#include <GameState/GLivingProcess.h>
 #include "GEnemyProcess.h"
 #include "GStatProcess.h"
 #include "GPlayer.h"
@@ -13,7 +14,7 @@
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
-    : GProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+    : GLivingProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mSaveToStream = ETrue;
   mVelocity = aVelocity;
   mStateTimer = 0;
@@ -33,7 +34,6 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mRangeX = mRangeY = 8;
 
   mStartX = mStartY = 0;
-  mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
   mTaunt = ETrue;
   mTauntTimer = TauntTime();
@@ -151,8 +151,8 @@ void GEnemyProcess::OverlayAnimationComplete() {
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
-      mSprite->mInvulnerable = ETrue;
+    if (GPlayer::MaybeDamage(this, ETrue)) {
+      mInvulnerable = ETrue;
       SfxTakeDamage();
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -162,9 +162,9 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
+    if (GPlayer::MaybeDamage(this, EFalse)) {
       SfxTakeDamage();
-      mSprite->mInvulnerable = ETrue;
+      mInvulnerable = ETrue;
       switch (other->mDirection) {
         case DIRECTION_RIGHT:
           NewState(HIT_STATE, DIRECTION_LEFT);
@@ -199,9 +199,9 @@ TBool GEnemyProcess::MaybeHit() {
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
-  mPlayerSprite->GetRect(hisRect);
+  GPlayer::mSprite->GetRect(hisRect);
 
-  if (!mPlayerSprite->mInvulnerable) {
+  if (!GPlayer::mProcess->mInvulnerable) {
     if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
       // vertical overlap
       if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < mRangeX) {
@@ -263,14 +263,14 @@ TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
+    if (GPlayer::MaybeDamage(this, ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    GPlayer::MaybeDamage(mSprite, EFalse);
+    GPlayer::MaybeDamage(this, EFalse);
     if (mSprite->mHitPoints <= 0) {
       NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;
@@ -289,7 +289,7 @@ TBool GEnemyProcess::HitState() {
       NewState(DEATH_STATE, mSprite->mDirection);
       return ETrue;
     }
-    mSprite->mInvulnerable = EFalse;
+    mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(WALK_STATE, mSprite->mDirection);
   }
@@ -305,7 +305,7 @@ TBool GEnemyProcess::SpellState() {
       return ETrue;
     }
 
-    mSprite->mInvulnerable = EFalse;
+    mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -452,6 +452,7 @@ TBool GEnemyProcess::WalkState() {
 }
 
 TBool GEnemyProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   if (mSprite->Clipped()) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
@@ -492,7 +493,6 @@ void GEnemyProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mStep, sizeof(mStep));
   aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Write(&mStateTimer, sizeof(mStateTimer));
-  aStream.Write(&mHitPoints, sizeof(mHitPoints));
   aStream.Write(&mVelocity, sizeof(mVelocity));
   mSprite->WriteToStream(aStream);
   printf("mSprite->mDirection = %i\n", mSprite->mDirection);
@@ -508,7 +508,6 @@ void GEnemyProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mStep, sizeof(mStep));
   aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Read(&mStateTimer, sizeof(mStateTimer));
-  aStream.Read(&mHitPoints, sizeof(mHitPoints));
   aStream.Read(&mVelocity, sizeof(mVelocity));
   mSprite->ReadFromStream(aStream);
   printf("mSprite->mDirection = %i\n", mSprite->mDirection);

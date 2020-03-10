@@ -143,7 +143,7 @@ static ANIMSCRIPT teleportAnimation2[] = {
 
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
-    : GProcess(aAttribute) {
+    : GLivingProcess(aAttribute) {
   printf("GWizardProcess(attribute: %d/$%x)\n", aAttribute, aAttribute);
   mGameState = aGameState;
   mSlot = aSlot;
@@ -196,7 +196,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
-  mBlinkTimer = 0;
   mChanneling = EFalse;
 }
 
@@ -244,7 +243,7 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
   mDirection = aDirection;
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleAnimation);
-  mSprite->mInvulnerable = EFalse;
+  mInvulnerable = EFalse;
   mStateTimer = FRAMES_PER_SECOND * 2;
 }
 
@@ -319,7 +318,7 @@ void GWizardProcess::Illusion() {
   mSprite->StartAnimation(channelingAnimation);
   mChanneling = ETrue;
   mStateTimer = FRAMES_PER_SECOND * 3;
-  mBlinkTimer = 0;
+  StartBlink(0);
   mSprite->mFill = -1;
 }
 
@@ -372,29 +371,26 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 }
 
 TBool GWizardProcess::MaybeDamage() {
-  if (mBlinkTimer-- > 0) {
-    mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
-  }
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
 
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
+    if (GPlayer::MaybeDamage(this, ETrue)) {
       mSprite->vx = mSprite->vy = 0;
       mSpellCounter += 2;
       auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
       mGameState->AddProcess(p);
       p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
       mGameState->AddProcess(p);
-      mBlinkTimer = FRAMES_PER_SECOND / 4;
+      StartBlink(FRAMES_PER_SECOND / 4);
       return ETrue;
     }
   }
 
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
+    if (GPlayer::MaybeDamage(this, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
-      mBlinkTimer = FRAMES_PER_SECOND / 4;
+      StartBlink(FRAMES_PER_SECOND / 4);
       return ETrue;
     }
   }
@@ -626,6 +622,7 @@ TBool GWizardProcess::DeathState() {
 }
 
 TBool GWizardProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   // Patch to prevent the damn thing from going out of screen.
   if ((mSprite->x < 0) || (mSprite->y <0)) {
     mSprite->x = mStartX;
@@ -654,6 +651,7 @@ TBool GWizardProcess::RunBefore() {
 }
 
 TBool GWizardProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   if (mHitTimer-- < 0) {
     mHitTimer = HIT_SPAM_TIME;
   }

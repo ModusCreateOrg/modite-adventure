@@ -27,50 +27,15 @@ const TUint16 SPELL_STATE = 9;
 // countdown the invulnerable time.  At the start, the player's mSprite is set to
 // invulnerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
 // cause a blinking effect
-const TInt16 BLINK_TIME = 16; // 267ms
+const TInt16 BLINK_TIME = FRAMES_PER_SECOND * 0.6;
 
-class GPlayerBlinkProcess : public GProcess {
-public:
-  GPlayerBlinkProcess() : GProcess(ATTR_GONE) {
-    GPlayer::mSprite->mInvulnerable = ETrue;
-    mTimer = BLINK_TIME;
-  }
-  ~GPlayerBlinkProcess() {
-    if (GPlayer::mSprite) {
-      GPlayer::mSprite->mInvulnerable = EFalse;
-      GPlayer::mSprite->SetFlags(SFLAG_RENDER);
-    }
-    if (GPlayer::mProcess) {
-      GPlayer::mProcess->mBlinkProcess = ENull;
-    }
-  }
+void GPlayerProcess::BlinkOn() {
+  GPlayer::mSprite->ClearFlags(SFLAG_RENDER);
+}
 
-public:
-  void Kill() {
-    mTimer = 1;
-  }
-
-public:
-  TBool RunBefore() {
-    if (--mTimer <= 0 || !GPlayer::mSprite) {
-      return EFalse;
-    }
-    if ((mTimer & 1) == 0) {
-      GPlayer::mSprite->SetFlags(SFLAG_RENDER);
-    }
-    else {
-      GPlayer::mSprite->ClearFlags(SFLAG_RENDER);
-    }
-    return ETrue;
-  }
-
-  TBool RunAfter() {
-    return ETrue;
-  }
-
-private:
-  TInt mTimer;
-};
+void GPlayerProcess::BlinkOff() {
+  GPlayer::mSprite->SetFlags(SFLAG_RENDER);
+}
 
 TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
 
@@ -79,13 +44,12 @@ TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
 TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
   mGameState = aGameState;
   mPlayfield = ENull;
-  mBlinkProcess = ENull;
   GPlayer::mSprite = mSprite = ENull;
 
   // initialize player sprite
@@ -107,10 +71,6 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  if (mBlinkProcess) {
-    mBlinkProcess->Kill();
-    mBlinkProcess = ENull;
-  }
   if (mSprite2) {
     mSprite2->Remove();
     delete mSprite2;
@@ -369,7 +329,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
 
-      mSprite->mInvulnerable = ETrue;
+      mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -403,7 +363,7 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->Nudge();
   }
 
-  if (mSprite->mInvulnerable) {
+  if (mInvulnerable) {
     mSprite->cType = 0;
     return EFalse;
   }
@@ -501,14 +461,12 @@ TBool GPlayerProcess::MaybeHit() {
       }
 
       GPlayer::mHitPoints -= hitAmount;
-      mSprite->mInvulnerable = ETrue;
+      mInvulnerable = ETrue;
       auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_PLAYER_HIT);
       mGameState->AddProcess(p);
 
-      if (!mBlinkProcess) {
-        mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
-      }
+      StartBlink(BLINK_TIME);
 
       gSoundPlayer.SfxPlayerTakeDamage();
 
@@ -766,7 +724,7 @@ TBool GPlayerProcess::SpellState() {
       break;
     case 2:
       if (mSprite->AnimDone()) {
-        mSprite->mInvulnerable = EFalse;
+        mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
 
         // affect nearby enemies
@@ -830,8 +788,8 @@ TBool GPlayerProcess::HitState() {
 
   if (mSprite->AnimDone()) {
     mSprite->vx = mSprite->vy = 0;
-    if (!GPlayer::mGameOver && !mBlinkProcess) {
-      mGameState->AddProcess(mBlinkProcess = new GPlayerBlinkProcess());
+    if (!GPlayer::mGameOver) {
+      StartBlink(BLINK_TIME);
     }
     if (GPlayer::mGameOver || !MaybeWalk()) {
       NewState(IDLE_STATE, mSprite->mDirection);
@@ -841,6 +799,7 @@ TBool GPlayerProcess::HitState() {
 }
 
 TBool GPlayerProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   switch (mState) {
     case IDLE_STATE:
       return IdleState();
@@ -862,6 +821,7 @@ TBool GPlayerProcess::RunBefore() {
 }
 
 TBool GPlayerProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   mSprite->mCollided = ENull;
   mSprite->cType = 0;
 

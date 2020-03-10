@@ -1,11 +1,11 @@
 #ifndef GFINALBOSSPROCESS_H
 #define GFINALBOSSPROCESS_H
 
-#include "GProcess.h"
+#include "GLivingProcess.h"
 #include "GAnchorSprite.h"
 #include "GGameState.h"
 
-class GFinalBossProcess : public GProcess {
+class GFinalBossProcess : public GLivingProcess {
 public:
   GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams);
   ~GFinalBossProcess();

@@ -4,24 +4,28 @@
 class GGameState;
 class GGamePlayfield;
 class GGameState;
-class GPlayerBlinkProcess;
 class BMemoryStream;
 
 //class GAnchorSprite;
 
 #include "GAnchorSprite.h"
-#include "GProcess.h"
+#include "GLivingProcess.h"
 #include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
 const TFloat PLAYER_FRICTION = 0.5 / TFloat(FACTOR);
 const TInt FALL_DURATION = 10 * FACTOR;
 
-class GPlayerProcess : public GProcess {
+class GPlayerProcess : public GLivingProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
 
   ~GPlayerProcess();
+
+private:
+  void BlinkOn() OVERRIDE;
+
+  void BlinkOff() OVERRIDE;
 
 public:
   void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON, TInt16 aExitingLevel = -1);
@@ -80,8 +84,6 @@ public:
   void ReadCustomFromStream(BMemoryStream &aStream);
 
 public:
-  GPlayerBlinkProcess *mBlinkProcess;
-
   static DIRECTION mLastDirection;
 //  static TUint16 mLastDirection;
   static TFloat mRespawnAt[2];

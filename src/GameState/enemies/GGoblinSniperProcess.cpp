@@ -470,7 +470,7 @@ void GGoblinSniperProcess::Death(DIRECTION aDirection) {
 }
 
 TBool GGoblinSniperProcess::MaybeAttack() {
-  if (mPlayerSprite->mInvulnerable) {
+  if (GPlayer::mProcess->mInvulnerable) {
     return EFalse;
   }
 
@@ -486,7 +486,7 @@ TBool GGoblinSniperProcess::MaybeAttack() {
 
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
-  mPlayerSprite->GetRect(hisRect);
+  GPlayer::mSprite->GetRect(hisRect);
 
   if (ABS(myRect.y2 - hisRect.y2) < ABS(myRect.x1 - hisRect.x1)) {
     if (myRect.x1 >= hisRect.x2) {

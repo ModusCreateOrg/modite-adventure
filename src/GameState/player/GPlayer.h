@@ -108,7 +108,7 @@ struct GPlayer {
     }
   }
 
-  static TBool MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell);
+  static TBool MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell);
 
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);

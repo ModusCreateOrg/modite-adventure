@@ -32,7 +32,7 @@ static const char *stateMessages[] = {
   "TAUNT STATE",
 };
 
-class GEnemyProcess : public GProcess {
+class GEnemyProcess : public GLivingProcess {
 public:
   GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute);
 
@@ -54,14 +54,11 @@ protected:
   TUint16 mStep;
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
-  TInt16 mHitPoints;
   TFloat mVelocity;
   TInt mRangeX, mRangeY;
 
   TBool mTaunt;
   TInt16 mTauntTimer;
-
-  GAnchorSprite *mPlayerSprite;
 
 public:
   TBool RunBefore() OVERRIDE;

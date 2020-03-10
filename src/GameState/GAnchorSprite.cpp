@@ -27,7 +27,6 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   SetStatMultipliers();
   mLastX = 0;
   mLastY = 0;
-  mInvulnerable = EFalse;
   mCollided = ENull;
   mShadow = TRect();
   mElement = ELEMENT_NONE;
