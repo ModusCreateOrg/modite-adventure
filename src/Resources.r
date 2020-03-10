@@ -20,7 +20,7 @@ PALETTE test.pal
 #
 PATH resources/sprites/
 SPRITESHEET 64x64 chara_hero.bmp
-SPRITESHEET 32x32 chara_hero_heal_effect.bmp
+# SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
 
 #
@@ -226,6 +226,8 @@ RAW Boss_2.xm
 PATH resources/sound_effects/
 RAW SFX_empty.wav
 RAW SFX_menu_nav_down.wav
+RAW SFX_pot_take_damage.wav
+RAW SFX_pot_destroyed.wav
 RAW SFX_menu_nav_up.wav
 RAW SFX_menu_in.wav
 RAW SFX_menu_out.wav
@@ -237,6 +239,7 @@ RAW SFX_player_quaff_water_spell.wav
 RAW SFX_player_quaff_earth_spell.wav
 RAW SFX_player_quaff_fire_spell.wav
 RAW SFX_player_quaff_energy_spell.wav
+RAW SFX_player_quaff_spell.wav
 RAW SFX_player_take_damage.wav
 RAW SFX_player_death.wav
 RAW SFX_enemy_attack.wav
