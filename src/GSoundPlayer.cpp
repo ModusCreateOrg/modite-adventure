@@ -11,6 +11,7 @@ GSoundPlayer gSoundPlayer;
 
 static const TUint16 effectsList[] = {
   SFX_EMPTY_WAV,
+  SFX_CHEST_OPEN_WAV,
   SFX_POT_TAKE_DAMAGE_WAV,
   SFX_POT_DESTROYED_WAV,
   SFX_MENU_NAV_UP_WAV,

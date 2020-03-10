@@ -226,6 +226,7 @@ RAW Boss_2.xm
 PATH resources/sound_effects/
 RAW SFX_empty.wav
 RAW SFX_menu_nav_down.wav
+RAW SFX_chest_open.wav
 RAW SFX_pot_take_damage.wav
 RAW SFX_pot_destroyed.wav
 RAW SFX_menu_nav_up.wav
