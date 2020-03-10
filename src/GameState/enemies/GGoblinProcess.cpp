@@ -7,17 +7,17 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 15 * FACTOR;
 
 const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt TAUNT_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
-const TInt WALK_SPEED = 5 * FACTOR;
+const TInt WALK_SPEED = 4 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = 1.8 / FACTOR;
 
 // region  ANIMATIONS {{{
 /*********************************************************************************
