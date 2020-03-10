@@ -15,12 +15,12 @@ public:
     }
 };
 
-GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection)
+GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection, TFloat aMultiplier)
     : GProcess(ATTR_GONE) {
   mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
   mSprite->type = STYPE_PBULLET;
-  mSprite->mAttackStrength = GPlayer::mAttackStrength;
+  mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
   switch (aDirection) {
     case DIRECTION_UP:

@@ -27,6 +27,7 @@ extern ANIMSCRIPT spellOverlayAnimation[];
 extern ANIMSCRIPT idleDownAnimation[];
 extern ANIMSCRIPT walkDownAnimation1[];
 extern ANIMSCRIPT walkDownAnimation2[];
+extern ANIMSCRIPT swordChargeDownAnimation[];
 extern ANIMSCRIPT swordDownAnimationNoGloves[]; // attack
 extern ANIMSCRIPT swordDownAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightDownAnimation[]; // attacked
@@ -37,6 +38,7 @@ extern ANIMSCRIPT hitHardDownAnimation[]; // attacked
 extern ANIMSCRIPT idleLeftAnimation[];
 extern ANIMSCRIPT walkLeftAnimation1[];
 extern ANIMSCRIPT walkLeftAnimation2[];
+extern ANIMSCRIPT swordChargeLeftAnimation[];
 extern ANIMSCRIPT swordLeftAnimationNoGloves[]; // attack
 extern ANIMSCRIPT swordLeftAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightLeftAnimation[]; // attacked
@@ -47,6 +49,7 @@ extern ANIMSCRIPT hitHardLeftAnimation[]; // attacked
 extern ANIMSCRIPT idleRightAnimation[];
 extern ANIMSCRIPT walkRightAnimation1[];
 extern ANIMSCRIPT walkRightAnimation2[];
+extern ANIMSCRIPT swordChargeRightAnimation[];
 extern ANIMSCRIPT swordRightAnimationNoGloves[]; // attack
 extern ANIMSCRIPT swordRightAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightRightAnimation[]; // attacked
@@ -57,6 +60,7 @@ extern ANIMSCRIPT hitHardRightAnimation[]; // attacked
 extern ANIMSCRIPT idleUpAnimation[];
 extern ANIMSCRIPT walkUpAnimation1[];
 extern ANIMSCRIPT walkUpAnimation2[];
+extern ANIMSCRIPT swordChargeUpAnimation[];
 extern ANIMSCRIPT swordUpAnimationNoGloves[]; // attack
 extern ANIMSCRIPT swordUpAnimationWithGloves[]; // attack
 extern ANIMSCRIPT hitLightUpAnimation[]; // attacked
