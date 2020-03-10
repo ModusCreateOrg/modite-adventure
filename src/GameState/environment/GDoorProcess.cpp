@@ -134,6 +134,7 @@ TBool GDoorProcess::RunAfter() {
   }
 
   if (mSprite->TestAndClearCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET))) {
+    gSoundPlayer.TriggerSfx(SFX_DOOR_OPEN_WAV);
     if (group == OA_GROUP_ITEM) {
       TUint16 item = mObjectAttribute->item.item;
       if (GPlayer::mInventoryList.UseItem(item)) {
