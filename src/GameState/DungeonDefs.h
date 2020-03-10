@@ -135,7 +135,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN2_1536",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 0
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
@@ -156,7 +156,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN3_1792",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 0
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
@@ -177,7 +177,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN4_2048",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 0
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1
