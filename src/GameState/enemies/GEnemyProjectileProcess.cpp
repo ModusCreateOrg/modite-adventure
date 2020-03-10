@@ -217,12 +217,16 @@ GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat 
 
   mSprite->x = aX;
   mSprite->y = aY;
-  mSprite->w = 8;
-  mSprite->h = 8;
   if (aSlot == BOSS_PROJECTILE_SLOT) {
+    mSprite->w = 8;
+    mSprite->h = 8;
     ConfigSprite(aAngle);
   } else {
     mAngle = aAngle;
+    mSprite->w = 16;
+    mSprite->h = 16;
+    mSprite->cx = 0;
+    mSprite->cy -= 8;
   }
 
   // Angles are in radians

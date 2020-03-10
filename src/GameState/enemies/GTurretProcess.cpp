@@ -106,6 +106,8 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mHitState = 0;
   mTaunt = EFalse;
   NewState(IDLE_STATE, DIRECTION_DOWN);
+
+  mSprite->SetStatMultipliers(5.0, 10.0, 5.0);
   mSprite->StartAnimation(idleAnimation);
 }
 
