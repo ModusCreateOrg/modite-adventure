@@ -289,12 +289,13 @@ ANIMSCRIPT walkLeftAnimation2[] = {
 
 ANIMSCRIPT swordChargeLeftAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(1, -2),
+//  ADELTA(1, -2),
+  AFLIP(WALKSPEED * 4, IMG_SWORD_RIGHT + 20),
   AFLIP(WALKSPEED * 2, IMG_SWORD_RIGHT),
-  ADELTA(1, -4),
-  AFLIP(WALKSPEED * 4, IMG_SWORD_RIGHT),
+//  ADELTA(1, -4),
   AEND,
 };
+
 
 ANIMSCRIPT swordLeftAnimationNoGloves[] = {
   ABITMAP(PLAYER_SLOT),
@@ -406,10 +407,10 @@ ANIMSCRIPT walkRightAnimation2[] = {
 
 ANIMSCRIPT swordChargeRightAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(1, -2),
-  ASTEP(WALKSPEED * 2, IMG_SWORD_RIGHT),
-  ADELTA(1, -4),
-  ASTEP(WALKSPEED * 4, IMG_SWORD_RIGHT),
+//  ADELTA(1, -2),
+  AFLIP(WALKSPEED * 4, IMG_SWORD_RIGHT + 20),
+  AFLIP(WALKSPEED * 2, IMG_SWORD_RIGHT),
+  //  ADELTA(1, -4),
   AEND,
 };
 
@@ -523,10 +524,10 @@ ANIMSCRIPT walkUpAnimation2[] = {
 
 ANIMSCRIPT swordChargeUpAnimation[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(4, -6),
+//  ADELTA(4, -6),
+  ASTEP(WALKSPEED * 4, IMG_SWORD_UP + 17),
   ASTEP(WALKSPEED * 2, IMG_SWORD_UP),
-  ADELTA(4, -8),
-  ASTEP(WALKSPEED * 4, IMG_SWORD_UP),
+//  ADELTA(4, -8),
   AEND,
 };
 
