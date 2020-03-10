@@ -454,6 +454,7 @@ TBool GEnemyProcess::WalkState() {
 TBool GEnemyProcess::RunBefore() {
   GLivingProcess::RunBefore();
   if (mSprite->Clipped()) {
+    mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
