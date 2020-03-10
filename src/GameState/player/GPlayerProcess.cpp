@@ -752,6 +752,8 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->x = mSprite->x + 16;
         mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(spellOverlayAnimation);
+        printf("SPELLLL\n");
+        gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
       }
       break;
