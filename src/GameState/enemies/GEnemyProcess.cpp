@@ -459,6 +459,7 @@ TBool GEnemyProcess::RunBefore() {
 }
 
 TBool GEnemyProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
 
   return ETrue;
