@@ -87,7 +87,7 @@ GWizardPillarProcess::~GWizardPillarProcess() {
 }
 
 TBool GWizardPillarProcess::RunBefore() {
-  if (!mSprite->CanWalk(DIRECTION_UP, 0, 0) || !mSprite->CanWalk(DIRECTION_DOWN, 0, 0)) {
+  if (!mSprite->CanWalk(0, 0, ETrue)) {
     mSprite->StartAnimation(collapseAnimation);
     mFollowPlayer = EFalse;
     mExploding = ETrue;

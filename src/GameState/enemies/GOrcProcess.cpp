@@ -860,6 +860,24 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* attackRoundAnimations[] = {
+  attackRoundUpAnimation,
+  attackRoundDownAnimation,
+  attackRoundLeftAnimation,
+  attackRoundRightAnimation
+};
+static ANIMSCRIPT* attackDoubleAnimations[] = {
+  attackDoubleUpAnimation,
+  attackDoubleDownAnimation,
+  attackDoubleLeftAnimation,
+  attackDoubleRightAnimation
+};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 // endregion }}}
 
 /*********************************************************************************
@@ -897,23 +915,7 @@ GOrcProcess::~GOrcProcess() {
 
 void GOrcProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(idleUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(idleDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(idleLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(idleRightAnimation);
-      break;
-    default:
-      Panic("GIdleProcess no idle direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GOrcProcess::Taunt(DIRECTION aDirection) {
@@ -927,27 +929,8 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GOrcProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GOrcProcess::Attack(DIRECTION aDirection) {
@@ -955,80 +938,20 @@ void GOrcProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for either round or double attack
   if (attackType < 2) {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackRightAnimation);
-        break;
-      default:
-        Panic("GOrcProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackAnimations, aDirection);
   } else if (attackType == 2) {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackRoundUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackRoundDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackRoundLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackRoundRightAnimation);
-        break;
-      default:
-        Panic("GOrcProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackRoundAnimations, aDirection);
   } else {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackDoubleUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackDoubleDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackDoubleLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackDoubleRightAnimation);
-        break;
-      default:
-        Panic("GOrcProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackDoubleAnimations, aDirection);
   }
 }
 
 void GOrcProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GOrcProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GOrcProcess::Death(DIRECTION aDirection) {

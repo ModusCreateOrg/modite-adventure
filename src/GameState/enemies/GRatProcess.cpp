@@ -370,6 +370,12 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 // endregion }}}
 
 /*********************************************************************************
@@ -401,89 +407,21 @@ GRatProcess::~GRatProcess() {
  *********************************************************************************
  *********************************************************************************/
 
-TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+TBool GRatProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
   // force follow walls
-  switch (aDirection) {
-
-    case DIRECTION_UP:
-      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
-        return EFalse;
-      }
-      if (IsWall(DIRECTION_LEFT, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
-        return ETrue;
-      }
-      // no walls at all?  Move ot the nearest one.
-      if (!IsWall(DIRECTION_DOWN, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_DOWN:
-      if (!mSprite->CanWalk(aDirection, 0, aVy)) {
-        return EFalse;
-      }
-      // no wall above, assure there is a wall left or right
-      if (IsWall(DIRECTION_LEFT, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_RIGHT, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_UP, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_LEFT:
-      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
-        return EFalse;
-      }
-      // no wall to left, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_DOWN, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_RIGHT, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    case DIRECTION_RIGHT:
-      if (!mSprite->CanWalk(aDirection, aVx, 0)) {
-        return EFalse;
-      }
-      // no wall to right, assure there is a wall above or below
-      if (IsWall(DIRECTION_UP, 0, 0)) {
-        return ETrue;
-      }
-      if (IsWall(DIRECTION_DOWN, 0, 0)) {
-        return ETrue;
-      }
-      if (!IsWall(DIRECTION_LEFT, 0, 0)) {
-        // no walls at all?  Move ot the nearest one.
-        mStateTimer++;
-        return ETrue;
-      }
-      break;
-
-      //
-    default:
-      Panic("Rat CanWalk invalid direction %d\n", aDirection);
-      break;
+  if (!mSprite->CanWalk(aVx, aVy)) {
+    return EFalse;
+  }
+  if (IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 1))) {
+    return ETrue;
+  }
+  if (IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 3))) {
+    return ETrue;
+  }
+  // no walls at all?  Move to the nearest one.
+  if (!IsWallInDirection(GAnchorSprite::RotateDirection(aDirection, 2))) {
+    mStateTimer++;
+    return ETrue;
   }
 
   return EFalse;
@@ -491,23 +429,7 @@ TBool GRatProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
 
 void GRatProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(idleUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(idleDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(idleLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(idleRightAnimation);
-      break;
-    default:
-      Panic("GRatProcess no idle direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GRatProcess::Taunt(DIRECTION aDirection) {
@@ -521,70 +443,20 @@ void GRatProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(5, 10)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GRatProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GRatProcess::Attack(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(attackUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(attackDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(attackLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(attackRightAnimation);
-      break;
-    default:
-      Panic("GRatProcess no Attack direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(attackAnimations, aDirection);
 }
 
 void GRatProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GRatProcess no Hit direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GRatProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GRatProcess::Death(DIRECTION aDirection) {

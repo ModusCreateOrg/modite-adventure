@@ -266,6 +266,17 @@ static ANIMSCRIPT revertAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* landAnimations[] = {landUpAnimation, landDownAnimation, landLeftAnimation, landRightAnimation};
+// flipped sprites need different alignment depending on spritesheet
+static ANIMSCRIPT* walkWaterAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftWaterAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkWaterAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftWaterAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* landWaterAnimations[] = {landUpAnimation, landDownAnimation, landLeftWaterAnimation, landRightAnimation};
+static ANIMSCRIPT* walkFireAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftFireAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkFireAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftFireAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* landFireAnimations[] = {landUpAnimation, landDownAnimation, landLeftFireAnimation, landRightAnimation};
+
 /* endregion }}} */
 
 GMidBossGenericProcess::GMidBossGenericProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute, TInt16 aSpriteSheet)
@@ -283,23 +294,7 @@ void GMidBossGenericProcess::Idle(DIRECTION aDirection) {
 }
 
 void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      break;
-    default:
-      Panic("GMidBossGenericProcess no Walk direction\n");
-      break;
-  }
+  mSprite->MoveInDirection(VELOCITY, aDirection);
   Charge(aDirection);
 }
 
@@ -360,66 +355,34 @@ void GMidBossGenericProcess::Attack(DIRECTION aDirection) {
 }
 
 void GMidBossGenericProcess::Charge(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
+  switch (mAttribute) {
+    case ATTR_MID_BOSS_WATER:
+      mSprite->StartAnimationInDirection(mStep ? walkWaterAnimations1 : walkWaterAnimations2, aDirection);
       break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
+    case ATTR_MID_BOSS_FIRE:
+      mSprite->StartAnimationInDirection(mStep ? walkFireAnimations1 : walkFireAnimations2, aDirection);
       break;
-    case DIRECTION_LEFT:
-      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
-        case ATTR_MID_BOSS_WATER:
-          mSprite->StartAnimation(mStep ? walkLeftWaterAnimation1 : walkLeftWaterAnimation2);
-          break;
-        case ATTR_MID_BOSS_FIRE:
-          mSprite->StartAnimation(mStep ? walkLeftFireAnimation1 : walkLeftFireAnimation2);
-          break;
-        case ATTR_MID_BOSS_EARTH:
-        case ATTR_MID_BOSS_ENERGY:
-        default:
-          mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-          break;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
+    case ATTR_MID_BOSS_EARTH:
+    case ATTR_MID_BOSS_ENERGY:
     default:
-      Panic("GMidBossGenericProcess no Charge direction\n");
+      mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
       break;
   }
   mStep = !mStep;
 }
 
 void GMidBossGenericProcess::Land(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(landUpAnimation);
+  switch (mAttribute) {
+    case ATTR_MID_BOSS_WATER:
+      mSprite->StartAnimationInDirection(landWaterAnimations, aDirection);
       break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(landDownAnimation);
+    case ATTR_MID_BOSS_FIRE:
+      mSprite->StartAnimationInDirection(landFireAnimations, aDirection);
       break;
-    case DIRECTION_LEFT:
-      switch (mAttribute) { // flipped sprites need different alignment depending on spritesheet
-        case ATTR_MID_BOSS_WATER:
-          mSprite->StartAnimation(landLeftWaterAnimation);
-          break;
-        case ATTR_MID_BOSS_FIRE:
-          mSprite->StartAnimation(landLeftFireAnimation);
-          break;
-        case ATTR_MID_BOSS_EARTH:
-        case ATTR_MID_BOSS_ENERGY:
-        default:
-          mSprite->StartAnimation(landLeftAnimation);
-          break;
-      }
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(landRightAnimation);
-      break;
+    case ATTR_MID_BOSS_EARTH:
+    case ATTR_MID_BOSS_ENERGY:
     default:
-      Panic("GMidBossGenericProcess no Land direction\n");
+      mSprite->StartAnimationInDirection(landAnimations, aDirection);
       break;
   }
 }

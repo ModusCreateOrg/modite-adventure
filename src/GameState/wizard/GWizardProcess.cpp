@@ -142,9 +142,12 @@ static ANIMSCRIPT teleportAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
-    : GProcess(aAttribute) {
+    : GLivingProcess(aAttribute) {
   printf("GWizardProcess(attribute: %d/$%x)\n", aAttribute, aAttribute);
   mGameState = aGameState;
   mSlot = aSlot;
@@ -197,7 +200,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   GPlayer::mActiveBoss = mSprite;
-  mBlinkTimer = 0;
   mChanneling = EFalse;
 }
 
@@ -233,8 +235,7 @@ void GWizardProcess::RandomLocation() {
       dy = tmp;
     }
     TInt i = 0;
-    while (mSprite->IsFloor(DIRECTION_DOWN, dx * i, dy * i) &&
-           mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
+    while (mSprite->CanWalk(dx * i, dy * i, ETrue)) {
       i++;
     }
     mSprite->x = mStartX + dx * i * SQRT(RandomFloat()) * 0.8;
@@ -247,7 +248,7 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
   mDirection = aDirection;
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleAnimation);
-  mSprite->mInvulnerable = EFalse;
+  mInvulnerable = EFalse;
   mStateTimer = FRAMES_PER_SECOND * 2;
 }
 
@@ -255,30 +256,9 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
 void GWizardProcess::Walk(DIRECTION aDirection) {
   mDirection = aDirection;
   mStep = 1 - mStep;
-  switch (mDirection) {
-    case DIRECTION_UP:
-      mSprite->vx = 0;
-      mSprite->vy = -WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkUpAnimation2 : walkUpAnimation1);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vx = 0;
-      mSprite->vy = WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation2 : walkDownAnimation1);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -WALK_VELOCITY;
-      mSprite->vy = 0;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation2 : walkLeftAnimation1);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = WALK_VELOCITY;
-      mSprite->vy = 0;
-      mSprite->StartAnimation(mStep ? walkRightAnimation2 : walkRightAnimation1);
-      break;
-    default:
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->MoveInDirection(WALK_VELOCITY, aDirection);
 }
 
 void GWizardProcess::Projectile() {
@@ -322,7 +302,7 @@ void GWizardProcess::Illusion() {
   mSprite->StartAnimation(channelingAnimation);
   mChanneling = ETrue;
   mStateTimer = FRAMES_PER_SECOND * 3;
-  mBlinkTimer = 0;
+  StartBlink(0);
   mSprite->mFill = -1;
 }
 
@@ -375,29 +355,26 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 }
 
 TBool GWizardProcess::MaybeDamage() {
-  if (mBlinkTimer-- > 0) {
-    mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
-  }
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
 
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
+    if (GPlayer::MaybeDamage(this, ETrue)) {
       mSprite->vx = mSprite->vy = 0;
       mSpellCounter += 2;
       auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
       mGameState->AddProcess(p);
       p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
       mGameState->AddProcess(p);
-      mBlinkTimer = FRAMES_PER_SECOND / 4;
+      StartBlink(FRAMES_PER_SECOND / 4);
       return ETrue;
     }
   }
 
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
+    if (GPlayer::MaybeDamage(this, EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
-      mBlinkTimer = FRAMES_PER_SECOND / 4;
+      StartBlink(FRAMES_PER_SECOND / 4);
       return ETrue;
     }
   }
@@ -450,7 +427,7 @@ TBool GWizardProcess::IdleState() {
     mStateTimer = 60;
     for (TInt i = 0; i < 10; i++) {
       DIRECTION d = (Random() & 1u) ? DIRECTION_RIGHT : DIRECTION_LEFT;
-      if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
+      if (mSprite->CanWalk(d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
         SetState(STATE_WALK, d);
         return ETrue;
       }
@@ -472,7 +449,7 @@ TBool GWizardProcess::WalkState() {
   }
 
   // check to see if wizard has met a wall
-  if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     SetState(STATE_IDLE, DIRECTION_DOWN);
     return ETrue;
   }
@@ -629,6 +606,7 @@ TBool GWizardProcess::DeathState() {
 }
 
 TBool GWizardProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   // Patch to prevent the damn thing from going out of screen.
   if ((mSprite->x < 0) || (mSprite->y <0)) {
     mSprite->x = mStartX;
@@ -657,6 +635,7 @@ TBool GWizardProcess::RunBefore() {
 }
 
 TBool GWizardProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   if (mHitTimer-- < 0) {
     mHitTimer = HIT_SPAM_TIME;
   }

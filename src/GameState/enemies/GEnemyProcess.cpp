@@ -1,3 +1,4 @@
+#include <GameState/GLivingProcess.h>
 #include "GEnemyProcess.h"
 #include "GStatProcess.h"
 #include "GPlayer.h"
@@ -13,7 +14,7 @@
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
-    : GProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+    : GLivingProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mSaveToStream = ETrue;
   mVelocity = aVelocity;
   mStateTimer = 0;
@@ -34,7 +35,6 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mIp = aIp;
 
   mStartX = mStartY = 0;
-  mPlayerSprite = GPlayer::mSprite;
   mAttackTimer = 1;
   mTaunt = ETrue;
   mTauntTimer = TauntTime();
@@ -53,12 +53,12 @@ GEnemyProcess::~GEnemyProcess() {
   mCount--;
 }
 
-TBool GEnemyProcess::IsWall(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
-  return !mSprite->IsFloor(aDirection, aDx, aDy);
+TBool GEnemyProcess::IsWallInDirection(DIRECTION aDirection) {
+  return !mSprite->CanWalkInDirection(aDirection);
 }
 
-TBool GEnemyProcess::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  return mSprite->CanWalk(aDirection, aVx, aVy);
+TBool GEnemyProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+  return mSprite->CanWalkInDirection(aDirection, aVx, aVy);
 }
 
 /*********************************************************************************
@@ -114,13 +114,17 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       Hit(aDirection);
       break;
 
-    case SPELL_STATE:
+    case SPELL_STATE: {
       mSprite->vx = 0;
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      Spell(aDirection);
-      break;
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+      mSpellOverlayProcess = p;
+      mGameState->AddProcess(p);
+      mSprite->mDirection = DIRECTION_DOWN;
+      Spell(DIRECTION_DOWN);
+    } break;
 
     case DEATH_STATE: {
       SfxDeath();
@@ -136,14 +140,6 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   }
 }
 
-void GEnemyProcess::Spell(DIRECTION aDirection) {
-  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-  mSpellOverlayProcess = p;
-  mGameState->AddProcess(p);
-  mSprite->mDirection = DIRECTION_DOWN;
-  Hit(DIRECTION_SPELL);
-}
-
 void GEnemyProcess::OverlayAnimationComplete() {
   mSpellOverlayProcess = ENull;
   mEnemyDeathOverlayProcess = ENull;
@@ -152,8 +148,8 @@ void GEnemyProcess::OverlayAnimationComplete() {
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
-      mSprite->mInvulnerable = ETrue;
+    if (GPlayer::MaybeDamage(this, ETrue)) {
+      mInvulnerable = ETrue;
       SfxTakeDamage();
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
@@ -163,26 +159,10 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
+    if (GPlayer::MaybeDamage(this, EFalse)) {
       SfxTakeDamage();
-      mSprite->mInvulnerable = ETrue;
-      switch (other->mDirection) {
-        case DIRECTION_RIGHT:
-          NewState(HIT_STATE, DIRECTION_LEFT);
-          break;
-        case DIRECTION_LEFT:
-          NewState(HIT_STATE, DIRECTION_RIGHT);
-          break;
-        case DIRECTION_UP:
-          NewState(HIT_STATE, DIRECTION_DOWN);
-          break;
-        case DIRECTION_DOWN:
-          NewState(HIT_STATE, DIRECTION_UP);
-          break;
-        default:
-          Panic("GEnemyProcess no MaybeHit() direction\n");
-          break;
-      }
+      mInvulnerable = ETrue;
+      NewState(HIT_STATE, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;
     }
   }
@@ -200,9 +180,9 @@ TBool GEnemyProcess::MaybeHit() {
 TBool GEnemyProcess::MaybeAttack() {
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
-  mPlayerSprite->GetRect(hisRect);
+  GPlayer::mSprite->GetRect(hisRect);
 
-  if (!mPlayerSprite->mInvulnerable) {
+  if (!GPlayer::mProcess->mInvulnerable) {
     if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
       // vertical overlap
       if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < mRangeX) {
@@ -264,14 +244,14 @@ TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
+    if (GPlayer::MaybeDamage(this, ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    GPlayer::MaybeDamage(mSprite, EFalse);
+    GPlayer::MaybeDamage(this, EFalse);
     if (mSprite->mHitPoints <= 0) {
       NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;
@@ -290,7 +270,7 @@ TBool GEnemyProcess::HitState() {
       NewState(DEATH_STATE, mSprite->mDirection);
       return ETrue;
     }
-    mSprite->mInvulnerable = EFalse;
+    mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(WALK_STATE, mSprite->mDirection);
   }
@@ -306,7 +286,7 @@ TBool GEnemyProcess::SpellState() {
       return ETrue;
     }
 
-    mSprite->mInvulnerable = EFalse;
+    mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     NewState(IDLE_STATE, mSprite->mDirection);
   }
@@ -386,10 +366,10 @@ TBool GEnemyProcess::IdleState() {
     // Set distance to walk for WALK_STATE
     for (TInt retries = 0; retries < 8; retries++) {
       DIRECTION direction = GAnchorSprite::RandomDirection();
-      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : mVelocity,
-             vy = direction == DIRECTION_UP ? -mVelocity : mVelocity;
+      TFloat vx = direction == DIRECTION_LEFT ? -mVelocity : direction == DIRECTION_RIGHT ? mVelocity : 0,
+             vy = direction == DIRECTION_UP ? -mVelocity : direction == DIRECTION_DOWN ? mVelocity : 0;
 
-      if (CanWalk(direction, vx, vy)) {
+      if (CanWalkInDirection(direction, vx, vy)) {
         NewState(WALK_STATE, direction);
         return ETrue;
       }
@@ -441,7 +421,7 @@ TBool GEnemyProcess::WalkState() {
     return ETrue;
   }
 
-  if (!CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+  if (!CanWalkInDirection(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -461,7 +441,9 @@ TBool GEnemyProcess::WalkState() {
 }
 
 TBool GEnemyProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   if (mSprite->Clipped()) {
+    mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -486,6 +468,7 @@ TBool GEnemyProcess::RunBefore() {
 }
 
 TBool GEnemyProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
 
   return ETrue;
@@ -501,7 +484,6 @@ void GEnemyProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mStep, sizeof(mStep));
   aStream.Write(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Write(&mStateTimer, sizeof(mStateTimer));
-  aStream.Write(&mHitPoints, sizeof(mHitPoints));
   aStream.Write(&mVelocity, sizeof(mVelocity));
   mSprite->WriteToStream(aStream);
   printf("mSprite->mDirection = %i\n", mSprite->mDirection);
@@ -517,7 +499,6 @@ void GEnemyProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mStep, sizeof(mStep));
   aStream.Read(&mAttackTimer, sizeof(mAttackTimer));
   aStream.Read(&mStateTimer, sizeof(mStateTimer));
-  aStream.Read(&mHitPoints, sizeof(mHitPoints));
   aStream.Read(&mVelocity, sizeof(mVelocity));
   mSprite->ReadFromStream(aStream);
   printf("mSprite->mDirection = %i\n", mSprite->mDirection);

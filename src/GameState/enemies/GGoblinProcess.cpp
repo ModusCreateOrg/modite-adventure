@@ -742,6 +742,24 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* attackQuickAnimations[] = {
+  attackQuickUpAnimation,
+  attackQuickDownAnimation,
+  attackQuickLeftAnimation,
+  attackQuickRightAnimation,
+};
+static ANIMSCRIPT* attackComboAnimations[] = {
+  attackComboUpAnimation,
+  attackComboDownAnimation,
+  attackComboLeftAnimation,
+  attackComboRightAnimation,
+};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -779,23 +797,7 @@ GGoblinProcess::~GGoblinProcess() {
 
 void GGoblinProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(idleUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(idleDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(idleLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(idleRightAnimation);
-      break;
-    default:
-      Panic("GGoblinProcess no idle direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GGoblinProcess::Taunt(DIRECTION aDirection) {
@@ -809,29 +811,8 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(3, 8)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(
-        mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(
-        mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GGoblinProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GGoblinProcess::Attack(DIRECTION aDirection) {
@@ -839,85 +820,22 @@ void GGoblinProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for either quick or combo attack
   if (attackType < 2) {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackRightAnimation);
-        break;
-      default:
-        Panic("GGoblinProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackAnimations, aDirection);
   }
   else if (attackType == 2) {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackQuickUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackQuickDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackQuickLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackQuickRightAnimation);
-        break;
-      default:
-        Panic("GGoblinProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackQuickAnimations, aDirection);
   }
   else {
-    switch (mSprite->mDirection) {
-      case DIRECTION_UP:
-        mSprite->StartAnimation(attackComboUpAnimation);
-        break;
-      case DIRECTION_DOWN:
-        mSprite->StartAnimation(attackComboDownAnimation);
-        break;
-      case DIRECTION_LEFT:
-        mSprite->StartAnimation(attackComboLeftAnimation);
-        break;
-      case DIRECTION_RIGHT:
-        mSprite->StartAnimation(attackComboRightAnimation);
-        break;
-      default:
-        Panic("GGoblinProcess no attack direction\n");
-        break;
-    }
+    mSprite->StartAnimationInDirection(attackComboAnimations, aDirection);
   }
 }
 
 void GGoblinProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GGoblinProcess no Hit direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GGoblinProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GGoblinProcess::Death(DIRECTION aDirection) {

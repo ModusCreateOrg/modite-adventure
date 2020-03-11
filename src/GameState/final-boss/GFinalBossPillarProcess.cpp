@@ -146,21 +146,21 @@ TBool GFinalBossPillarProcess::RunBefore() {
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(DIRECTION_UP, 0, -10)) {
+  if (!mFollowPlayer && !mSprite->CanWalk(0, -10)) {
 #ifdef DEBUGME
     printf("%s REJECTED DIRECTION_UP %d\n", mSprite->Name(), mFrame);
 #endif
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(DIRECTION_RIGHT, 32, 0)) {
+  if (!mFollowPlayer && !mSprite->CanWalk(32, 0)) {
 #ifdef DEBUGME
     printf("%s REJECTED DIRECTION_RIGHT %d\n", mSprite->Name(), mFrame);
 #endif
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(DIRECTION_LEFT, -32, 0)) {
+  if (!mFollowPlayer && !mSprite->CanWalk(-32, 0)) {
 #ifdef DEBUGME
     printf("%s REJECTED DIRECTION_LEFT %d\n", mSprite->Name(), mFrame);
 #endif
@@ -168,7 +168,7 @@ TBool GFinalBossPillarProcess::RunBefore() {
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(DIRECTION_DOWN, 0, 10)) {
+  if (!mFollowPlayer && !mSprite->CanWalk(0, 10)) {
 #ifdef DEBUGME
     printf("%s REJECTED DIRECTION_DOWN %d\n", mSprite->Name(), mFrame);
 #endif

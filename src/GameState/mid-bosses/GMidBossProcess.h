@@ -32,7 +32,7 @@ enum {
   MB_SPELL_STATE, // hit with magic spell
 };
 
-class GMidBossProcess : public GProcess {
+class GMidBossProcess : public GLivingProcess {
 public:
   GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot,
                   TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute,
@@ -100,14 +100,12 @@ protected:
   GGamePlayfield *mPlayfield;
   TInt16 mDropsItemAttribute;
   TInt mIp;
-  GAnchorSprite *mSprite;
   GSpellOverlayProcess *mSpellOverlayProcess;
   TFloat mStartX, mStartY;
   TInt16 mState, mStep;
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitTimer;
-  TInt16 mBlinkTimer;
   TInt mDeathCounter; // number of death animation processes spawned/outstanding
   TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };

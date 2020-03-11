@@ -122,7 +122,7 @@ TBool GMidBossProjectileProcess::RunAfter() {
       mSprite->Explode();
       mState = ETrue;
     }
-    if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
+    if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
       mSprite->Explode();
       mState = ETrue;
     }

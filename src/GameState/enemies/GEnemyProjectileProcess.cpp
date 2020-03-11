@@ -254,29 +254,10 @@ TBool GEnemyProjectileProcess::RunAfter() {
     printf("ENEMY PROJECTILE CLIPPED\n");
     return EFalse;
   }
-  if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->vx = mSprite->vy = 0;
     mTimer = PROJECTILE_EXPIRE;
-  }
-  if (!mSprite->IsFloor(DIRECTION_UP, mSprite->vx, mSprite->vy)) {
-    mSprite->ClearFlags(SFLAG_CHECK);
-    mSprite->vx = mSprite->vy = 0;
-    mTimer = PROJECTILE_EXPIRE;
-  }
-  if (mSprite->vx < 0) {
-    if (!mSprite->IsFloor(DIRECTION_LEFT, mSprite->vx, mSprite->vy)) {
-      mSprite->vx = mSprite->vy = 0;
-      mSprite->ClearFlags(SFLAG_CHECK);
-      mTimer = PROJECTILE_EXPIRE;
-    }
-  }
-  if (mSprite->vx > 0) {
-    if (!mSprite->IsFloor(DIRECTION_RIGHT, mSprite->vx, mSprite->vy)) {
-      mSprite->vx = mSprite->vy = 0;
-      mSprite->ClearFlags(SFLAG_CHECK);
-      mTimer = PROJECTILE_EXPIRE;
-    }
   }
 
   // Fixes the issue of hitting the arrow the same frame the flag gets removed
