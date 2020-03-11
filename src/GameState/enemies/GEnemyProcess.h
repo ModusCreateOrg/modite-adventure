@@ -114,7 +114,7 @@ protected:
   TBool AttackState();
 
   virtual void Hit(DIRECTION aDirection) = 0;
-  TBool HitState();
+  virtual TBool HitState();
 
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
