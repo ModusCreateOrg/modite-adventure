@@ -323,6 +323,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case SWORD_CHARGE_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
+      printf("SWORD_CHARGE_STATE\n");
+      printf("mSprite->vx = %2f;\n", mSprite->vx);
+      printf("mSprite->vx = %2f;\n", mSprite->vy);
       switch (mSprite->mDirection) {
         case DIRECTION_UP:
           mSprite->StartAnimation(swordChargeUpAnimation);
