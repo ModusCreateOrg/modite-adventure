@@ -242,30 +242,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case SWORD_CHARGE_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
-//<<<<<<< HEAD
-//      switch (mSprite->mDirection) {
-//        case DIRECTION_UP:
-//          mSprite->StartAnimation(swordChargeUpAnimation);
-//          break;
-//        case DIRECTION_DOWN:
-//          mSprite->StartAnimation(swordChargeDownAnimation);
-//          break;
-//        case DIRECTION_LEFT:
-//          mSprite->StartAnimation(swordChargeLeftAnimation);
-//          break;
-//        case DIRECTION_RIGHT:
-//          mSprite->StartAnimation(swordChargeRightAnimation);
-//          break;
-//        default:
-//          Panic("GPlayerProcess no SWORD_CHARGE_STATE direction\n");
-//          break;
-//      }
-//=======
-      printf("SWORD_CHARGE_STATE\n");
-      printf("mSprite->vx = %2f;\n", mSprite->vx);
-      printf("mSprite->vx = %2f;\n", mSprite->vy);
       mSprite->StartAnimationInDirection(swordChargeAnimations, aDirection);
-//>>>>>>> 14bd5ee6bf31f792b3f11c04cba34cf2976c729f
       break;
     case SWORD_ATTACK_STATE:
       mSprite->vx = 0;
