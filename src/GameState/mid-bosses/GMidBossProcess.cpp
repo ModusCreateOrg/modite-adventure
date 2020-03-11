@@ -283,10 +283,10 @@ TBool GMidBossProcess::IdleState() {
     }
 
     DIRECTION direction = GAnchorSprite::RandomDirection();
-    TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY,
-           vy = direction == DIRECTION_UP ? -VELOCITY : VELOCITY;
+    TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : direction == DIRECTION_RIGHT ? VELOCITY : 0,
+           vy = direction == DIRECTION_UP ? -VELOCITY : direction == DIRECTION_DOWN ? VELOCITY : 0;
 
-    if (mSprite->CanWalk(direction, vx, vy)) {
+    if (mSprite->CanWalk(vx, vy)) {
       NewState(MB_WALK_STATE, direction);
       return ETrue;
     }
@@ -325,7 +325,7 @@ TBool GMidBossProcess::WalkState() {
     return ETrue;
   }
 
-  if (!mSprite->CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }

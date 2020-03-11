@@ -58,6 +58,7 @@ const TUint16 ATTR_TROLL = 24;
 const TUint16 ATTR_CHEST_OPEN = 25;
 const TUint16 ATTR_CRATE_GONE = 26;
 const TUint16 ATTR_DUNGEON_ENTRANCE = 27;
+const TUint16 ATTR_TURRET = 28;
 // mid bosses
 const TUint16 ATTR_MID_BOSS_EARTH = 1001;
 const TUint16 ATTR_MID_BOSS_WATER = 1002;

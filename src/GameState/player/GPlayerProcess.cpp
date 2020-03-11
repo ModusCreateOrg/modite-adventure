@@ -1,6 +1,6 @@
 #include "GPlayerProcess.h"
 #include "GPlayer.h"
-#include "GAnchorSprite.h"
+#include "GPlayerSprite.h"
 #include "GGamePlayfield.h"
 #include "GPlayerAnimations.h"
 #include "GStatProcess.h"
@@ -14,8 +14,8 @@ const TFloat SPELL_DISTANCE = 200.0;
 
 const TUint16 IDLE_STATE = 0;
 const TUint16 WALK_STATE = 1;
-const TUint16 SWORD_STATE = 2;
-const TUint16 SWORD_NO_BULLET_STATE = 3;
+const TUint16 SWORD_CHARGE_STATE = 2;
+const TUint16 SWORD_ATTACK_STATE = 3;
 const TUint16 FALL_STATE = 4;
 const TUint16 HIT_LIGHT_STATE = 5;
 const TUint16 HIT_MEDIUM_STATE = 6;
@@ -53,17 +53,8 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLA
   GPlayer::mSprite = mSprite = ENull;
 
   // initialize player sprite
-  GPlayer::mSprite = mSprite = new GAnchorSprite(mGameState, PLAYER_PRIORITY, PLAYER_SLOT);
-  mSprite->Name("PLAYER");
-  mSprite->type = STYPE_PLAYER;
-  mSprite->SetCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT); // collide with enemy, enemy attacks, and environment
-  mSprite->w = 24;
-  mSprite->h = 16;
-  mSprite->cx = 8;
-  mSprite->cy = 0;
-  mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
+  GPlayer::mSprite = mSprite = new GPlayerSprite(mGameState);
   mGameState->AddSprite(mSprite);
-  mSprite->SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 
   mSprite2 = ENull;
 
@@ -194,13 +185,7 @@ TBool GPlayerProcess::IsLedge() {
 }
 
 TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
-  if ((aVx < 0 && !mSprite->IsFloor(DIRECTION_LEFT, aVx, aVy)) ||
-      (aVx > 0 && !mSprite->IsFloor(DIRECTION_RIGHT, aVx, aVy)) ||
-      (aVy < 0 && !mSprite->IsFloor(DIRECTION_UP, aVx, aVy)) ||
-      (aVy > 0 && !mSprite->IsFloor(DIRECTION_DOWN, aVx, aVy))) {
-    return EFalse;
-  }
-  return ETrue;
+  return mSprite->CanWalk(aVx, aVy);
 }
 
 void GPlayerProcess::StartKnockback() {
@@ -246,72 +231,28 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case WALK_STATE:
       if (mStepFrame > 0) {
-        switch (mSprite->mDirection) {
-          case DIRECTION_UP:
-            mStep = 1 - mStep;
-            mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-            break;
-          case DIRECTION_DOWN:
-            mStep = 1 - mStep;
-            mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-            break;
-          case DIRECTION_LEFT:
-            mStep = 1 - mStep;
-            mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-            break;
-          case DIRECTION_RIGHT:
-            mStep = 1 - mStep;
-            mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-            break;
-          default:
-            Panic("GPlayerProcess no Walk direction\n");
-            break;
-        }
+        mStep = 1 - mStep;
+        mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
         break;
       }
     case IDLE_STATE:
       mStep = 0;
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(idleUpAnimation);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(idleDownAnimation);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(idleLeftAnimation);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(idleRightAnimation);
-          break;
-        default:
-          Panic("GPlayerProcess no idle direction\n");
-          break;
-      }
+      mSprite->StartAnimationInDirection(idleAnimations, aDirection);
       break;
-    case SWORD_STATE:
-      mStep = 0;
+    case SWORD_CHARGE_STATE:
+      mSprite->vx = 0;
+      mSprite->vy = 0;
+      printf("SWORD_CHARGE_STATE\n");
+      printf("mSprite->vx = %2f;\n", mSprite->vx);
+      printf("mSprite->vx = %2f;\n", mSprite->vy);
+      mSprite->StartAnimationInDirection(swordChargeAnimations, aDirection);
+      break;
+    case SWORD_ATTACK_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
 
       gSoundPlayer.SfxPlayerSlash();
-      switch (mSprite->mDirection) {
-        case DIRECTION_UP:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordUpAnimationWithGloves : swordUpAnimationNoGloves);
-          break;
-        case DIRECTION_DOWN:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordDownAnimationWithGloves : swordDownAnimationNoGloves);
-          break;
-        case DIRECTION_LEFT:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordLeftAnimationWithGloves : swordLeftAnimationNoGloves);
-          break;
-        case DIRECTION_RIGHT:
-          mSprite->StartAnimation(GPlayer::mEquipped.mGloves ? swordRightAnimationWithGloves : swordRightAnimationNoGloves);
-          break;
-        default:
-          Panic("GPlayerProcess no SWORD_STATE direction\n");
-          break;
-      }
+      mSprite->StartAnimationInDirection(GPlayer::mEquipped.mGloves ? swordAnimationsWithGloves : swordAnimationsNoGloves, aDirection);
       break;
 
     case FALL_STATE:
@@ -376,55 +317,13 @@ TBool GPlayerProcess::MaybeHit() {
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
       hitAmount = other->mAttackStrength;
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitLightDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitLightUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitLightRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-          default:
-            mSprite->StartAnimation(hitLightLeftAnimation);
-            break;
-        }
+        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
       else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitMediumDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitMediumUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitMediumRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-          default:
-            mSprite->StartAnimation(hitMediumLeftAnimation);
-            break;
-        }
+        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
       else {
-        switch (other->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitHardDownAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitHardUpAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitHardRightAnimation);
-            break;
-          case DIRECTION_RIGHT:
-          default:
-            mSprite->StartAnimation(hitHardLeftAnimation);
-            break;
-        }
+        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
     }
 
@@ -432,21 +331,7 @@ TBool GPlayerProcess::MaybeHit() {
       if (other->mHitPoints > 0) {
         // contact damage independent of enemy attack strength
         hitAmount = BASE_STRENGTH + other->mLevel * (BASE_STRENGTH / 5);
-        switch (mSprite->mDirection) {
-          case DIRECTION_UP:
-            mSprite->StartAnimation(hitLightUpAnimation);
-            break;
-          case DIRECTION_DOWN:
-            mSprite->StartAnimation(hitLightDownAnimation);
-            break;
-          case DIRECTION_LEFT:
-            mSprite->StartAnimation(hitLightLeftAnimation);
-            break;
-          case DIRECTION_RIGHT:
-          default:
-            mSprite->StartAnimation(hitLightRightAnimation);
-            break;
-        }
+        mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
       }
     }
 
@@ -504,45 +389,42 @@ TBool GPlayerProcess::MaybeSword() {
   if (GPlayer::mGameOver) {
     return ETrue;
   }
-  if (!gControls.WasPressed(CONTROL_FIRE)) {
-    return EFalse;
+  if (gControls.WasPressed(CONTROL_FIRE)) {
+    mStep = mStepFrame = 0;
+    mSprite->mSwordCharge = -TFloat(CHARGE_START_DELAY) / CHARGE_DURATION;
+    NewState(SWORD_CHARGE_STATE, mSprite->mDirection);
+    return ETrue;
   }
 
-  auto *p = (GProcess *)new GPlayerBulletProcess(mGameState, mSprite->mDirection);
-  mGameState->AddProcess(p);
-  NewState(SWORD_STATE, mSprite->mDirection);
-  return ETrue;
+  return EFalse;
 }
 
 TBool GPlayerProcess::MaybeFall() {
-  if (IsLedge()) {
+  if (IsLedge() && gControls.IsPressed(CONTROL_JOYDOWN)) {
     NewState(FALL_STATE, DIRECTION_DOWN);
     return ETrue;
   }
   return EFalse;
 }
 
-TBool GPlayerProcess::MaybeWalk() {
-  if (GPlayer::mGameOver) {
-    return ETrue;
-  }
+DIRECTION GPlayerProcess::MaybeMove(TFloat aSpeed) {
   TFloat newVx = 0.0, newVy = 0.0;
   DIRECTION newDirection = mSprite->mDirection;
   if (gControls.IsPressed(CONTROL_JOYUP)) {
-    newVy = -PLAYER_VELOCITY;
+    newVy = -aSpeed;
     newDirection = DIRECTION_UP;
   }
   else if (gControls.IsPressed(CONTROL_JOYDOWN)) {
-    newVy = PLAYER_VELOCITY;
+    newVy = aSpeed;
     newDirection = DIRECTION_DOWN;
   }
   if (gControls.IsPressed(CONTROL_JOYLEFT)) {
     if (newVy) {
-      newVx = -PLAYER_VELOCITY * sqrt(2) / 2;
-      newVy = newVy * sqrt(2) / 2;
+      newVx = -aSpeed * M_SQRT2 / 2;
+      newVy = newVy * M_SQRT2 / 2;
     }
     else {
-      newVx = -PLAYER_VELOCITY;
+      newVx = -aSpeed;
     }
     if (newVy == 0 || newVx != 0) {
       newDirection = DIRECTION_LEFT;
@@ -550,28 +432,14 @@ TBool GPlayerProcess::MaybeWalk() {
   }
   else if (gControls.IsPressed(CONTROL_JOYRIGHT)) {
     if (newVy) {
-      newVx = PLAYER_VELOCITY * sqrt(2) / 2;
-      newVy = newVy * sqrt(2) / 2;
+      newVx = aSpeed * M_SQRT2 / 2;
+      newVy = newVy * M_SQRT2 / 2;
     }
     else {
-      newVx = PLAYER_VELOCITY;
+      newVx = aSpeed;
     }
     if (newVy == 0 || newVx != 0) {
       newDirection = DIRECTION_RIGHT;
-    }
-  }
-
-  if (newVy > 0.0 && MaybeFall()) {
-    return EFalse;
-  }
-
-  if (gControls.IsPressed(CONTROL_RUN) && (newVx != 0 || newVy != 0)) {
-    if (GPlayer::mEquipped.mBoots) {
-      newVy *= 2.0;
-      newVx *= 2.0;
-    } else {
-      newVy *= 1.4;
-      newVx *= 1.4;
     }
   }
 
@@ -580,11 +448,11 @@ TBool GPlayerProcess::MaybeWalk() {
   if (newVx && !CanWalk(newVx, 0)) {
     if (newVy == 0) {
       if (newVx < 0 && mSprite->IsFloorTile(r.x1 + newVx, r.y1) != mSprite->IsFloorTile(r.x1 + newVx, r.y2)) {
-        newVx = newVx * sqrt(2) / 2;
+        newVx = newVx * M_SQRT2 / 2;
         newVy = mSprite->IsFloorTile(r.x1 + newVx, r.y1) ? newVx : -newVx;
       }
       if (newVx > 0 && mSprite->IsFloorTile(r.x2 + newVx, r.y1) != mSprite->IsFloorTile(r.x2 + newVx, r.y2)) {
-        newVx = newVx * sqrt(2) / 2;
+        newVx = newVx * M_SQRT2 / 2;
         newVy = mSprite->IsFloorTile(r.x2 + newVx, r.y1) ? -newVx : newVx;
       }
     }
@@ -592,11 +460,11 @@ TBool GPlayerProcess::MaybeWalk() {
   if (newVy && !CanWalk(0, newVy)) {
     if (newDirection == DIRECTION_UP || newDirection == DIRECTION_DOWN) {
       if (newVy < 0 && mSprite->IsFloorTile(r.x1, r.y1 + newVy) != mSprite->IsFloorTile(r.x2, r.y1 + newVy)) {
-        newVy = newVy * sqrt(2) / 2;
+        newVy = newVy * M_SQRT2 / 2;
         newVx = mSprite->IsFloorTile(r.x1, r.y1 + newVy) ? newVy : -newVy;
       }
       if (newVy > 0 && mSprite->IsFloorTile(r.x1, r.y2 + newVy) != mSprite->IsFloorTile(r.x2, r.y2 + newVy)) {
-        newVy = newVy * sqrt(2) / 2;
+        newVy = newVy * M_SQRT2 / 2;
         newVx = mSprite->IsFloorTile(r.x1, r.y2 + newVy) ? -newVy : newVy;
       }
     }
@@ -628,6 +496,29 @@ TBool GPlayerProcess::MaybeWalk() {
 
   mSprite->vy = newVy;
   mSprite->vx = newVx;
+
+  return newDirection;
+}
+
+TBool GPlayerProcess::MaybeWalk() {
+  if (GPlayer::mGameOver) {
+    return ETrue;
+  }
+
+  if (MaybeFall()) {
+    return EFalse;
+  }
+
+  TFloat speed = PLAYER_VELOCITY;
+  if (gControls.IsPressed(CONTROL_RUN)) {
+    if (GPlayer::mEquipped.mBoots) {
+      speed *= 2.0;
+    } else {
+      speed *= 1.4;
+    }
+  }
+
+  DIRECTION newDirection = MaybeMove(speed);
 
   if (mSprite->vx == 0 && mSprite->vy == 0) {
     NewState(IDLE_STATE, newDirection);
@@ -692,12 +583,67 @@ TBool GPlayerProcess::WalkState() {
 
 TBool GPlayerProcess::SwordState() {
   if (MaybeHit()) {
+    mSprite->mSwordCharge = -1;
     return ETrue;
   }
 
-  if (mSprite->AnimDone()) {
-    NewState(IDLE_STATE, mSprite->mDirection);
+  TFloat damageMultiplier;
+  if (mStep < 3) {
+    if (!GPlayer::mEquipped.mSword) {
+      if (mStepFrame++ > SWORDSPEED) {
+        mStep = 3;
+      }
+      return ETrue;
+    }
+    if (!gControls.IsPressed(CONTROL_FIRE)) {
+      mStep = 3;
+      return ETrue;
+    }
+    MaybeMove(PLAYER_VELOCITY * 0.2);
+    if (mSprite->AnimDone() && (mSprite->vx != 0 || mSprite->vy != 0)) {
+      NewState(SWORD_CHARGE_STATE, mSprite->mDirection);
+    }
   }
+
+  switch (mStep) {
+    case 0:
+      if (mSprite->mSwordCharge < 1.0) {
+        mSprite->mSwordCharge += 1.0 / CHARGE_DURATION;
+      } else {
+        mSprite->mSwordCharge = 1.5;
+        mStep++;
+      }
+      break;
+    case 1:
+      if (mStepFrame++ > PERFECT_CHARGE_WINDOW) {
+        mSprite->mSwordCharge = 1.0;
+        mStep++;
+      }
+      break;
+    case 2:
+      if (mSprite->mSwordCharge > 0.5) {
+        mSprite->mSwordCharge -= 1.0 / CHARGE_DURATION;
+      }
+      break;
+    case 3:
+      NewState(SWORD_ATTACK_STATE, mSprite->mDirection);
+      damageMultiplier = MAX(1.0, 1.0 + (CHARGE_BONUS - 1.0) * mSprite->mSwordCharge);
+      if (mSprite->mSwordCharge >= 1.0) {
+        mSprite->mSwordCharge = 2.0;
+        damageMultiplier = PERFECT_CHARGE_BONUS;
+      }
+      mGameState->AddProcess(new GPlayerBulletProcess(mGameState, mSprite->mDirection, damageMultiplier));
+      mStep++;
+      break;
+    case 4:
+    default:
+      if (mSprite->AnimDone()) {
+        mSprite->mSwordCharge = -1;
+        NewState(IDLE_STATE, mSprite->mDirection);
+      }
+      break;
+  }
+
   return ETrue;
 }
 
@@ -752,8 +698,7 @@ TBool GPlayerProcess::FallState() {
     mSprite->StartAnimation(landAnimation);
   }
 
-  if (mSprite->IsFloor(DIRECTION_UP, 0, 0) &&
-      mSprite->IsFloor(DIRECTION_DOWN, 0, 0)) {
+  if (mSprite->CanWalk(0, 0, ETrue)) {
     mSprite->vy = 0;
     if (mSprite->AnimDone()) {
       // land
@@ -805,7 +750,8 @@ TBool GPlayerProcess::RunBefore() {
       return IdleState();
     case WALK_STATE:
       return WalkState();
-    case SWORD_STATE:
+    case SWORD_CHARGE_STATE:
+    case SWORD_ATTACK_STATE:
       return SwordState();
     case FALL_STATE:
       return FallState();

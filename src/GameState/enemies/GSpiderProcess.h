@@ -18,6 +18,7 @@ protected:
   void Walk(DIRECTION aDirection) OVERRIDE;
   void Attack(DIRECTION aDirection) OVERRIDE;
   void Hit(DIRECTION aDirection) OVERRIDE;
+  void Spell(DIRECTION aDirection) OVERRIDE;
   void Death(DIRECTION aDirection) OVERRIDE;
 };
 

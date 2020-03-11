@@ -15,37 +15,29 @@ public:
     }
 };
 
-GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection)
+GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection, TFloat aMultiplier)
     : GProcess(ATTR_GONE) {
   mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
   mSprite->type = STYPE_PBULLET;
-  mSprite->mAttackStrength = GPlayer::mAttackStrength;
+  mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
+  mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection);
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->w = 30;
       mSprite->h = 8;
-      mSprite->vy = GPlayer::mEquipped.mGloves ? (-VELOCITY - 5) : -VELOCITY;
       mRange = GPlayer::mEquipped.mGloves ? 24 : 48;
       break;
     case DIRECTION_DOWN:
       mSprite->w = 30;
       mSprite->h = 8;
-      mSprite->vy = GPlayer::mEquipped.mGloves ? (VELOCITY + 5) :  VELOCITY;
       mRange = GPlayer::mEquipped.mGloves ? 15 : 30;
       break;
     case DIRECTION_LEFT:
-      mSprite->w = 8;
-      mSprite->h = 26;
-      mSprite->vx = GPlayer::mEquipped.mGloves ? (-VELOCITY - 5) : -VELOCITY;
-      mSprite->cy = -8;
-      mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
-      break;
     case DIRECTION_RIGHT:
       mSprite->w = 8;
       mSprite->h = 26;
-      mSprite->vx = GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY;
       mSprite->cy = -8;
       mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
       break;

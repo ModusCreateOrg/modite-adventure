@@ -208,31 +208,9 @@ TBool GFinalBossProjectileProcess::RunAfter() {
   if (mExploding) {
     return ETrue;
   }
-  if (mSprite->vy < 0 && !mSprite->IsFloor(DIRECTION_UP, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
 #ifdef DEBUGME
     printf("Final Boss Projectile %p Hit Wall UP\n", this);
-#endif
-    StartExplodeAnimation();
-    return ETrue;
-  }
-  if (mSprite->vy >= 0 && !mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy)) {
-#ifdef DEBUGME
-    printf("Final Boss Projectile %p Hit Wall DOWN\n", this);
-#endif
-    StartExplodeAnimation();
-    return ETrue;
-  }
-
-  if (mSprite->vx < 0 && mSprite->IsFloor(DIRECTION_LEFT, mSprite->vx, mSprite->vy)) {
-#ifdef DEBUGME
-    printf("Final Boss Projectile %p Hit Wall LEFT\n", this);
-#endif
-    StartExplodeAnimation();
-    return ETrue;
-  }
-  if (mSprite->vx >= 0 && !mSprite->IsFloor(DIRECTION_RIGHT, mSprite->vx, mSprite->vy)) {
-#ifdef DEBUGME
-    printf("Final Boss Projectile %p Hit Wall RIGHT\n", this);
 #endif
     StartExplodeAnimation();
     return ETrue;

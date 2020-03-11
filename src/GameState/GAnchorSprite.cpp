@@ -55,7 +55,7 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
     return;
   }
   x = hisRect.x1 - hisRect.Width() - 1;
-  if (IsFloor(DIRECTION_LEFT, x, y)) {
+  if (CanWalk(0, 0, ETrue)) {
     return;
   }
   x = hisRect.x2 + 1;
@@ -76,10 +76,10 @@ TBool GAnchorSprite::IsFloorTile(TFloat aX, TFloat aY) {
   return mGameState->mGamePlayfield->IsFloor(aX, aY);
 }
 
-TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
+TBool GAnchorSprite::CanWalkInDirection(DIRECTION aDirection, TFloat aDx, TFloat aDy) {
   GFloatRect r;
   GetFloatRect(r);
-  r.Offset(aVx, aVy);
+  r.Offset(aDx, aDy);
 
   switch (aDirection) {
     case DIRECTION_UP:
@@ -97,7 +97,7 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
       }
       return IsFloorTile(r.x2, r.y2);
     case DIRECTION_LEFT:
-      for (TInt i =r.y1; i < r.y2; i += WALL_THICKNESS) {
+      for (TInt i = r.y1; i < r.y2; i += WALL_THICKNESS) {
         if (!IsFloorTile(r.x1, i)) {
           return EFalse;
         }
@@ -113,6 +113,23 @@ TBool GAnchorSprite::IsFloor(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
     default:
       return EFalse;
   }
+}
+
+TBool GAnchorSprite::CanWalk(TFloat aDx, TFloat aDy, TBool aCheckAllSides) {
+  if ((aDy < 0 || aCheckAllSides) && !CanWalkInDirection(DIRECTION_UP, aDx, aDy)) {
+    return EFalse;
+  }
+  if ((aDy > 0 || aCheckAllSides) && !CanWalkInDirection(DIRECTION_DOWN, aDx, aDy)) {
+    return EFalse;
+  }
+  if ((aDx < 0 || aCheckAllSides) && !CanWalkInDirection(DIRECTION_LEFT, aDx, aDy)) {
+    return EFalse;
+  }
+  if ((aDx > 0 || aCheckAllSides) && !CanWalkInDirection(DIRECTION_RIGHT, aDx, aDy)) {
+    return EFalse;
+  }
+
+  return ETrue;
 }
 
 void GAnchorSprite::Move() {
@@ -209,8 +226,63 @@ DIRECTION GAnchorSprite::RandomDirection() {
   }
 }
 
-TBool GAnchorSprite::CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy) {
-  return IsFloor(aDirection, aVx, aVy);
+DIRECTION GAnchorSprite::RotateDirection(DIRECTION aDirection, TInt aRotateClockwiseCount) {
+  aRotateClockwiseCount %= 4;
+  if (aRotateClockwiseCount == 0) {
+    return aDirection;
+  } else {
+    // recursive call
+    aRotateClockwiseCount--;
+    switch (aDirection) {
+      case DIRECTION_UP:
+        return GAnchorSprite::RotateDirection(DIRECTION_RIGHT, aRotateClockwiseCount);
+      case DIRECTION_DOWN:
+        return GAnchorSprite::RotateDirection(DIRECTION_LEFT, aRotateClockwiseCount);
+      case DIRECTION_LEFT:
+        return GAnchorSprite::RotateDirection(DIRECTION_UP, aRotateClockwiseCount);
+      case DIRECTION_RIGHT:
+        return GAnchorSprite::RotateDirection(DIRECTION_DOWN, aRotateClockwiseCount);
+    }
+  }
+}
+
+void GAnchorSprite::StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      StartAnimation(aScriptGroup[DIRECTION_UP]);
+      break;
+    case DIRECTION_DOWN:
+      StartAnimation(aScriptGroup[DIRECTION_DOWN]);
+      break;
+    case DIRECTION_LEFT:
+      StartAnimation(aScriptGroup[DIRECTION_LEFT]);
+      break;
+    case DIRECTION_RIGHT:
+      StartAnimation(aScriptGroup[DIRECTION_RIGHT]);
+      break;
+    default:
+      Panic("No animation direction\n");
+      break;
+  }
+}
+
+void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
+  switch (aDirection) {
+    case DIRECTION_UP:
+      vy = -aSpeed;
+      break;
+    case DIRECTION_DOWN:
+      vy = aSpeed;
+      break;
+    case DIRECTION_LEFT:
+      vx = -aSpeed;
+      break;
+    case DIRECTION_RIGHT:
+      vx = aSpeed;
+      break;
+    default:
+      Panic("No move direction\n");
+  }
 }
 
 void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength, TFloat aModExperience) {

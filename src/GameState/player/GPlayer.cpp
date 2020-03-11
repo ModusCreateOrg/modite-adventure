@@ -17,7 +17,7 @@ TBool GPlayer::mGameOver;
 
 GInventoryList GPlayer::mInventoryList;
 GPlayerProcess *GPlayer::mProcess;
-GAnchorSprite *GPlayer::mSprite;
+GPlayerSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
 GAnchorSprite *GPlayer::mActiveBoss;
@@ -95,7 +95,12 @@ TUint16 GPlayer::GetSpellSlot() {
 TBool GPlayer::MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell) {
   GAnchorSprite* sprite = aProcess->GetSprite();
   if (sprite && !aProcess->mInvulnerable) {
-    TInt attackAmount = sprite->mCollided->mAttackStrength;
+    TInt attackAmount;
+    if (aIsSpell) {
+      attackAmount = mAttackStrength;
+    } else {
+      attackAmount = sprite->mCollided->mAttackStrength;
+    }
 
     if (aIsSpell) {
       if (mEquipped.mSpellBookElement && sprite->mElement) {

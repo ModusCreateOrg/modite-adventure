@@ -141,6 +141,9 @@ static ANIMSCRIPT teleportAnimation2[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
     : GLivingProcess(aAttribute) {
@@ -229,8 +232,7 @@ void GWizardProcess::RandomLocation() {
       dy = tmp;
     }
     TInt i = 0;
-    while (mSprite->IsFloor(DIRECTION_DOWN, dx * i, dy * i) &&
-           mSprite->IsFloor(DIRECTION_UP, dx * i, dy * i)) {
+    while (mSprite->CanWalk(dx * i, dy * i, ETrue)) {
       i++;
     }
     mSprite->x = mStartX + dx * i * SQRT(RandomFloat()) * 0.8;
@@ -251,30 +253,9 @@ void GWizardProcess::Idle(DIRECTION aDirection) {
 void GWizardProcess::Walk(DIRECTION aDirection) {
   mDirection = aDirection;
   mStep = 1 - mStep;
-  switch (mDirection) {
-    case DIRECTION_UP:
-      mSprite->vx = 0;
-      mSprite->vy = -WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkUpAnimation2 : walkUpAnimation1);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vx = 0;
-      mSprite->vy = WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation2 : walkDownAnimation1);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -WALK_VELOCITY;
-      mSprite->vy = 0;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation2 : walkLeftAnimation1);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = WALK_VELOCITY;
-      mSprite->vy = 0;
-      mSprite->StartAnimation(mStep ? walkRightAnimation2 : walkRightAnimation1);
-      break;
-    default:
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
+  mSprite->vx = mSprite->vy = 0;
+  mSprite->MoveInDirection(WALK_VELOCITY, aDirection);
 }
 
 void GWizardProcess::Projectile() {
@@ -443,7 +424,7 @@ TBool GWizardProcess::IdleState() {
     mStateTimer = 60;
     for (TInt i = 0; i < 10; i++) {
       DIRECTION d = (Random() & 1u) ? DIRECTION_RIGHT : DIRECTION_LEFT;
-      if (mSprite->CanWalk(d, d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
+      if (mSprite->CanWalk(d == DIRECTION_RIGHT ? WALK_VELOCITY : -WALK_VELOCITY, 0)) {
         SetState(STATE_WALK, d);
         return ETrue;
       }
@@ -465,7 +446,7 @@ TBool GWizardProcess::WalkState() {
   }
 
   // check to see if wizard has met a wall
-  if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     SetState(STATE_IDLE, DIRECTION_DOWN);
     return ETrue;
   }

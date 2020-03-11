@@ -74,11 +74,11 @@ protected:
 
 protected:
   // test if a wall in the specified direction from sprite's current location
-  TBool IsWall(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
+  TBool IsWallInDirection(DIRECTION aDirection);
 
   // test if enemy can walk in specified direction at the specified velocity
   // enemy can override this for more custom kinds of logic
-  virtual TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
+  virtual TBool CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat aVy);
 
 protected:
   virtual TBool MaybeAttack();
@@ -103,12 +103,12 @@ protected:
   TBool AttackState();
 
   virtual void Hit(DIRECTION aDirection) = 0;
-  TBool HitState();
+  virtual TBool HitState();
 
   virtual void Death(DIRECTION aDirection) = 0;
   TBool DeathState();
 
-  void Spell(DIRECTION aDirection);
+  virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
   void OverlayAnimationComplete() OVERRIDE;

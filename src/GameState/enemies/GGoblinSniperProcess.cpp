@@ -330,6 +330,11 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -378,27 +383,8 @@ void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GGoblinSniperProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
@@ -414,55 +400,24 @@ void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer, BOSS_PROJECTILE_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0]));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1]));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2]));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0], BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1], BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2], BOSS_PROJECTILE_SLOT));
   }
 
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(attackUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(attackDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(attackLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(attackRightAnimation);
-      break;
-    default:
-      Panic("GGoblinSniperProcess no attack direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(attackAnimations, aDirection);
 }
 
 void GGoblinSniperProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GGoblinSniperProcess no Hit direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GGoblinSniperProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GGoblinSniperProcess::Death(DIRECTION aDirection) {
