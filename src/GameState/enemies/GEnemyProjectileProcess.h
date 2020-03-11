@@ -6,7 +6,7 @@
 
 class GEnemyProjectileProcess : public GProcess {
 public:
-  GEnemyProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle);
+  GEnemyProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TUint16 aSlot, TUint16 aImg = 0);
   ~GEnemyProjectileProcess();
 
 public:
