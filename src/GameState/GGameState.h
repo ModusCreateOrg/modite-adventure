@@ -61,7 +61,7 @@ public:
   void LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aNewLevel = ETrue);
 
   void SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY);
-
+  TBool PlayMusicForCurrentLevel();
   TBool SaveState();
 
   TBool LoadState(const char *aGameName);
@@ -92,6 +92,7 @@ public:
   TInt16 Dungeon() { return mDungeon; }
   TInt16 IsCurrentLevel(TUint16 aDungeon, TInt16 aLevel) { return mNextDungeon == aDungeon && mLevel == aLevel; }
   TInt16 LastOverworldLevel() { return mLastOverworldLevel; }
+  TBool PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss);
 protected:
   TInt mTimer;
   char mText[128];

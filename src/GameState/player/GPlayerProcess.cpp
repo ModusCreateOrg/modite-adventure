@@ -242,9 +242,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case SWORD_CHARGE_STATE:
       mSprite->vx = 0;
       mSprite->vy = 0;
-      printf("SWORD_CHARGE_STATE\n");
-      printf("mSprite->vx = %2f;\n", mSprite->vx);
-      printf("mSprite->vx = %2f;\n", mSprite->vy);
       mSprite->StartAnimationInDirection(swordChargeAnimations, aDirection);
       break;
     case SWORD_ATTACK_STATE:
@@ -353,7 +350,7 @@ TBool GPlayerProcess::MaybeHit() {
 
       StartBlink(BLINK_TIME);
 
-      gSoundPlayer.SfxPlayerTakeDamage();
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_TAKE_DAMAGE_WAV);
 
       mState = state;
 
@@ -656,6 +653,8 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->x = mSprite->x + 16;
         mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(spellOverlayAnimation);
+        printf("SPELLLL\n");
+        gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
       }
       break;

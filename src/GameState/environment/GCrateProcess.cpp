@@ -80,9 +80,11 @@ TBool GCrateProcess::RunAfter() {
     mAnimating = ETrue;
     if (--mSprite->mHitPoints > 0) {
       mSprite->StartAnimation(hitAnimation);
+      gSoundPlayer.TriggerSfx(SFX_POT_TAKE_DAMAGE_WAV);
     }
     else {
       mSprite->StartAnimation(breakAnimation);
+      gSoundPlayer.TriggerSfx(SFX_POT_DESTROYED_WAV);
     }
   }
   mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);

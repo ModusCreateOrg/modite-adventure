@@ -48,6 +48,7 @@ TBool GChestProcess::RunAfter() {
 //    mSprite->type = STYPE_DEFAULT;
 //    mSprite->cType = 0;
 //    mSprite->ClearFlags(SFLAG_CHECK);
+    gSoundPlayer.TriggerSfx(SFX_CHEST_OPEN_WAV);
     mSprite->ClearCMask(STYPE_PBULLET);
     mSprite->ClearCType(STYPE_PBULLET);
     mSprite->mImageNumber = IMG_CHEST + 1; // chest open image

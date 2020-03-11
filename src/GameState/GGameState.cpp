@@ -375,7 +375,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
   RemapSlot(mNextObjectsId, ENVIRONMENT_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_BMP, PLAYER_SLOT);
-  RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
+//  RemapSlot(CHARA_HERO_HEAL_EFFECT_BMP, PLAYER_HEAL_SLOT, IMAGE_32x32);
   RemapSlot(CHARA_HERO_SPELL_EFFECT_BMP, PLAYER_SPELL_SLOT, IMAGE_32x32);
   RemapSlot(SPELL_EARTH_BMP, SPELL_EARTH_SLOT, IMAGE_64x64);
   RemapSlot(SPELL_ELECTRICITY_BMP, SPELL_ELECTRICITY_SLOT, IMAGE_64x64);
@@ -407,6 +407,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
       spikesMatrix[program[ip].mRow][program[ip].mCol] = spikeGroup;
     }
   }
+
+  TInt16 spawnedBoss = -1;
 
   for (TInt ip = 0; ip < objectCount; ip++) {
 #ifdef DEBUGME
@@ -734,6 +736,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS ENERGY");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_FIRE:
@@ -751,6 +755,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS FIRE");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_EARTH:
@@ -768,6 +774,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx - 64, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS EARTH");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_MID_BOSS_WATER:
@@ -785,6 +793,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY MID BOSS WATER");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_WATER:
@@ -803,6 +813,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY WATER WIZARD");
+        spawnedBoss = op;
         break;
 
       case ATTR_WIZARD_FIRE:
@@ -821,6 +832,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY FIRE WIZARD");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_ENERGY:
@@ -839,6 +852,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY ENERGY WIZARD");
+        spawnedBoss = op;
+
         break;
 
       case ATTR_WIZARD_EARTH:
@@ -858,6 +873,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "ENEMY EARTH WIZARD");
+        spawnedBoss = op;
+
         break;
 #endif
 
@@ -887,6 +904,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
           break;
         }
         GProcess::Spawn(this, op, ip, xx, yy + 64, params, DIRECTION_DOWN, "FINAL BOSS");
+        spawnedBoss = op;
+
         break;
 
       default:
@@ -898,9 +917,51 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
     GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
   }
+
+  PlayLevelMusic(mNextDungeon, spawnedBoss);
+
+
   mGamePlayfield->StartMosaicIn();
 }
 
+TBool GGameState::PlayMusicForCurrentLevel() {
+  PlayLevelMusic(mDungeon, -1);
+}
+TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
+
+  TUint16 song = EMPTYSONG_XM;
+
+  // For levels -- bosses get their own treatment!
+  if (aSpawnedBoss == -1) {
+    if (aNextDungeon == 0) {
+      song = OVERWORLD_XM;
+    }
+
+
+    if (aNextDungeon >= 2 && aNextDungeon <= 4) {
+      //      song = DUNGEON4_XM;
+
+    }
+    else if (aNextDungeon >= 13 && aNextDungeon <= 18) {
+      song = DUNGEON4_XM;
+    }
+    else if (aNextDungeon >= 36 && aNextDungeon <= 40) {
+      song = DUNGEON9_XM;
+    }
+  }
+  else {
+    if (aSpawnedBoss == ATTR_MID_BOSS_WATER || aSpawnedBoss == ATTR_MID_BOSS_ENERGY || aSpawnedBoss == ATTR_MID_BOSS_EARTH || aSpawnedBoss == ATTR_MID_BOSS_FIRE) {
+      song = BOSS_1_XM;
+    } else{
+      song = BOSS_2_XM;
+    }
+  }
+
+
+  gSoundPlayer.PlayMusic(song);
+
+  return ETrue;
+}
 /**
   * modify BObjectProgram, like when a door or chest has opened.
   *
@@ -938,6 +999,8 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
 
 void GGameState::GameOver() {
   mGameOver = new GGameOver(this);
+  gSoundPlayer.PlayMusic(GAMEOVER_XM);
+  gSoundPlayer.TriggerSfx(SFX_PLAYER_DEATH_WAV);
   gControls.Reset();
   GPlayer::mGameOver = ETrue;
 }

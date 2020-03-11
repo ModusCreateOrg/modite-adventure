@@ -20,7 +20,7 @@ PALETTE test.pal
 #
 PATH resources/sprites/
 SPRITESHEET 64x64 chara_hero.bmp
-SPRITESHEET 32x32 chara_hero_heal_effect.bmp
+# SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
 
 #
@@ -208,23 +208,28 @@ TMX OWX_DevDGN_9472.txt
 PATH resources/tilemaps/tilesets/
 SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 
+PATH resources/tilemaps/OW2_DGN1_1280/
+SPRITESHEET 32x32 OW2_DGN_OBJECT_LAYER.bmp
+
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
 RAW EmptySong.xm
-RAW Countryside.xm
-RAW Cyberpunk.xm
+RAW Dungeon4.xm
+RAW Dungeon9.xm
 RAW GameOver.xm
-RAW Glacial_mountains.xm
 RAW Main_Menu.xm
-RAW Spaaace.xm
-RAW UnderWaterFantasy.xm
-RAW Under_Water.xm
-RAW EnterCredits.xm
+RAW Overworld.xm
+RAW Logo_Reveal.xm
+RAW Boss_1.xm
+RAW Boss_2.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/
 RAW SFX_empty.wav
 RAW SFX_menu_nav_down.wav
+RAW SFX_chest_open.wav
+RAW SFX_pot_take_damage.wav
+RAW SFX_pot_destroyed.wav
 RAW SFX_menu_nav_up.wav
 RAW SFX_menu_in.wav
 RAW SFX_menu_out.wav
@@ -236,9 +241,21 @@ RAW SFX_player_quaff_water_spell.wav
 RAW SFX_player_quaff_earth_spell.wav
 RAW SFX_player_quaff_fire_spell.wav
 RAW SFX_player_quaff_energy_spell.wav
+RAW SFX_player_quaff_spell.wav
 RAW SFX_player_take_damage.wav
+RAW SFX_player_death.wav
+RAW SFX_enemy_attack.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
-RAW SFX_playfield_spike_raise.wav
+RAW SFX_enemy_taunt.wav
 RAW SFX_item_heart.wav
 RAW SFX_item_pickup_generic.wav
+RAW SFX_midboss_bounce_wall.wav
+RAW SFX_midboss_transform_in.wav
+RAW SFX_midboss_transform_out.wav
+RAW SFX_midboss_attack_energy.wav
+RAW SFX_midboss_attack_fire.wav
+RAW SFX_midboss_attack_water.wav
+RAW SFX_midboss_attack_earth.wav
+RAW SFX_door_open.wav
+

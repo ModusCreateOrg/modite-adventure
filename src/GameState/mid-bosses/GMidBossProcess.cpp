@@ -4,6 +4,8 @@
 #include "GPlayer.h"
 #include "GStatProcess.h"
 #include "common/GSpellOverlayProcess.h"
+#include "Resources.h"
+#include "GGame.h"
 
 // see
 // https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
@@ -74,6 +76,8 @@ GMidBossProcess::~GMidBossProcess() {
     mSprite = ENull;
   }
   GPlayer::mActiveBoss = ENull;
+  GGameState *gameState = (GGameState*)gGameEngine;
+  gameState->PlayMusicForCurrentLevel();
 }
 
 TBool GMidBossProcess::RunBefore() {
@@ -135,6 +139,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     mSprite->vy = 0;
     Ball(aDirection);
     mSprite->ClearFlags(SFLAG_KNOCKBACK);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_IN_WAV);
     break;
 
   case MB_MOVE_STATE:
@@ -162,6 +167,8 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     Revert(aDirection);
     mSprite->ResetShadow();
     mSprite->SetFlags(SFLAG_KNOCKBACK);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_OUT_WAV);
+
     break;
 
   case MB_WALK_STATE:
@@ -406,6 +413,10 @@ TBool GMidBossProcess::MaybeBounce() {
     }
   }
 
+  if (bouncedX || bouncedY) {
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_BOUNCE_WALL_WAV);
+  }
+
   return bouncedX || bouncedY;
 }
 
@@ -512,6 +523,7 @@ TBool GMidBossProcess::ChargeState() {
     MaybeBounce();
   }
   mSprite->TestAndClearCType(STYPE_PLAYER);
+
 
   return ETrue;
 }

@@ -140,6 +140,7 @@ TBool GDoorProcess::RunAfter() {
         printf("door open player used item %d\n", item);
         ClearWall();
         mGameState->EndProgram(mIp);
+        gSoundPlayer.TriggerSfx(SFX_DOOR_OPEN_WAV);
         return EFalse;
       }
       return ETrue;
@@ -147,6 +148,8 @@ TBool GDoorProcess::RunAfter() {
     printf("player opens door\n");
     ClearWall();
     mGameState->EndProgram(mIp);
+    gSoundPlayer.TriggerSfx(SFX_DOOR_OPEN_WAV);
+
     return EFalse;
   }
 

@@ -8,7 +8,7 @@
 #include "GGameState.h"
 #include "Items.h"
 
-static const TUint8 WIDGETS_PER_SCREEN = 14;
+static const TUint8 WIDGETS_PER_SCREEN = 12;
 
 GDebugMenuContainer::GDebugMenuContainer(TInt aX, TInt aY, BGameEngine *aEngine) : GDialogWidget("", aX, aY) {
   mTimer = 30;

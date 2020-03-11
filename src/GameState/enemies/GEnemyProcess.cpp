@@ -32,6 +32,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mState = IDLE_STATE;
   mStep = 0;
   mRangeX = mRangeY = 8;
+  mIp = aIp;
 
   mStartX = mStartY = 0;
   mAttackTimer = 1;
@@ -299,18 +300,23 @@ TBool GEnemyProcess::DeathState() {
     p2->SetMessageType(STAT_EXPERIENCE);
     mGameState->AddProcess(p2);
     GPlayer::AddExperience(mSprite->mExperience);
-    // drop a potion
+
+    // If we setup a key for the enemy to drop
+    if (mParams) {
+      printf("drop $%x %d\n", mParams, mParams);
+      GItemProcess::SpawnItem(mGameState, mIp, mParams, mSprite->x + 16, mSprite->y + 16);
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
+      return EFalse;
+    }
 
     // For now, le'ts just drop this and leave potions to crate.
     const TInt32 spawn_threshold = 6;
     TInt32 should_spawn = Random(0, 10);
-//        printf("should_spawn = %i\n", should_spawn);
     if (should_spawn <= spawn_threshold) {
       return EFalse;
     }
 
     TInt32 item_to_spawn = Random(0, 5);
-//        printf("item_to_spawn = %i\n", item_to_spawn);
 
     switch (item_to_spawn) {
       case 0:
@@ -318,15 +324,18 @@ TBool GEnemyProcess::DeathState() {
       case 2:
       case 3:
         GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
+        gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
         break;
       case 4:
         GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION1, mSprite->x + 16, mSprite->y);
+        gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
         break;
 //          case 4:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_BLUE_POTION2, mSprite->x + 16, mSprite->y);
 //            break;
       case 5:
         GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION1, mSprite->x + 16, mSprite->y);
+        gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
         break;
 //          case 3:
 //            GItemProcess::SpawnItem(mGameState, -1, ITEM_RED_POTION2, mSprite->x + 16, mSprite->y);

@@ -7,6 +7,7 @@
 #include "GPlayer.h"
 #include "GItemProcess.h"
 #include "GWizardDecoyProcess.h"
+#include "Game.h"
 
 #define DEBUGME
 //#undef DEBUGME
@@ -209,6 +210,8 @@ GWizardProcess::~GWizardProcess() {
     mSprite = ENull;
   }
   GPlayer::mActiveBoss = ENull;
+  GGameState *gameState = (GGameState*)gGameEngine;
+  gameState->PlayMusicForCurrentLevel();
 }
 
 void GWizardProcess::SetAttackTimer() {

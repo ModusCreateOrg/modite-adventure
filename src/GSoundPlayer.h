@@ -20,7 +20,7 @@ public:
   BRaw* LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) override;
   TBool PlayMusic(TInt16 aResourceId);
 
-  void GenericPlaySfx(TUint16 aSfxNumber);
+  void TriggerSfx(TUint16 aSfxNumber);
 
   // SFX Methods //
 
@@ -36,22 +36,10 @@ public:
   // SFX PLAYER //
 
   void SfxPlayerSlash();
-  void SfxPlayerQuaffHealthPotion();
-  void SfxPlayerQuaffWaterSpell();
-  void SfxPlayerQuaffEarthSpell();
-  void SfxPlayerQuaffFireSpell();
-  void SfxPlayerQuaffEnergySpell();
-  void SfxPlayerTakeDamage();
-
-  // SFX Enemy (general)
-  void SfxEnemyDeath();
-  void SfxEnemyTakeDamage();
-
-  // SFX Playfield
-  void SfxPlayfieldSpikeRaise();
 
   void SfxItemHeart();
   void SfxItemPickupGeneric();
+
 };
 
 

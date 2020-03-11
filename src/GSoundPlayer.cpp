@@ -11,6 +11,9 @@ GSoundPlayer gSoundPlayer;
 
 static const TUint16 effectsList[] = {
   SFX_EMPTY_WAV,
+  SFX_CHEST_OPEN_WAV,
+  SFX_POT_TAKE_DAMAGE_WAV,
+  SFX_POT_DESTROYED_WAV,
   SFX_MENU_NAV_UP_WAV,
   SFX_MENU_NAV_DOWN_WAV,
   SFX_MENU_IN_WAV,
@@ -23,12 +26,23 @@ static const TUint16 effectsList[] = {
   SFX_PLAYER_QUAFF_EARTH_SPELL_WAV,
   SFX_PLAYER_QUAFF_FIRE_SPELL_WAV,
   SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV,
+  SFX_PLAYER_QUAFF_SPELL_WAV,
   SFX_PLAYER_TAKE_DAMAGE_WAV,
+  SFX_PLAYER_DEATH_WAV,
+  SFX_ENEMY_ATTACK_WAV,
   SFX_ENEMY_DEATH_WAV,
   SFX_ENEMY_TAKE_DAMAGE_WAV,
-  SFX_PLAYFIELD_SPIKE_RAISE_WAV,
+  SFX_ENEMY_TAUNT_WAV,
   SFX_ITEM_HEART_WAV,
-  SFX_ITEM_PICKUP_GENERIC_WAV
+  SFX_ITEM_PICKUP_GENERIC_WAV,
+  SFX_MIDBOSS_BOUNCE_WALL_WAV,
+  SFX_MIDBOSS_TRANSFORM_IN_WAV,
+  SFX_MIDBOSS_TRANSFORM_OUT_WAV,
+  SFX_MIDBOSS_ATTACK_ENERGY_WAV,
+  SFX_MIDBOSS_ATTACK_FIRE_WAV,
+  SFX_MIDBOSS_ATTACK_WATER_WAV,
+  SFX_MIDBOSS_ATTACK_EARTH_WAV,
+  SFX_DOOR_OPEN_WAV,
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
@@ -38,21 +52,22 @@ static TUint16 FindSfxNumber(TUint16 aSfxFile) {
       return (TUint16) i; // Should not go above UINT16_MAX
     }
   }
+  printf("WARNING :: Could not find SFX for ID %i\n", aSfxFile);
+
 
   return UINT16_MAX;
 }
 
 static const TUint16 allSongs[] = {
   EMPTYSONG_XM,
-  UNDER_WATER_XM,
-  CYBERPUNK_XM,
-  COUNTRYSIDE_XM,
+  LOGO_REVEAL_XM,
   MAIN_MENU_XM,
-  SPAAACE_XM,
-  GLACIAL_MOUNTAINS_XM,
   GAMEOVER_XM,
-  UNDERWATERFANTASY_XM,
-  ENTERCREDITS_XM
+  OVERWORLD_XM,
+  BOSS_1_XM,
+  BOSS_2_XM,
+  DUNGEON4_XM,
+  DUNGEON9_XM
 };
 
 
@@ -77,7 +92,6 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
     FreeMem(slot);
   }
 
-
   PlayMusic(EMPTYSONG_XM);
 
   SetMusicVolume(gOptions->music);
@@ -86,7 +100,7 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
-  aResourceId = EMPTYSONG_XM;
+//  aResourceId = EMPTYSONG_XM;
   TBool music = BSoundPlayer::PlayMusic(aResourceId);
 //  printf("%s %i\n", __PRETTY_FUNCTION__, aResourceId);
   // BSoundPlayer::PlayMusic un-mutes the music
@@ -118,11 +132,9 @@ TBool GSoundPlayer::LoadEffects() {
     LoadEffect(effectsList[i], i);
   }
 
-// TODO: @mtintiuc
-//  SetMusicVolume(gOptions->music);
-//  SetEffectsVolume(gOptions->sfx);
-  SetMusicVolume(.15);
-  SetEffectsVolume(.15);
+  SetMusicVolume(gOptions->music);
+  SetEffectsVolume(gOptions->sfx);
+
   return ETrue;
 }
 
@@ -136,9 +148,8 @@ BRaw *GSoundPlayer::LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) 
 
 
 
-void GSoundPlayer::GenericPlaySfx(TUint16 aSfxNumber) {
+void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber) {
   PlaySfx(FindSfxNumber(aSfxNumber));
-
 }
 
 
@@ -176,40 +187,6 @@ void GSoundPlayer::SfxPlayerSlash(){
   PlaySfx(FindSfxNumber(SFX_PLAYER_SLASH_WAV));
 }
 
-void GSoundPlayer::SfxPlayerQuaffHealthPotion() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffWaterSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_WATER_SPELL_WAV));
-}
-
-void GSoundPlayer::SfxPlayerQuaffEarthSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_EARTH_SPELL_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffFireSpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_FIRE_SPELL_WAV));
-}
-void GSoundPlayer::SfxPlayerQuaffEnergySpell() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_QUAFF_ENERGY_SPELL_WAV));
-}
-
-void GSoundPlayer::SfxPlayerTakeDamage() {
-  PlaySfx(FindSfxNumber(SFX_PLAYER_TAKE_DAMAGE_WAV));
-}
-
-
-// SFX Enemy (general)
-void GSoundPlayer::SfxEnemyDeath() {
-  PlaySfx(FindSfxNumber(SFX_ENEMY_DEATH_WAV));
-}
-void GSoundPlayer::SfxEnemyTakeDamage() {
-  PlaySfx(FindSfxNumber(SFX_ENEMY_TAKE_DAMAGE_WAV));
-}
-
-// SFX Playfield
-void GSoundPlayer::SfxPlayfieldSpikeRaise() {
-  PlaySfx(FindSfxNumber(SFX_PLAYFIELD_SPIKE_RAISE_WAV));
-}
 
 void GSoundPlayer::SfxItemHeart() {
   PlaySfx(FindSfxNumber(SFX_ITEM_HEART_WAV));

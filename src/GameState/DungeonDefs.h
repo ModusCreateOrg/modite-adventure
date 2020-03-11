@@ -114,18 +114,18 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN1_1280",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 0
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
         OW2_DGN1_1280_OW2_DGN1_L2_MAP, // 2
         OW2_DGN1_1280_OW2_DGN1_L3_MAP, // 3
-        OW2_DGN1_1280_OW2_DGN1_L4_MAP, // 4
-        OW2_DGN1_1280_OW2_DGN1_L5_MAP, // 5
-        OW2_DGN1_1280_OW2_DGN1_L6_MAP, // 6
-        OW2_DGN1_1280_OW2_DGN1_L7_MAP, // 7
-        OW2_DGN1_1280_OW2_DGN1_L8_MAP, // 8
-        OW2_DGN1_1280_OW2_DGN1_L9_MAP, // 9
+        -1, // OW2_DGN1_1280_OW2_DGN1_L4_MAP, // 4
+        -1, // OW2_DGN1_1280_OW2_DGN1_L5_MAP, // 5
+        -1, // OW2_DGN1_1280_OW2_DGN1_L6_MAP, // 6
+        -1, // OW2_DGN1_1280_OW2_DGN1_L7_MAP, // 7
+        -1, // OW2_DGN1_1280_OW2_DGN1_L8_MAP, // 8
+        -1, // OW2_DGN1_1280_OW2_DGN1_L9_MAP, // 9
         -1 // EMPTY -- no level 10 evar!!
       },
     }
@@ -135,7 +135,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN2_1536",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 0
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
@@ -156,7 +156,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN3_1792",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 0
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
@@ -177,7 +177,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN4_2048",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 0
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1

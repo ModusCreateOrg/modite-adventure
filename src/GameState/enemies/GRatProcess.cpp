@@ -9,7 +9,7 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 10 * FACTOR;
 
 const TInt16 IDLE_SPEED = 5 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
@@ -441,8 +441,7 @@ void GRatProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
   if (mStateTimer <= 0) {
-    // walk between 2 and 6 tiles
-    mStateTimer = TInt16(TFloat(Random(2, 6)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(5, 10)) * 32 / VELOCITY);
   }
   mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
   mSprite->MoveInDirection(VELOCITY, aDirection);
