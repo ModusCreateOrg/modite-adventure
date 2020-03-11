@@ -121,7 +121,7 @@ struct GPlayer {
   static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
-  static GAnchorSprite *mSprite;
+  static GPlayerSprite *mSprite;
   static GGameState *mGameState;
   static GEquipped mEquipped;
   static TBool mGameOver;

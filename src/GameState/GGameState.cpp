@@ -705,6 +705,18 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx - 20, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
         break;
 
+      case ATTR_TURRET:
+        RemapSlot(CRYSTAL_BMP, TURRET_SLOT, IMAGE_64x64);
+        // RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        if (!aSpawnObjects) {
+          break;
+        }
+#ifdef DEBUGME
+        printf("TURRET at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY TURRET");
+        break;
+
         // mid boss
         // only one mid boss can be available
       case ATTR_MID_BOSS_ENERGY:
