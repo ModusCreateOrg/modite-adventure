@@ -105,7 +105,6 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
 
   mHitState = 0;
   mTaunt = EFalse;
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 
   mSprite->SetStatMultipliers(5.0, 10.0, 5.0);
   mSprite->StartAnimation(idleAnimation);
@@ -132,14 +131,6 @@ void GTurretProcess::Idle(DIRECTION aDirection) {
   if (mSprite->AnimDone()) {
     mSprite->StartAnimation(idleAnimation);
   }
-}
-
-void GTurretProcess::Taunt(DIRECTION aDirection) {
-  return;
-}
-
-void GTurretProcess::Walk(DIRECTION aDirection) {
-  return;
 }
 
 void GTurretProcess::Attack(DIRECTION aDirection) {

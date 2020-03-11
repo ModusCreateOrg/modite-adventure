@@ -93,7 +93,12 @@ TUint16 GPlayer::GetSpellSlot() {
 
 TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
   if (!aSprite->mInvulnerable) {
-    TInt attackAmount = aSprite->mCollided->mAttackStrength;
+    TInt attackAmount;
+    if (aIsSpell) {
+      attackAmount = mAttackStrength;
+    } else {
+      attackAmount = aSprite->mCollided->mAttackStrength;
+    }
 
     if (aIsSpell) {
       if (mEquipped.mSpellBookElement && aSprite->mElement) {
