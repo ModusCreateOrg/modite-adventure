@@ -95,7 +95,7 @@ TUint16 GPlayer::GetSpellSlot() {
 TBool GPlayer::MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell) {
   GAnchorSprite* sprite = aProcess->GetSprite();
   if (sprite && !aProcess->mInvulnerable) {
-    TInt attackAmount = mAttackStrength;
+    TInt attackAmount = sprite->mCollided->mAttackStrength;
 
     if (aIsSpell) {
       if (mEquipped.mSpellBookElement && sprite->mElement) {
