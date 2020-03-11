@@ -398,6 +398,11 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 /* endregion }}} */
 
 /*********************************************************************************
@@ -448,71 +453,20 @@ void GSlimeProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GSlimeProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GSlimeProcess::Attack(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(attackUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(attackDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(attackLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(attackRightAnimation);
-      break;
-    default:
-      Panic("GSlimeProcess No attack direction!\n");
-      break;
-
-  }
+  mSprite->StartAnimationInDirection(attackAnimations, aDirection);
 }
 
 void GSlimeProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GSlimeProcess no Hit direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GSlimeProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GSlimeProcess::Death(DIRECTION aDirection) {

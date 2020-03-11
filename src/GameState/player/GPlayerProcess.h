@@ -4,13 +4,12 @@
 class GGameState;
 class GGamePlayfield;
 class GGameState;
-class GPlayerBlinkProcess;
 class BMemoryStream;
 
 //class GAnchorSprite;
 
 #include "GPlayerSprite.h"
-#include "GProcess.h"
+#include "GLivingProcess.h"
 #include "GGame.h"
 
 const TFloat PLAYER_VELOCITY = 3 / TFloat(FACTOR);
@@ -22,11 +21,16 @@ const TInt PERFECT_CHARGE_WINDOW = 2 * FACTOR; // perfect charge window duration
 const TFloat CHARGE_BONUS = 2.0; // damage multiplier for maximum charged sword
 const TFloat PERFECT_CHARGE_BONUS = 3.5; // damage multiplier for perfect charge
 
-class GPlayerProcess : public GProcess {
+class GPlayerProcess : public GLivingProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
 
   ~GPlayerProcess();
+
+private:
+  void BlinkOn() OVERRIDE;
+
+  void BlinkOff() OVERRIDE;
 
 public:
   void StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY, TInt16 aExitingDungeon = OVERWORLD_DUNGEON, TInt16 aExitingLevel = -1);
@@ -84,8 +88,6 @@ public:
   void ReadCustomFromStream(BMemoryStream &aStream);
 
 public:
-  GPlayerBlinkProcess *mBlinkProcess;
-
   static DIRECTION mLastDirection;
 //  static TUint16 mLastDirection;
   static TFloat mRespawnAt[2];

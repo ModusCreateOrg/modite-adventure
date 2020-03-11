@@ -12,12 +12,11 @@
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt IDLE_SPEED = 6 * FACTOR;
-const TInt HIT_SPEED = 1 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 4 / FACTOR;
 const TFloat ATTACK_DISTANCE = 6 * TILESIZE;
-const TInt MAX_HIT_STATE = 4;
+const TInt BLINK_TIME = 4 * FACTOR;
 
 // region  ANIMATIONS {{{
 
@@ -105,7 +104,6 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
 
   mHitState = 0;
   mTaunt = EFalse;
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 
   mSprite->SetStatMultipliers(5.0, 10.0, 5.0);
   mSprite->StartAnimation(idleAnimation);
@@ -134,14 +132,6 @@ void GTurretProcess::Idle(DIRECTION aDirection) {
   }
 }
 
-void GTurretProcess::Taunt(DIRECTION aDirection) {
-  return;
-}
-
-void GTurretProcess::Walk(DIRECTION aDirection) {
-  return;
-}
-
 void GTurretProcess::Attack(DIRECTION aDirection) {
   // fire 1-3 projectiled
   TFloat xx = mSprite->x,
@@ -168,6 +158,7 @@ void GTurretProcess::Attack(DIRECTION aDirection) {
 
 void GTurretProcess::Hit(DIRECTION aDirection) {
   mStateTimer = 0;
+  StartBlink(BLINK_TIME);
 }
 
 void GTurretProcess::Death(DIRECTION aDirection) {
@@ -175,26 +166,13 @@ void GTurretProcess::Death(DIRECTION aDirection) {
 }
 
 TBool GTurretProcess::HitState() {
-  if (--mStateTimer < 0) {
-    if (mHitState % 2 == 0) {
-      mSprite->mFill = -1;
-    } else {
-      mSprite->mFill = COLOR_WHITE;
-    }
-    mStateTimer = HIT_SPEED;
-    mHitState++;
-  }
-
-  if (mHitState > MAX_HIT_STATE) {
-    mHitState = 0;
-    mSprite->ClearFlags(SFLAG_ANIMATE);
-  }
+  mSprite->ClearFlags(SFLAG_ANIMATE);
 
   return GEnemyProcess::HitState();
 }
 
 TBool GTurretProcess::MaybeAttack() {
-  if (mPlayerSprite->mInvulnerable) {
+  if (GPlayer::mProcess->mInvulnerable) {
     return EFalse;
   }
 
@@ -210,7 +188,7 @@ TBool GTurretProcess::MaybeAttack() {
 
   TRect myRect, hisRect;
   mSprite->GetRect(myRect);
-  mPlayerSprite->GetRect(hisRect);
+  GPlayer::mSprite->GetRect(hisRect);
 
   if (ABS(myRect.y2 - hisRect.y2) < ABS(myRect.x1 - hisRect.x1)) {
     if (myRect.x1 >= hisRect.x2) {

@@ -67,4 +67,14 @@ extern ANIMSCRIPT hitLightUpAnimation[]; // attacked
 extern ANIMSCRIPT hitMediumUpAnimation[]; // attacked
 extern ANIMSCRIPT hitHardUpAnimation[]; // attacked
 
+extern ANIMSCRIPT* idleAnimations[];
+extern ANIMSCRIPT* walkAnimations1[];
+extern ANIMSCRIPT* walkAnimations2[];
+extern ANIMSCRIPT* swordChargeAnimations[];
+extern ANIMSCRIPT* swordAnimationsNoGloves[];
+extern ANIMSCRIPT* swordAnimationsWithGloves[];
+extern ANIMSCRIPT* hitLightAnimations[];
+extern ANIMSCRIPT* hitMediumAnimations[];
+extern ANIMSCRIPT* hitHardAnimations[];
+
 #endif // MODITE_GPLAYERANIMATIONS_H

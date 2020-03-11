@@ -383,6 +383,12 @@ static ANIMSCRIPT hitSpellAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
+static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
+
 // endregion }}}
 
 /*********************************************************************************
@@ -417,23 +423,7 @@ GTrollProcess::~GTrollProcess() {
 
 void GTrollProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(idleUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(idleDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(idleLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(idleRightAnimation);
-      break;
-    default:
-      Panic("GTrollProcess no idle direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GTrollProcess::Taunt(DIRECTION aDirection) {
@@ -447,70 +437,20 @@ void GTrollProcess::Walk(DIRECTION aDirection) {
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
   }
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(mStep ? walkUpAnimation1 : walkUpAnimation2);
-      mSprite->vy = -VELOCITY;
-      break;
-    case DIRECTION_DOWN:
-      mSprite->vy = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation1 : walkDownAnimation2);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->vx = -VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation1 : walkLeftAnimation2);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->vx = VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation1 : walkRightAnimation2);
-      break;
-    default:
-      Panic("GTrollProcess no walk direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+  mSprite->MoveInDirection(VELOCITY, aDirection);
 }
 
 void GTrollProcess::Attack(DIRECTION aDirection) {
-  switch (mSprite->mDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(attackUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(attackDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(attackLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(attackRightAnimation);
-      break;
-    default:
-      Panic("GTrollProcess no attack direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(attackAnimations, aDirection);
 }
 
 void GTrollProcess::Hit(DIRECTION aDirection) {
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mSprite->StartAnimation(hitUpAnimation);
-      break;
-    case DIRECTION_DOWN:
-      mSprite->StartAnimation(hitDownAnimation);
-      break;
-    case DIRECTION_LEFT:
-      mSprite->StartAnimation(hitLeftAnimation);
-      break;
-    case DIRECTION_RIGHT:
-      mSprite->StartAnimation(hitRightAnimation);
-      break;
-    case DIRECTION_SPELL:
-      mSprite->StartAnimation(hitSpellAnimation);
-      break;
-    default:
-      Panic("GTrollProcess no Hit direction\n");
-      break;
-  }
+  mSprite->StartAnimationInDirection(hitAnimations, aDirection);
+}
+
+void GTrollProcess::Spell(DIRECTION aDirection) {
+  mSprite->StartAnimation(hitSpellAnimation);
 }
 
 void GTrollProcess::Death(DIRECTION aDirection) {

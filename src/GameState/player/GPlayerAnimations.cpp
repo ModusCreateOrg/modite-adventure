@@ -645,3 +645,25 @@ ANIMSCRIPT hitHardUpAnimation[] = {
   ASTEP(HITSPEED, IMG_DAMAGE_UP + 3),
   AEND
 };
+
+ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+ANIMSCRIPT* swordChargeAnimations[] = {
+  swordChargeUpAnimation, swordChargeDownAnimation, swordChargeLeftAnimation, swordChargeRightAnimation
+};
+ANIMSCRIPT* swordAnimationsNoGloves[] = {
+  swordUpAnimationNoGloves,
+  swordDownAnimationNoGloves,
+  swordLeftAnimationNoGloves,
+  swordRightAnimationNoGloves,
+};
+ANIMSCRIPT* swordAnimationsWithGloves[] = {
+  swordUpAnimationWithGloves,
+  swordDownAnimationWithGloves,
+  swordLeftAnimationWithGloves,
+  swordRightAnimationWithGloves,
+};
+ANIMSCRIPT* hitLightAnimations[] = {hitLightUpAnimation, hitLightDownAnimation, hitLightLeftAnimation, hitLightRightAnimation};
+ANIMSCRIPT* hitMediumAnimations[] = {hitMediumUpAnimation, hitMediumDownAnimation, hitMediumLeftAnimation, hitMediumRightAnimation};
+ANIMSCRIPT* hitHardAnimations[] = {hitHardUpAnimation, hitHardDownAnimation, hitHardLeftAnimation, hitHardRightAnimation};

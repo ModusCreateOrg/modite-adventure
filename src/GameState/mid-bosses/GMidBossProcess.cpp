@@ -12,7 +12,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
                                  TUint16 aSlot, TInt aIp, TUint16 aAttribute,
                                  TUint16 aDropsItemAttribute,
                                  TInt16 aSpriteSheet)
-    : GProcess(aAttribute) {
+    : GLivingProcess(aAttribute) {
   mIp = aIp;
   mSprite = ENull;
   mSaveToStream = ETrue;
@@ -22,7 +22,6 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   mHitTimer = 0;
   mAttackTimer = 0;
   mStateTimer = 0;
-  mBlinkTimer = 0;
   mStep = 0;
 
   mSprite =
@@ -78,6 +77,7 @@ GMidBossProcess::~GMidBossProcess() {
 }
 
 TBool GMidBossProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   switch (mState) {
   case MB_IDLE_STATE:
     return IdleState();
@@ -105,11 +105,9 @@ TBool GMidBossProcess::RunBefore() {
 }
 
 TBool GMidBossProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   if (mHitTimer-- < 0) {
     mHitTimer = 0;
-  }
-  if (mBlinkTimer-- > 0) {
-    mSprite->mFill = mBlinkTimer % 2 ? COLOR_WHITE : -1;
   }
   return ETrue;
 }
@@ -118,9 +116,6 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
   mSprite->type = STYPE_ENEMY;
-
-  // Reset blinking for all new states
-  mSprite->Fill(-1);
 
   switch (aState) {
 
@@ -234,7 +229,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 TBool GMidBossProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(mSprite, ETrue)) {
+    if (GPlayer::MaybeDamage(this, ETrue)) {
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       mHitTimer += HIT_SPAM_TIME * 2;
       return ETrue;
@@ -243,8 +238,8 @@ TBool GMidBossProcess::MaybeHit() {
 
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(mSprite, EFalse)) {
-      mBlinkTimer = BLINK_DURATION;
+    if (GPlayer::MaybeDamage(this, EFalse)) {
+      StartBlink(BLINK_DURATION);
       mHitTimer += HIT_SPAM_TIME;
       return ETrue;
     }
@@ -288,10 +283,10 @@ TBool GMidBossProcess::IdleState() {
     }
 
     DIRECTION direction = GAnchorSprite::RandomDirection();
-    TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : VELOCITY,
-           vy = direction == DIRECTION_UP ? -VELOCITY : VELOCITY;
+    TFloat vx = direction == DIRECTION_LEFT ? -VELOCITY : direction == DIRECTION_RIGHT ? VELOCITY : 0,
+           vy = direction == DIRECTION_UP ? -VELOCITY : direction == DIRECTION_DOWN ? VELOCITY : 0;
 
-    if (mSprite->CanWalk(direction, vx, vy)) {
+    if (mSprite->CanWalk(vx, vy)) {
       NewState(MB_WALK_STATE, direction);
       return ETrue;
     }
@@ -330,7 +325,7 @@ TBool GMidBossProcess::WalkState() {
     return ETrue;
   }
 
-  if (!mSprite->CanWalk(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
     NewState(MB_IDLE_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -547,7 +542,7 @@ TBool GMidBossProcess::SpellState() {
     if (mSprite->mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
     } else {
-      mSprite->mInvulnerable = EFalse;
+      mInvulnerable = EFalse;
       mSprite->ClearCType(STYPE_PBULLET);
       NewState(MB_IDLE_STATE, mSprite->mDirection);
     }

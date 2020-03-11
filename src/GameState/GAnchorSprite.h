@@ -12,7 +12,6 @@ enum DIRECTION {
   DIRECTION_DOWN,
   DIRECTION_LEFT,
   DIRECTION_RIGHT,
-  DIRECTION_SPELL,
 };
 
 enum ELEMENT {
@@ -85,7 +84,8 @@ public:
 
   TBool IsFloorTile(TFloat aX, TFloat aY);
 
-  TBool IsFloor(DIRECTION aDirection, TFloat aX, TFloat aY);
+  TBool CanWalkInDirection(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
+  TBool CanWalk(TFloat aDx, TFloat aDy, TBool aCheckAllSides = EFalse);
 
   void SafePosition(BSprite *aOther);
 
@@ -106,8 +106,11 @@ public:
 
 public:
   static DIRECTION RandomDirection();
+  static DIRECTION RotateDirection(DIRECTION aDirection, TInt aRotateClockwiseCount);
 
-  TBool CanWalk(DIRECTION aDirection, TFloat aVx, TFloat aVy);
+  void StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection);
+  void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);
+
   // set the BMapPlayfield tile in map attribute
   void SetAttribute(TUint mAttribute);
 
@@ -119,9 +122,7 @@ public:
   TInt16 mHitPoints, mMaxHitPoints;
   TInt32 mAttackStrength;
   TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
-  TBool mInvulnerable;   // cannot be attacked
   TFloat mLastX, mLastY; // coordinates from last frame
-  TFloat mVelocity;
   TRect mShadow;
   TUint mAttributeSave;
   ELEMENT mElement;

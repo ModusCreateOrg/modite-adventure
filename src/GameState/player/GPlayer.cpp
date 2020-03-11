@@ -1,4 +1,5 @@
 #include <GameState/status/GStatProcess.h>
+#include <GameState/GLivingProcess.h>
 #include "GPlayer.h"
 #include "Items.h"
 
@@ -91,13 +92,19 @@ TUint16 GPlayer::GetSpellSlot() {
   return 0;
 }
 
-TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
-  if (!aSprite->mInvulnerable) {
-    TInt attackAmount = aSprite->mCollided->mAttackStrength;
+TBool GPlayer::MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell) {
+  GAnchorSprite* sprite = aProcess->GetSprite();
+  if (sprite && !aProcess->mInvulnerable) {
+    TInt attackAmount;
+    if (aIsSpell) {
+      attackAmount = mAttackStrength;
+    } else {
+      attackAmount = sprite->mCollided->mAttackStrength;
+    }
 
     if (aIsSpell) {
-      if (mEquipped.mSpellBookElement && aSprite->mElement) {
-        attackAmount *= SPELLBOOK_MATRIX[aSprite->mElement - 1][mEquipped.mSpellBookElement - 1];
+      if (mEquipped.mSpellBookElement && sprite->mElement) {
+        attackAmount *= SPELLBOOK_MATRIX[sprite->mElement - 1][mEquipped.mSpellBookElement - 1];
       } else {
         attackAmount *= SPELL_ATTACK_BONUS;
       }
@@ -105,8 +112,8 @@ TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
     else {
 
       // Be able to attack a mid-boss with a like ring
-      if (mEquipped.mRingElement && aSprite->mElement) {
-        attackAmount *= RING_MATRIX[aSprite->mElement - 1][mEquipped.mRingElement - 1];
+      if (mEquipped.mRingElement && sprite->mElement) {
+        attackAmount *= RING_MATRIX[sprite->mElement - 1][mEquipped.mRingElement - 1];
       }
       else {
         attackAmount *= RING_HIT_BONUS;
@@ -115,10 +122,10 @@ TBool GPlayer::MaybeDamage(GAnchorSprite *aSprite, TBool aIsSpell) {
     }
     // Random +/- 20% damage modifier
     attackAmount = (attackAmount * Random(80, 120)) / 100;
-    aSprite->mHitPoints -= attackAmount;
-    auto *p = new GStatProcess(aSprite->x + 68, aSprite->y + 32, "%d", attackAmount);
+    sprite->mHitPoints -= attackAmount;
+    auto *p = new GStatProcess(sprite->x + 68, sprite->y + 32, "%d", attackAmount);
     p->SetMessageType(STAT_ENEMY_HIT);
-    aSprite->mGameState->AddProcess(p);
+    sprite->mGameState->AddProcess(p);
     gSoundPlayer.SfxEnemyTakeDamage();
 
     return ETrue;

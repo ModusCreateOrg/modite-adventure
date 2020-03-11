@@ -2,7 +2,7 @@
 #define GWIZARDPROCESS_H
 
 #include "GAnchorSprite.h"
-#include "GProcess.h"
+#include "GLivingProcess.h"
 #include "GGameState.h"
 #include "common/GSpellOverlayProcess.h"
 
@@ -17,7 +17,7 @@ enum {
   STATE_DEATH,
 };
 
-class GWizardProcess : public GProcess {
+class GWizardProcess : public GLivingProcess {
 public:
   GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet);
   ~GWizardProcess() OVERRIDE;
@@ -77,7 +77,7 @@ protected:
   TInt mStep;
   TInt mAttackType;
   TInt mDeathCounter, mSpellCounter;
-  TInt mStateTimer, mAttackTimer, mHitTimer, mBlinkTimer;
+  TInt mStateTimer, mAttackTimer, mHitTimer;
   TBool mChanneling;
 };
 

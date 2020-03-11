@@ -42,21 +42,6 @@ const TInt16 HIT_SPEED = 5;
 const TInt16 IDLE_SPEED = 1;
 const TInt16 ATTACK_SPEED = 5;
 
-static DIRECTION reverse_direction(DIRECTION d) {
-  //  return (DIRECTION)Random(0, 3);
-  switch (d) {
-    case DIRECTION_UP:
-      return DIRECTION_DOWN;
-    default:
-    case DIRECTION_DOWN:
-      return DIRECTION_UP;
-    case DIRECTION_LEFT:
-      return DIRECTION_RIGHT;
-    case DIRECTION_RIGHT:
-      return DIRECTION_LEFT;
-  }
-}
-
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(IDLE_SPEED, IMG_FINAL_BOSS_IDLE + 1),
@@ -281,9 +266,12 @@ static ANIMSCRIPT fireRightAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
+static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+
 // constructor
 GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
-    : GProcess(aParams) {
+    : GLivingProcess(aParams) {
   mGameState = aGameState;
   mSprite = new GAnchorSprite(mGameState, 0, BOSS_SLOT);
   mSprite->Name("Final Boss");
@@ -324,29 +312,9 @@ void GFinalBossProcess::Idle(DIRECTION aDirection) {
 
 void GFinalBossProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
-  switch (aDirection) {
-    case DIRECTION_UP:
-      mDirection = DIRECTION_UP;
-      mSprite->vy = -WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkUpAnimation2 : walkUpAnimation1);
-      break;
-    default:
-    case DIRECTION_DOWN:
-      mDirection = DIRECTION_DOWN;
-      mSprite->vy = WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkDownAnimation2 : walkDownAnimation1);
-      break;
-    case DIRECTION_LEFT:
-      mDirection = DIRECTION_LEFT;
-      mSprite->vx = -WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkLeftAnimation2 : walkLeftAnimation1);
-      break;
-    case DIRECTION_RIGHT:
-      mDirection = DIRECTION_RIGHT;
-      mSprite->vx = WALK_VELOCITY;
-      mSprite->StartAnimation(mStep ? walkRightAnimation2 : walkRightAnimation1);
-      break;
-  }
+  mDirection = aDirection;
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
+  mSprite->MoveInDirection(WALK_VELOCITY, aDirection);
 }
 
 void GFinalBossProcess::Projectile(DIRECTION aDirection) {
@@ -392,7 +360,7 @@ void GFinalBossProcess::Teleport(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(teleportAnimation1);
   mStep = 0;
-  mSprite->mInvulnerable = ETrue;
+  mInvulnerable = ETrue;
 }
 
 void GFinalBossProcess::Hit(DIRECTION aDirection) {
@@ -461,8 +429,8 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
 TBool GFinalBossProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (!mSprite->mInvulnerable) {
-      mSprite->mInvulnerable = ETrue;
+    if (!mInvulnerable) {
+      mInvulnerable = ETrue;
       // TODO take into account which spellbook is being wielded
       // random variation from 100% to 150% base damage
       TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
@@ -484,9 +452,9 @@ TBool GFinalBossProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (!mSprite->mInvulnerable) {
+    if (!mInvulnerable) {
       mSprite->Nudge(); // move sprite so it's not on top of player
-      mSprite->mInvulnerable = ETrue;
+      mInvulnerable = ETrue;
       // random variation from 100% to 150% base damage
       TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
       mSprite->mHitPoints -= hitAmount;
@@ -496,23 +464,7 @@ TBool GFinalBossProcess::MaybeHit() {
       if (mSprite->mHitPoints <= 0) {
         mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
       }
-      switch (other->mDirection) {
-        case DIRECTION_RIGHT:
-          SetState(STATE_HIT, DIRECTION_LEFT);
-          break;
-        case DIRECTION_LEFT:
-          SetState(STATE_HIT, DIRECTION_RIGHT);
-          break;
-        case DIRECTION_UP:
-          SetState(STATE_HIT, DIRECTION_DOWN);
-          break;
-        case DIRECTION_DOWN:
-          SetState(STATE_HIT, DIRECTION_UP);
-          break;
-        default:
-          Panic("GFinalBossProcess no hit direction\n");
-          break;
-      }
+      SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;
     }
   }
@@ -558,11 +510,11 @@ TBool GFinalBossProcess::WalkState() {
     return ETrue;
   }
 
-  if (!mSprite->CanWalk(mDirection, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
 #ifdef DEBUGME
     printf("Final Boss can't walk direction %s\n", direction_names[mDirection]);
 #endif
-    SetState(STATE_WALK, reverse_direction(mDirection));
+    SetState(STATE_WALK, GAnchorSprite::RotateDirection(mDirection, 2));
     return ETrue;
   }
 
@@ -612,10 +564,10 @@ TBool GFinalBossProcess::ProjectileState() {
 
 TBool GFinalBossProcess::TeleportState() {
   // check to see if boss has met a wall
-  TBool canWalkUp = mSprite->CanWalk(DIRECTION_UP, mSprite->vx, mSprite->vy),
-        canWalkLt = mSprite->CanWalk(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
-        canWalkRt = mSprite->CanWalk(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
-        canWalkDn = mSprite->CanWalk(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
+  TBool canWalkUp = mSprite->CanWalkInDirection(DIRECTION_UP, mSprite->vx, mSprite->vy),
+        canWalkLt = mSprite->CanWalkInDirection(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
+        canWalkRt = mSprite->CanWalkInDirection(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
+        canWalkDn = mSprite->CanWalkInDirection(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
 
   // Bound around the room while the player is being attacked by the spikes/pillars
   if (!canWalkUp) {
@@ -720,7 +672,7 @@ TBool GFinalBossProcess::HitState() {
 
   if (mHitTimer < 0) {
     mHitTimer = HIT_SPAM_TIME;
-    mSprite->mInvulnerable = EFalse;
+    mInvulnerable = EFalse;
     mSprite->ClearCType(STYPE_PBULLET);
     // TODO @michaeltintiuc fix this
     SetState(STATE_TELEPORT, DIRECTION_DOWN);
@@ -731,7 +683,7 @@ TBool GFinalBossProcess::HitState() {
       SetState(STATE_DEATH, mSprite->mDirection);
     }
     else {
-      mSprite->mInvulnerable = EFalse;
+      mInvulnerable = EFalse;
       mSprite->ClearCType(STYPE_PBULLET);
       SetState(STATE_IDLE, mSprite->mDirection);
     }
@@ -746,7 +698,7 @@ TBool GFinalBossProcess::SpellState() {
       SetState(STATE_DEATH, mSprite->mDirection);
     }
     else {
-      mSprite->mInvulnerable = EFalse;
+      mInvulnerable = EFalse;
       mSprite->ClearCType(STYPE_PBULLET);
       SetState(STATE_IDLE, mSprite->mDirection);
     }
@@ -764,6 +716,7 @@ TBool GFinalBossProcess::DeathState() {
 }
 
 TBool GFinalBossProcess::RunBefore() {
+  GLivingProcess::RunBefore();
   switch (mState) {
     case STATE_IDLE:
       return IdleState();
@@ -786,5 +739,6 @@ TBool GFinalBossProcess::RunBefore() {
 }
 
 TBool GFinalBossProcess::RunAfter() {
+  GLivingProcess::RunAfter();
   return ETrue;
 }

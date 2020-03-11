@@ -184,9 +184,7 @@ TBool GWizardProjectileProcess::RunBefore() {
     return EFalse;
   }
 
-  if (mStep == 0 &&
-      (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy) ||
-       !mSprite->IsFloor(DIRECTION_UP, mSprite->vx, mSprite->vy))) {
+  if (mStep == 0 && !mSprite->CanWalk(mSprite->vx, mSprite->vy, ETrue)) {
     return EFalse;
   }
 
@@ -225,8 +223,7 @@ TBool GWizardProjectileProcess::RunAfter() {
     break;
   }
 
-  if (!mSprite->IsFloor(DIRECTION_DOWN, mSprite->vx, mSprite->vy) ||
-      !mSprite->IsFloor(DIRECTION_UP, mSprite->vx, mSprite->vy)) {
+  if (!mSprite->CanWalk(mSprite->vx, mSprite->vy, ETrue)) {
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->vx = mSprite->vy = 0;
     StartExplodeAnimation();
