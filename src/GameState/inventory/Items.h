@@ -90,7 +90,7 @@ static const char *itemNames[] = {
   "Water Amulet",
   "Fire Amulet",
   "Earth Amulet",
-  "Yellow Amulet",
+  "Energy Amulet",
   "Life Potion",
   "Life Potion",
   "Mana Potion",
