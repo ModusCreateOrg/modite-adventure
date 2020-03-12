@@ -35,7 +35,7 @@ const TUint16 ATTR_STONE_STAIRS_UP = 1;
 const TUint16 ATTR_STONE_STAIRS_DOWN = 2;
 const TUint16 ATTR_WOOD_STAIRS_UP = 3;
 const TUint16 ATTR_WOOD_STAIRS_DOWN = 4;
-const TUint16 ATTR_CRATE = 5;
+const TUint16 ATTR_POT = 5;
 const TUint16 ATTR_CHEST = 6;
 const TUint16 ATTR_SPIKES = 7;
 const TUint16 ATTR_WOOD_DOOR_H = 8;   // horizontal
@@ -56,7 +56,7 @@ const TUint16 ATTR_RAT = 22;
 const TUint16 ATTR_SLIME = 23;
 const TUint16 ATTR_TROLL = 24;
 const TUint16 ATTR_CHEST_OPEN = 25;
-const TUint16 ATTR_CRATE_GONE = 26;
+const TUint16 ATTR_POT_GONE = 26;
 const TUint16 ATTR_DUNGEON_ENTRANCE = 27;
 const TUint16 ATTR_TURRET = 28;
 // mid bosses

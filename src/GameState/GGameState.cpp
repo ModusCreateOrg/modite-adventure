@@ -471,16 +471,16 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "WOOD");
         break;
 
-      case ATTR_CRATE:
+      case ATTR_POT:
 #ifdef DEBUGME
-        printf("CRATE at %.2f,%.2f %d, %d\n", xx, yy, row, col);
+        printf("POT at %.2f,%.2f %d, %d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "CRATE");
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_DOWN, "POT");
         break;
 
-      case ATTR_CRATE_GONE:
+      case ATTR_POT_GONE:
 #ifdef DEBUGME
-        printf("CRATE GONE at %.2f,%.2f %d, %d\n", xx, yy, row, col);
+        printf("POT GONE at %.2f,%.2f %d, %d\n", xx, yy, row, col);
 #endif
         if (params) {
           GItemProcess::SpawnItem(this, ip, params, xx, yy + 32);
