@@ -109,83 +109,83 @@ PATH resources/tilemaps/OW1_DGN4_1024
 TMX OW1_DGN4_1024.txt
 
 ## OVERWORLD 1 Dungeons
-PATH resources/tilemaps/OW2_DGN1_1280
+PATH resources/tilemaps/OW2,3/OW2_DGN1_1280
 TMX OW2_DGN1_1280.txt
-PATH resources/tilemaps/OW2_DGN2_1536
+PATH resources/tilemaps/OW2,3/OW2_DGN2_1536
 TMX OW2_DGN2_1536.txt
-PATH resources/tilemaps/OW2_DGN3_1792
+PATH resources/tilemaps/OW2,3/OW2_DGN3_1792
 TMX OW2_DGN3_1792.txt
-PATH resources/tilemaps/OW2_DGN4_2048
+PATH resources/tilemaps/OW2,3/OW2_DGN4_2048
 TMX OW2_DGN4_2048.txt
 
 ## OVERWORLD 2 Dungeons
-PATH resources/tilemaps/OW3_DGN1_2304
+PATH resources/tilemaps/OW2,3/OW3_DGN1_2304
 TMX OW3_DGN1_2304.txt
-PATH resources/tilemaps/OW3_DGN2_2560
+PATH resources/tilemaps/OW2,3/OW3_DGN2_2560
 TMX OW3_DGN2_2560.txt
-PATH resources/tilemaps/OW3_DGN3_2816
+PATH resources/tilemaps/OW2,3/OW3_DGN3_2816
 TMX OW3_DGN3_2816.txt
-PATH resources/tilemaps/OW3_DGN4_3072
+PATH resources/tilemaps/OW2,3/OW3_DGN4_3072
 TMX OW3_DGN4_3072.txt
 
 ## OVERWORLD 3 Dungeons
-PATH resources/tilemaps/OW4_DGN1_3328
+PATH resources/tilemaps/OW4,6/OW4_DGN1_3328
 TMX OW4_DGN1_3328.txt
-PATH resources/tilemaps/OW4_DGN2_3584
+PATH resources/tilemaps/OW4,6/OW4_DGN2_3584
 TMX OW4_DGN2_3584.txt
-PATH resources/tilemaps/OW4_DGN3_3840
+PATH resources/tilemaps/OW4,6/OW4_DGN3_3840
 TMX OW4_DGN3_3840.txt
-PATH resources/tilemaps/OW4_DGN4_4096
+PATH resources/tilemaps/OW4,6/OW4_DGN4_4096
 TMX OW4_DGN4_4096.txt
 
 ## OVERWORLD 4 Dungeons
-PATH resources/tilemaps/OW5_DGN1_4352
+PATH resources/tilemaps/OW5,7/OW5_DGN1_4352
 TMX OW5_DGN1_4352.txt
-PATH resources/tilemaps/OW5_DGN2_4608
+PATH resources/tilemaps/OW5,7/OW5_DGN2_4608
 TMX OW5_DGN2_4608.txt
-PATH resources/tilemaps/OW5_DGN3_4864
+PATH resources/tilemaps/OW5,7/OW5_DGN3_4864
 TMX OW5_DGN3_4864.txt
-PATH resources/tilemaps/OW5_DGN4_5120
+PATH resources/tilemaps/OW5,7/OW5_DGN4_5120
 TMX OW5_DGN4_5120.txt
 
 ## OVERWORLD 5 Dungeons
-PATH resources/tilemaps/OW6_DGN1_5376
+PATH resources/tilemaps/OW4,6/OW6_DGN1_5376
 TMX OW6_DGN1_5376.txt
-PATH resources/tilemaps/OW6_DGN2_5632
+PATH resources/tilemaps/OW4,6/OW6_DGN2_5632
 TMX OW6_DGN2_5632.txt
-PATH resources/tilemaps/OW6_DGN3_5888
+PATH resources/tilemaps/OW4,6/OW6_DGN3_5888
 TMX OW6_DGN3_5888.txt
-PATH resources/tilemaps/OW6_DGN4_6144
+PATH resources/tilemaps/OW4,6/OW6_DGN4_6144
 TMX OW6_DGN4_6144.txt
 
 ## OVERWORLD 6 Dungeons
-PATH resources/tilemaps/OW7_DGN1_6400
+PATH resources/tilemaps/OW5,7/OW7_DGN1_6400
 TMX OW7_DGN1_6400.txt
-PATH resources/tilemaps/OW7_DGN2_6656
+PATH resources/tilemaps/OW5,7/OW7_DGN2_6656
 TMX OW7_DGN2_6656.txt
-PATH resources/tilemaps/OW7_DGN3_6912
+PATH resources/tilemaps/OW5,7/OW7_DGN3_6912
 TMX OW7_DGN3_6912.txt
-PATH resources/tilemaps/OW7_DGN4_7168
+PATH resources/tilemaps/OW5,7/OW7_DGN4_7168
 TMX OW7_DGN4_7168.txt
 
 ## OVERWORLD 7 Dungeons
-PATH resources/tilemaps/OW8_DGN1_7424
+PATH resources/tilemaps/OW8,9/OW8_DGN1_7424
 TMX OW8_DGN1_7424.txt
-PATH resources/tilemaps/OW8_DGN2_7680
+PATH resources/tilemaps/OW8,9/OW8_DGN2_7680
 TMX OW8_DGN2_7680.txt
-PATH resources/tilemaps/OW8_DGN3_7936
+PATH resources/tilemaps/OW8,9/OW8_DGN3_7936
 TMX OW8_DGN3_7936.txt
-PATH resources/tilemaps/OW8_DGN4_8192
+PATH resources/tilemaps/OW8,9/OW8_DGN4_8192
 TMX OW8_DGN4_8192.txt
 
 ## OVERWORLD 8 Dungeons
-PATH resources/tilemaps/OW9_DGN1_8448
+PATH resources/tilemaps/OW8,9/OW9_DGN1_8448
 TMX OW9_DGN1_8448.txt
-PATH resources/tilemaps/OW9_DGN2_8704
+PATH resources/tilemaps/OW8,9/OW9_DGN2_8704
 TMX OW9_DGN2_8704.txt
-PATH resources/tilemaps/OW9_DGN3_8960
+PATH resources/tilemaps/OW8,9/OW9_DGN3_8960
 TMX OW9_DGN3_8960.txt
-PATH resources/tilemaps/OW9_DGN4_9216
+PATH resources/tilemaps/OW8,9/OW9_DGN4_9216
 TMX OW9_DGN4_9216.txt
 
 # Dev Dungeons
@@ -208,8 +208,8 @@ TMX OWX_DevDGN_9472.txt
 PATH resources/tilemaps/tilesets/
 SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 
-PATH resources/tilemaps/OW2_DGN1_1280/
-SPRITESHEET 32x32 OW2_DGN_OBJECT_LAYER.bmp
+PATH resources/tilemaps/OW2,3/common/
+SPRITESHEET 32x32 OW2_3_DGN_OBJECT_LAYER.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/

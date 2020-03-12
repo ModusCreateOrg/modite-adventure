@@ -114,7 +114,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN1_1280",
     {
-      OW2_DGN_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 0
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
@@ -135,7 +135,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN2_1536",
     {
-      OW2_DGN_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 0
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
@@ -156,7 +156,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN3_1792",
     {
-      OW2_DGN_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 0
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
@@ -177,7 +177,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW2_DGN4_2048",
     {
-      OW2_DGN_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 0
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1
@@ -198,7 +198,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW3_DGN1_2304",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 0
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 1
@@ -219,7 +219,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW3_DGN2_2560",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 0
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 1
@@ -240,7 +240,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW3_DGN3_2816",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 0
         OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 1
@@ -261,7 +261,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "OW3_DGN4_3072",
     {
-      GLOBAL_OBJECT_LAYER_BMP,
+      OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 0
         OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 1
