@@ -1,6 +1,6 @@
 #include "GPotProcess.h"
 
-static const TInt BREAK_SPEED = 5;
+static const TInt BREAK_SPEED = 3;
 
 static ANIMSCRIPT crateAnimation[] = {
   ALABEL,
@@ -12,19 +12,16 @@ static ANIMSCRIPT crateAnimation[] = {
 static ANIMSCRIPT hitAnimation[] = {
   ABITMAP(ENVIRONMENT_SLOT),
   ADELTA(1, 1),
-  ASTEP(BREAK_SPEED, IMG_POT + 1),
-  ADELTA(0, 0),
-  ASTEP(BREAK_SPEED, IMG_POT + 2),
-  ADELTA(-1, -1),
-  ASTEP(BREAK_SPEED, IMG_POT + 1),
+  ASTEP(BREAK_SPEED, IMG_POT + 0),
   ADELTA(0, 0),
   ASTEP(BREAK_SPEED, IMG_POT + 0),
+  ADELTA(-1, -1),
   AEND,
 };
 
 static ANIMSCRIPT breakAnimation[] = {
   ABITMAP(ENVIRONMENT_SLOT),
-  ASTEP(BREAK_SPEED, IMG_POT + 0),
+//  ASTEP(BREAK_SPEED, IMG_POT + 0),
   ASTEP(BREAK_SPEED, IMG_POT + 1),
   ASTEP(BREAK_SPEED, IMG_POT + 2),
   ASTEP(BREAK_SPEED, IMG_POT + 3),
