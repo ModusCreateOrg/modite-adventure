@@ -39,6 +39,9 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     // TODO: uncomment this if we want to spawn items in the dungeon that can be picked up and want to retain 
     //       whether already picked up
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
+
+    BObjectProgram *program = mGameState->mGamePlayfield->mObjectProgram;
+    mFromPot = (program[mIp].mCode & TUint32(0xffff)) == ATTR_POT;
   }
   else {
     Panic("GItemProcess constructor: invalid item number: %d\n", mItemNumber);
@@ -75,7 +78,8 @@ TBool GItemProcess::RunAfter() {
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
-    if (mIp != -1) {
+    if (mIp != -1 && !mFromPot) {
+      printf("pickedup %d %d\n", mFromPot, mIp);
       mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     }
     

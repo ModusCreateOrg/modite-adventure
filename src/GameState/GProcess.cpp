@@ -12,7 +12,7 @@
 #include "GameState/enemies/GTurretProcess.h"
 #include "GameState/environment/GStairsProcess.h"
 #include "GameState/environment/GOverworldLevelTransitionProcess.h"
-#include "GameState/environment/GCrateProcess.h"
+#include "GameState/environment/GPotProcess.h"
 #include "GameState/environment/GChestProcess.h"
 #include "GameState/environment/GSpikesProcess.h"
 #include "GameState/environment/GDoorProcess.h"
@@ -73,10 +73,10 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     case ATTR_WOOD_STAIRS_DOWN:
       return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_DOWN, aParams, xx, yy, "WOOD"));
 
-    case ATTR_CRATE:
-      return aGameState->AddProcess(new GCrateProcess(aGameState, ip, params, xx, yy));
+    case ATTR_POT:
+      return aGameState->AddProcess(new GPotProcess(aGameState, ip, params, xx, yy));
 
-    case ATTR_CRATE_GONE:
+    case ATTR_POT_GONE:
       break;
 
     case ATTR_CHEST:

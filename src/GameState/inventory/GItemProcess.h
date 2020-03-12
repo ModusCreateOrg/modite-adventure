@@ -25,6 +25,7 @@ protected:
   TInt mItemNumber,
       mIp;
   GAnchorSprite *mSprite;
+  TBool mFromPot;
 };
 
 #endif //MODITE_GITEMPROCESS_H
