@@ -299,7 +299,8 @@ void GInventory::RenderInventory() {
 void GInventory::PostRender() {
   if (gControls.WasPressed(BUTTONR)) {
     if (GPlayer::mHitPointsHealed > 0) {
-      GPlayer::AddHitPoints(GPlayer::mHitPointsHealed);
+      GPlayer::ShowHealStat(GPlayer::mHitPointsHealed);
+      GPlayer::mHitPointsHealed = 0;
     }
     gGame->ToggleInventory();
   }

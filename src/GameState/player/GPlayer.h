@@ -95,9 +95,7 @@ struct GPlayer {
 
   static void AddHitPoints(TInt aMoreHitpoints, TBool aShowStat = ETrue) {
     if (aShowStat) {
-      auto *p = new GStatProcess(gGameEngine, mSprite->x + 72, mSprite->y + 32, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints + mHitPointsHealed));
-      p->SetMessageType(STAT_HEAL);
-      gGameEngine->AddProcess(p);
+      GPlayer::ShowHealStat(aMoreHitpoints);
       mHitPointsHealed = 0;
     } else {
       mHitPointsHealed += aMoreHitpoints;
@@ -106,6 +104,12 @@ struct GPlayer {
     if (mHitPoints > mMaxHitPoints) {
       mHitPoints = mMaxHitPoints;
     }
+  }
+
+  static void ShowHealStat(TInt aHitPoints) {
+    auto *p = new GStatProcess(gGameEngine, mSprite->x + 72, mSprite->y + 32, "%d", MIN(aHitPoints, mMaxHitPoints - mHitPoints + mHitPointsHealed));
+    p->SetMessageType(STAT_HEAL);
+    gGameEngine->AddProcess(p);
   }
 
   static TBool MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell);
