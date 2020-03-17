@@ -21,6 +21,7 @@ GGameOver::GGameOver(GGameState *aGameState) {
   }
 
   mState = 0;
+  mTimer = START_DELAY;
 }
 
 GGameOver::~GGameOver() {
@@ -53,6 +54,11 @@ static void center(const char *s, TInt y, TBool inverse = EFalse) {
 
 // return EFalse when menu is done
 TBool GGameOver::Run() {
+  if (mTimer) {
+    mTimer--;
+    gControls.Reset();
+  }
+
   BBitmap *b = gDisplay.renderBitmap;
   TInt x = 4, y = 20, line_height = 24;
   TInt statesMax = 1;
