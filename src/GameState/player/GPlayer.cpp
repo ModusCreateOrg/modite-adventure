@@ -8,7 +8,6 @@ TUint32 GPlayer::mNextLevel;
 TUint32 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
-TInt16 GPlayer::mHitPointsHealed;
 
 TInt GPlayer::mAttackStrength;
 TInt GPlayer::mManaPotion;

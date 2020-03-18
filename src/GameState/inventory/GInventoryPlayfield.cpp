@@ -8,6 +8,7 @@ GInventoryPlayfield::~GInventoryPlayfield() {
 }
 
 void GInventoryPlayfield::Render() {
-  gDisplay.renderBitmap->Clear(0);
+  BBitmap *bm = gDisplay.renderBitmap;
+  bm->Clear(COLOR_TEXT_BG);
 }
 

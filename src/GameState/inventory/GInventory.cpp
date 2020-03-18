@@ -25,8 +25,6 @@ GInventory::GInventory(BViewPort *aViewPort) : BGameEngine(aViewPort) {
   gDisplay.SetColor(COLOR_METER_OUTLINE, 64, 64, 64);
 }
 
-
-
 GInventory::~GInventory() {
 }
 
@@ -249,7 +247,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION1:
-        GPlayer::AddHitPoints(50, EFalse);
+        GPlayer::AddHitPoints(50, 160, 160);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
@@ -257,7 +255,7 @@ void GInventory::RenderInventory() {
         }
         break;
       case ITEM_RED_POTION2:
-        GPlayer::AddHitPoints(100, EFalse);
+        GPlayer::AddHitPoints(100);
         selected->mCount--;
         if (selected->mCount < 1) {
           selected->Remove();
@@ -298,15 +296,8 @@ void GInventory::RenderInventory() {
 
 void GInventory::PostRender() {
   if (gControls.WasPressed(BUTTONR)) {
-    if (GPlayer::mHitPointsHealed > 0) {
-      GPlayer::ShowHealStat(GPlayer::mHitPointsHealed);
-      GPlayer::mHitPointsHealed = 0;
-    }
     gGame->ToggleInventory();
   }
-
-  BBitmap *bm = gDisplay.renderBitmap;
-  bm->Clear(COLOR_TEXT_BG);
 
   RenderInventory();
 }

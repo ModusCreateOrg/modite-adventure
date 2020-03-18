@@ -4,8 +4,6 @@
 #include <BGameEngine.h>
 class BViewPort;
 
-class GInventoryPlayfield;
-
 class GInventory : public BGameEngine {
 public:
   EXPLICIT GInventory(BViewPort *aViewPort);
@@ -18,7 +16,6 @@ protected:
   void RenderInventory();
 
 protected:
-  GInventoryPlayfield *mPlayfield;
   TInt mCurrentRow, mCurrentColumn;
 };
 
