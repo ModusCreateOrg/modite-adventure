@@ -85,7 +85,7 @@ void GHud::Render() {
   render_meter(&vp, screen, COLOR_HEALTH, 26, 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
 
   screen->DrawBitmapTransparent(&vp, b, magic, 91, 0);
-  render_meter(&vp, screen, COLOR_MAGIC, 105, 2, GPlayer::mManaPotion, 100);
+  render_meter(&vp, screen, COLOR_MAGIC, 105, 2, GPlayer::mManaPotion, GPlayer::mMaxMana);
 
   screen->DrawBitmapTransparent(&vp, b, sword, 168, 0);
   render_meter(&vp, screen, COLOR_EXPERIENCE, 169 + 20, 2, GPlayer::mExperience, GPlayer::mNextLevel);

@@ -18,6 +18,7 @@ class GPlayerProcess;
 #include "GStatProcess.h"
 
 const TInt DEFAULT_PLAYER_HITPOINTS = 200;
+const TInt DEFAULT_PLAYER_MANA = 100;
 
 const TFloat SPELLBOOK_MATRIX[4][4] = {
         // water,   fire,  earth, energy
@@ -71,7 +72,8 @@ struct GPlayer {
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
     mAttackStrength = 35;
-    mManaPotion = 100;
+    mMaxMana = DEFAULT_PLAYER_MANA;
+    mManaPotion = mMaxMana;
 
     //
     mEquipped.Init();
@@ -87,7 +89,9 @@ struct GPlayer {
       mExperience -= mNextLevel;
       mNextLevel += 100 + (mLevel - 1) * 50;
       mMaxHitPoints += 40;
+      mMaxMana += 20;
       mHitPoints = mMaxHitPoints;
+      mManaPotion = mMaxMana;
       mAttackStrength += 7;
     }
   }
@@ -110,6 +114,24 @@ struct GPlayer {
     }
   }
 
+  static void AddMana(TInt aMoreMana, TFloat x = -1, TFloat y = -1) {
+    if (x < 0) {
+      x = mSprite->x + 72;
+    }
+    if (y < 0) {
+      y = mSprite->y + 32;
+    }
+
+    auto *p = new GStatProcess(x, y, "%d", MIN(aMoreMana, mMaxMana - mManaPotion));
+    p->SetMessageType(STAT_MANA);
+    gGame->CurrentState()->AddProcess(p);
+
+    mManaPotion += aMoreMana;
+    if (mManaPotion > mMaxHitPoints) {
+      mManaPotion = mMaxMana;
+    }
+  }
+
   static TBool MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell);
 
   static void WriteToStream(BMemoryStream &stream);
@@ -120,7 +142,7 @@ struct GPlayer {
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
   static TInt32 mAttackStrength;
-  static TInt32 mManaPotion; // 100, 75, 50, 25, 0 are possible values
+  static TInt32 mManaPotion, mMaxMana;
   static GInventoryList mInventoryList;
   static GPlayerProcess *mProcess;
   static GPlayerSprite *mSprite;

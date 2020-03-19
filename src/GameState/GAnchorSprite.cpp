@@ -10,7 +10,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
     : BAnimSprite(aPri, aBM, aImg, aType), mName("NO NAME") {
 
   mGameState = aGameState;
-  SetFlags(SFLAG_ANCHOR | SFLAG_SORTPRI);
+  SetFlags(SFLAG_ANCHOR | SFLAG_SORTPRI | SFLAG_RENDER_DEBUG);
   if (aType != STYPE_DEFAULT) {
     SetFlags(SFLAG_CHECK);
   }
@@ -187,7 +187,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   }
 
 #ifdef DEBUG_MODE
-  if (GGame::mDebug && !Clipped()) {
+  if (GGame::mDebug && !Clipped() && TestFlags(SFLAG_RENDER_DEBUG)) {
     // render sprite border if sprite is visible
     if (flags & SFLAG_RENDER) {
       gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_WHITE);
