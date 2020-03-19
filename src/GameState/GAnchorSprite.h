@@ -3,6 +3,7 @@
 
 #include <BAnimSprite.h>
 #include <BMemoryStream.h>
+#include "Game.h"
 
 class GGameState;
 //#include "GGameState.h"

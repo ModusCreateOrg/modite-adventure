@@ -8,6 +8,7 @@ class BMemoryStream;
 
 //class GAnchorSprite;
 
+#include "Game.h"
 #include "GPlayerSprite.h"
 #include "GLivingProcess.h"
 #include "GGame.h"

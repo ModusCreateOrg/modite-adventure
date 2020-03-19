@@ -2,6 +2,7 @@
 #define GENUS_GITEMWIDGET_H
 
 #include "Game.h"
+#include <common/GButtonWidget.h>
 
 class GItemWidget : public GButtonWidget {
 public:

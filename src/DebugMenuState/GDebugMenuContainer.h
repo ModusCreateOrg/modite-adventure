@@ -1,7 +1,10 @@
 #ifndef GENUS_GDEBUGMENUCONTAINER_H
 #define GENUS_GDEBUGMENUCONTAINER_H
 
-#include "Game.h"
+//#include "Game.h"
+#include <common/GDialogWidget.h>
+
+class BGameEngine;
 
 enum {
   DEBUG_MAIN,

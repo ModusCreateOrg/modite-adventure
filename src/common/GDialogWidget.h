@@ -1,7 +1,8 @@
 #ifndef GENUS_GDIALOGWIDGET_H
 #define GENUS_GDIALOGWIDGET_H
 
-#include "Game.h"
+//#include "Game.h"
+#include <BDialogWidget.h>
 
 class GDialogWidget : public BDialogWidget {
 public:

@@ -2,6 +2,7 @@
 #define GENUS_GDEBUGBUTTONWIDGET_H
 
 #include "Game.h"
+#include <common/GButtonWidget.h>
 
 class GDebugMenuContainer;
 

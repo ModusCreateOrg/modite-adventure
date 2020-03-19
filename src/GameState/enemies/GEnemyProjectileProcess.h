@@ -1,7 +1,7 @@
 #ifndef GENEMYPROJECTILEPROCESS_H
 #define GENEMYPROJECTILEPROCESS_H
 
-// #include "GEnemyProcess.h"
+#include "GProcess.h"
 #include "GGameState.h"
 
 class GEnemyProjectileProcess : public GProcess {

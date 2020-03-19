@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+class GGameState;
+
 class GGameOver {
 public:
   GGameOver(GGameState *aGameState);

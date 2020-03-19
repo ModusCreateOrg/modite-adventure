@@ -2,6 +2,7 @@
 #define GFINALBOSSPROJECTILEPROCESS_H
 
 #include "GGameState.h"
+#include "GProcess.h"
 
 class GFinalBossProjectileProcess : public GProcess {
 public:
