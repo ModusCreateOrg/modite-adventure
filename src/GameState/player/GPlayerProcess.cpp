@@ -773,23 +773,11 @@ TBool GPlayerProcess::RunAfter() {
   return ETrue;
 }
 
-void GPlayerProcess::WriteToStream(BMemoryStream &aStream) {
-  // process vars
-  aStream.Write(&mState, sizeof(mState));
-  aStream.Write(&mStep, sizeof(mStep));
-}
-
 void GPlayerProcess::WriteCustomToStream(BMemoryStream &aStream) {
   aStream.Write(&mState, sizeof(mState));
   aStream.Write(&mStep, sizeof(mStep));
   //  TBool v = mBlinkProcess ? ETrue : EFalse;
   //  aStream.Write(&v, sizeof(v));
-}
-
-void GPlayerProcess::ReadFromStream(BMemoryStream &aStream) {
-  // process vars
-  aStream.Read(&mState, sizeof(mState));
-  aStream.Read(&mStep, sizeof(mStep));
 }
 
 void GPlayerProcess::ReadCustomFromStream(BMemoryStream &aStream) {
