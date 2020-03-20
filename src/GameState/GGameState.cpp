@@ -709,7 +709,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_TURRET:
         RemapSlot(CRYSTAL_BMP, TURRET_SLOT, IMAGE_64x64);
-        // RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(PROJECTILE_CRYSTAL_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
           break;
         }
