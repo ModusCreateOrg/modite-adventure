@@ -147,13 +147,13 @@ void GTurretProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angleToPlayer, BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angleToPlayer, PROJECTILE_CRYSTAL_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[0], BOSS_PROJECTILE_SLOT));
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[1], BOSS_PROJECTILE_SLOT));
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[2], BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[0], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[1], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[2], PROJECTILE_CRYSTAL_SLOT));
   }
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
