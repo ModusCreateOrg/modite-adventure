@@ -45,20 +45,20 @@ static void get_explode_animation(TInt16 *buf, TInt16 aImageNumber, TUint16 aSlo
 static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
-    .y = 32,
+    .y = 16,
     .cx = 20,
-    .cy = -24,
+    .cy = -12,
     .imageNumber = 0,
     .flags = SFLAG_RIGHT,
     .parry = {
       .x = 0,
-      .y = 24,
+      .y = 0,
     }
   },
   {
-    .x = 8,
+    .x = 0,
     .y = -32,
-    .cx = -2,
+    .cx = 8,
     .cy = 64,
     .imageNumber = 0,
     .flags = SFLAG_FLOP,
@@ -70,7 +70,7 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
     .y = 0,
-    .cx = -2,
+    .cx = 8,
     .cy = -24,
     .imageNumber = 0,
     .flags = 0,
@@ -81,14 +81,14 @@ static const SpriteData SPRITE_DATA[] = {
   },
   {
     .x = 0,
-    .y = 0,
-    .cx = -4,
-    .cy = 0,
+    .y = 16,
+    .cx = -2,
+    .cy = -12,
     .imageNumber = 0,
     .flags = SFLAG_LEFT,
     .parry = {
       .x = 0,
-      .y = -22,
+      .y = 0,
     }
   },
   {
@@ -106,7 +106,7 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
     .y = -48,
-    .cx = 15,
+    .cx = 18,
     .cy = 64,
     .imageNumber = 2,
     .flags = SFLAG_FLOP,
@@ -118,12 +118,12 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
     .y = -48,
-    .cx = 8,
+    .cx = 12,
     .cy = 64,
     .imageNumber = 1,
     .flags = SFLAG_FLOP,
     .parry = {
-      .x = 16,
+      .x = 0,
       .y = -70,
     }
   },
@@ -142,7 +142,7 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
     .y = 16,
-    .cx = 15,
+    .cx = 18,
     .cy = -24,
     .imageNumber = 2,
     .flags = 0,
@@ -154,31 +154,31 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = 0,
     .y = 16,
-    .cx = 8,
+    .cx = 12,
     .cy = -24,
     .imageNumber = 1,
     .flags = 0,
     .parry = {
-      .x = 16,
+      .x = 0,
       .y = 70,
     }
   },
   {
     .x = -16,
     .y = -48,
-    .cx = 8,
+    .cx = 4,
     .cy = 64,
     .imageNumber = 1,
     .flags = SFLAG_FLIP | SFLAG_FLOP,
     .parry = {
-      .x = -16,
+      .x = 0,
       .y = -68,
     }
   },
   {
     .x = -16,
     .y = -48,
-    .cx = 2,
+    .cx = -2,
     .cy = 64,
     .imageNumber = 2,
     .flags = SFLAG_FLIP | SFLAG_FLOP,
@@ -190,7 +190,7 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = -16,
     .y = -48,
-    .cx = 0,
+    .cx = -2,
     .cy = 64,
     .imageNumber = 3,
     .flags = SFLAG_FLIP | SFLAG_FLOP,
@@ -202,19 +202,19 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = -16,
     .y = 16,
-    .cx = 8,
+    .cx = 4,
     .cy = -24,
     .imageNumber = 1,
     .flags = SFLAG_FLIP,
     .parry = {
-      .x = -16,
+      .x = 0,
       .y = 68,
     }
   },
   {
     .x = -16,
     .y = 16,
-    .cx = 1,
+    .cx = -2,
     .cy = -24,
     .imageNumber = 2,
     .flags = SFLAG_FLIP,
@@ -226,7 +226,7 @@ static const SpriteData SPRITE_DATA[] = {
   {
     .x = -16,
     .y = 16,
-    .cx = 0,
+    .cx = -2,
     .cy = -24,
     .imageNumber = 3,
     .flags = SFLAG_FLIP,
