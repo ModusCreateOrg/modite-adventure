@@ -89,10 +89,6 @@ GProcess *GGameState::AddProcess(GProcess *p) {
 }
 
 void GGameState::TryAgain(TBool aExitDungeon) {
-  if (mGameOver) {
-    delete mGameOver;
-    mGameOver = ENull;
-  }
   GPlayer::mGameOver = EFalse;
   GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
 
@@ -233,7 +229,12 @@ void GGameState::PostRender() {
 
   if (mGameOver) {
     mGameOver->Run();
-    return;
+    if (mGamePlayfield->MosaicActive()) {
+      delete mGameOver;
+      mGameOver = ENull;
+    } else {
+      return;
+    }
   }
 
   if (mGamePlayfield->MosaicActive()) {

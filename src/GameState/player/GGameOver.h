@@ -5,13 +5,18 @@
 
 const TUint START_DELAY = FRAMES_PER_SECOND;
 
-class GGameOver {
+class GGameOverButtonWidget;
+class GRetryButtonWidget;
+
+static void center(const char *s, TInt y, TBool inverse = EFalse);
+
+class GGameOver : public GDialogWidget {
 public:
   EXPLICIT GGameOver(GGameState *aGameState);
-  ~GGameOver();
+  ~GGameOver() OVERRIDE;
 
 public:
-  TBool Run();
+  void Run() OVERRIDE;
 
 protected:
   GGameState *mGameState;
