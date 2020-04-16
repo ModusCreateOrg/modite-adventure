@@ -3,9 +3,11 @@
 
 #include "Game.h"
 
+const TUint START_DELAY = FRAMES_PER_SECOND;
+
 class GGameOver {
 public:
-  GGameOver(GGameState *aGameState);
+  EXPLICIT GGameOver(GGameState *aGameState);
   ~GGameOver();
 
 public:
@@ -15,6 +17,7 @@ protected:
   GGameState *mGameState;
   TRGB mSavedPalette[256];
   TInt mState;
+  TUint mTimer;
 };
 
 #endif
