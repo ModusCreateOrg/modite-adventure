@@ -44,7 +44,7 @@ void GDebugMenuContainer::SetState(TInt aState) {
     for (TUint8 i = 0; i < NUM_DUNGEONS; i++) {
       const TDungeonInfo *d = &gDungeonDefs[i];
       const TUint8 levels = sizeof(d->mInfo.map) / sizeof(TInt16);
-      for (TInt16 j = 0; j < levels; j++) {
+      for (TInt16 j = 1; j < levels - 1; j++) {
         if (d->mInfo.map[j] == -1) break;
         AddWidget((BWidget &) *new GLevelWidget(i, j));
       }
