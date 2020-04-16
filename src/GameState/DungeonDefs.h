@@ -96,13 +96,13 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW1_DGN4_1024_OW1_DGN4_L1_MAP, // 0
-        -1, //OW1_DGN4_1024_OW1_DGN4_L1_MAP, // 1
-        -1, //OW1_DGN4_1024_OW1_DGN4_L2_MAP, // 2
-        -1, //OW1_DGN4_1024_OW1_DGN4_L3_MAP, // 3
-        -1, //OW1_DGN4_1024_OW1_DGN4_L4_MAP, // 4
-        -1, //OW1_DGN4_1024_OW1_DGN4_L5_MAP, // 5
-        -1, //OW1_DGN4_1024_OW1_DGN4_L6_MAP, // 6
-        -1, //OW1_DGN4_1024_OW1_DGN4_L7_MAP, // 7
+        OW1_DGN4_1024_OW1_DGN4_L1_MAP, // 1
+        OW1_DGN4_1024_OW1_DGN4_L2_MAP, // 2
+        OW1_DGN4_1024_OW1_DGN4_L3_MAP, // 3
+        OW1_DGN4_1024_OW1_DGN4_L4_MAP, // 4
+        OW1_DGN4_1024_OW1_DGN4_L5_MAP, // 5
+        OW1_DGN4_1024_OW1_DGN4_L6_MAP, // 6
+        OW1_DGN4_1024_OW1_DGN4_L7_MAP, // 7
         -1, //OW1_DGN4_1024_OW1_DGN4_L8_MAP, // 8
         -1, //OW1_DGN4_1024_OW1_DGN4_L9_MAP, // 9
         -1 // EMPTY -- no level 10 evar!!
