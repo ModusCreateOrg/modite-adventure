@@ -26,6 +26,8 @@ protected:
 
 protected:
   TInt mHitState;
+  TInt8 mShimmerTimer;
+  TUint8 mSpriteImageNumber;
 };
 
 
