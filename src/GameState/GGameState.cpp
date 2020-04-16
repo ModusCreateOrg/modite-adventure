@@ -515,7 +515,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         {
           // Check adjecent node that wasn't processed yet, but could've been set
           if (spikesMatrix[row+1][col-1] == 0) {
-            spikeGroup++;
+            if (++spikeGroup > MAX_SPIKE_GROUPS) {
+              Panic("Reached spike group limit!\n");
+            }
           }
           spikesMatrix[row][col] = spikeGroup;
         }
