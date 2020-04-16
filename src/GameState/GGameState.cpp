@@ -653,7 +653,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_GOBLIN_SNIPER:
         RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
-        RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(PROJECTILE_ARROW_BMP, PROJECTILE_ARROW_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
           break;
         }
@@ -712,7 +712,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_TURRET:
         RemapSlot(CRYSTAL_BMP, TURRET_SLOT, IMAGE_64x64);
-        // RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(PROJECTILE_CRYSTAL_BMP, PROJECTILE_CRYSTAL_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
           break;
         }

@@ -1,5 +1,5 @@
 #include "GTurretProcess.h"
-#include "GEnemyProjectileProcess.h"
+#include "GEnemyCrystalProcess.h"
 #include "GPlayer.h"
 
 #define DEBUGME
@@ -16,7 +16,8 @@ const TInt DEATH_SPEED = 5 * FACTOR;
 
 const TFloat VELOCITY = 4 / FACTOR;
 const TFloat ATTACK_DISTANCE = 6 * TILESIZE;
-const TInt BLINK_TIME = 4 * FACTOR;
+const TUint8 BLINK_TIME = 4 * FACTOR;
+const TUint8 SHIMMER_TIMER = 4 * FACTOR;
 
 // region  ANIMATIONS {{{
 
@@ -104,6 +105,8 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
 
   mHitState = 0;
   mTaunt = EFalse;
+  mSpriteImageNumber = 0;
+  mShimmerTimer = SHIMMER_TIMER;
 
   mSprite->SetStatMultipliers(5.0, 10.0, 5.0);
   mSprite->StartAnimation(idleAnimation);
@@ -144,13 +147,13 @@ void GTurretProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angleToPlayer, ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angleToPlayer, PROJECTILE_CRYSTAL_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[0], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[1], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 8, angles[2], ENVIRONMENT_SLOT, IMG_CRYSTAL_PROJECTILE));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[0], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[1], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[2], PROJECTILE_CRYSTAL_SLOT));
   }
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -228,5 +231,16 @@ TBool GTurretProcess::MaybeAttack() {
 
 TBool GTurretProcess::RunBefore() {
   mSprite->ResetShadow();
+
+  if (--mShimmerTimer < 0) {
+    if (++mSpriteImageNumber > 3) {
+      mSpriteImageNumber = 0;
+      mShimmerTimer = SHIMMER_TIMER * 6;
+    } else {
+      mShimmerTimer = SHIMMER_TIMER;
+    }
+  }
+  mSprite->mImageNumber = mSpriteImageNumber;
+
   return GEnemyProcess::RunBefore();
 }

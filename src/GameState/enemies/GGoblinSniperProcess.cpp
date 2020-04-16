@@ -400,13 +400,13 @@ void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer, BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angleToPlayer, PROJECTILE_ARROW_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0], BOSS_PROJECTILE_SLOT));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1], BOSS_PROJECTILE_SLOT));
-    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2], BOSS_PROJECTILE_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[0], PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[1], PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyProjectileProcess(mGameState, xx + 16, yy - 16, angles[2], PROJECTILE_ARROW_SLOT));
   }
 
   mSprite->StartAnimationInDirection(attackAnimations, aDirection);
