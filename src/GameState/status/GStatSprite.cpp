@@ -43,6 +43,9 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
     case STAT_HEAL:
       color = COLOR_SHMOO_GREEN;
       break;
+    case STAT_MANA:
+      color = COLOR_MAGIC;
+      break;
     case STAT_ENEMY_HIT:
     case STAT_INFO:
     default:
