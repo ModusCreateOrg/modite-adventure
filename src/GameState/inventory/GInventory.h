@@ -2,9 +2,10 @@
 #define GINVENTORY_H
 
 #include <BGameEngine.h>
-class BViewPort;
+#include "GInventoryItem.h"
 
-class GInventoryPlayfield;
+class BViewPort;
+class GInventoryProcess;
 
 class GInventory : public BGameEngine {
 public:
@@ -13,13 +14,15 @@ public:
 
 public:
   void PostRender() OVERRIDE;
+  GInventoryItem *SelectedItem();
+  TInt16 ItemNumber();
+  TInt16 ItemLayout(TUint8 x, TUint8 y);
+  const TUint16 *ItemLayout(TUint8 x);
+  TInt CurrentRow();
+  TInt CurrentColumn();
 
 protected:
-  void RenderInventory();
-
-protected:
-  GInventoryPlayfield *mPlayfield;
-  TInt mCurrentRow, mCurrentColumn;
+  GInventoryProcess *mProcess;
 };
 
 #endif

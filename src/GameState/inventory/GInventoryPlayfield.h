@@ -6,7 +6,7 @@
 
 class GInventoryPlayfield : public BPlayfield {
 public:
-  EXPLICIT GInventoryPlayfield(GInventory *aInventory);
+  EXPLICIT GInventoryPlayfield(GInventory *aInventory, BViewPort *aViewPort);
   ~GInventoryPlayfield() OVERRIDE;
 
 public:
@@ -14,6 +14,7 @@ public:
 
 protected:
   GInventory *mInventory;
+  BViewPort *mViewPort;
 };
 
 #endif
