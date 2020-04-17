@@ -36,6 +36,7 @@ enum {
   ENVIRONMENT_SLOT,
   // enemies
   PROJECTILE_ARROW_SLOT,
+  PROJECTILE_CRYSTAL_SLOT,
   BAT_SLOT,
   GOBLIN_SLOT,
   GOBLIN_SNIPER_SLOT,
@@ -46,11 +47,13 @@ enum {
   TROLL_SLOT,
   ENEMY_DEATH_SLOT,
   TURRET_SLOT,
+
   // spells
   SPELL_EARTH_SLOT,
   SPELL_ELECTRICITY_SLOT,
   SPELL_FIRE_SLOT,
   SPELL_WATER_SLOT,
+
   // mid bosses
   BOSS_DEATH_SLOT,
   BOSS_SLOT,
@@ -304,7 +307,6 @@ const TUint16 IMG_METAL_GATE_H_BOTTOM = 21;  // Bottom. This is the code ATTR_ME
 const TUint16 IMG_SPIKES = 15;            // through 19
 const TUint16 IMG_CHEST = 22;             // closed, open is 23
 const TUint16 IMG_POT = 24;               // through 28
-const TUint16 IMG_CRYSTAL_PROJECTILE = 12;
 
 const TUint16 IMG_WOOD_DOOR_V_TOP = 30;       // Top.
 const TUint16 IMG_WOOD_DOOR_V_BOTTOM = 40;    // Bottom.

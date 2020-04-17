@@ -9,10 +9,10 @@ TUint32 GPlayer::mNextLevel;
 TUint32 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
-TInt16 GPlayer::mHitPointsHealed;
 
 TInt GPlayer::mAttackStrength;
-TInt GPlayer::mManaPotion;
+TInt32 GPlayer::mManaPotion;
+TInt32 GPlayer::mMaxMana;
 
 TBool GPlayer::mGameOver;
 
@@ -28,6 +28,7 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mNextLevel, sizeof(mNextLevel));
   stream.Write(&mExperience, sizeof(mExperience));
 //  stream.Write(&mHitPoints, sizeof(mHitPoints));
+// stream.Write(&mMaxMana, sizeof(mMaxMana));
   stream.Write(&mMaxHitPoints, sizeof(mMaxHitPoints));
   stream.Write(&mManaPotion, sizeof(mManaPotion));
   mInventoryList.WriteToStream(stream);
@@ -52,8 +53,9 @@ void GPlayer::ReadFromStream(BMemoryStream &stream) {
   stream.Read(&mNextLevel, sizeof(mNextLevel));
   stream.Read(&mExperience, sizeof(mExperience));
 //  stream.Read(&mHitPoints, sizeof(mHitPoints));
+// stream.Read(&mManaPotion, sizeof(mManaPotion));
   stream.Read(&mMaxHitPoints, sizeof(mMaxHitPoints));
-  stream.Read(&mManaPotion, sizeof(mManaPotion));
+  stream.Read(&mMaxMana, sizeof(mMaxMana));
   mInventoryList.ReadFromStream(stream);
 
   // Equipped

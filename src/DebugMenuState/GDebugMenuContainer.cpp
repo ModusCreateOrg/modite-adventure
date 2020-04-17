@@ -44,7 +44,7 @@ void GDebugMenuContainer::SetState(TInt aState) {
     for (TUint8 i = 0; i < NUM_DUNGEONS; i++) {
       const TDungeonInfo *d = &gDungeonDefs[i];
       const TUint8 levels = sizeof(d->mInfo.map) / sizeof(TInt16);
-      for (TInt16 j = 0; j < levels; j++) {
+      for (TInt16 j = 1; j < levels - 1; j++) {
         if (d->mInfo.map[j] == -1) break;
         AddWidget((BWidget &) *new GLevelWidget(i, j));
       }
@@ -71,35 +71,7 @@ void GDebugMenuContainer::AddWidget(BWidget &aWidget) {
 }
 
 void GDebugMenuContainer::Run() {
-  for (BWidget *w = (BWidget *) mList.First(); !mList.End(w); w = (BWidget *) mList.Next(w)) {
-    w->Run();
-  }
-
-  if (gControls.WasPressed(JOYUP) && OnNavigate(JOYUP) && mCurrentWidget->OnNavigate(JOYUP)) {
-    mCurrentWidget->Deactivate();
-    if (mCurrentWidget == mList.First()) {
-      mCurrentWidget = (BWidget *) mList.Last();
-    } else {
-      mCurrentWidget = (BWidget *) mList.Prev(mCurrentWidget);
-    }
-    mCurrentWidget->Activate();
-
-    // reset dKeys so next state doesn't react to any keys already pressed
-    gControls.dKeys = 0;
-  }
-
-  if (gControls.WasPressed(JOYDOWN) && OnNavigate(JOYDOWN) && mCurrentWidget->OnNavigate(JOYDOWN)) {
-    mCurrentWidget->Deactivate();
-    if (mCurrentWidget == mList.Last()) {
-      mCurrentWidget = (BWidget *) mList.First();
-    } else {
-      mCurrentWidget = (BWidget *) mList.Next(mCurrentWidget);
-    }
-    mCurrentWidget->Activate();
-
-    // reset dKeys so next state doesn't react to any keys already pressed
-    gControls.dKeys = 0;
-  }
+  GDialogWidget::Run();
 
   if (gControls.WasPressed(JOYLEFT) && OnNavigate(JOYLEFT) && mCurrentWidget->OnNavigate(JOYLEFT)) {
     mCurrentWidget->Deactivate();

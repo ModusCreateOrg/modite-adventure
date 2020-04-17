@@ -89,10 +89,6 @@ GProcess *GGameState::AddProcess(GProcess *p) {
 }
 
 void GGameState::TryAgain(TBool aExitDungeon) {
-  if (mGameOver) {
-    delete mGameOver;
-    mGameOver = ENull;
-  }
   GPlayer::mGameOver = EFalse;
   GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
 
@@ -233,7 +229,12 @@ void GGameState::PostRender() {
 
   if (mGameOver) {
     mGameOver->Run();
-    return;
+    if (mGamePlayfield->MosaicActive()) {
+      delete mGameOver;
+      mGameOver = ENull;
+    } else {
+      return;
+    }
   }
 
   if (mGamePlayfield->MosaicActive()) {
@@ -515,7 +516,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         {
           // Check adjecent node that wasn't processed yet, but could've been set
           if (spikesMatrix[row+1][col-1] == 0) {
-            spikeGroup++;
+            if (++spikeGroup > MAX_SPIKE_GROUPS) {
+              Panic("Reached spike group limit!\n");
+            }
           }
           spikesMatrix[row][col] = spikeGroup;
         }
@@ -650,7 +653,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_GOBLIN_SNIPER:
         RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
-        RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(PROJECTILE_ARROW_BMP, PROJECTILE_ARROW_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
           break;
         }
@@ -709,7 +712,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
       case ATTR_TURRET:
         RemapSlot(CRYSTAL_BMP, TURRET_SLOT, IMAGE_64x64);
-        // RemapSlot(PROJECTILE_ARROW_BMP, BOSS_PROJECTILE_SLOT, IMAGE_32x32);
+        RemapSlot(PROJECTILE_CRYSTAL_BMP, PROJECTILE_CRYSTAL_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
           break;
         }

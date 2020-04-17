@@ -5,18 +5,26 @@
 
 class GGameState;
 
-class GGameOver {
+const TUint START_DELAY = FRAMES_PER_SECOND;
+
+class GGameOverButtonWidget;
+class GRetryButtonWidget;
+
+static void center(const char *s, TInt y, TBool inverse = EFalse);
+
+class GGameOver : public GDialogWidget {
 public:
-  GGameOver(GGameState *aGameState);
-  ~GGameOver();
+  EXPLICIT GGameOver(GGameState *aGameState);
+  ~GGameOver() OVERRIDE;
 
 public:
-  TBool Run();
+  void Run() OVERRIDE;
 
 protected:
   GGameState *mGameState;
   TRGB mSavedPalette[256];
   TInt mState;
+  TUint mTimer;
 };
 
 #endif

@@ -45,6 +45,7 @@ SPRITESHEET 64x64 chara_slime.bmp
 SPRITESHEET 64x64 chara_spider.bmp
 SPRITESHEET 64x64 chara_troll.bmp
 SPRITESHEET 32x32 projectile_arrow.bmp
+SPRITESHEET 32x32 projectile_crystal.bmp
 SPRITESHEET 64x64 enemy_death.bmp
 SPRITESHEET 64x64 crystal.bmp
 
@@ -192,15 +193,6 @@ TMX OW9_DGN4_9216.txt
 PATH resources/tilemaps/OWX_DevDGN_9472
 TMX OWX_DevDGN_9472.txt
 
-#
-# PATH resources/tilemaps-new/256
-# TMX overworld.txt
-# PATH resources/tilemaps-new/257
-# TMX 257.txt
-# PATH resources/tilemaps-new/258
-# TMX 258.txt
-# PATH resources/tilemaps-new/259
-# TMX 259.txt
 
 #
 ### ENVIRONMENT/OBJECTS
@@ -210,6 +202,9 @@ SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 
 PATH resources/tilemaps/OW2,3/common/
 SPRITESHEET 32x32 OW2_3_DGN_OBJECT_LAYER.bmp
+
+PATH resources/tilemaps/OW5,7/common/
+SPRITESHEET 32x32 OW5_7_DGN_OBJECT_LAYER.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/

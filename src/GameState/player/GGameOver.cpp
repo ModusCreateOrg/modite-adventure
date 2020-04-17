@@ -4,7 +4,39 @@
 // grayscale algorithms:
 // https://www.programminghomeworkhelp.com/c-programming/
 
-GGameOver::GGameOver(GGameState *aGameState) {
+const TInt LINE_HEIGHT = 24;
+
+class GGameOverButtonWidget : GButtonWidget {
+public:
+  EXPLICIT GGameOverButtonWidget(const char *aText, TInt aState = -1) : GButtonWidget(aText, aState) {};
+
+public:
+  TInt Render(TInt aX, TInt aY) OVERRIDE {
+    center(mText, aY, IsActive());
+
+    return LINE_HEIGHT;
+  };
+};
+
+class GRetryButtonWidget : GGameOverButtonWidget {
+public:
+  GRetryButtonWidget(GGameState *aGameState, const char *aText, TBool aExitDungeon) : GGameOverButtonWidget(
+    aText) {
+    mGameState = aGameState;
+    mExitDungeon = aExitDungeon;
+  };
+
+  void Select() OVERRIDE {
+    mGameState->TryAgain(mExitDungeon);
+    gControls.Reset();
+  };
+
+private:
+  GGameState *mGameState;
+  TBool mExitDungeon;
+};
+
+GGameOver::GGameOver(GGameState *aGameState) : GDialogWidget("", 0, 0) {
   mGameState = aGameState;
   // save palette
   TRGB *source = gDisplay.renderBitmap->GetPalette();
@@ -19,16 +51,26 @@ GGameOver::GGameOver(GGameState *aGameState) {
     // set grayscale color in palette
     gDisplay.SetColor(color, c);
   }
+  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
+  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 
   mState = 0;
+  mTimer = START_DELAY;
+  AddWidget((BWidget &) *new GRetryButtonWidget(mGameState, "Try Again", EFalse));
+  if (mGameState->Dungeon() != OVERWORLD_DUNGEON) {
+    AddWidget((BWidget &) *new GRetryButtonWidget(mGameState, "Leave Dungeon", ETrue));
+  }
+  AddWidget((BWidget &) *new GGameOverButtonWidget("Exit", GAME_STATE_MAIN_MENU));
 }
 
 GGameOver::~GGameOver() {
   gDisplay.SetPalette(mSavedPalette);
 }
 
-static void text(const char *s, TInt x, TInt y, TBool inverse = EFalse) {
+static void center(const char *s, TInt y, TBool inverse) {
   BBitmap *b = gDisplay.renderBitmap;
+  TInt w = strlen(s) * 12,
+       x = (SCREEN_WIDTH - w) / 2;
 
   if (inverse) {
     b->DrawString(gViewPort, s, gFont16x16, x, y, COLOR_TEXT_BG, COLOR_TEXT, -4);
@@ -38,64 +80,13 @@ static void text(const char *s, TInt x, TInt y, TBool inverse = EFalse) {
   }
 }
 
-static void center(const char *s, TInt y, TBool inverse = EFalse) {
-  BBitmap *b = gDisplay.renderBitmap;
-  TInt w = strlen(s) * 12,
-       x = (SCREEN_WIDTH - w) / 2;
-
-  if (inverse) {
-    b->DrawString(gViewPort, s, gFont16x16, (SCREEN_WIDTH - w) / 2, y, COLOR_TEXT_BG, COLOR_TEXT, -4);
-  }
-  else {
-    b->DrawString(gViewPort, s, gFont16x16, (SCREEN_WIDTH - w) / 2, y, COLOR_TEXT, -1, -4);
-  }
-}
-
-// return EFalse when menu is done
-TBool GGameOver::Run() {
-  BBitmap *b = gDisplay.renderBitmap;
-  TInt x = 4, y = 20, line_height = 24;
-  TInt statesMax = 1;
-
-  gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-  gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
-
-  center("You Failed", y);
-  y += line_height * 2;
-
-  center("Try again", y, mState == 0);
-  y += line_height;
-
-  if (mGameState->Dungeon() != OVERWORLD_DUNGEON) {
-    center("Leave dungeon", y, mState == 1);
-    y += line_height;
-    statesMax = 2;
+void GGameOver::Run() {
+  if (mTimer) {
+    mTimer--;
+    gControls.Reset();
   }
 
-  center("Exit", y, mState == statesMax);
-
-  if (gControls.WasPressed(JOYUP)) {
-    mState = CLAMP(mState - 1, 0, statesMax);
-  }
-
-  if (gControls.WasPressed(JOYDOWN)) {
-    mState = CLAMP(mState + 1, 0, statesMax);
-  }
-
-  if (gControls.WasPressed(BUTTON_SELECT | BUTTON_START | BUTTONA)) {
-    // restore palette
-    for (TInt color = 0; color <= COLOR_TEXT; color++) {
-      TRGB c = mSavedPalette[color];
-      gDisplay.SetColor(color, c);
-    }
-
-    if (mState < statesMax) {
-      mGameState->TryAgain(mState > 0);
-      gControls.Reset();
-    } else {
-      gGame->SetState(GAME_STATE_MAIN_MENU);
-    }
-  }
-
-  return ETrue;
+  GDialogWidget::Run();
+  center("You Failed", 20);
+  GDialogWidget::Render(0, 70);
 }

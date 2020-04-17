@@ -3,7 +3,7 @@
 
 #include "GEnvironmentProcess.h"
 
-const TInt MAX_SPIKE_GROUPS = 32;
+const TUint8 MAX_SPIKE_GROUPS = 255;
 
 class GSpikesProcess : public GEnvironmentProcess {
 public:
