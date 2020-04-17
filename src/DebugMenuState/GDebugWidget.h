@@ -2,7 +2,7 @@
 #define GENUS_GDEBUGWIDGET_H
 
 #include "GGame.h"
-#include <common/GButtonWidget.h>
+#include "common/GButtonWidget.h"
 
 class GDebugWidget : public GButtonWidget {
 public:

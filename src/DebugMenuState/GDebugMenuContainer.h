@@ -2,7 +2,7 @@
 #define GENUS_GDEBUGMENUCONTAINER_H
 
 //#include "Game.h"
-#include <common/GDialogWidget.h>
+#include "common/GDialogWidget.h"
 
 class BGameEngine;
 
