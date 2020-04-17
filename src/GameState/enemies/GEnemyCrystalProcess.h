@@ -2,6 +2,7 @@
 #define GENEMYCRYSTALPROCESS_H
 
 #include "GGameState.h"
+#include "GProcess.h"
 
 class GEnemyCrystalProcess : public GProcess {
 public:

@@ -1,4 +1,8 @@
 #include "GDialogWidget.h"
+#include "Game.h"
+
+const TUint REPEAT_INPUT_DELAY = 0.5 * FRAMES_PER_SECOND;
+const TUint REPEAT_INPUT_INTERVAL = 0.15 * FRAMES_PER_SECOND;
 
 GDialogWidget::GDialogWidget(char *aTitle, TInt aX, TInt aY) : BDialogWidget(aTitle, aX, aY) {
   mTimer = 0;
