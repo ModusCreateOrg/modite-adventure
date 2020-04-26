@@ -100,7 +100,7 @@ TMX overworld.txt
 
 
 ## OVERWORLD 0 Dungeons
-PATH resources/tilemaps/OW1_DGN1_256
+PATH resources/tilemaps/OW1/OW1_DGN1_256
 TMX OW1_DGN1_256.txt
 PATH resources/tilemaps/OW1/OW1_DGN2_512
 TMX OW1_DGN2_512.txt
