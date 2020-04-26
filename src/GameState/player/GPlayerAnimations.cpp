@@ -296,6 +296,7 @@ ANIMSCRIPT hitHardDownAnimation[] = {
 
  */
 ANIMSCRIPT idleLeftAnimation[] = {
+
   ABITMAP(PLAYER_SLOT),
   ADELTA(-12, -4),
   AFLIP(1, IMG_WALK_RIGHT),
@@ -304,11 +305,11 @@ ANIMSCRIPT idleLeftAnimation[] = {
 
 ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
-  ADELTA(-8, -5),
+  ADELTA(-9, -5),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 1),
-  ADELTA(-10, -4),
+  ADELTA(-13, -4),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 0),
-  ADELTA(-8, -4),
+  ADELTA(-11, -4),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 2),
   AEND,
 };
@@ -317,7 +318,7 @@ ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(-6, -5),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 3),
-  ADELTA(-10, -4),
+  ADELTA(-12, -4),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 0),
   AEND,
 };
