@@ -232,7 +232,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case WALK_STATE:
       if (mStepFrame > 0) {
         mStep = 1 - mStep;
-        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
+//        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
         mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
         break;
       }
@@ -654,7 +654,7 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->x = mSprite->x + 16;
         mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(spellOverlayAnimation);
-        printf("SPELLLL\n");
+//        printf("SPELLLL\n");
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
       }
