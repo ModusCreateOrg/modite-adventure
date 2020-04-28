@@ -12,10 +12,10 @@ const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt TAUNT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED = 1 * FACTOR;
-const TInt WALK_SPEED = 5 * FACTOR;
+const TInt WALK_SPEED = 2 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = PLAYER_VELOCITY * 0.8;
+const TFloat VELOCITY = PLAYER_VELOCITY * 1.2;
 
 // region  ANIMATIONS {{{
 
@@ -378,6 +378,9 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
+//  mSprite->SetStatMultipliers(0.9, 0.9, 0.9);
+
+  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
