@@ -9,7 +9,7 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 10 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 3 * FACTOR;
 
 const TInt16 IDLE_SPEED = 5 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
