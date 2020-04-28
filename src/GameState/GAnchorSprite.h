@@ -35,7 +35,8 @@ const TUint32 SFLAG_KNOCKBACK_BIT = SFLAG_USER_BIT + 2;
 const TUint32 SFLAG_KNOCKBACK = 1 << SFLAG_KNOCKBACK_BIT;
 
 const TUint32 SFLAG_RENDER_DEBUG_BIT = SFLAG_USER_BIT + 3;
-const TUint32 SFLAG_RENDER_DEBUG = 1 << SFLAG_RENDER_DEBUG_BIT;
+//const TUint32 SFLAG_RENDER_DEBUG = 1 << SFLAG_RENDER_DEBUG_BIT;
+const TUint32 SFLAG_RENDER_DEBUG = 0;
 
 const TInt PRIORITY_BELOW = 500;
 
@@ -126,6 +127,7 @@ public:
   TInt32 mAttackStrength;
   TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
   TFloat mLastX, mLastY; // coordinates from last frame
+  TBool mDrawShadow;
   TRect mShadow;
   TUint mAttributeSave;
   ELEMENT mElement;
