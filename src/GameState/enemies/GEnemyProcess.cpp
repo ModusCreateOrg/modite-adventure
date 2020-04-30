@@ -70,7 +70,8 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDirection = aDirection;
   mSprite->mDx = 0;
   mSprite->mDy = 0;
-
+//  aDirection = DIRECTION_LEFT;
+//  printf("%s -> New State: %i, Direction %i\n", mSprite->Name(), aState, aDirection);
   switch (aState) {
 
     case IDLE_STATE:
