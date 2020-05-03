@@ -18,7 +18,7 @@ PALETTE test.pal
 #
 ### HERO
 #
-PATH resources/sprites/
+PATH resources/sprites/hero/
 SPRITESHEET 64x64 chara_hero.bmp
 # SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
