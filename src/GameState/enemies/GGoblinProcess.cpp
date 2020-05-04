@@ -73,6 +73,7 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
+// TODO: Finish death animations for all directions. See GRatProcess.cpp for example
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
