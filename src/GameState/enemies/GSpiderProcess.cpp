@@ -11,7 +11,7 @@ const TInt IDLE_SPEED = 5 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt TAUNT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 3 * FACTOR;
-const TInt HIT_SPEED = 1 * FACTOR;
+const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 2 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
@@ -83,6 +83,7 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
+//TODO: Finish death animations for up/down/left/right . use GRatProcess as a model
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(SPIDER_SLOT),
   ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
@@ -495,6 +496,7 @@ void GSpiderProcess::Spell(DIRECTION aDirection) {
 }
 
 void GSpiderProcess::Death(DIRECTION aDirection) {
-  mSprite->StartAnimation(deathAnimation);
+  printf("TODO: make SPIDER death animation\n");
+  mSprite->StartAnimation(hitDownAnimation);
 }
 
