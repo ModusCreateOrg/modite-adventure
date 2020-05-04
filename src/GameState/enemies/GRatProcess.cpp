@@ -19,8 +19,7 @@ const TInt16 HIT_SPEED = 2 * FACTOR;
 const TInt16 WALK_SPEED = 2 * FACTOR;
 const TInt16 DEATH_SPEED = 5 * FACTOR;
 
-//const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
-const TFloat VELOCITY = PLAYER_VELOCITY * .01;
+const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
 // region  ANIMATIONS {{{
 
