@@ -15,7 +15,7 @@ const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 5 * FACTOR;
 
-const TFloat VELOCITY = PLAYER_VELOCITY * 0.3;
+const TFloat VELOCITY = PLAYER_VELOCITY * 0.55;
 
 // region  ANIMATIONS {{{
 
@@ -34,16 +34,6 @@ const TFloat VELOCITY = PLAYER_VELOCITY * 0.3;
  | | (_| | |  __// /  ___) |  __/ |  __/ (__| ||  __/ (_| |
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
-
-ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(TROLL_SLOT),
-  ALABEL,
-  ASTEP(40, IMG_TROLL_IDLE),
-  ASTEP(4, IMG_TROLL_IDLE + 1),
-  ASTEP(40, IMG_TROLL_IDLE + 2),
-  ASTEP(4, IMG_TROLL_IDLE + 1),
-  ALOOP,
-};
 
 static ANIMSCRIPT selectAnimation[] = {
   ABITMAP(TROLL_SLOT),
@@ -95,10 +85,9 @@ static ANIMSCRIPT deathAnimation[] = {
 
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  ALABEL,
-  ADELTA(0, -1),
-  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 0),
-  ALOOP,
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3),
+  AEND,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
@@ -178,10 +167,9 @@ static ANIMSCRIPT deathDownAnimation[] = {
 
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  ALABEL,
   ADELTA(-9, -1),
-  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-  ALOOP,
+  AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
+  AEND,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
@@ -258,10 +246,9 @@ static ANIMSCRIPT deathLeftAnimation[] = {
 
 static ANIMSCRIPT idleRightAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  ALABEL,
   ADELTA(0, 0),
-  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 0),
-  ALOOP,
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
+  AEND,
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
@@ -340,7 +327,7 @@ static ANIMSCRIPT idleUpAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ALABEL,
   ADELTA(0, 0),
-  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 0),
+  ASTEP(WALK_SPEED, IMG_TROLL_WALK_UP + 3),
   ALOOP,
 };
 
