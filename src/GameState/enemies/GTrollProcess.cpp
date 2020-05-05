@@ -62,6 +62,7 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
+//TODO: Cleanup all deathAnimation[] from all enemies.
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
