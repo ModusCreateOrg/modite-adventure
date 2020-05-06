@@ -14,6 +14,7 @@ GPlayerSprite::GPlayerSprite(GGameState *aGameState) : GAnchorSprite(
   cx = 8;
   cy = 0;
   mSwordCharge = -1;
+  mDrawShadow = EFalse;
   mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_HERO_BMP_SPRITES);
   SetFlags(SFLAG_ANCHOR | SFLAG_CHECK | SFLAG_RENDER_SHADOW); // SFLAG_SORTY
 }
