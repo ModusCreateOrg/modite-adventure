@@ -151,10 +151,6 @@ static ANIMSCRIPT hitDownAnimation[] = {
 static ANIMSCRIPT deathDownAnimation[] = {
     ABITMAP(RAT_SLOT),
     ADELTA(0, -2),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
-    ADELTA(0, -2),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
-    ADELTA(0, -2),
     ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
     AEND,
 };
@@ -232,8 +228,6 @@ static ANIMSCRIPT hitLeftAnimation[] = {
 
 static ANIMSCRIPT deathLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(8, 4),
-  AFLIP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
   ADELTA(8, 4),
   AFLIP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
   AEND,
@@ -314,8 +308,6 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT deathRightAnimation[] = {
     ABITMAP(RAT_SLOT),
     ADELTA(2, 4),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
-    ADELTA(0, 4),
     ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
     AEND,
 };
@@ -408,10 +400,6 @@ static ANIMSCRIPT hitSpellAnimation[] = {
 
 static ANIMSCRIPT deathUpAnimation[] = {
     ABITMAP(RAT_SLOT),
-    ADELTA(0, 0),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_UP + 2),
-    ADELTA(0, 0),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_UP + 3),
     ADELTA(0, 0),
     ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_UP + 0),
     AEND,
