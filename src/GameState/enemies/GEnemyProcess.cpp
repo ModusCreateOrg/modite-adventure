@@ -70,7 +70,8 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mSprite->mDirection = aDirection;
   mSprite->mDx = 0;
   mSprite->mDy = 0;
-//  aDirection = DIRECTION_LEFT;
+//  aDirection = DIRECTION_RIGHT;
+//  aState = IDLE_STATE;
 //  printf("%s -> New State: %i, Direction %i\n", mSprite->Name(), aState, aDirection);
   switch (aState) {
 
@@ -130,7 +131,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case DEATH_STATE: {
       SfxDeath();
       mSaveToStream = EFalse; // Prevent saves while we're animating.
-      //      Death(aDirection);
+      Death(aDirection);
       auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
@@ -377,7 +378,7 @@ TBool GEnemyProcess::IdleState() {
     }
 
     // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(TAUNT_STATE, mSprite->mDirection);
   }
 
   return ETrue;
