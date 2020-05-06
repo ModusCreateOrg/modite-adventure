@@ -592,8 +592,8 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         printf("PLAYER IN1 at %.2f,%.2f\n", xx, yy);
 #endif
         if (mDungeon == OVERWORLD_DUNGEON) {
-          GPlayer::mProcess->StartLevel(mGamePlayfield, xx, yy, overworld_exit, exiting_level);
-          SetPlayfieldXYFromPlayer(xx, yy);
+          GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 32, overworld_exit, exiting_level);
+          SetPlayfieldXYFromPlayer(xx - 16, yy + 32);
         }
         else {
           GPlayer::mProcess->StartLevel(mGamePlayfield, xx - 16, yy + 28, overworld_exit, exiting_level);
@@ -628,7 +628,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SPIDER at %.2f,%.2f %d,%d\n", xx - 32, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY SPIDER");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY SPIDER");
         break;
 
       case ATTR_BAT:
@@ -637,7 +637,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("BAT at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY BAT");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY BAT");
         break;
 
       case ATTR_GOBLIN:
@@ -648,7 +648,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("GOBLIN at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN");
         break;
 
       case ATTR_GOBLIN_SNIPER:
@@ -660,7 +660,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("GOBLIN_SNIPER at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN SNIPER");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY GOBLIN SNIPER");
         break;
 
       case ATTR_ORC:
@@ -671,7 +671,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("ORC at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx, yy + 32, params, DIRECTION_DOWN, "ENEMY ORC");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY ORC");
         break;
 
       case ATTR_RAT:
@@ -683,7 +683,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("RAT at %.2f,%.2f %d,%d,%d\n", xx, yy, row, col, eCount);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 18, yy + 32, params, DIRECTION_DOWN, "ENEMY RAT");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY RAT");
         break;
 
       case ATTR_SLIME:
@@ -695,7 +695,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("SLIME at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 18, yy + 31, params, DIRECTION_DOWN, "ENEMY SLIME");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 31, params, DIRECTION_DOWN, "ENEMY SLIME");
         break;
 
       case ATTR_TROLL:
@@ -707,7 +707,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("TROLL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 20, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY TROLL");
         break;
 
       case ATTR_TURRET:
@@ -719,7 +719,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("TURRET at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 32, yy + 32, params, DIRECTION_DOWN, "ENEMY TURRET");
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY TURRET");
         break;
 
         // mid boss
@@ -918,7 +918,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   }
   if (!startedPlayer) {
     printf("NO PLAYER at %.2f,%.2f\n", 32., 64.);
-    GPlayer::mProcess->StartLevel(mGamePlayfield, 32. + 32, 64. + 63);
+    GPlayer::mProcess->StartLevel(mGamePlayfield, 32., 64. + 32);
   }
 
   PlayLevelMusic(mNextDungeon, spawnedBoss);
@@ -929,7 +929,9 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 
 TBool GGameState::PlayMusicForCurrentLevel() {
   PlayLevelMusic(mDungeon, -1);
+  return ETrue;
 }
+
 TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
 
   TUint16 song = EMPTYSONG_XM;
@@ -939,7 +941,6 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
     if (aNextDungeon == 0) {
       song = OVERWORLD_XM;
     }
-
 
     if (aNextDungeon >= 2 && aNextDungeon <= 4) {
       //      song = DUNGEON4_XM;
