@@ -83,28 +83,6 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
-//TODO: Finish death animations for up/down/left/right . use GRatProcess as a model
-static ANIMSCRIPT deathAnimation[] = {
-  ABITMAP(SPIDER_SLOT),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_DOWN + 0),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_SPIDER_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_SPIDER_WALK_DOWN + 0),
-  ASTEP(1, IMG_SPIDER_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_SPIDER_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_SPIDER_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_SPIDER_WALK_UP + 0),
-  ANULL(1),
-  AEND,
-};
-
 /*
  ____
 |  _ \  _____      ___ __
@@ -509,7 +487,6 @@ void GSpiderProcess::Spell(DIRECTION aDirection) {
 }
 
 void GSpiderProcess::Death(DIRECTION aDirection) {
-  printf("TODO: make SPIDER death animation\n");
   mSprite->StartAnimationInDirection(deathAnimations, aDirection);
 }
 
