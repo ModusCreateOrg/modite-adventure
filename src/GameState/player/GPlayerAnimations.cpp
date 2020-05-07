@@ -390,7 +390,7 @@ ANIMSCRIPT idleRightAnimation[] = {
 //  ADELTA(-1, 0),
 //  ASTEP(1, IMG_WALK_RIGHT + 1),
   ADELTA(0, 0),
-  ASTEP(HITSPEED, IMG_DAMAGE_RIGHT + 3),
+  ASTEP(1, IMG_DAMAGE_RIGHT + 3),
   AEND,
 };
 
