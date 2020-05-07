@@ -162,17 +162,22 @@ static ANIMSCRIPT hitDownAnimation[] = {
   ADELTA(0, -4),
   AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 0),
-  AFILL(-1),
   ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
   ADELTA(0, -2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 2),
-  AFILL(-1),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
   AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 3),
+  AEND,
+};
+
+static ANIMSCRIPT deathDownAnimation[] = {
+  ABITMAP(SPIDER_SLOT),
+  ADELTA(0, -4),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_DOWN + 0),
   AEND,
 };
 
@@ -233,22 +238,24 @@ static ANIMSCRIPT attackLeftAnimation[] = {
 
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(SPIDER_SLOT),
-  AFILL(COLOR_WHITE),
-  ADELTA(0, -2),
-  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
   ADELTA(-2, -2),
-  AFILL(-1),
-  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 0),
   AFILL(COLOR_WHITE),
+  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 0),
+  AFILL(-1),
   ADELTA(-2, -2),
   AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 1),
-  AFILL(-1),
-  ADELTA(0, -2),
-  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 2),
   AFILL(COLOR_WHITE),
   ADELTA(0, -2),
-  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
+  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 2),
   AFILL(-1),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
+  AEND,
+};
+static ANIMSCRIPT deathLeftAnimation[] = {
+  ABITMAP(SPIDER_SLOT),
+  ADELTA(-2, -2),
+  AFLIP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 1),
   AEND,
 };
 
@@ -308,22 +315,25 @@ static ANIMSCRIPT attackRightAnimation[] = {
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(SPIDER_SLOT),
-  ADELTA(-2, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
   ADELTA(0, -2),
-  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 0),
   AFILL(COLOR_WHITE),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 0),
+  AFILL(-1),
   ADELTA(-1, -2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 1),
-  AFILL(-1),
+  AFILL(COLOR_WHITE),
   ADELTA(-1, -2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 2),
-  AFILL(COLOR_WHITE),
+  AFILL(-1),
   ADELTA(-2, -2),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 3),
-  AFILL(-1),
+  AEND,
+};
+
+static ANIMSCRIPT deathRightAnimation[] = {
+  ABITMAP(SPIDER_SLOT),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_RIGHT + 0),
   AEND,
 };
 
@@ -385,21 +395,23 @@ static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(SPIDER_SLOT),
   ADELTA(0, -3),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 3),
-  ADELTA(0, -3),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 0),
   ADELTA(0, -3),
-  AFILL(COLOR_WHITE),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 1),
   ADELTA(0, -3),
-  AFILL(-1),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 2),
   ADELTA(0, -3),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 3),
-  ADELTA(0, -3),
   AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 3),
+  AEND,
+};
+
+static ANIMSCRIPT deathUpAnimation[] = {
+  ABITMAP(SPIDER_SLOT),
+  ADELTA(0, -3),
+  ASTEP(HIT_SPEED, IMG_SPIDER_DAMAGE_UP + 0),
   AEND,
 };
 
@@ -424,6 +436,7 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
 static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
+static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
 
 // endregion }}}
 
@@ -443,7 +456,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mStartY = mSprite->y = aY;
   mSprite->mDrawShadow = EFalse;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
-//  mSprite->SetStatMultipliers(0.9, 0.9, 0.9);
+  mSprite->SetStatMultipliers(0.9, 0.9, 0.9);
 
 //  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
 
@@ -497,6 +510,6 @@ void GSpiderProcess::Spell(DIRECTION aDirection) {
 
 void GSpiderProcess::Death(DIRECTION aDirection) {
   printf("TODO: make SPIDER death animation\n");
-  mSprite->StartAnimation(hitDownAnimation);
+  mSprite->StartAnimationInDirection(deathAnimations, aDirection);
 }
 
