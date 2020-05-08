@@ -32,9 +32,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
 }
 
-GAnchorSprite::~GAnchorSprite() {
-  //
-}
+GAnchorSprite::~GAnchorSprite() = default;
 
 void GAnchorSprite::SetAttribute(TUint aAttribute) {
   if (mAttributeSave == 0xffff) {

@@ -16,7 +16,7 @@ GDebugMenuContainer::GDebugMenuContainer(TInt aX, TInt aY, BGameEngine *aEngine)
   SetState(DEBUG_MAIN);
 }
 
-GDebugMenuContainer::~GDebugMenuContainer() {}
+GDebugMenuContainer::~GDebugMenuContainer() = default;
 
 void GDebugMenuContainer::SetState(TInt aState) {
   mSkip = 0;

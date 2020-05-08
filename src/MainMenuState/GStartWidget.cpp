@@ -6,4 +6,4 @@ GStartWidget::GStartWidget() : GButtonWidget("New Game", GAME_STATE_GAME) {
 //  }
 }
 
-GStartWidget::~GStartWidget() {}
+GStartWidget::~GStartWidget() = default;

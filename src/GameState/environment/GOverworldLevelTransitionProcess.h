@@ -8,12 +8,12 @@ class GOverworldLevelTransitionProcess : public GEnvironmentProcess {
 public:
     GOverworldLevelTransitionProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aLevel, TFloat aX, TFloat aY, const char *aKind);
 
-    ~GOverworldLevelTransitionProcess();
+    ~GOverworldLevelTransitionProcess() OVERRIDE;
 
 public:
-    TBool RunBefore();
+    TBool RunBefore() OVERRIDE;
 
-    TBool RunAfter();
+    TBool RunAfter() OVERRIDE;
 
 protected:
     GAnchorSprite *mSprite1;

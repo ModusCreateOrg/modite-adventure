@@ -8,9 +8,7 @@ GStartLevelProcess::GStartLevelProcess(const char *aName, TInt aLevel) : GProces
   mX = gViewPort->mRect.Width()/2 - len*12/2;
 }
 
-GStartLevelProcess::~GStartLevelProcess() {
-  //
-}
+GStartLevelProcess::~GStartLevelProcess() = default;
 
 TBool GStartLevelProcess::RunAfter() {
   if (--mTimer < 0) {

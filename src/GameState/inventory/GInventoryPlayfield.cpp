@@ -102,8 +102,7 @@ static void render_item_row(BViewPort *aViewPort, const char *aHeading, const TU
 GInventoryPlayfield::GInventoryPlayfield(GInventory *aInventory, BViewPort *aViewPort) : mInventory(aInventory), mViewPort(aViewPort) {
 }
 
-GInventoryPlayfield::~GInventoryPlayfield() {
-}
+GInventoryPlayfield::~GInventoryPlayfield() = default;
 
 void GInventoryPlayfield::Render() {
   char buf[256];

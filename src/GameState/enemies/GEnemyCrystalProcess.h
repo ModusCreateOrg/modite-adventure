@@ -7,7 +7,7 @@
 class GEnemyCrystalProcess : public GProcess {
 public:
   GEnemyCrystalProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TUint16 aSlot, TUint16 aImg = 0);
-  ~GEnemyCrystalProcess();
+  ~GEnemyCrystalProcess() OVERRIDE;
 
 public:
   TBool RunBefore() OVERRIDE;

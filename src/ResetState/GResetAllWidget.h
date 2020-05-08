@@ -6,10 +6,10 @@
 class GResetAllWidget : public BButtonWidget {
 public:
     GResetAllWidget();
-    ~GResetAllWidget();
+    ~GResetAllWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GRESETALLWIDGET_H

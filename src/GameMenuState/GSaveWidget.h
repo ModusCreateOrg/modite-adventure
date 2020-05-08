@@ -5,11 +5,11 @@
 
 class GSaveWidget : public GButtonWidget {
 public:
-    GSaveWidget(GGameState *aGameState);
-    ~GSaveWidget();
+    EXPLICIT GSaveWidget(GGameState *aGameState);
+    ~GSaveWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 protected:
     GGameState *mGameState;
 };

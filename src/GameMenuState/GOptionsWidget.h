@@ -8,9 +8,9 @@ class GGameMenuContainer;
 class GOptionsWidget : public GButtonWidget {
 public:
     GOptionsWidget(GGameMenuContainer *aContainer, TBool aExit);
-    ~GOptionsWidget();
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    ~GOptionsWidget() OVERRIDE;
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 
 public:
     GGameMenuContainer *mContainer;

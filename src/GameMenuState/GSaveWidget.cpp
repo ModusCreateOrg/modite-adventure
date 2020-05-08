@@ -6,7 +6,7 @@ GSaveWidget::GSaveWidget(GGameState *aGameState) : GButtonWidget("Save Progress"
 
 }
 
-GSaveWidget::~GSaveWidget() {}
+GSaveWidget::~GSaveWidget() = default;
 
 TInt GSaveWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);

@@ -9,7 +9,7 @@ class GInventoryList;
 
 struct GInventoryList : public BList {
   GInventoryList();
-  ~GInventoryList() {
+  ~GInventoryList() OVERRIDE {
     Reset();
   }
 
@@ -21,7 +21,7 @@ struct GInventoryList : public BList {
 
   void PickupItem(TInt aItemNumber);
 
-  GInventoryItem *First() {
+  GInventoryItem *First() OVERRIDE {
     return (GInventoryItem *)BList::First();
   }
 

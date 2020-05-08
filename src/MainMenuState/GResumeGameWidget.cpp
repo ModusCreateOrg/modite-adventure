@@ -5,7 +5,7 @@ GResumeGameWidget::GResumeGameWidget() : GButtonWidget("Resume Game", -1) {
   gSavedGameList.LoadSavedGameList();
 }
 
-GResumeGameWidget::~GResumeGameWidget() {}
+GResumeGameWidget::~GResumeGameWidget() = default;
 
 void GResumeGameWidget::Select() {
   GButtonWidget::Select();

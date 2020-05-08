@@ -6,8 +6,8 @@
 class GResumeGameWidget : public GButtonWidget {
 public:
     GResumeGameWidget();
-    ~GResumeGameWidget();
-    void Select();
+    ~GResumeGameWidget() OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GRESUMEGAMEWIDGET_H

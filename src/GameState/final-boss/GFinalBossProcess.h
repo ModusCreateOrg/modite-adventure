@@ -8,11 +8,11 @@
 class GFinalBossProcess : public GLivingProcess {
 public:
   GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams);
-  ~GFinalBossProcess();
+  ~GFinalBossProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
   void DeathAnimationDone(){
     mDeathCounter--;

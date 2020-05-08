@@ -2,7 +2,7 @@
 
 GExitDungeonWidget::GExitDungeonWidget() : GButtonWidget("Leave Dungeon") {}
 
-GExitDungeonWidget::~GExitDungeonWidget() {}
+GExitDungeonWidget::~GExitDungeonWidget() = default;
 
 TInt GExitDungeonWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);

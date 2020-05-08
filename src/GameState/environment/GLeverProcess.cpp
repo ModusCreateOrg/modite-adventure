@@ -40,9 +40,7 @@ GLeverProcess::GLeverProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
   mSprite->StartAnimation(leverCenterAnimation);
 }
 
-GLeverProcess::~GLeverProcess() {
-  //
-}
+GLeverProcess::~GLeverProcess() = default;
 
 TBool GLeverProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;

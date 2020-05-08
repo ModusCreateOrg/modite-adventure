@@ -27,7 +27,7 @@ class GGame : public BApplication {
 public:
   GGame();
 
-  virtual ~GGame();
+  ~GGame() OVERRIDE;
 
 public:
   void Run();

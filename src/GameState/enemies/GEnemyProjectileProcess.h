@@ -19,7 +19,7 @@ struct SpriteData {
 class GEnemyProjectileProcess : public GProcess {
 public:
   GEnemyProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TUint16 aSlot, TUint16 aImg = 0);
-  ~GEnemyProjectileProcess();
+  ~GEnemyProjectileProcess() OVERRIDE;
 
 public:
   void ConfigSprite(TFloat aAngle, TBool aParry = EFalse);

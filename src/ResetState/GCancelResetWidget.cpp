@@ -3,7 +3,7 @@
 
 GCancelResetWidget::GCancelResetWidget() : BButtonWidget("CANCEL", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GCancelResetWidget::~GCancelResetWidget() {}
+GCancelResetWidget::~GCancelResetWidget() = default;
 
 TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

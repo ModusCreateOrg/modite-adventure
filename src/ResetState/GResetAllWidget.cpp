@@ -3,7 +3,7 @@
 
 GResetAllWidget::GResetAllWidget() : BButtonWidget("EVERYTHING", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GResetAllWidget::~GResetAllWidget() {}
+GResetAllWidget::~GResetAllWidget() = default;
 
 TInt GResetAllWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

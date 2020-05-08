@@ -42,8 +42,7 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   GSpikesProcess::mGroups[mParam]++;
 }
 
-GSpikesProcess::~GSpikesProcess() {
-}
+GSpikesProcess::~GSpikesProcess() = default;
 
 TBool GSpikesProcess::RunBefore() {
   if (mState) {

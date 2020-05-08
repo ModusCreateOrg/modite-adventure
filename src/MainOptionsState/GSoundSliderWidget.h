@@ -8,12 +8,12 @@ public:
     GSoundSliderWidget(char *aTitle, const TRange *aRange, TInt aForeground, TInt aBackground = -1);
 
     GSoundSliderWidget(const char *aTitle, const TRange *aRange, TInt aForeground, TInt aBackground = -1);
-    ~GSoundSliderWidget();
+    ~GSoundSliderWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    TInt RenderTitle(TInt aX, TInt aY, TBool aActive = EFalse);
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    TInt RenderTitle(TInt aX, TInt aY, TBool aActive = EFalse) OVERRIDE;
     void Set(TInt aVal);
-    virtual void Select(TInt aVal) = 0;
+    void Select(TInt aVal) OVERRIDE = 0;
 };
 
 #endif //GENUS_GSOUNDSLIDERWIDGET_H

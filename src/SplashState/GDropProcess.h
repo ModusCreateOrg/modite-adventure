@@ -11,10 +11,10 @@ protected:
   TBool WaitState();
   TBool FormState();
   TBool FallState();
-  TBool RunBefore() {
+  TBool RunBefore() OVERRIDE {
     return ETrue;
   }
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 protected:
   const TFloat GRAVITY = .08f;

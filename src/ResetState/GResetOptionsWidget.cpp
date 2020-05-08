@@ -3,7 +3,7 @@
 
 GResetOptionsWidget::GResetOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
 
-GResetOptionsWidget::~GResetOptionsWidget() {}
+GResetOptionsWidget::~GResetOptionsWidget() = default;
 
 TInt GResetOptionsWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

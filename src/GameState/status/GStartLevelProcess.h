@@ -6,13 +6,13 @@
 class GStartLevelProcess : public GProcess {
 public:
   GStartLevelProcess(const char *aName, TInt aLevel);
-  ~GStartLevelProcess();
+  ~GStartLevelProcess() OVERRIDE;
 
 public:
-  TBool RunBefore() {
+  TBool RunBefore() OVERRIDE {
     return ETrue;
   }
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 protected:
   TInt mX;

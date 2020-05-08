@@ -9,7 +9,7 @@ GSfxWidget::GSfxWidget() : GSoundSliderWidget("SFX", &sfx_options, COLOR_TEXT, C
   mHeight = 24;
 }
 
-GSfxWidget::~GSfxWidget() {}
+GSfxWidget::~GSfxWidget() = default;
 
 TInt GSfxWidget::Render(TInt aX, TInt aY) {
   mSelectedValue = gOptions->sfx / 0.125;

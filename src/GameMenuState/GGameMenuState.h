@@ -8,7 +8,7 @@ class GGameState;
 
 class GGameMenuState : public BGameEngine {
 public:
-  GGameMenuState(GGameState *aGameState);
+  EXPLICIT GGameMenuState(GGameState *aGameState);
   virtual ~GGameMenuState();
   void PreRender();
   void PostRender();

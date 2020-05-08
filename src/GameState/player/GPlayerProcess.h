@@ -24,7 +24,7 @@ const TFloat PERFECT_CHARGE_BONUS = 3.5; // damage multiplier for perfect charge
 
 class GPlayerProcess : public GLivingProcess {
 public:
-  GPlayerProcess(GGameState *aGameState);
+  EXPLICIT GPlayerProcess(GGameState *aGameState);
 
   ~GPlayerProcess() OVERRIDE;
 

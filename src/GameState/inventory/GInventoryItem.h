@@ -9,7 +9,7 @@ class GInventoryList;
 struct GInventoryItem : public BNode {
 public:
   GInventoryItem(TInt aItemNumber, GInventoryList *aInventoryList);
-  ~GInventoryItem();
+  ~GInventoryItem() OVERRIDE;
 
 public:
   void WriteToStream(BMemoryStream &aStream);

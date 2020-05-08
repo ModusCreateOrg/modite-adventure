@@ -8,8 +8,8 @@ class GMainMenuProcess;
 class GMainMenuContainer : public GDialogWidget {
 public:
   GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProcess);
-  ~GMainMenuContainer();
-  TBool OnNavigate(TUint16 bits);
+  ~GMainMenuContainer() OVERRIDE;
+  TBool OnNavigate(TUint16 bits) OVERRIDE;
 
 public:
   GMainMenuProcess *mProcess;

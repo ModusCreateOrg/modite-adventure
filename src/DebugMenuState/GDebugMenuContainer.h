@@ -15,12 +15,12 @@ enum {
 class GDebugMenuContainer : public GDialogWidget {
 public:
   GDebugMenuContainer(TInt aX, TInt aY, BGameEngine *mEngine);
-  ~GDebugMenuContainer();
-  TBool OnNavigate(TUint16 aBits);
-  TInt Render(TInt aX, TInt aY);
+  ~GDebugMenuContainer() OVERRIDE;
+  TBool OnNavigate(TUint16 aBits) OVERRIDE;
+  TInt Render(TInt aX, TInt aY) OVERRIDE;
   void AddWidget(BWidget &aWidget);
   void SetState(TInt aState);
-  void Run();
+  void Run() OVERRIDE;
 
 public:
   TInt mTimer;

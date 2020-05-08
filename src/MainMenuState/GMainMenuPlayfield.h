@@ -6,12 +6,12 @@
 class GMainMenuPlayfield : public BPlayfield {
 public:
   GMainMenuPlayfield();
-  virtual ~GMainMenuPlayfield();
+  ~GMainMenuPlayfield() OVERRIDE;
 
 public:
   TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
   TInt CenterText16(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
-  void Render();
+  void Render() OVERRIDE;
 
 public:
   BFont   *mFont8, *mFont16;

@@ -6,10 +6,10 @@
 class GQuitWidget : public GButtonWidget {
 public:
     GQuitWidget();
-    ~GQuitWidget();
+    ~GQuitWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GQUITWIDGET_H

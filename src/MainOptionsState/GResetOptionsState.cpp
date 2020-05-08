@@ -18,16 +18,16 @@ public:
       mContainer = new ResetOptionsContainer(80, 92);
     }
 
-    ~GResetOptionsProcess() {
+    ~GResetOptionsProcess() OVERRIDE {
       delete mContainer;
     }
 
 public:
-    TBool RunBefore() {
+    TBool RunBefore() OVERRIDE {
       return ETrue;
     }
 
-    TBool RunAfter() {
+    TBool RunAfter() OVERRIDE {
       mContainer->Render(30, 20);
       mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
@@ -54,12 +54,12 @@ public:
       gDisplay.SetPalette(mBackground);
     }
 
-    virtual ~GResetOptionsPlayfield() {
+    ~GResetOptionsPlayfield() OVERRIDE {
       gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
     }
 
 public:
-    void Render() {
+    void Render() OVERRIDE {
       gDisplay.renderBitmap->CopyPixels(mBackground);
 
       const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

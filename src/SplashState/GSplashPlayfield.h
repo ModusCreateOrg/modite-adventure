@@ -7,7 +7,7 @@ class GSplashPlayfield : public BPlayfield {
 public:
   GSplashPlayfield();
 
-  virtual ~GSplashPlayfield();
+  ~GSplashPlayfield() OVERRIDE;
 
   void Render() final;
   void Animate() final;

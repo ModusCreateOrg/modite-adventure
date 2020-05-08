@@ -2,7 +2,7 @@
 
 GExitWidget::GExitWidget() : GButtonWidget("Back") {}
 
-GExitWidget::~GExitWidget() {}
+GExitWidget::~GExitWidget() = default;
 
 TInt GExitWidget::Render(TInt aX, TInt aY) {
 #ifdef __XTENSA__

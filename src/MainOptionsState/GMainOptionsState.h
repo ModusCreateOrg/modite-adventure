@@ -7,7 +7,7 @@ class GMainOptionsState : public BGameEngine {
 public:
   GMainOptionsState();
 
-  virtual ~GMainOptionsState();
+  ~GMainOptionsState() OVERRIDE;
 private:
     BFont *mFont16, *mFont8;
 };

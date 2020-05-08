@@ -9,7 +9,7 @@ GBrightnessWidget::GBrightnessWidget() : GSoundSliderWidget("SCREEN", &brightnes
   mHeight = 24;
 }
 
-GBrightnessWidget::~GBrightnessWidget() {}
+GBrightnessWidget::~GBrightnessWidget() = default;
 
 TInt GBrightnessWidget::Render(TInt aX, TInt aY) {
   mSelectedValue = gOptions->brightness / 0.125;

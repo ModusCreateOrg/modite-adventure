@@ -9,7 +9,7 @@ GSoundSliderWidget::GSoundSliderWidget(const char *aTitle, const TRange *aRange,
     : BSliderWidget(aTitle, aRange, aForeground, aBackground) {
 }
 
-GSoundSliderWidget::~GSoundSliderWidget() {}
+GSoundSliderWidget::~GSoundSliderWidget() = default;
 
 void GSoundSliderWidget::Set(TInt aVal) {
   mSelectedValue = aVal;

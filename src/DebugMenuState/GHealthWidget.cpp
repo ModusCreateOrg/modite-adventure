@@ -10,7 +10,7 @@ GHealthWidget::GHealthWidget() : GSoundSliderWidget("Health", &health_options, C
   mHeight = 25;
 }
 
-GHealthWidget::~GHealthWidget() {}
+GHealthWidget::~GHealthWidget() = default;
 
 TInt GHealthWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
   aY += mHeight;

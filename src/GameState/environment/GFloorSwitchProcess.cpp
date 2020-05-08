@@ -22,9 +22,7 @@ GFloorSwitchProcess::GFloorSwitchProcess(GGameState *aGameState, TInt aIp, TUint
   mState = mAnimating = EFalse;
 }
 
-GFloorSwitchProcess::~GFloorSwitchProcess() {
-  //
-}
+GFloorSwitchProcess::~GFloorSwitchProcess() = default;
 
 TBool GFloorSwitchProcess::RunBefore() {
   GGamePlayfield *p = mGameState->mGamePlayfield;

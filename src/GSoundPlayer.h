@@ -15,9 +15,9 @@ class GSoundPlayer : public BSoundPlayer {
 public:
   void Init(TUint8 aNumberFxChannels);
 
-  TBool LoadSongSlot(TInt16 aResourceId) override;
-  TBool LoadEffects() override;
-  BRaw* LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) override;
+  TBool LoadSongSlot(TInt16 aResourceId) OVERRIDE;
+  TBool LoadEffects() OVERRIDE;
+  BRaw* LoadEffectResource(TUint16 aResourceId, TInt16 aSlotNumber) OVERRIDE;
   TBool PlayMusic(TInt16 aResourceId);
 
   void TriggerSfx(TUint16 aSfxNumber);

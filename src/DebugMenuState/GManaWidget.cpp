@@ -10,7 +10,7 @@ GManaWidget::GManaWidget() : GSoundSliderWidget("Mana", &health_options, COLOR_T
   mHeight = 25;
 }
 
-GManaWidget::~GManaWidget() {}
+GManaWidget::~GManaWidget() = default;
 
 TInt GManaWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
   aY += mHeight;

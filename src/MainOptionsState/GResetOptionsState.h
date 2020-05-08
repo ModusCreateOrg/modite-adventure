@@ -7,7 +7,7 @@ class GResetOptionsState : public BGameEngine {
 public:
   GResetOptionsState();
 
-  virtual ~GResetOptionsState();
+  ~GResetOptionsState() OVERRIDE;
 private:
     BFont *mFont16, *mFont8;
 };

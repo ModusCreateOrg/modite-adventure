@@ -22,8 +22,7 @@ GInventory::GInventory(BViewPort *aViewPort) : BGameEngine(aViewPort) {
   gDisplay.SetColor(COLOR_METER_OUTLINE, 64, 64, 64);
 }
 
-GInventory::~GInventory() {
-}
+GInventory::~GInventory() = default;
 
 GInventoryItem *GInventory::SelectedItem() {
   return mProcess->mSelectedItem;

@@ -31,7 +31,7 @@ public:
 class GSavedGameList : public BListPri {
 public:
   GSavedGameList();
-  ~GSavedGameList();
+  ~GSavedGameList() OVERRIDE;
 
 public:
   TInt mNumSavedGames;
@@ -49,7 +49,7 @@ public:
   void Dump();
 
 public:
-  GSavedGameNode *First() {
+  GSavedGameNode *First() OVERRIDE {
     return (GSavedGameNode *)BListPri::First();
   }
 

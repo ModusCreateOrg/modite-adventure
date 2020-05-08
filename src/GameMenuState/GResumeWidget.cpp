@@ -4,7 +4,7 @@ GResumeWidget::GResumeWidget() : GButtonWidget("Back") {
   mHeight = 24;
 }
 
-GResumeWidget::~GResumeWidget() {}
+GResumeWidget::~GResumeWidget() = default;
 
 TInt GResumeWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);

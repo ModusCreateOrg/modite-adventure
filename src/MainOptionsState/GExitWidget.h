@@ -6,10 +6,10 @@
 class GExitWidget : public GButtonWidget {
 public:
     GExitWidget();
-    ~GExitWidget();
+    ~GExitWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GEXITWIDGET_H

@@ -10,14 +10,14 @@ class GLoadGameState : public BGameEngine {
 public:
   GLoadGameState();
 
-  ~GLoadGameState();
+  ~GLoadGameState() OVERRIDE;
 
   void Reload();
 
 public:
-  void PreRender();
+  void PreRender() OVERRIDE;
 
-  void PostRender();
+  void PostRender() OVERRIDE;
 
 protected:
   TInt StringLength8(const char *s) {
