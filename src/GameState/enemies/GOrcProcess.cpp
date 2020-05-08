@@ -7,13 +7,13 @@
 
 const TInt16 IDLE_TIMEOUT = 120;
 
-const TInt IDLE_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
+const TInt IDLE_SPEED = 3 * FACTOR;
+const TInt TAUNT_SPEED = 3 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt ATTACK_SPEED = 3 * FACTOR;
+const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
-const TInt DEATH_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 1;
 
 const TFloat VELOCITY = 1.5 / FACTOR;
 
@@ -240,7 +240,7 @@ static ANIMSCRIPT hitDownAnimation[] = {
 };
 static ANIMSCRIPT deathDownAnimation[] = {
   ABITMAP(ORC_SLOT),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
+  ASTEP(DEATH_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
   AEND,
 };
 
@@ -439,7 +439,7 @@ static ANIMSCRIPT hitLeftAnimation[] = {
 static ANIMSCRIPT deathLeftAnimation[] = {
   ABITMAP(ORC_SLOT),
   ADELTA(-3, 0),
-  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  AFLIP(DEATH_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
   AEND,
 };
 

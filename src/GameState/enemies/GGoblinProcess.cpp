@@ -9,13 +9,13 @@
 
 const TInt16 IDLE_TIMEOUT = 10 * FACTOR;
 
-const TInt IDLE_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
+const TInt IDLE_SPEED = 3 * FACTOR;
+const TInt TAUNT_SPEED = 3 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 2 * FACTOR;
 const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 4 * FACTOR;
-const TInt DEATH_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 1;
 
 const TFloat VELOCITY = 1.4 / FACTOR;
 
@@ -245,7 +245,7 @@ static ANIMSCRIPT hitDownAnimation[] = {
 static ANIMSCRIPT deathDownAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
   AEND,
 };
 
@@ -409,7 +409,7 @@ static ANIMSCRIPT hitLeftAnimation[] = {
 static ANIMSCRIPT deathLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(-6, 0),
-  AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
+  AFLIP(DEATH_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
   AEND,
 };
 
@@ -573,7 +573,7 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT deathRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
   AEND,
 };
 
@@ -737,7 +737,7 @@ static ANIMSCRIPT hitUpAnimation[] = {
 static ANIMSCRIPT deathUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 1),
+  ASTEP(DEATH_SPEED, IMG_GOBLIN_DAMAGE_UP + 1),
   AEND,
 };
 

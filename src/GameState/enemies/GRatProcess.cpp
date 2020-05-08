@@ -5,19 +5,15 @@
 #define DEBUGME
 #undef DEBUGME
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
-
 const TInt16 IDLE_TIMEOUT = 3 * FACTOR;
 
-const TInt16 IDLE_SPEED = 5 * FACTOR;
+const TInt16 IDLE_SPEED = 3 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
+const TInt16 TAUNT_SPEED = 3 * FACTOR;
 const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt16 HIT_SPEED = 2 * FACTOR;
 const TInt16 WALK_SPEED = 2 * FACTOR;
-const TInt16 DEATH_SPEED = 5 * FACTOR;
+const TInt16 DEATH_SPEED = 1;
 
 const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
@@ -295,10 +291,10 @@ static ANIMSCRIPT hitRightAnimation[] = {
 };
 
 static ANIMSCRIPT deathRightAnimation[] = {
-    ABITMAP(RAT_SLOT),
-    ADELTA(2, 4),
-    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
-    AEND,
+  ABITMAP(RAT_SLOT),
+  ADELTA(2, 4),
+  ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  AEND,
 };
 /*
  _   _

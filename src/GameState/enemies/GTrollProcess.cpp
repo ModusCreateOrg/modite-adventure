@@ -7,13 +7,13 @@
 
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
-const TInt IDLE_SPEED = 5 * FACTOR;
-const TInt SELECT_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
+const TInt IDLE_SPEED = 3 * FACTOR;
+const TInt TAUNT_SPEED = 3 * FACTOR;
+const TInt SELECT_SPEED = 3 * FACTOR;
 const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
-const TInt DEATH_SPEED = 5 * FACTOR;
+const TInt DEATH_SPEED = 1;
 
 const TFloat VELOCITY = PLAYER_VELOCITY * 0.55;
 
@@ -62,7 +62,6 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
-//TODO: Cleanup all deathAnimation[] from all enemies.
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ASTEP(DEATH_SPEED, IMG_TROLL_WALK_RIGHT + 0),
