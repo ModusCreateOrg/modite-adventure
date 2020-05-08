@@ -1,7 +1,7 @@
 #ifndef GENEMYPROJECTILEPROCESS_H
 #define GENEMYPROJECTILEPROCESS_H
 
-#include "GGameState.h"
+#include "GProcess.h"
 
 struct SpriteData {
   TFloat x;

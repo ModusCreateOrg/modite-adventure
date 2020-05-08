@@ -1,6 +1,7 @@
 #ifndef GWIZARDPROCESS_H
 #define GWIZARDPROCESS_H
 
+#include "Game.h"
 #include "GAnchorSprite.h"
 #include "GLivingProcess.h"
 #include "GGameState.h"

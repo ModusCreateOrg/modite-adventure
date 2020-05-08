@@ -1,8 +1,12 @@
 #ifndef BRICKOUT_GGAME_H
 #define BRICKOUT_GGAME_H
 
-#include "Game.h"
+//#include "Game.h"
+#include <BApplication.h>
 #include "common/GSavedGameList.h"
+
+class BGameEngine;
+class BFont;
 
 enum {
   GAME_STATE_SPLASH,

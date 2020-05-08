@@ -31,7 +31,7 @@ public:
   virtual void ReadFromStream(BMemoryStream &aStream);
   // inheritor can override this to write additional instance data to stream
   virtual void WriteCustomToStream(BMemoryStream &aStream) {}
-  virtual void ReadCustomFromStream(BMemoryStream &aStream);
+  virtual void ReadCustomFromStream(BMemoryStream &aStream) {}
 
 public:
   virtual void OverlayAnimationComplete(){};

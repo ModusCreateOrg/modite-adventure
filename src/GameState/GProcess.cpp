@@ -33,10 +33,6 @@ void GProcess::WriteToStream(BMemoryStream &aStream) {
 }
 
 void GProcess::ReadFromStream(BMemoryStream &aStream) {
-  mSprite->ReadFromStream(aStream);
-}
-
-void GProcess::ReadCustomFromStream(BMemoryStream &aStream) {
   // we assume mAttribute was already read in
   ReadCustomFromStream(aStream);
   mSprite->ReadFromStream(aStream);

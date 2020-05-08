@@ -1,7 +1,9 @@
 #ifndef GENUS_GDEBUGMENUSTATE_H
 #define GENUS_GDEBUGMENUSTATE_H
 
-#include "Game.h"
+//#include "Game.h"
+#include "GDebugMenuContainer.h"
+#include "BGameEngine.h"
 
 class GDebugMenuContainer;
 

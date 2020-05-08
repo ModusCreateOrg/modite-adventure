@@ -7,11 +7,13 @@
 #define MODITE_GPLAYER_H
 
 class GPlayerProcess;
+class GLivingProcess;
 
 #include <BMemoryStream.h>
 #include <BResourceManager.h>
+#include "GGame.h"
 #include "GGameState.h"
-#include "GPlayer.h"
+#include "GPlayerSprite.h"
 #include "GAnchorSprite.h"
 #include "GResources.h"
 #include "inventory/GInventoryList.h"

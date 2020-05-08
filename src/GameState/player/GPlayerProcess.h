@@ -8,6 +8,7 @@ class BMemoryStream;
 
 //class GAnchorSprite;
 
+#include "Game.h"
 #include "GPlayerSprite.h"
 #include "GLivingProcess.h"
 #include "GGame.h"
@@ -25,7 +26,7 @@ class GPlayerProcess : public GLivingProcess {
 public:
   GPlayerProcess(GGameState *aGameState);
 
-  ~GPlayerProcess();
+  ~GPlayerProcess() OVERRIDE;
 
 private:
   void BlinkOn() OVERRIDE;
@@ -42,9 +43,9 @@ public:
   TFloat PlayerY();
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 protected:
   TBool IsLedge();
@@ -81,11 +82,8 @@ protected:
   TBool HitState();
 
 public:
-  void WriteToStream(BMemoryStream &aStream);
-  void WriteCustomToStream(BMemoryStream &aStream);
-
-  void ReadFromStream(BMemoryStream &aStream);
-  void ReadCustomFromStream(BMemoryStream &aStream);
+  void WriteCustomToStream(BMemoryStream &aStream) OVERRIDE;
+  void ReadCustomFromStream(BMemoryStream &aStream) OVERRIDE;
 
 public:
   static DIRECTION mLastDirection;

@@ -4,6 +4,7 @@
 #include <BSprite.h>
 #include <BFont.h>
 #include <BBitmap.h>
+#include "GAnchorSprite.h"
 
 enum STAT_TYPE {
   STAT_PLAYER_HIT,

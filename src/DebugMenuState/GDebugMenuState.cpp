@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "GDebugMenuContainer.h"
+#include "GDebugMenuState.h"
 
 GDebugMenuState::GDebugMenuState() : BGameEngine(gViewPort) {
   mContainer = new GDebugMenuContainer(30, 40, this);

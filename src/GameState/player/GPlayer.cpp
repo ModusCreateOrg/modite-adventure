@@ -1,3 +1,4 @@
+#include "Game.h"
 #include <GameState/status/GStatProcess.h>
 #include <GameState/GLivingProcess.h>
 #include "GPlayer.h"

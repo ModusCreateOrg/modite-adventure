@@ -7,7 +7,7 @@
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
 #include "GGameState.h"
-#include "GProcess.h"
+#include "GLivingProcess.h"
 #include "common/GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;

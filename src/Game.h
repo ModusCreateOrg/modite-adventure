@@ -47,9 +47,7 @@ const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
 //#include "GInventory.h"
 
 extern BViewPort   *gViewPort;
-extern BGameEngine *gGameEngine;
 extern TOptions    *gOptions;
-extern BFont *gFont8x8, *gFont16x16;
 
 #ifdef __XTENSA__
 static const TInt MAX_BRIGHTNESS = 0x1fff;

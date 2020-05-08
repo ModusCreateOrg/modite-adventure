@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GGameMenuState.h"
 #include "GGameMenuContainer.h"
 
 #ifdef __XTENSA__
