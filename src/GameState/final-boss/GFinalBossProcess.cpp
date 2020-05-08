@@ -442,7 +442,7 @@ TBool GFinalBossProcess::MaybeHit() {
 #ifdef DEBUGME
         printf("FINAL BOSS DEATH\n");
 #endif
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
       }
       SetState(STATE_SPELL, mSprite->mDirection);
       return ETrue;
@@ -462,7 +462,7 @@ TBool GFinalBossProcess::MaybeHit() {
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
       if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
       }
       SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;

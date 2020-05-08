@@ -532,7 +532,7 @@ TBool GMidBossProcess::DeathState() {
   if (mDeathCounter == 1) {
     printf("MID BOSS DEATH\n");
     mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y,
-                                            "EXP +%d", mSprite->mLevel));
+                                            "EXP +%d", mSprite->mExperienceYield));
   }
   if (mDeathCounter <= 3) {
     printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);

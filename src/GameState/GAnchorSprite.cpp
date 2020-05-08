@@ -20,11 +20,9 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mAttributeSave = 0xffff;
   w = 64;
   h = 64;
-  mBaseHitPoints = BASE_HIT_POINTS;
-  mBaseStrength = BASE_STRENGTH;
-  mBaseExperience = BASE_EXPERIENCE;
-  mLevel = 1;
-  SetStatMultipliers();
+  mHitPoints = mMaxHitPoints = BASE_HIT_POINTS;
+  mAttackStrength = BASE_STRENGTH;
+  mExperienceYield = BASE_EXPERIENCE;
   mLastX = 0;
   mLastY = 0;
   mCollided = ENull;
@@ -286,18 +284,9 @@ void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
 }
 
 void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength, TFloat aModExperience) {
-  mBaseHitPoints = round(aModHitPoints * BASE_HIT_POINTS);
-  mBaseStrength = round(aModStrength * BASE_STRENGTH);
-  mBaseExperience = round(aModExperience * BASE_EXPERIENCE);
-  SetLevel(mLevel);
-}
-
-void GAnchorSprite::SetLevel(TInt aLevel) {
-  mLevel = aLevel;
-  mMaxHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
-  mHitPoints = mMaxHitPoints;
-  mAttackStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
-  mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
+  mHitPoints = mMaxHitPoints = round(aModHitPoints * BASE_HIT_POINTS);
+  mAttackStrength = round(aModStrength * BASE_STRENGTH);
+  mExperienceYield = round(aModExperience * BASE_EXPERIENCE);
 }
 
 void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {

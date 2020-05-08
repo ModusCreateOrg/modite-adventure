@@ -296,10 +296,10 @@ TBool GEnemyProcess::SpellState() {
 TBool GEnemyProcess::DeathState() {
   auto *p = mEnemyDeathOverlayProcess;
   if (mSprite->AnimDone() && !p) {
-    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperience);
+    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield);
     p2->SetMessageType(STAT_EXPERIENCE);
     mGameState->AddProcess(p2);
-    GPlayer::AddExperience(mSprite->mExperience);
+    GPlayer::AddExperience(mSprite->mExperienceYield);
 
     // If we setup a key for the enemy to drop
     if (mParams) {

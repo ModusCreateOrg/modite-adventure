@@ -399,7 +399,7 @@ TBool GWizardProcess::MaybeAttack() {
 TBool GWizardProcess::MaybeDeath() {
   if (mSprite->mHitPoints <= 0) {
     printf("WIZARD DEATH\n");
-    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mLevel));
+    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
     SetState(STATE_DEATH, mDirection);
     return ETrue;
   }

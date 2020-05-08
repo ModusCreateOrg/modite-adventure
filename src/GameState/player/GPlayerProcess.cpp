@@ -327,7 +327,7 @@ TBool GPlayerProcess::MaybeHit() {
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
       if (other->mHitPoints > 0) {
         // contact damage independent of enemy attack strength
-        hitAmount = BASE_STRENGTH + other->mLevel * (BASE_STRENGTH / 5);
+        hitAmount = BASE_STRENGTH;
         mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
       }
     }
