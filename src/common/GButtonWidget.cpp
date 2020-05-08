@@ -1,3 +1,4 @@
+#include "Game.h"
 #include "GButtonWidget.h"
 
 GButtonWidget::GButtonWidget(const char *aText, TInt aState) : BButtonWidget(aText, COLOR_TEXT, COLOR_TEXT_BG) {

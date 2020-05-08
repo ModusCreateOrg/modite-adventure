@@ -308,6 +308,7 @@ void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
+  WriteCustomToStream(aStream); // write additional data, if any
   aStream.Write(&x, sizeof(x));
   aStream.Write(&y, sizeof(y));
   aStream.Write(&vx, sizeof(vx));
@@ -322,6 +323,7 @@ void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
 }
 
 void GAnchorSprite::ReadFromStream(BMemoryStream &aStream) {
+  ReadCustomFromStream(aStream);
   aStream.Read(&x, sizeof(x));
   aStream.Read(&y, sizeof(y));
   aStream.Read(&vx, sizeof(vx));

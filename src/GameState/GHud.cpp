@@ -5,6 +5,7 @@
 #include "GPlayer.h"
 #include "GHud.h"
 #include "Items.h"
+#include "Game.h"
 
 static const TRect heart(0, 384, 15, 399);
 static const TRect magic(16, 384, 31, 399);

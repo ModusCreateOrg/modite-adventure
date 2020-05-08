@@ -1,6 +1,6 @@
 #include "GRatProcess.h"
 #include "GStatProcess.h"
-#include "GPlayer.h"
+//#include "GPlayer.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -35,7 +35,7 @@ const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 |___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
  */
 
-ANIMSCRIPT idleAnimation[] = {
+static ANIMSCRIPT idleAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
   ASTEP(40, IMG_RAT_IDLE),

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GCreditsState.h"
 
 class CreditsProcess : public BProcess {
 public:

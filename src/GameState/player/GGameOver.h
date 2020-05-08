@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+class GGameState;
+
 const TUint START_DELAY = FRAMES_PER_SECOND;
 
 class GGameOverButtonWidget;

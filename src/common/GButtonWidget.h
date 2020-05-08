@@ -1,7 +1,7 @@
 #ifndef GENUS_GBUTTONWIDGET_H
 #define GENUS_GBUTTONWIDGET_H
 
-#include "Game.h"
+#include <Widgets/BButtonWidget.h>
 
 class GButtonWidget : public BButtonWidget {
 public:

@@ -2,6 +2,7 @@
 #define GENUS_GLEVELWIDGET_H
 
 #include "Game.h"
+#include "common/GButtonWidget.h"
 
 class GLevelWidget : public GButtonWidget {
 public:

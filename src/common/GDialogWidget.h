@@ -1,10 +1,8 @@
 #ifndef GENUS_GDIALOGWIDGET_H
 #define GENUS_GDIALOGWIDGET_H
 
-#include "Game.h"
-
-const TUint REPEAT_INPUT_DELAY = 0.5 * FRAMES_PER_SECOND;
-const TUint REPEAT_INPUT_INTERVAL = 0.15 * FRAMES_PER_SECOND;
+//#include "Game.h"
+#include <BDialogWidget.h>
 
 class GDialogWidget : public BDialogWidget {
 public:

@@ -3,6 +3,7 @@
 
 #include <BAnimSprite.h>
 #include <BMemoryStream.h>
+#include "Game.h"
 
 class GGameState;
 //#include "GGameState.h"
@@ -134,8 +135,8 @@ public:
 
 public:
   void WriteToStream(BMemoryStream &aStream);
-  void WriteCustomToStream(BMemoryStream &aStream);
-  virtual void ReadFromStream(BMemoryStream &aStream);
+  void ReadFromStream(BMemoryStream &aStream);
+  virtual void WriteCustomToStream(BMemoryStream &aStream) {}
   virtual void ReadCustomFromStream(BMemoryStream &aStream) {}
 
 protected:

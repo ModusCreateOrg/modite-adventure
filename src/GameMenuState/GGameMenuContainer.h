@@ -2,6 +2,8 @@
 #define GENUS_GGAMEMENUCONTAINER_H
 
 #include "Game.h"
+#include "GGameState.h"
+#include "common/GDialogWidget.h"
 
 enum GAME_MENU_STATE {
   GAME_MENU_KEEP_STATE,

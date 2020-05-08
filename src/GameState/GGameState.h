@@ -7,11 +7,12 @@
 #define ENABLE_REMAP_SLOTS
 //#undef ENABLE_REMAP_SLOTS
 
-#include "Game.h"
+//#include "Game.h"
+#include "GResources.h"
 #include "GGamePlayfield.h"
 
 class GAnchorSprite;
-
+class GProcess;
 class GGamePlayfield;
 
 // Message Types
@@ -21,7 +22,7 @@ static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 const TInt16 OVERWORLD_DUNGEON = 0;
 
 
-#include "GPlayerProcess.h"
+//#include "GPlayerProcess.h"
 
 struct TDungeonInfo {
   const char *name;

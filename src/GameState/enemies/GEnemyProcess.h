@@ -2,8 +2,9 @@
 #define MODITE_GENEMYPROCESS_H
 
 #include <BMemoryStream.h>
-#include "GResources.h"
-#include "GProcess.h"
+#include "Game.h"
+#include "GPlayerProcess.h"
+#include "GLivingProcess.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GEnemySprite.h"

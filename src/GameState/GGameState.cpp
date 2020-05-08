@@ -928,8 +928,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 }
 
 TBool GGameState::PlayMusicForCurrentLevel() {
-  PlayLevelMusic(mDungeon, -1);
-  return ETrue;
+  return PlayLevelMusic(mDungeon, -1);
 }
 
 TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
