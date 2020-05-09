@@ -356,13 +356,7 @@ GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFl
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GGoblinSniperProcess::~GGoblinSniperProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GGoblinSniperProcess::~GGoblinSniperProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

@@ -395,13 +395,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GRatProcess::~GRatProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GRatProcess::~GRatProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

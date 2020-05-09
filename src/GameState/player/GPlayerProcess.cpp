@@ -62,12 +62,6 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLA
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  if (mSprite2) {
-    mSprite2->Remove();
-    delete mSprite2;
-    mSprite2 = ENull;
-  }
-
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;

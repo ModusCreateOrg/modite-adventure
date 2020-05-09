@@ -388,13 +388,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GBatProcess::~GBatProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GBatProcess::~GBatProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

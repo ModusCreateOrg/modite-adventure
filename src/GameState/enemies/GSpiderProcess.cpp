@@ -382,13 +382,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GSpiderProcess::~GSpiderProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GSpiderProcess::~GSpiderProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

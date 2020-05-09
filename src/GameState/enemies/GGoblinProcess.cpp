@@ -783,13 +783,7 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GGoblinProcess::~GGoblinProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GGoblinProcess::~GGoblinProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

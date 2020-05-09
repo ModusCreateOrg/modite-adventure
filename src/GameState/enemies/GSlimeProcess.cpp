@@ -425,13 +425,7 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GSlimeProcess::~GSlimeProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GSlimeProcess::~GSlimeProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

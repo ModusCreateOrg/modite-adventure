@@ -901,13 +901,7 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
-GOrcProcess::~GOrcProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GOrcProcess::~GOrcProcess() = default;
 
 /*********************************************************************************
  *********************************************************************************

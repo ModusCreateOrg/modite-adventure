@@ -112,13 +112,7 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->StartAnimation(idleAnimation);
 }
 
-GTurretProcess::~GTurretProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GTurretProcess::~GTurretProcess() = default;
 
 void GTurretProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   const TInt lastDx = mSprite->mDx;
