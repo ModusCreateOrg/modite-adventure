@@ -1,11 +1,11 @@
 #ifndef GFINALBOSSPROCESS_H
 #define GFINALBOSSPROCESS_H
 
-#include "GLivingProcess.h"
+#include "GBossProcess.h"
 #include "GAnchorSprite.h"
 #include "GGameState.h"
 
-class GFinalBossProcess : public GLivingProcess {
+class GFinalBossProcess : public GBossProcess {
 public:
   GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams);
   ~GFinalBossProcess() OVERRIDE;
@@ -13,10 +13,6 @@ public:
 public:
   TBool RunBefore() OVERRIDE;
   TBool RunAfter() OVERRIDE;
-
-  void DeathAnimationDone(){
-    mDeathCounter--;
-  }
 
 protected:
   void Idle(DIRECTION aDirection);
@@ -41,12 +37,8 @@ protected:
   void SetState(TInt aNewState, DIRECTION aNewDirection);
 
 protected:
-  GGameState *mGameState;
-  DIRECTION mDirection;
   TInt mState;
   TInt mStep;
-  TInt mDeathCounter;
-  TInt mSpellCounter;
 
 protected:
   TInt mStateTimer;

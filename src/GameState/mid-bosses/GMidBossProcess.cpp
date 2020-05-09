@@ -14,23 +14,15 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
                                  TUint16 aSlot, TInt aIp, TUint16 aAttribute,
                                  TUint16 aDropsItemAttribute,
                                  TInt16 aSpriteSheet)
-    : GLivingProcess(aAttribute) {
+    : GBossProcess(aGameState, aX, aY, aSlot, aAttribute) {
   mIp = aIp;
-  mSprite = ENull;
   mSaveToStream = ETrue;
-  mGameState = aGameState;
   mDropsItemAttribute = aDropsItemAttribute;
-  mPlayfield = mGameState->mGamePlayfield;
   mHitTimer = 0;
   mAttackTimer = 0;
   mStateTimer = 0;
   mStep = 0;
 
-  mSprite =
-      new GAnchorSprite(mGameState, ENEMY_PRIORITY, aSlot, 0, STYPE_ENEMY);
-  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET);
-  mSprite->x = mStartX = aX;
-  mSprite->y = mStartY = aY;
   mSprite->cx = 20;
   mSprite->cy = 8;
   mSprite->w = 44;
@@ -38,12 +30,9 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   // This might not work if the sprite positions of the mid boss bitmaps are
   // radically different from one another
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
-  mGameState->AddSprite(mSprite);
   mSprite->SetStatMultipliers(8.0, 3.0, 10.0);
-  mDeathCounter = 0;
-  mSpellCounter = 0;
   mSpellOverlayProcess = ENull;
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
   switch (aAttribute) {
   case ATTR_MID_BOSS_WATER:
     mSprite->mElement = ELEMENT_WATER;
@@ -64,19 +53,12 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   default:
     break;
   }
-  GPlayer::mActiveBoss = mSprite;
 
   //  gEventEmitter.Listen(EVENT_SPELL_PROCESS_EXIT, this);
 }
 
 GMidBossProcess::~GMidBossProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-  GPlayer::mActiveBoss = ENull;
-  GGameState *gameState = (GGameState*)gGameEngine;
+  auto *gameState = (GGameState*)gGameEngine;
   gameState->PlayMusicForCurrentLevel();
 }
 

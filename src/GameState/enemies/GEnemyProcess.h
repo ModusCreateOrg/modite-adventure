@@ -43,7 +43,6 @@ protected:
   TInt TauntTime() { return Random(4, 8) * FRAMES_PER_SECOND; }
 
 protected:
-  GGameState *mGameState;
   GGamePlayfield *mPlayfield;
   TInt mIp;
   TUint16 mParams;

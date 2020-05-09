@@ -44,11 +44,10 @@ TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
 TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLAYER_IN1) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(aGameState, ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
-  mGameState = aGameState;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;
 

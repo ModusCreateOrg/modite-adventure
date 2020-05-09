@@ -3,7 +3,7 @@
 
 #include "Game.h"
 #include "GAnchorSprite.h"
-#include "GLivingProcess.h"
+#include "GBossProcess.h"
 #include "GGameState.h"
 #include "common/GSpellOverlayProcess.h"
 
@@ -18,7 +18,7 @@ enum {
   STATE_DEATH,
 };
 
-class GWizardProcess : public GLivingProcess {
+class GWizardProcess : public GBossProcess {
 public:
   GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet);
   ~GWizardProcess() OVERRIDE;
@@ -29,10 +29,6 @@ public:
 
   TBool IsChanneling() { // wizard is sustaining active spell (keep associated processes alive)
     return mChanneling;
-  }
-
-  void DeathAnimationDone(){
-    mDeathCounter--;
   }
 
 public:
@@ -65,19 +61,15 @@ protected:
   TBool DeathState();
 
 protected:
-  GGameState *mGameState;
   TUint16 mSlot;
   TInt mIp;
   TInt mType;
   TInt16 mSpriteSheet;
-  DIRECTION mDirection;
-  TFloat mStartX, mStartY;
 
 protected:
   TInt mState;
   TInt mStep;
   TInt mAttackType;
-  TInt mDeathCounter, mSpellCounter;
   TInt mStateTimer, mAttackTimer, mHitTimer;
   TBool mChanneling;
 };

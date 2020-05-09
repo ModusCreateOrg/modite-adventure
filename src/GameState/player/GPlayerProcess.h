@@ -91,7 +91,6 @@ public:
   static TFloat mRespawnAt[2];
 
 protected:
-  GGameState *mGameState;
   GGamePlayfield *mPlayfield;
 //  GAnchorSprite *mSprite, *mSprite2;
   GPlayerSprite *mSprite;

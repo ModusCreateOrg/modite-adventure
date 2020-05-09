@@ -1,6 +1,6 @@
 #include "GLivingProcess.h"
 
-GLivingProcess::GLivingProcess(TUint16 aAttribute) : GProcess(aAttribute) {
+GLivingProcess::GLivingProcess(GGameState *aGameState, TUint16 aAttribute) : GProcess(aAttribute), mGameState(aGameState) {
   mInvulnerable = EFalse;
   mBlinkTimer = 0;
 }

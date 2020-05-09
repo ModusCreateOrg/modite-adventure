@@ -7,7 +7,7 @@
 #include "GAnchorSprite.h"
 #include "GGamePlayfield.h"
 #include "GGameState.h"
-#include "GLivingProcess.h"
+#include "GBossProcess.h"
 #include "common/GSpellOverlayProcess.h"
 
 const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
@@ -32,7 +32,7 @@ enum {
   MB_SPELL_STATE, // hit with magic spell
 };
 
-class GMidBossProcess : public GLivingProcess {
+class GMidBossProcess : public GBossProcess {
 public:
   GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot,
                   TInt aIp, TUint16 aAttribute, TUint16 aDropsItemAttribute,
@@ -90,24 +90,18 @@ protected:
   TBool SpellState();
 
 public:
-  void DeathAnimationDone() { mDeathCounter--; }
   void OverlayAnimationComplete() OVERRIDE;
   void WriteToStream(BMemoryStream &aStream) OVERRIDE;
   void ReadFromStream(BMemoryStream &aStream) OVERRIDE;
 
 protected:
-  GGameState *mGameState;
-  GGamePlayfield *mPlayfield;
   TInt16 mDropsItemAttribute;
   TInt mIp;
   GSpellOverlayProcess *mSpellOverlayProcess;
-  TFloat mStartX, mStartY;
   TInt16 mState, mStep;
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TInt16 mHitTimer;
-  TInt mDeathCounter; // number of death animation processes spawned/outstanding
-  TInt mSpellCounter; // number of spell animation processes spawned/outstanding
 };
 
 #endif

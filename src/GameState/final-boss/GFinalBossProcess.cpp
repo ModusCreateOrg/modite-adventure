@@ -271,23 +271,14 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 
 // constructor
 GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
-    : GLivingProcess(aParams) {
-  mGameState = aGameState;
-  mSprite = new GAnchorSprite(mGameState, 0, BOSS_SLOT);
+    : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
-  mSprite->x = aX;
-  mSprite->y = aY;
   mStep = 0;
   mSprite->StartAnimation(idleDownAnimation);
-  mSprite->type = STYPE_ENEMY;
-  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
-  mSprite->SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK);
-  mGameState->AddSprite(mSprite);
   mHitTimer = HIT_SPAM_TIME;
   mAttackType = EFalse;
   SetAttackTimer();
   SetState(STATE_IDLE, DIRECTION_DOWN);
-  GPlayer::mActiveBoss = mSprite;
 };
 
 // destructor
@@ -295,12 +286,6 @@ GFinalBossProcess::~GFinalBossProcess() {
 #ifdef DEBUGME
   printf("GFinalBoss died!\n ");
 #endif
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-  GPlayer::mActiveBoss = ENull;
 }
 
 void GFinalBossProcess::Idle(DIRECTION aDirection) {

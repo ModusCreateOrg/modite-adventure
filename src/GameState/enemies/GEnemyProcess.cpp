@@ -14,7 +14,7 @@
 TInt16 GEnemyProcess::mCount = 0;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TUint16 aParams, TFloat aVelocity, TUint16 aAttribute)
-    : GLivingProcess(aAttribute), mGameState(aGameState), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
+    : GLivingProcess(aGameState, aAttribute), mIp(aIp), mPlayfield(aGameState->mGamePlayfield), mParams(aParams) {
   mSaveToStream = ETrue;
   mVelocity = aVelocity;
   mStateTimer = 0;

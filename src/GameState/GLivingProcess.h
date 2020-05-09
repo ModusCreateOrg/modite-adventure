@@ -6,7 +6,7 @@
 
 class GLivingProcess : public GProcess {
 public:
-  EXPLICIT GLivingProcess(TUint16 aAttribute);
+  EXPLICIT GLivingProcess(GGameState *aGameState, TUint16 aAttribute);
   ~GLivingProcess() OVERRIDE;
 
 protected:
@@ -34,6 +34,9 @@ public:
 
 public:
   TBool mInvulnerable;   // cannot be attacked
+
+protected:
+  GGameState *mGameState;
 
 private:
   TUint16 mBlinkTimer;

@@ -147,19 +147,15 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
-    : GLivingProcess(aAttribute) {
+    : GBossProcess(aGameState, aX, aY, aSlot, aAttribute) {
   printf("GWizardProcess(attribute: %d/$%x)\n", aAttribute, aAttribute);
-  mGameState = aGameState;
   mSlot = aSlot;
   mIp = aIp;
   mType = aType;
   mAttribute = aAttribute;
-  mStartX = aX;
-  mStartY = aY;
   //
   mSaveToStream = ETrue;
   //
-  mSprite = new GAnchorSprite(mGameState, 0, aSlot);
   switch (mType) {
     case ATTR_WIZARD_EARTH:
       mSprite->Name("Ikuyim");
@@ -178,39 +174,25 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   }
   mSpriteSheet = aSpriteSheet;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
-  mSprite->type = STYPE_ENEMY;
-  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK | SFLAG_CHECK);
-  mSprite->x = aX;
-  mSprite->y = aY;
+  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
   mSprite->mDy = -4;
   mSprite->cx = -4;
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
   mSprite->SetStatMultipliers(10.0, 3.0, 10.0);
-  mGameState->AddSprite(mSprite);
   //
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
   mStep = 0;
-  mDeathCounter = 0;
-  mSpellCounter = 0;
   mAttackType = 0;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
-  GPlayer::mActiveBoss = mSprite;
   mChanneling = EFalse;
 }
 
 GWizardProcess::~GWizardProcess() {
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-  GPlayer::mActiveBoss = ENull;
-  GGameState *gameState = (GGameState*)gGameEngine;
+  auto *gameState = (GGameState*)gGameEngine;
   gameState->PlayMusicForCurrentLevel();
 }
 
