@@ -37,6 +37,7 @@ public:
 
 protected:
   GGameState *mGameState;
+  TUint16 mState, mStep; // state variables
 
 private:
   TUint16 mBlinkTimer;

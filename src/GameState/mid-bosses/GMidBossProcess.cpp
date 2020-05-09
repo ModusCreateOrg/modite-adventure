@@ -18,10 +18,6 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   mIp = aIp;
   mSaveToStream = ETrue;
   mDropsItemAttribute = aDropsItemAttribute;
-  mHitTimer = 0;
-  mAttackTimer = 0;
-  mStateTimer = 0;
-  mStep = 0;
 
   mSprite->cx = 20;
   mSprite->cy = 8;

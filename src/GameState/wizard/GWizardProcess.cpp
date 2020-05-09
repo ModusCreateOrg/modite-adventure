@@ -184,7 +184,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   //
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
-  mStep = 0;
   mAttackType = 0;
   SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();

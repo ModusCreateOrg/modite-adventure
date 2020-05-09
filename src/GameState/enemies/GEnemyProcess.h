@@ -49,9 +49,7 @@ protected:
   GSpellOverlayProcess *mSpellOverlayProcess;
   GEnemyDeathOverlayProcess *mEnemyDeathOverlayProcess;
   TFloat mStartX, mStartY;
-  TUint16 mState;
   TUint16 mDirection;
-  TUint16 mStep;
   TInt16 mAttackTimer;
   TInt16 mStateTimer;
   TFloat mVelocity;

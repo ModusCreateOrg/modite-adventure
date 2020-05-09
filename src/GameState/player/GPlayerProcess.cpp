@@ -46,7 +46,6 @@ TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
 
 GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(aGameState, ATTR_PLAYER_IN1) {
   mState = IDLE_STATE;
-  mStep = 0;
   mStepFrame = 0;
   mPlayfield = ENull;
   GPlayer::mSprite = mSprite = ENull;

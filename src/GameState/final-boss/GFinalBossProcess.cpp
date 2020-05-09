@@ -273,7 +273,6 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
-  mStep = 0;
   mSprite->StartAnimation(idleDownAnimation);
   mHitTimer = HIT_SPAM_TIME;
   mAttackType = EFalse;

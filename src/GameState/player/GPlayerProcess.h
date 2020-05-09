@@ -94,8 +94,6 @@ protected:
   GGamePlayfield *mPlayfield;
 //  GAnchorSprite *mSprite, *mSprite2;
   GPlayerSprite *mSprite;
-  TUint16 mState;
-  TUint16 mStep;
   TUint16 mStepFrame;
 };
 

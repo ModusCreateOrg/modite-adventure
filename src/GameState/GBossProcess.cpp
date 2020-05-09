@@ -9,6 +9,7 @@ GBossProcess::GBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16
   mSprite->y = mStartY = aY;
   mDirection = mSprite->mDirection = DIRECTION_DOWN;
   mGameState->AddSprite(mSprite);
+  mHitTimer = mAttackTimer = mStateTimer = 0;
   mDeathCounter = 0;
   mSpellCounter = 0;
   GPlayer::mActiveBoss = mSprite;

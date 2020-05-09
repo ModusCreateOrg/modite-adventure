@@ -98,10 +98,6 @@ protected:
   TInt16 mDropsItemAttribute;
   TInt mIp;
   GSpellOverlayProcess *mSpellOverlayProcess;
-  TInt16 mState, mStep;
-  TInt16 mAttackTimer;
-  TInt16 mStateTimer;
-  TInt16 mHitTimer;
 };
 
 #endif

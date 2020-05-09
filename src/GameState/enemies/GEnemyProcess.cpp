@@ -29,8 +29,6 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TInt aIp, TUint16 aSlot, TU
   mSprite->Name("ENEMY");
   mGameState->AddSprite(mSprite);
   mDirection = DIRECTION_DOWN;
-  mState = IDLE_STATE;
-  mStep = 0;
   mRangeX = mRangeY = 8;
   mIp = aIp;
 

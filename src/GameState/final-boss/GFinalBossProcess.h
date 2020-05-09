@@ -37,14 +37,7 @@ protected:
   void SetState(TInt aNewState, DIRECTION aNewDirection);
 
 protected:
-  TInt mState;
-  TInt mStep;
-
-protected:
-  TInt mStateTimer;
-  TInt mAttackTimer;
   TBool mAttackType;
-  TInt mHitTimer;
   void SetAttackTimer() { mAttackTimer = 5 * 60; }
 };
 

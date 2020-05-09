@@ -67,10 +67,7 @@ protected:
   TInt16 mSpriteSheet;
 
 protected:
-  TInt mState;
-  TInt mStep;
   TInt mAttackType;
-  TInt mStateTimer, mAttackTimer, mHitTimer;
   TBool mChanneling;
 };
 

@@ -3,6 +3,8 @@
 GLivingProcess::GLivingProcess(GGameState *aGameState, TUint16 aAttribute) : GProcess(aAttribute), mGameState(aGameState) {
   mInvulnerable = EFalse;
   mBlinkTimer = 0;
+  mStep = 0;
+  mState = 0;
 }
 
 GLivingProcess::~GLivingProcess() = default;
