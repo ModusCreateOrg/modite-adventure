@@ -366,6 +366,7 @@ void GFinalBossProcess::Spell(DIRECTION aDirection) {
 
 void GFinalBossProcess::Death(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
+  mSprite->type = STYPE_OBJECT;
   mSprite->StartAnimation(deathAnimation);
   // get coordinates for explosion placement
   TRect r;
@@ -418,15 +419,15 @@ TBool GFinalBossProcess::MaybeHit() {
       // TODO take into account which spellbook is being wielded
       // random variation from 100% to 150% base damage
       TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
+      mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
+      if (mHitPoints <= 0) {
 #ifdef DEBUGME
         printf("FINAL BOSS DEATH\n");
 #endif
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
       }
       SetState(STATE_SPELL, mSprite->mDirection);
       return ETrue;
@@ -441,12 +442,12 @@ TBool GFinalBossProcess::MaybeHit() {
       mInvulnerable = ETrue;
       // random variation from 100% to 150% base damage
       TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
-      mSprite->mHitPoints -= hitAmount;
+      mHitPoints -= hitAmount;
       auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
       p->SetMessageType(STAT_ENEMY_HIT);
       mGameState->AddProcess(p);
-      if (mSprite->mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
+      if (mHitPoints <= 0) {
+        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
       }
       SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
       return ETrue;
@@ -663,7 +664,7 @@ TBool GFinalBossProcess::HitState() {
   }
 
   if (mSprite->AnimDone()) {
-    if (mSprite->mHitPoints <= 0) {
+    if (mHitPoints <= 0) {
       SetState(STATE_DEATH, mSprite->mDirection);
     }
     else {
@@ -678,7 +679,7 @@ TBool GFinalBossProcess::HitState() {
 
 TBool GFinalBossProcess::SpellState() {
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
-    if (mSprite->mHitPoints <= 0) {
+    if (mHitPoints <= 0) {
       SetState(STATE_DEATH, mSprite->mDirection);
     }
     else {

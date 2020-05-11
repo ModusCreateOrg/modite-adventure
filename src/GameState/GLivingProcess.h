@@ -3,11 +3,16 @@
 
 #include "GProcess.h"
 #include "GResources.h"
+#include "GPlayer.h"
 
 class GLivingProcess : public GProcess {
 public:
   EXPLICIT GLivingProcess(GGameState *aGameState, TUint16 aAttribute);
   ~GLivingProcess() OVERRIDE;
+
+  void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
+
+  TBool MaybeDamage(TBool aIsSpell);
 
 protected:
   void StartBlink(TUint16 aTime) {
@@ -34,6 +39,8 @@ public:
 
 public:
   TBool mInvulnerable;   // cannot be attacked
+  TInt16 mHitPoints, mMaxHitPoints;
+  TInt32 mExperienceYield;
 
 protected:
   GGameState *mGameState;

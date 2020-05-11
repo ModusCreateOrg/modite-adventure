@@ -20,9 +20,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mAttributeSave = 0xffff;
   w = 64;
   h = 64;
-  mHitPoints = mMaxHitPoints = BASE_HIT_POINTS;
   mAttackStrength = BASE_STRENGTH;
-  mExperienceYield = BASE_EXPERIENCE;
   mLastX = 0;
   mLastY = 0;
   mCollided = ENull;
@@ -279,12 +277,6 @@ void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
     default:
       Panic("No move direction\n");
   }
-}
-
-void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength, TFloat aModExperience) {
-  mHitPoints = mMaxHitPoints = round(aModHitPoints * BASE_HIT_POINTS);
-  mAttackStrength = round(aModStrength * BASE_STRENGTH);
-  mExperienceYield = round(aModExperience * BASE_EXPERIENCE);
 }
 
 void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {

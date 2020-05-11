@@ -108,7 +108,7 @@ GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSpriteImageNumber = 0;
   mShimmerTimer = SHIMMER_TIMER;
 
-  mSprite->SetStatMultipliers(5.0, 10.0, 5.0);
+  SetStatMultipliers(5.0, 10.0, 5.0);
   mSprite->StartAnimation(idleAnimation);
 }
 

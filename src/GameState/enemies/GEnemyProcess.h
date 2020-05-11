@@ -54,6 +54,7 @@ protected:
   TInt16 mStateTimer;
   TFloat mVelocity;
   TInt mRangeX, mRangeY;
+  GEnemySprite *mSprite;
 
   TBool mTaunt;
   TInt16 mTauntTimer;

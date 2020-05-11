@@ -180,7 +180,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
-  mSprite->SetStatMultipliers(10.0, 3.0, 10.0);
+  SetStatMultipliers(10.0, 3.0, 10.0);
   //
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
@@ -289,6 +289,7 @@ void GWizardProcess::Illusion() {
 
 void GWizardProcess::Death() {
   mSprite->vx = mSprite->vy = 0;
+  mSprite->type = STYPE_OBJECT;
   mChanneling = EFalse;
   mSprite->StartAnimation(deathAnimation);
   // get coordinates for explosion placement
@@ -339,7 +340,7 @@ TBool GWizardProcess::MaybeDamage() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
 
-    if (GPlayer::MaybeDamage(this, ETrue)) {
+    if (GLivingProcess::MaybeDamage(ETrue)) {
       mSprite->vx = mSprite->vy = 0;
       mSpellCounter += 2;
       auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
@@ -353,7 +354,7 @@ TBool GWizardProcess::MaybeDamage() {
 
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(this, EFalse)) {
+    if (GLivingProcess::MaybeDamage(EFalse)) {
       mSprite->Nudge(); // move sprite so it's not on top of player
       StartBlink(FRAMES_PER_SECOND / 4);
       return ETrue;
@@ -378,9 +379,9 @@ TBool GWizardProcess::MaybeAttack() {
 }
 
 TBool GWizardProcess::MaybeDeath() {
-  if (mSprite->mHitPoints <= 0) {
+  if (mHitPoints <= 0) {
     printf("WIZARD DEATH\n");
-    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield));
+    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
     SetState(STATE_DEATH, mDirection);
     return ETrue;
   }
@@ -544,7 +545,7 @@ TBool GWizardProcess::TeleportState() {
       // TODO: @jaygarcia SfxWizardTeleport
       RandomLocation();
       // illusion sometimes when below 75% health
-      if (TFloat(mSprite->mHitPoints) / TFloat(mSprite->mMaxHitPoints) < 0.75 && (Random() & 1u)) {
+      if (TFloat(mHitPoints) / TFloat(mMaxHitPoints) < 0.75 && (Random() & 1u)) {
         SetState(STATE_ILLUSION, mDirection);
         return ETrue;
       }
@@ -560,7 +561,7 @@ TBool GWizardProcess::TeleportState() {
 }
 
 TBool GWizardProcess::IllusionState() {
-  if (MaybeDamage() || mSprite->mHitPoints == mSprite->mMaxHitPoints) {
+  if (MaybeDamage() || mHitPoints == mMaxHitPoints) {
     // TODO: @jaygarcia SfxWizardSpellInterrupt
     mChanneling = EFalse;
     SetState(STATE_IDLE, mDirection);
@@ -568,10 +569,10 @@ TBool GWizardProcess::IllusionState() {
   if (mStateTimer-- < 0) {
     // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
     mStateTimer = FRAMES_PER_SECOND * 3;
-    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mSprite->mMaxHitPoints - mSprite->mHitPoints));
+    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mMaxHitPoints - mHitPoints));
     p->SetMessageType(STAT_HEAL);
     mSprite->mGameState->AddProcess(p);
-    mSprite->mHitPoints = MIN(mSprite->mHitPoints + HEAL_RATE, mSprite->mMaxHitPoints);
+    mHitPoints = MIN(mHitPoints + HEAL_RATE, mMaxHitPoints);
   }
   return ETrue;
 }

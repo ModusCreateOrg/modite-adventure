@@ -7,7 +7,7 @@
 #define MODITE_GPLAYER_H
 
 class GPlayerProcess;
-class GLivingProcess;
+class GBossProcess;
 
 #include <BMemoryStream.h>
 #include <BResourceManager.h>
@@ -134,8 +134,6 @@ struct GPlayer {
     }
   }
 
-  static TBool MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell);
-
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);
   static TUint16 GetSpellSlot();
@@ -151,7 +149,7 @@ struct GPlayer {
   static GGameState *mGameState;
   static GEquipped mEquipped;
   static TBool mGameOver;
-  static GAnchorSprite *mActiveBoss;
+  static GBossProcess *mActiveBoss;
 
   static void Dump();
 };

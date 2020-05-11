@@ -214,6 +214,7 @@ void GPlayerProcess::StartKnockback() {
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+  mSprite->mSwordCharge = -1;
 
   mLastDirection = aDirection;
 
@@ -317,11 +318,9 @@ TBool GPlayerProcess::MaybeHit() {
     }
 
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
-      if (other->mHitPoints > 0) {
-        // contact damage independent of enemy attack strength
-        hitAmount = BASE_STRENGTH;
-        mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
-      }
+      // contact damage independent of enemy attack strength
+      hitAmount = BASE_STRENGTH;
+      mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
     }
 
     if (hitAmount) {

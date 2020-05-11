@@ -20,7 +20,7 @@ GPlayerSprite::GPlayerSprite(GGameState *aGameState) : GAnchorSprite(
 
 TBool GPlayerSprite::Render(BViewPort *aViewPort) {
   TBool ret = GAnchorSprite::Render(aViewPort);
-  if (mSwordCharge > 0.0 && mHitPoints > 0) {
+  if (mSwordCharge > 0.0) {
     TRect r = TRect(mRect.x1 + 16, mRect.y2 - 41, mRect.x2 - 16, mRect.y2 - 40);
     gDisplay.renderBitmap->FillRect(aViewPort, r, COLOR_WHITE);
     gDisplay.renderBitmap->DrawRect(aViewPort, r.x1 - 1, r.y1 - 1, r.x2 + 1, r.y2 + 1, COLOR_METER_OUTLINE);

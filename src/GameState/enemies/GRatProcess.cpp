@@ -388,7 +388,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("ENEMY RAT");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->SetStatMultipliers(1.5, 1.5, 1.0);
+  SetStatMultipliers(1.5, 1.5, 1.0);
   mSprite->h = 24;
   mStateTimer = 0;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);

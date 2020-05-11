@@ -26,7 +26,7 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   // This might not work if the sprite positions of the mid boss bitmaps are
   // radically different from one another
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
-  mSprite->SetStatMultipliers(8.0, 3.0, 10.0);
+  SetStatMultipliers(8.0, 3.0, 10.0);
   mSpellOverlayProcess = ENull;
   mSprite->SetFlags(SFLAG_RENDER_SHADOW);
   switch (aAttribute) {
@@ -192,6 +192,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   case MB_DEATH_STATE:
     mSprite->vx = 0;
     mSprite->vy = 0;
+    mSprite->type = STYPE_OBJECT;
     Death(aDirection);
     {
       // get coordinates for explosion placement
@@ -214,7 +215,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 TBool GMidBossProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(this, ETrue)) {
+    if (MaybeDamage(ETrue)) {
       NewState(MB_SPELL_STATE, mSprite->mDirection);
       mHitTimer += HIT_SPAM_TIME * 2;
       return ETrue;
@@ -223,7 +224,7 @@ TBool GMidBossProcess::MaybeHit() {
 
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(this, EFalse)) {
+    if (MaybeDamage(EFalse)) {
       StartBlink(BLINK_DURATION);
       mHitTimer += HIT_SPAM_TIME;
       return ETrue;
@@ -234,7 +235,7 @@ TBool GMidBossProcess::MaybeHit() {
 }
 
 TBool GMidBossProcess::MaybeDeath() {
-  if (mSprite->mHitPoints <= 0) {
+  if (mHitPoints <= 0) {
     NewState(MB_DEATH_STATE, mSprite->mDirection);
     return ETrue;
   }
@@ -510,7 +511,7 @@ TBool GMidBossProcess::DeathState() {
   if (mDeathCounter == 1) {
     printf("MID BOSS DEATH\n");
     mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y,
-                                            "EXP +%d", mSprite->mExperienceYield));
+                                            "EXP +%d", mExperienceYield));
   }
   if (mDeathCounter <= 3) {
     printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
@@ -529,7 +530,7 @@ TBool GMidBossProcess::SpellState() {
   //    }
   //  }
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
-    if (mSprite->mHitPoints <= 0) {
+    if (mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
     } else {
       mInvulnerable = EFalse;

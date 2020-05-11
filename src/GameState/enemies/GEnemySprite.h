@@ -9,6 +9,9 @@ public:
 
 public:
   TBool Render(BViewPort *aViewPort) OVERRIDE;
+
+public:
+  TFloat mMeter;
 };
 
 #endif

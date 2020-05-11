@@ -42,7 +42,7 @@ GPotProcess::GPotProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloa
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;
-  mSprite->mHitPoints = 3;
+  mHitPoints = 3;
   mSprite->StartAnimation(crateAnimation);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
@@ -65,7 +65,7 @@ TBool GPotProcess::RunAfter() {
     if (mSprite->AnimDone()) {
       mAnimating = EFalse;
       mSprite->cType = 0;
-      if (mSprite->mHitPoints <= 0) {
+      if (mHitPoints <= 0) {
         GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
         // mGameState->EndProgram(mIp, ATTR_POT_GONE, mParam); // do not persist crate, but persist item
         printf("Pot broken param = %x %d\n", mParam, mParam);
@@ -76,7 +76,7 @@ TBool GPotProcess::RunAfter() {
   }
   else if (mSprite->cType & STYPE_PBULLET) {
     mAnimating = ETrue;
-    if (--mSprite->mHitPoints > 0) {
+    if (--mHitPoints > 0) {
       mSprite->StartAnimation(hitAnimation);
       gSoundPlayer.TriggerSfx(SFX_POT_TAKE_DAMAGE_WAV);
     }

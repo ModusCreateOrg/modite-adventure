@@ -12,7 +12,7 @@ GBossProcess::GBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16
   mHitTimer = mAttackTimer = mStateTimer = 0;
   mDeathCounter = 0;
   mSpellCounter = 0;
-  GPlayer::mActiveBoss = mSprite;
+  GPlayer::mActiveBoss = this;
 }
 
 GBossProcess::~GBossProcess() {

@@ -5,6 +5,7 @@
 #include <BMemoryStream.h>
 #include "Game.h"
 
+class GLivingProcess;
 class GGameState;
 //#include "GGameState.h"
 
@@ -93,8 +94,6 @@ public:
 
   void SafePosition(BSprite *aOther);
 
-  void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
-
   void ResetShadow();
 
   void GetFloatRect(GFloatRect &aRect);
@@ -120,8 +119,6 @@ public:
   GGameState *mGameState;
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
-  TInt16 mExperienceYield;
-  TInt16 mHitPoints, mMaxHitPoints;
   TInt32 mAttackStrength;
   TFloat mLastX, mLastY; // coordinates from last frame
   TRect mShadow;

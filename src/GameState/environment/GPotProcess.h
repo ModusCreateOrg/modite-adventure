@@ -17,6 +17,7 @@ public:
 
 protected:
   TBool mAnimating;
+  TInt mHitPoints;
 };
 
 

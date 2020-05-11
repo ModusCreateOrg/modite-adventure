@@ -381,7 +381,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("ENEMY BAT");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->SetStatMultipliers(1.8, 2.0, 1.0);
+  SetStatMultipliers(1.8, 2.0, 1.0);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   mTaunt = EFalse; // bat does not taunt

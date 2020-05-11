@@ -419,7 +419,7 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SLIME_BMP_SPRITES);
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->SetStatMultipliers(2.0, 2.5, 1.0);
+  SetStatMultipliers(2.0, 2.5, 1.0);
   mRangeX = mRangeY = 32;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

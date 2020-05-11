@@ -21,7 +21,7 @@ GPlayerProcess *GPlayer::mProcess;
 GPlayerSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
-GAnchorSprite *GPlayer::mActiveBoss;
+GBossProcess *GPlayer::mActiveBoss;
 
 void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mLevel, sizeof(mLevel));
@@ -93,45 +93,4 @@ TUint16 GPlayer::GetSpellSlot() {
       Panic("Invalid spell");
   }
   return 0;
-}
-
-TBool GPlayer::MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell) {
-  GAnchorSprite* sprite = aProcess->GetSprite();
-  if (sprite && !aProcess->mInvulnerable) {
-    TInt attackAmount;
-    if (aIsSpell) {
-      attackAmount = mAttackStrength;
-    } else {
-      attackAmount = sprite->mCollided->mAttackStrength;
-    }
-
-    if (aIsSpell) {
-      if (mEquipped.mSpellBookElement && sprite->mElement) {
-        attackAmount *= SPELLBOOK_MATRIX[sprite->mElement - 1][mEquipped.mSpellBookElement - 1];
-      } else {
-        attackAmount *= SPELL_ATTACK_BONUS;
-      }
-    }
-    else {
-
-      // Be able to attack a mid-boss with a like ring
-      if (mEquipped.mRingElement && sprite->mElement) {
-        attackAmount *= RING_MATRIX[sprite->mElement - 1][mEquipped.mRingElement - 1];
-      }
-      else {
-        attackAmount *= RING_HIT_BONUS;
-      }
-
-    }
-    // Random +/- 20% damage modifier
-    attackAmount = (attackAmount * Random(80, 120)) / 100;
-    sprite->mHitPoints -= attackAmount;
-    auto *p = new GStatProcess(sprite->x + 68, sprite->y + 32, "%d", attackAmount);
-    p->SetMessageType(STAT_ENEMY_HIT);
-    sprite->mGameState->AddProcess(p);
-    gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV);
-
-    return ETrue;
-  }
-  return EFalse;
 }

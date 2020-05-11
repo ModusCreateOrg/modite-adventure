@@ -125,6 +125,7 @@ void GEnemyProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     } break;
 
     case DEATH_STATE: {
+      mSprite->type = STYPE_OBJECT;
       SfxDeath();
       mSaveToStream = EFalse; // Prevent saves while we're animating.
       //      Death(aDirection);
@@ -146,7 +147,7 @@ void GEnemyProcess::OverlayAnimationComplete() {
 TBool GEnemyProcess::MaybeHit() {
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(this, ETrue)) {
+    if (MaybeDamage(ETrue)) {
       mInvulnerable = ETrue;
       SfxTakeDamage();
       NewState(SPELL_STATE, mSprite->mDirection);
@@ -157,7 +158,7 @@ TBool GEnemyProcess::MaybeHit() {
   GAnchorSprite *other = mSprite->mCollided;
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    if (GPlayer::MaybeDamage(this, EFalse)) {
+    if (MaybeDamage(EFalse)) {
       SfxTakeDamage();
       mInvulnerable = ETrue;
       NewState(HIT_STATE, GAnchorSprite::RotateDirection(other->mDirection, 2));
@@ -242,15 +243,15 @@ TBool GEnemyProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
   if (mSprite->TestCType(STYPE_SPELL)) {
     mSprite->ClearCType(STYPE_SPELL);
-    if (GPlayer::MaybeDamage(this, ETrue)) {
+    if (MaybeDamage(ETrue)) {
       NewState(SPELL_STATE, mSprite->mDirection);
       return ETrue;
     }
   }
   if (mSprite->TestCType(STYPE_PBULLET)) {
     mSprite->ClearCType(STYPE_PBULLET);
-    GPlayer::MaybeDamage(this, EFalse);
-    if (mSprite->mHitPoints <= 0) {
+    MaybeDamage(EFalse);
+    if (mHitPoints <= 0) {
       NewState(HIT_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -264,7 +265,7 @@ TBool GEnemyProcess::AttackState() {
 
 TBool GEnemyProcess::HitState() {
   if (mSprite->AnimDone()) {
-    if (mSprite->mHitPoints <= 0) {
+    if (mHitPoints <= 0) {
       NewState(DEATH_STATE, mSprite->mDirection);
       return ETrue;
     }
@@ -278,7 +279,7 @@ TBool GEnemyProcess::HitState() {
 TBool GEnemyProcess::SpellState() {
   auto *p = mSpellOverlayProcess;
   if (mSprite->AnimDone() && !p) {
-    if (mSprite->mHitPoints <= 0) {
+    if (mHitPoints <= 0) {
       mSpellOverlayProcess = ENull;
       NewState(DEATH_STATE, mSprite->mDirection);
       return ETrue;
@@ -294,10 +295,10 @@ TBool GEnemyProcess::SpellState() {
 TBool GEnemyProcess::DeathState() {
   auto *p = mEnemyDeathOverlayProcess;
   if (mSprite->AnimDone() && !p) {
-    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mSprite->mExperienceYield);
+    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield);
     p2->SetMessageType(STAT_EXPERIENCE);
     mGameState->AddProcess(p2);
-    GPlayer::AddExperience(mSprite->mExperienceYield);
+    GPlayer::AddExperience(mExperienceYield);
 
     // If we setup a key for the enemy to drop
     if (mParams) {
@@ -468,6 +469,7 @@ TBool GEnemyProcess::RunBefore() {
 TBool GEnemyProcess::RunAfter() {
   GLivingProcess::RunAfter();
   mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
+  mSprite->mMeter = (TFloat) mHitPoints / (TFloat) mMaxHitPoints;
 
   return ETrue;
 }

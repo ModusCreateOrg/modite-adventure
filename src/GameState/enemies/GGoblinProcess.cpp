@@ -777,7 +777,7 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->w = 24;
   mSprite->cx = 8;
   mSprite->ResetShadow();
-  mSprite->SetStatMultipliers(2.2, 2.5, 2.5);
+  SetStatMultipliers(2.2, 2.5, 2.5);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
