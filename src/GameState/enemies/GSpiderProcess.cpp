@@ -43,14 +43,6 @@ ANIMSCRIPT idleAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(SPIDER_SLOT),
-  ALABEL,
-  ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_SPIDER_SELECTED + 2),
-  ALOOP,
-};
 
 static ANIMSCRIPT tauntAnimation[] = {
   ABITMAP(SPIDER_SLOT),
@@ -432,7 +424,7 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->ResetShadow();
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->mDrawShadow = EFalse;
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
   mSprite->SetStatMultipliers(0.9, 0.9, 0.9);
 

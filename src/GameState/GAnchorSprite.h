@@ -128,7 +128,6 @@ public:
   TInt32 mAttackStrength;
   TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
   TFloat mLastX, mLastY; // coordinates from last frame
-  TBool mDrawShadow;
   TRect mShadow;
   TUint mAttributeSave;
   ELEMENT mElement;

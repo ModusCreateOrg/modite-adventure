@@ -45,14 +45,6 @@ static ANIMSCRIPT idleAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(RAT_SLOT),
-  ALABEL,
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 2),
-  ALOOP,
-};
 
 static ANIMSCRIPT tauntAnimation[] = {
   ABITMAP(RAT_SLOT),
@@ -421,7 +413,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->h = 24;
   mSprite->cy = 0;
   mStateTimer = 0;
-  mSprite->mDrawShadow = EFalse;
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
 //  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
   NewState(IDLE_STATE, DIRECTION_DOWN);

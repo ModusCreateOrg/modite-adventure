@@ -419,7 +419,7 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mStartY = mSprite->y = aY;
   mSprite->SetStatMultipliers(5.0, 5.0, 5.0);
   mRangeX = mRangeY = 16;
-  mSprite->mDrawShadow = EFalse;
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
   mSprite->cy = 0;
   mSprite->h = 16;

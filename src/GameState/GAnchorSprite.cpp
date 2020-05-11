@@ -28,7 +28,6 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mLastX = 0;
   mLastY = 0;
   mCollided = ENull;
-  mDrawShadow = ETrue;
   mShadow = TRect();
   mElement = ELEMENT_NONE;
   gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
@@ -172,13 +171,11 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
       // render shadow beneath sprite
 //    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
 
-      if (mDrawShadow) {
-        TFloat chord;
-        for (TInt i = 0; i < r.Height(); i++) {
-          chord = sqrt(i * (r.Height() - i)) * 2 * r.Width() / r.Height();
-          gDisplay.renderBitmap->DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
-                                               r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
-        }
+      TFloat chord;
+      for (TInt i = 0; i < r.Height(); i++) {
+        chord = sqrt(i * (r.Height() - i)) * 2 * r.Width() / r.Height();
+        gDisplay.renderBitmap->DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
+                                             r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
       }
       ret = BAnimSprite::Render(aViewPort);
       ClearFlags(SFLAG_CLIPPED);

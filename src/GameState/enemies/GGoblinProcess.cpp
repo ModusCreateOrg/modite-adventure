@@ -807,10 +807,10 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->cx = 8;
   mSprite->ResetShadow();
   mSprite->SetStatMultipliers(2.2, 2.5, 2.5);
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
 
   mTaunt = EFalse;
-  mSprite->mDrawShadow = EFalse;
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
