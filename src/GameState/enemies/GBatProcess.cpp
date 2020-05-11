@@ -13,7 +13,7 @@ const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 3 * FACTOR;
 const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 2 * FACTOR;
-const TInt DEATH_SPEED = 3 * FACTOR;
+const TInt DEATH_SPEED = 2 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 const TInt MAX_ALTITUDE = 8;
