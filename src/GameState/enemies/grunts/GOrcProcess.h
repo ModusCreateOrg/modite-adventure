@@ -1,16 +1,16 @@
-#ifndef MODITE_GSLIMEPROCESS_H
-#define MODITE_GSLIMEPROCESS_H
+#ifndef MODITE_GORCPROCESS_H
+#define MODITE_GORCPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/enemies/GGruntProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GSlimeProcess : public GEnemyProcess {
+class GOrcProcess : public GGruntProcess {
 public:
-  GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
+  GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GSlimeProcess() OVERRIDE;
+  ~GOrcProcess() OVERRIDE;
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
@@ -22,4 +22,4 @@ protected:
   void Death(DIRECTION aDirection) OVERRIDE;
 };
 
-#endif //MODITE_GSLIMEPROCESS_H
+#endif //MODITE_GORCPROCESS_H

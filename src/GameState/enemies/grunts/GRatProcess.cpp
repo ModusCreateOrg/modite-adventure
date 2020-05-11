@@ -384,10 +384,8 @@ static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftA
 
 // constructor
 GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, RAT_SLOT, aParams, VELOCITY, ATTR_RAT) {
+    : GGruntProcess(aGameState, aIp, aX, aY, RAT_SLOT, aParams, VELOCITY, ATTR_RAT) {
   mSprite->Name("ENEMY RAT");
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   SetStatMultipliers(1.5, 1.5, 1.0);
   mSprite->h = 24;
   mStateTimer = 0;

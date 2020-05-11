@@ -73,6 +73,7 @@ struct GPlayer {
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
+    mInvulnerable = EFalse;
     mAttackStrength = 35;
     mMaxMana = DEFAULT_PLAYER_MANA;
     mManaPotion = mMaxMana;
@@ -141,6 +142,7 @@ struct GPlayer {
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
+  static TBool mInvulnerable;
   static TInt32 mAttackStrength;
   static TInt32 mManaPotion, mMaxMana;
   static GInventoryList mInventoryList;

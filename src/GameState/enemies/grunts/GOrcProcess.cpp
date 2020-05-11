@@ -886,12 +886,8 @@ static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftA
 
 // constructor
 GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, ORC_SLOT, aParams, VELOCITY, ATTR_ORC) {
+    : GGruntProcess(aGameState, aIp, aX, aY, ORC_SLOT, aParams, VELOCITY, ATTR_ORC) {
   mSprite->Name("ENEMY ORC");
-  mSprite->x = aX;
-  mSprite->y = aY;
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_ORC_BMP_SPRITES);
   SetStatMultipliers(4.0, 3.0, 4.0);
   mRangeX = 24;

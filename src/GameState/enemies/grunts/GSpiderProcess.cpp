@@ -369,14 +369,12 @@ static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftA
 
 // constructor
 GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-  : GEnemyProcess(aGameState, aIp, SPIDER_SLOT, aParams, VELOCITY, ATTR_SPIDER) {
+  : GGruntProcess(aGameState, aIp, aX, aY, SPIDER_SLOT, aParams, VELOCITY, ATTR_SPIDER) {
   mStateTimer = 0;
   mSprite->Name("ENEMY SPIDER");
   mSprite->h = 24;
   mSprite->cy = 0;
   mSprite->ResetShadow();
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SPIDER_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);

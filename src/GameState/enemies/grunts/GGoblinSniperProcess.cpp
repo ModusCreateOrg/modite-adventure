@@ -343,14 +343,10 @@ static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftA
 
 // constructor
 GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
-    : GEnemyProcess(aGameState, aIp, GOBLIN_SNIPER_SLOT, aParam, VELOCITY, ATTR_GOBLIN_SNIPER) {
+    : GGruntProcess(aGameState, aIp, aX, aY, GOBLIN_SNIPER_SLOT, aParam, VELOCITY, ATTR_GOBLIN_SNIPER) {
   mGameState = aGameState;
 
   mSprite->Name("ENEMY GOBLIN SNIPER");
-  mSprite->x = aX;
-  mSprite->y = aY;
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_SNIPER_BMP_SPRITES);
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
@@ -419,7 +415,7 @@ void GGoblinSniperProcess::Death(DIRECTION aDirection) {
 }
 
 TBool GGoblinSniperProcess::MaybeAttack() {
-  if (GPlayer::mProcess->mInvulnerable) {
+  if (GPlayer::mInvulnerable) {
     return EFalse;
   }
 
@@ -477,5 +473,5 @@ TBool GGoblinSniperProcess::RunAfter() {
   // Make sniper stationary (turret) for debugging
   // mSprite->vx = 0;
   // mSprite->vy = 0;
-  return GEnemyProcess::RunAfter();
+  return GGruntProcess::RunAfter();
 }

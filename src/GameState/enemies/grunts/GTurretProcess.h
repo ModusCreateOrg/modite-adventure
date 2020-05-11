@@ -1,12 +1,12 @@
 #ifndef MODITE_GTURRETPROCESS_H
 #define MODITE_GTURRETPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/enemies/GGruntProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GTurretProcess : public GEnemyProcess {
+class GTurretProcess : public GGruntProcess {
 public:
   GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam);
   ~GTurretProcess() OVERRIDE;

@@ -88,20 +88,15 @@ ANIMSCRIPT idleAnimation[] = {
 
 // constructor
 GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
-    : GEnemyProcess(aGameState, aIp, TURRET_SLOT, aParam, VELOCITY, ATTR_TURRET) {
+    : GGruntProcess(aGameState, aIp, aX, aY, TURRET_SLOT, aParam, VELOCITY, ATTR_TURRET) {
   mGameState = aGameState;
 
   mSprite->Name("ENEMY TURRET");
-  mSprite->x = aX;
-  mSprite->y = aY;
   mSprite->w = 22;
   mSprite->h = 16;
   mSprite->cx = 10;
   mSprite->cy = 16;
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CRYSTAL_BMP_SPRITES);
-  mSprite->vx = mSprite->vy = 0;
 
   mHitState = 0;
   mTaunt = EFalse;
@@ -117,7 +112,7 @@ GTurretProcess::~GTurretProcess() = default;
 void GTurretProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   const TInt lastDx = mSprite->mDx;
   const TInt lastDy = mSprite->mDy;
-  GEnemyProcess::NewState(aState, aDirection);
+  GGruntProcess::NewState(aState, aDirection);
   mSprite->mDx = lastDx;
   mSprite->mDy = lastDy;
 }
@@ -165,11 +160,11 @@ void GTurretProcess::Death(DIRECTION aDirection) {
 TBool GTurretProcess::HitState() {
   mSprite->ClearFlags(SFLAG_ANIMATE);
 
-  return GEnemyProcess::HitState();
+  return GGruntProcess::HitState();
 }
 
 TBool GTurretProcess::MaybeAttack() {
-  if (GPlayer::mProcess->mInvulnerable) {
+  if (GPlayer::mInvulnerable) {
     return EFalse;
   }
 
@@ -236,5 +231,5 @@ TBool GTurretProcess::RunBefore() {
   }
   mSprite->mImageNumber = mSpriteImageNumber;
 
-  return GEnemyProcess::RunBefore();
+  return GGruntProcess::RunBefore();
 }

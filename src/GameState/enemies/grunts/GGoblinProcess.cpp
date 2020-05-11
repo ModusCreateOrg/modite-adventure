@@ -768,12 +768,8 @@ static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftA
 
 // constructor
 GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, GOBLIN_SLOT, aParams, VELOCITY, ATTR_GOBLIN) {
+    : GGruntProcess(aGameState, aIp, aX, aY, GOBLIN_SLOT, aParams, VELOCITY, ATTR_GOBLIN) {
   mSprite->Name("ENEMY GOBLIN");
-  mSprite->x = aX;
-  mSprite->y = aY;
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   mSprite->w = 24;
   mSprite->cx = 8;
   mSprite->ResetShadow();

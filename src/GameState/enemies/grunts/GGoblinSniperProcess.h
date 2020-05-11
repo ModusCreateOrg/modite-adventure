@@ -1,18 +1,19 @@
-#ifndef MODITE_GGOBLINPROCESS_H
-#define MODITE_GGOBLINPROCESS_H
+#ifndef MODITE_GGOBLINSNIPERPROCESS_H
+#define MODITE_GGOBLINSNIPERPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/enemies/GGruntProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GGoblinProcess : public GEnemyProcess {
+class GGoblinSniperProcess : public GGruntProcess {
 public:
-  GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
-
-  ~GGoblinProcess() OVERRIDE;
+  GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam);
+  ~GGoblinSniperProcess() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
 protected:
+  TBool MaybeAttack() OVERRIDE;
   void Idle(DIRECTION aDirection) OVERRIDE;
   void Taunt(DIRECTION aDirection) OVERRIDE;
   void Walk(DIRECTION aDirection) OVERRIDE;
@@ -22,4 +23,4 @@ protected:
   void Death(DIRECTION aDirection) OVERRIDE;
 };
 
-#endif //MODITE_GGOBLINPROCESS_H
+#endif //MODITE_GGOBLINSNIPERPROCESS_H

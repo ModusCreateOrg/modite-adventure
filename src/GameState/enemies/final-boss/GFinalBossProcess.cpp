@@ -701,7 +701,7 @@ TBool GFinalBossProcess::DeathState() {
 }
 
 TBool GFinalBossProcess::RunBefore() {
-  GLivingProcess::RunBefore();
+  GEnemyProcess::RunBefore();
   switch (mState) {
     case STATE_IDLE:
       return IdleState();
@@ -724,6 +724,6 @@ TBool GFinalBossProcess::RunBefore() {
 }
 
 TBool GFinalBossProcess::RunAfter() {
-  GLivingProcess::RunAfter();
+  GEnemyProcess::RunAfter();
   return ETrue;
 }

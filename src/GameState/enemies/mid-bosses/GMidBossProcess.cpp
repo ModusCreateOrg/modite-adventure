@@ -59,7 +59,7 @@ GMidBossProcess::~GMidBossProcess() {
 }
 
 TBool GMidBossProcess::RunBefore() {
-  GLivingProcess::RunBefore();
+  GEnemyProcess::RunBefore();
   switch (mState) {
   case MB_IDLE_STATE:
     return IdleState();
@@ -87,7 +87,7 @@ TBool GMidBossProcess::RunBefore() {
 }
 
 TBool GMidBossProcess::RunAfter() {
-  GLivingProcess::RunAfter();
+  GEnemyProcess::RunAfter();
   if (mHitTimer-- < 0) {
     mHitTimer = 0;
   }

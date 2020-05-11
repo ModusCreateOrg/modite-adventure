@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <GameState/status/GStatProcess.h>
-#include <GameState/GLivingProcess.h>
 #include "GPlayer.h"
 #include "Items.h"
 
@@ -9,6 +8,7 @@ TUint32 GPlayer::mNextLevel;
 TUint32 GPlayer::mExperience;
 TInt16 GPlayer::mHitPoints;
 TInt16 GPlayer::mMaxHitPoints;
+TBool GPlayer::mInvulnerable;
 
 TInt GPlayer::mAttackStrength;
 TInt32 GPlayer::mManaPotion;

@@ -5,7 +5,6 @@
 #include <BMemoryStream.h>
 #include "Game.h"
 
-class GLivingProcess;
 class GGameState;
 //#include "GGameState.h"
 

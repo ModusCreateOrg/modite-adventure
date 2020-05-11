@@ -1,16 +1,16 @@
-#ifndef MODITE_GTROLLPROCESS_H
-#define MODITE_GTROLLPROCESS_H
+#ifndef MODITE_GSPIDERPROCESS_H
+#define MODITE_GSPIDERPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include "GGruntProcess.h"
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GTrollProcess : public GEnemyProcess {
+class GSpiderProcess : public GGruntProcess {
 public:
-  GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
+  GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GTrollProcess() OVERRIDE;
+  ~GSpiderProcess() OVERRIDE;
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
@@ -22,4 +22,4 @@ protected:
   void Death(DIRECTION aDirection) OVERRIDE;
 };
 
-#endif // MODITE_GTROLLPROCESS_H
+#endif //MODITE_GSPIDERPROCESS_H

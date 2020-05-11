@@ -374,13 +374,11 @@ static ANIMSCRIPT* landedAnimations[] = {landedUpAnimation, landedDownAnimation,
 
 // constructor
 GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GEnemyProcess(aGameState, aIp, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
+    : GGruntProcess(aGameState, aX, aY, aIp, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
   mStateTimer = 0;
   mLandTimer = 0;
   mAltitude = MAX_ALTITUDE;
   mSprite->Name("ENEMY BAT");
-  mStartX = mSprite->x = aX;
-  mStartY = mSprite->y = aY;
   SetStatMultipliers(1.8, 2.0, 1.0);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
@@ -440,7 +438,7 @@ void GBatProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     mStateTimer = IDLE_TIMEOUT;
   }
   if (mState != IDLE_STATE || aState != IDLE_STATE) {
-    GEnemyProcess::NewState(aState, aDirection);
+    GGruntProcess::NewState(aState, aDirection);
   } else {
     if (--mLandTimer > 0) {
       mAltitude = MIN(mAltitude, MAX_ALTITUDE);
@@ -468,5 +466,5 @@ TBool GBatProcess::CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat a
     return EFalse;
   }
 
-  return GEnemyProcess::CanWalkInDirection(aDirection, aVx, aVy);
+  return GGruntProcess::CanWalkInDirection(aDirection, aVx, aVy);
 }

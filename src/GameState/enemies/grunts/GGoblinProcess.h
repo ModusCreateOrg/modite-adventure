@@ -1,19 +1,16 @@
-#ifndef MODITE_GRATPROCESS_H
-#define MODITE_GRATPROCESS_H
+#ifndef MODITE_GGOBLINPROCESS_H
+#define MODITE_GGOBLINPROCESS_H
 
-#include <GameState/enemies/GEnemyProcess.h>
+#include <GameState/enemies/GGruntProcess.h>
 #include "GGameState.h"
 #include "GGamePlayfield.h"
 #include "GAnchorSprite.h"
 
-class GRatProcess : public GEnemyProcess {
+class GGoblinProcess : public GGruntProcess {
 public:
-  GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
+  GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams);
 
-  ~GRatProcess() OVERRIDE;
-
-protected:
-  TBool CanWalkInDirection(DIRECTION aDirection, TFloat aVx, TFloat avY) OVERRIDE;
+  ~GGoblinProcess() OVERRIDE;
 
 protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
@@ -25,4 +22,4 @@ protected:
   void Death(DIRECTION aDirection) OVERRIDE;
 };
 
-#endif // MODITE_GRATPROCESS_H
+#endif //MODITE_GGOBLINPROCESS_H
