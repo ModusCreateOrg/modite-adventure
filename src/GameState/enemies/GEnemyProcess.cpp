@@ -19,7 +19,7 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint
 }
 
 GEnemyProcess::~GEnemyProcess() {
-  mGameState->AddProcess(new GStatProcess(mSprite, STAT_EXPERIENCE, "EXP +%d", mExperienceYield));
+  mGameState->AddProcess(new GStatProcess(STAT_EXPERIENCE, mSprite->Center(), "EXP +%d", mExperienceYield));
   GPlayer::AddExperience(mExperienceYield);
 
   if (mSprite) {
@@ -74,7 +74,7 @@ void GEnemyProcess::DoDamage(TInt aStrength) {
   // Random +/- 20% damage modifier
   aStrength = (aStrength * Random(80, 120)) / 100;
   mHitPoints -= aStrength;
-  mGameState->AddProcess(new GStatProcess(mSprite, STAT_ENEMY_HIT, "%d", aStrength));
+  mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));
   gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV);
   mInvulnerable = ETrue;
 }
@@ -82,7 +82,7 @@ void GEnemyProcess::DoDamage(TInt aStrength) {
 void GEnemyProcess::DoHeal(TInt aAmount) {
   // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
   TInt healAmount = MIN(aAmount, mMaxHitPoints - mHitPoints);
-  mGameState->AddProcess(new GStatProcess(mSprite, STAT_HEAL, "%d", healAmount));
+  mGameState->AddProcess(new GStatProcess(STAT_HEAL, mSprite->Center(), "%d", healAmount));
   mHitPoints = MIN(mHitPoints + healAmount, mMaxHitPoints);
 }
 

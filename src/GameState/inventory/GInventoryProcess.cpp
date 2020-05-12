@@ -81,7 +81,8 @@ TBool GInventoryProcess::RunBefore() {
     mItemNumber = mSelectedItem->mItemNumber;
     if (((mItemNumber == ITEM_RED_POTION1 || mItemNumber == ITEM_RED_POTION2) &&
           GPlayer::mHitPoints == GPlayer::mMaxHitPoints) ||
-        ((mItemNumber == ITEM_BLUE_POTION1 || mItemNumber == ITEM_BLUE_POTION2) && GPlayer::mManaPotion == 100)) {
+        ((mItemNumber == ITEM_BLUE_POTION1 || mItemNumber == ITEM_BLUE_POTION2) &&
+          GPlayer::mManaPotion == GPlayer::mMaxMana)) {
       mItemNumber = 0;
     }
   }
@@ -137,7 +138,7 @@ TBool GInventoryProcess::RunAfter() {
         GPlayer::mEquipped.mSpellBookElement = ELEMENT_ENERGY;
         break;
       case ITEM_BLUE_POTION1:
-        GPlayer::AddMana(25, 252, 180);
+        GPlayer::AddMana(25, mSprite->Center());
         mSelectedItem->mCount--;
         if (mSelectedItem->mCount < 1) {
           mSelectedItem->Remove();
@@ -145,7 +146,7 @@ TBool GInventoryProcess::RunAfter() {
         }
         break;
       case ITEM_BLUE_POTION2:
-        GPlayer::AddMana(50, 252, 180);
+        GPlayer::AddMana(50, mSprite->Center());
         mSelectedItem->mCount--;
         if (mSelectedItem->mCount < 1) {
           mSelectedItem->Remove();
@@ -153,7 +154,7 @@ TBool GInventoryProcess::RunAfter() {
         }
         break;
       case ITEM_RED_POTION1:
-        GPlayer::AddHitPoints(50, 252, 180);
+        GPlayer::AddHitPoints(50, mSprite->Center());
         mSelectedItem->mCount--;
         if (mSelectedItem->mCount < 1) {
           mSelectedItem->Remove();
@@ -161,7 +162,7 @@ TBool GInventoryProcess::RunAfter() {
         }
         break;
       case ITEM_RED_POTION2:
-        GPlayer::AddHitPoints(100, 252, 180);
+        GPlayer::AddHitPoints(100, mSprite->Center());
         mSelectedItem->mCount--;
         if (mSelectedItem->mCount < 1) {
           mSelectedItem->Remove();

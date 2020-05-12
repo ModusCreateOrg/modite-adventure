@@ -43,7 +43,7 @@ void GItemWidget::Run() {
     if (i) {
       char s[128];
       sprintf(s, "Removed %s", itemNames[mItem]);
-      mState->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_INFO,
+      mState->AddProcess(new GStatProcess(STAT_INFO, GPlayer::mSprite->Center(),
         items[mItem], 5 * FRAMES_PER_SECOND, s));
 
       if (i->mCount > 1) {
@@ -64,7 +64,7 @@ void GItemWidget::Run() {
 }
 
 void GItemWidget::Select() {
-  mState->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_INFO,
+  mState->AddProcess(new GStatProcess(STAT_INFO, GPlayer::mSprite->Center(),
                                       items[mItem], 5 * FRAMES_PER_SECOND, itemNames[mItem]));
   GPlayer::mInventoryList.PickupItem(mItem);
 

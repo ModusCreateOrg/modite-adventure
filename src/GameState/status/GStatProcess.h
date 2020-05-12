@@ -8,8 +8,8 @@ class GStatSprite;
 
 class GStatProcess : public GProcess {
 public:
-  GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...);
-  GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, const char *aFmt, ...);
+  GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...);
+  GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, const char *aFmt, ...);
 
   ~GStatProcess() OVERRIDE;
 

@@ -69,7 +69,7 @@ TBool GItemProcess::RunAfter() {
       gSoundPlayer.SfxItemHeart();
       return EFalse;
     }
-    mGameState->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_INFO,
+    mGameState->AddProcess(new GStatProcess(STAT_INFO, mSprite->Center(),
                                         mSprite->mImageNumber, FRAMES_PER_SECOND, itemNames[mItemNumber]));
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);

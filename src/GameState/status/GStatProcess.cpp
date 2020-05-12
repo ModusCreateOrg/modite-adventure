@@ -4,7 +4,7 @@
 
 const TInt TIMEOUT = FRAMES_PER_SECOND;
 
-GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, const char *aFmt, ...) : GProcess(ATTR_GONE) {
+GStatProcess::GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, const char *aFmt, ...) : GProcess(ATTR_GONE) {
   va_list args;
   va_start(args, aFmt);
   char msg[4096];
@@ -12,9 +12,8 @@ GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, const ch
   mImageNumber = 0;
   //  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
   mSprite = new GStatSprite(aStatType, msg, mImageNumber);
-  TPoint p = aTarget->Center();
-  mSprite->x = p.x + (TFloat) (Random() % 16) - 7; // slight random deviation
-  mSprite->y = p.y + (TFloat) (Random() % 8);
+  mSprite->x = aPoint.x + (TFloat) (Random() % 16) - 7; // slight random deviation
+  mSprite->y = aPoint.y + (TFloat) (Random() % 8) - 40;
   mSprite->x -= (TFloat) (messageLength * 5 + 3); // center alignment
   mSprite->vy = (TFloat) -1 / FACTOR;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
@@ -23,8 +22,8 @@ GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, const ch
   va_end(args);
 }
 
-GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...) :
-    GStatProcess(aTarget, aStatType, aFmt) {
+GStatProcess::GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...) :
+    GStatProcess(aStatType, aPoint, aFmt) {
   if (aImageNumber) {
     mSprite->mImageNumber = mImageNumber = aImageNumber;
     mSprite->x -= 16;

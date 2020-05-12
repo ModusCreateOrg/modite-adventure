@@ -99,15 +99,8 @@ struct GPlayer {
     }
   }
 
-  static void AddHitPoints(TInt aMoreHitpoints, TFloat x = -1, TFloat y = -1) {
-    if (x < 0) {
-      x = mSprite->x + 72;
-    }
-    if (y < 0) {
-      y = mSprite->y + 32;
-    }
-
-    gGame->CurrentState()->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_HEAL,
+  static void AddHitPoints(TInt aMoreHitpoints, const TPoint &aPoint = GPlayer::mSprite->Center()) {
+    gGame->CurrentState()->AddProcess(new GStatProcess(STAT_HEAL, aPoint,
       "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints)));
 
     mHitPoints += aMoreHitpoints;
@@ -116,19 +109,12 @@ struct GPlayer {
     }
   }
 
-  static void AddMana(TInt aMoreMana, TFloat x = -1, TFloat y = -1) {
-    if (x < 0) {
-      x = mSprite->x + 72;
-    }
-    if (y < 0) {
-      y = mSprite->y + 32;
-    }
-
-    gGame->CurrentState()->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_MANA,
+  static void AddMana(TInt aMoreMana, const TPoint &aPoint = GPlayer::mSprite->Center()) {
+    gGame->CurrentState()->AddProcess(new GStatProcess(STAT_MANA, aPoint,
       "%d", MIN(aMoreMana, mMaxMana - mManaPotion)));
 
     mManaPotion += aMoreMana;
-    if (mManaPotion > mMaxHitPoints) {
+    if (mManaPotion > mMaxMana) {
       mManaPotion = mMaxMana;
     }
   }
