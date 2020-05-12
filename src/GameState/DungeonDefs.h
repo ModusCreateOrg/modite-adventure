@@ -57,7 +57,7 @@ struct TDungeonInfo gDungeonDefs[] = {
         OW1_DGN2_512_OW1_DGN2_L1_MAP, // 1
         OW1_DGN2_512_OW1_DGN2_L2_MAP, // 2
         OW1_DGN2_512_OW1_DGN2_L3_MAP, // 3
-        -1, // 4
+        OW1_DGN2_512_OW1_DGN2_L4_MAP, // 4
         -1, // 5
         -1, // 6
         -1, // 7

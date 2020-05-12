@@ -212,6 +212,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case WALK_STATE:
       if (mStepFrame > 0) {
         mStep = 1 - mStep;
+        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
         mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
         break;
       }
