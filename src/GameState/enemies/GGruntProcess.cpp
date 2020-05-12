@@ -114,7 +114,7 @@ void GGruntProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->type = STYPE_OBJECT;
       SfxDeath();
       mSaveToStream = EFalse; // Prevent saves while we're animating.
-      //      Death(aDirection);
+      Death(aDirection);
       auto *p = new GEnemyDeathOverlayProcess(mGameState, this, mSprite->x + 16, mSprite->y + 1);
       mEnemyDeathOverlayProcess = p;
       mGameState->AddProcess(p);
@@ -340,7 +340,7 @@ TBool GGruntProcess::IdleState() {
     }
 
     // after 8 tries, we couldn't find a direction to walk.
-    NewState(IDLE_STATE, mSprite->mDirection);
+    NewState(TAUNT_STATE, mSprite->mDirection);
   }
 
   return ETrue;
