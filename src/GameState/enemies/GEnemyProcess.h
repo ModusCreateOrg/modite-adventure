@@ -13,17 +13,16 @@ public:
 
   void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
 
-  TBool MaybeDamage(TBool aIsSpell);
-
 protected:
   void StartBlink(TUint16 aTime) {
     mBlinkTimer = aTime;
   }
+  void UpdateBlink();
 
-public:
-  TBool RunBefore() OVERRIDE;
+  TBool BasicDamageCheck();
+  TBool SpellDamageCheck();
 
-  TBool RunAfter() OVERRIDE;
+  void DoDamage(TInt aStrength);
 
 public:
   GEnemySprite *mSprite;

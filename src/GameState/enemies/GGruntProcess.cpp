@@ -132,25 +132,15 @@ void GGruntProcess::OverlayAnimationComplete() {
 }
 
 TBool GGruntProcess::MaybeHit() {
-  if (mSprite->TestCType(STYPE_SPELL)) {
-    mSprite->ClearCType(STYPE_SPELL);
-    if (MaybeDamage(ETrue)) {
-      mInvulnerable = ETrue;
-      SfxTakeDamage();
-      NewState(SPELL_STATE, mSprite->mDirection);
-      return ETrue;
-    }
+  if (SpellDamageCheck()) {
+    NewState(SPELL_STATE, mSprite->mDirection);
+    return ETrue;
   }
 
-  GAnchorSprite *other = mSprite->mCollided;
-  if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
-    if (MaybeDamage(EFalse)) {
-      SfxTakeDamage();
-      mInvulnerable = ETrue;
-      NewState(HIT_STATE, GAnchorSprite::RotateDirection(other->mDirection, 2));
-      return ETrue;
-    }
+  if (BasicDamageCheck()) {
+    GAnchorSprite *other = mSprite->mCollided;
+    NewState(HIT_STATE, GAnchorSprite::RotateDirection(other->mDirection, 2));
+    return ETrue;
   }
 
   if (mSprite->TestCType(STYPE_PLAYER)) {
@@ -228,20 +218,14 @@ TBool GGruntProcess::MaybeTaunt() {
 
 TBool GGruntProcess::AttackState() {
   // Spells interrupt attack animation, normal attacks don't except for killing blows
-  if (mSprite->TestCType(STYPE_SPELL)) {
-    mSprite->ClearCType(STYPE_SPELL);
-    if (MaybeDamage(ETrue)) {
-      NewState(SPELL_STATE, mSprite->mDirection);
-      return ETrue;
-    }
+  if (SpellDamageCheck()) {
+    NewState(SPELL_STATE, mSprite->mDirection);
+    return ETrue;
   }
-  if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
-    MaybeDamage(EFalse);
-    if (mHitPoints <= 0) {
-      NewState(HIT_STATE, mSprite->mDirection);
-      return ETrue;
-    }
+
+  if (BasicDamageCheck() && mHitPoints <= 0) {
+    NewState(HIT_STATE, mSprite->mDirection);
+    return ETrue;
   }
 
   if (mSprite->AnimDone()) {
@@ -427,7 +411,6 @@ TBool GGruntProcess::WalkState() {
 }
 
 TBool GGruntProcess::RunBefore() {
-  GEnemyProcess::RunBefore();
   if (mSprite->Clipped()) {
     mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
@@ -454,7 +437,7 @@ TBool GGruntProcess::RunBefore() {
 }
 
 TBool GGruntProcess::RunAfter() {
-  GEnemyProcess::RunAfter();
+  UpdateBlink();
   mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
   mSprite->mMeter = (TFloat) mHitPoints / (TFloat) mMaxHitPoints;
 

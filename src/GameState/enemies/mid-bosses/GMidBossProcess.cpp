@@ -59,7 +59,6 @@ GMidBossProcess::~GMidBossProcess() {
 }
 
 TBool GMidBossProcess::RunBefore() {
-  GEnemyProcess::RunBefore();
   switch (mState) {
   case MB_IDLE_STATE:
     return IdleState();
@@ -87,7 +86,7 @@ TBool GMidBossProcess::RunBefore() {
 }
 
 TBool GMidBossProcess::RunAfter() {
-  GEnemyProcess::RunAfter();
+  UpdateBlink();
   if (mHitTimer-- < 0) {
     mHitTimer = 0;
   }
@@ -213,22 +212,16 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 }
 
 TBool GMidBossProcess::MaybeHit() {
-  if (mSprite->TestCType(STYPE_SPELL)) {
-    mSprite->ClearCType(STYPE_SPELL);
-    if (MaybeDamage(ETrue)) {
-      NewState(MB_SPELL_STATE, mSprite->mDirection);
-      mHitTimer += HIT_SPAM_TIME * 2;
-      return ETrue;
-    }
+  if (SpellDamageCheck()) {
+    NewState(MB_SPELL_STATE, mSprite->mDirection);
+    mHitTimer += HIT_SPAM_TIME * 2;
+    return ETrue;
   }
 
-  if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
-    if (MaybeDamage(EFalse)) {
-      StartBlink(BLINK_DURATION);
-      mHitTimer += HIT_SPAM_TIME;
-      return ETrue;
-    }
+  if (BasicDamageCheck()) {
+    StartBlink(BLINK_DURATION);
+    mHitTimer += HIT_SPAM_TIME;
+    return ETrue;
   }
 
   return EFalse;

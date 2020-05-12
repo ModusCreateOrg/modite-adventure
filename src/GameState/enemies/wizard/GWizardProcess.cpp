@@ -337,28 +337,21 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 }
 
 TBool GWizardProcess::MaybeDamage() {
-  if (mSprite->TestCType(STYPE_SPELL)) {
-    mSprite->ClearCType(STYPE_SPELL);
-
-    if (GEnemyProcess::MaybeDamage(ETrue)) {
-      mSprite->vx = mSprite->vy = 0;
-      mSpellCounter += 2;
-      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-      mGameState->AddProcess(p);
-      p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
-      mGameState->AddProcess(p);
-      StartBlink(FRAMES_PER_SECOND / 4);
-      return ETrue;
-    }
+  if (SpellDamageCheck()) {
+    mSprite->vx = mSprite->vy = 0;
+    mSpellCounter += 2;
+    auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+    mGameState->AddProcess(p);
+    p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
+    mGameState->AddProcess(p);
+    StartBlink(FRAMES_PER_SECOND / 4);
+    return ETrue;
   }
 
-  if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
-    if (GEnemyProcess::MaybeDamage(EFalse)) {
-      mSprite->Nudge(); // move sprite so it's not on top of player
-      StartBlink(FRAMES_PER_SECOND / 4);
-      return ETrue;
-    }
+  if (BasicDamageCheck()) {
+    mSprite->Nudge(); // move sprite so it's not on top of player
+    StartBlink(FRAMES_PER_SECOND / 4);
+    return ETrue;
   }
 
   if (mSprite->TestCType(STYPE_PLAYER)) {
@@ -588,7 +581,6 @@ TBool GWizardProcess::DeathState() {
 }
 
 TBool GWizardProcess::RunBefore() {
-  GEnemyProcess::RunBefore();
   // Patch to prevent the damn thing from going out of screen.
   if ((mSprite->x < 0) || (mSprite->y <0)) {
     mSprite->x = mStartX;
@@ -617,7 +609,7 @@ TBool GWizardProcess::RunBefore() {
 }
 
 TBool GWizardProcess::RunAfter() {
-  GEnemyProcess::RunAfter();
+  UpdateBlink();
   if (mHitTimer-- < 0) {
     mHitTimer = HIT_SPAM_TIME;
   }

@@ -412,46 +412,24 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
 }
 
 TBool GFinalBossProcess::MaybeHit() {
-  if (mSprite->TestCType(STYPE_SPELL)) {
-    mSprite->ClearCType(STYPE_SPELL);
-    if (!mInvulnerable) {
-      mInvulnerable = ETrue;
-      // TODO take into account which spellbook is being wielded
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
-      mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mHitPoints <= 0) {
+  if (SpellDamageCheck()) {
+    if (mHitPoints <= 0) {
 #ifdef DEBUGME
-        printf("FINAL BOSS DEATH\n");
+      printf("FINAL BOSS DEATH\n");
 #endif
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
-      }
-      SetState(STATE_SPELL, mSprite->mDirection);
-      return ETrue;
+      mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
     }
+    SetState(STATE_SPELL, mSprite->mDirection);
+    return ETrue;
   }
 
   GAnchorSprite *other = mSprite->mCollided;
-  if (mSprite->TestCType(STYPE_PBULLET)) {
-    mSprite->ClearCType(STYPE_PBULLET);
-    if (!mInvulnerable) {
-      mSprite->Nudge(); // move sprite so it's not on top of player
-      mInvulnerable = ETrue;
-      // random variation from 100% to 150% base damage
-      TInt hitAmount = GPlayer::mAttackStrength + round(RandomFloat() * GPlayer::mAttackStrength / 2);
-      mHitPoints -= hitAmount;
-      auto *p = new GStatProcess(mSprite->x + 80, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_ENEMY_HIT);
-      mGameState->AddProcess(p);
-      if (mHitPoints <= 0) {
-        mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
-      }
-      SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
-      return ETrue;
+  if (BasicDamageCheck()) {
+    if (mHitPoints <= 0) {
+      mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
     }
+    SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
+    return ETrue;
   }
 
   if (mSprite->TestCType(STYPE_PLAYER)) {
@@ -701,7 +679,6 @@ TBool GFinalBossProcess::DeathState() {
 }
 
 TBool GFinalBossProcess::RunBefore() {
-  GEnemyProcess::RunBefore();
   switch (mState) {
     case STATE_IDLE:
       return IdleState();
@@ -724,6 +701,6 @@ TBool GFinalBossProcess::RunBefore() {
 }
 
 TBool GFinalBossProcess::RunAfter() {
-  GEnemyProcess::RunAfter();
+  UpdateBlink();
   return ETrue;
 }
