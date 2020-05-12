@@ -4,46 +4,38 @@
 
 const TInt TIMEOUT = FRAMES_PER_SECOND;
 
-GStatProcess::GStatProcess(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
+GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, const char *aFmt, ...) : GProcess(ATTR_GONE) {
   va_list args;
   va_start(args, aFmt);
-  Init(aState, aX, aY, aFmt, args);
-  va_end(args);
-}
-
-GStatProcess::GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...) : GProcess(ATTR_GONE) {
-  va_list args;
-  va_start(args, aFmt);
-  Init(gGame->CurrentState(), aX, aY, aFmt, args);
-  va_end(args);
-}
-
-void GStatProcess::Init(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, va_list args) {
   char msg[4096];
-  vsprintf(msg, aFmt, args);
+  TInt messageLength = vsprintf(msg, aFmt, args);
   mImageNumber = 0;
-//  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
-  mSprite = new GStatSprite(STAT_SIZE_16x16, msg, mImageNumber);
-  mSprite->x = aX - 56 + Random() % 16; // slight random deviation
-  mSprite->y = aY - 60 + Random() % 8;
-  mSprite->vy = -1;
+  //  printf("GStatProcess(%f,%f) %s\n", aX, aY, aMessage);
+  mSprite = new GStatSprite(aStatType, msg, mImageNumber);
+  TPoint p = aTarget->Center();
+  mSprite->x = p.x + (TFloat) (Random() % 16) - 7; // slight random deviation
+  mSprite->y = p.y + (TFloat) (Random() % 8);
+  mSprite->x -= (TFloat) (messageLength * 5 + 3); // center alignment
+  mSprite->vy = (TFloat) -1 / FACTOR;
   mSprite->SetFlags(SFLAG_RENDER | SFLAG_MOVE);
-  aState->AddSprite(mSprite);
+  gGame->CurrentState()->AddSprite(mSprite);
   mTimeout = TIMEOUT;
+  va_end(args);
+}
+
+GStatProcess::GStatProcess(GAnchorSprite *aTarget, STAT_TYPE aStatType, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...) :
+    GStatProcess(aTarget, aStatType, aFmt) {
+  if (aImageNumber) {
+    mSprite->mImageNumber = mImageNumber = aImageNumber;
+    mSprite->x -= 16;
+  }
+  mTimeout = aTimeout;
 }
 
 GStatProcess::~GStatProcess() {
   mSprite->Remove();
   delete mSprite;
   mSprite = ENull;
-}
-
-void GStatProcess::SetImageNumber(TInt aImageNumber) {
-  mSprite->mImageNumber = aImageNumber;
-}
-
-void GStatProcess::SetMessageType(STAT_TYPE aType) {
-  mSprite->mMessageType = aType;
 }
 
 TBool GStatProcess::RunBefore() { return ETrue; }

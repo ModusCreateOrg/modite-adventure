@@ -2,7 +2,6 @@
 #include "GItemProcess.h"
 #include "GMidBossDeathProcess.h"
 #include "GPlayer.h"
-#include "GStatProcess.h"
 #include "common/GSpellOverlayProcess.h"
 #include "Resources.h"
 #include "GGame.h"
@@ -503,8 +502,6 @@ TBool GMidBossProcess::ChargeState() {
 TBool GMidBossProcess::DeathState() {
   if (mDeathCounter == 1) {
     printf("MID BOSS DEATH\n");
-    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y,
-                                            "EXP +%d", mExperienceYield));
   }
   if (mDeathCounter <= 3) {
     printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);

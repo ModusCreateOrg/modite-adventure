@@ -323,9 +323,7 @@ TBool GPlayerProcess::MaybeHit() {
 
       GPlayer::mHitPoints -= hitAmount;
       GPlayer::mInvulnerable = ETrue;
-      auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_PLAYER_HIT);
-      mGameState->AddProcess(p);
+      mGameState->AddProcess(new GStatProcess(mSprite, STAT_PLAYER_HIT, "%d", hitAmount));
 
       StartBlink(BLINK_TIME);
 

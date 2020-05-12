@@ -1,6 +1,5 @@
 #include <GameState/enemies/GEnemyProcess.h>
 #include "GGruntProcess.h"
-#include "GStatProcess.h"
 #include "GPlayer.h"
 #include "GGameState.h"
 #include "inventory/GItemProcess.h"
@@ -266,11 +265,6 @@ TBool GGruntProcess::SpellState() {
 TBool GGruntProcess::DeathState() {
   auto *p = mEnemyDeathOverlayProcess;
   if (mSprite->AnimDone() && !p) {
-    auto *p2 = new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield);
-    p2->SetMessageType(STAT_EXPERIENCE);
-    mGameState->AddProcess(p2);
-    GPlayer::AddExperience(mExperienceYield);
-
     // If we setup a key for the enemy to drop
     if (mParams) {
       printf("drop $%x %d\n", mParams, mParams);

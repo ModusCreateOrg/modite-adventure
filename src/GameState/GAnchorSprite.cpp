@@ -283,6 +283,10 @@ void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
   aRect.Set(x + cx + w / 2.0, y + cy - h, x + cx + w + w / 2.0, y + cy);
 }
 
+TPoint GAnchorSprite::Center() {
+  return TPoint((TInt) x + cx + w, (TInt) y - h / 2);
+}
+
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
   WriteCustomToStream(aStream); // write additional data, if any
   aStream.Write(&x, sizeof(x));

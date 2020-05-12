@@ -1,23 +1,11 @@
 #include "Game.h"
 #include "GStatSprite.h"
 
-GStatSprite::GStatSprite(TInt aSize, const char *aMessage, TInt aImage)
-    : mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
+GStatSprite::GStatSprite(STAT_TYPE aType, const char *aMessage, TInt aImage)
+    : mMessageType(aType), mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
 
   SetFlags(SFLAG_BELOW);
   mImageNumber = aImage;
-  mMessageType = STAT_INFO;
-
-  switch (aSize) {
-    case STAT_SIZE_8x8:
-      mFont = gFont8x8;
-      break;
-    case STAT_SIZE_16x16:
-      mFont = gFont16x16;
-      break;
-    default:
-      Panic("GStatSprite: invalid STAT_SIZE %d\n", aSize);
-  }
 }
 
 GStatSprite::~GStatSprite() {
@@ -52,5 +40,5 @@ TBool GStatSprite::Render(BViewPort *aViewPort) {
       color = COLOR_SHMOO;
       break;
   }
-  return gDisplay.renderBitmap->DrawStringShadow(aViewPort, mMessage, mFont, screenX, screenY, color, COLOR_TEXT_SHADOW, COLOR_TEXT_TRANSPARENT, -6);
+  return gDisplay.renderBitmap->DrawStringShadow(aViewPort, mMessage, gFont16x16, screenX, screenY, color, COLOR_TEXT_SHADOW, COLOR_TEXT_TRANSPARENT, -6);
 }

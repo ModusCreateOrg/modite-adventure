@@ -23,6 +23,7 @@ protected:
   TBool SpellDamageCheck();
 
   void DoDamage(TInt aStrength);
+  void DoHeal(TInt aAmount);
 
 public:
   GEnemySprite *mSprite;

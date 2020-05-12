@@ -7,7 +7,6 @@
 #include "GFinalBossPillarProcess.h"
 #include "GFinalBossDeathProcess.h"
 #include "common/GSpellOverlayProcess.h"
-#include "GStatProcess.h"
 #include "GPlayer.h"
 
 #define DEBUGME
@@ -413,21 +412,17 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
 
 TBool GFinalBossProcess::MaybeHit() {
   if (SpellDamageCheck()) {
-    if (mHitPoints <= 0) {
 #ifdef DEBUGME
+    if (mHitPoints <= 0) {
       printf("FINAL BOSS DEATH\n");
-#endif
-      mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
     }
+#endif
     SetState(STATE_SPELL, mSprite->mDirection);
     return ETrue;
   }
 
   GAnchorSprite *other = mSprite->mCollided;
   if (BasicDamageCheck()) {
-    if (mHitPoints <= 0) {
-      mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
-    }
     SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
     return ETrue;
   }

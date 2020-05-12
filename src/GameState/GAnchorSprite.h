@@ -97,6 +97,8 @@ public:
 
   void GetFloatRect(GFloatRect &aRect);
 
+  TPoint Center();
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }

@@ -107,9 +107,8 @@ struct GPlayer {
       y = mSprite->y + 32;
     }
 
-    auto *p = new GStatProcess(x, y, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints));
-    p->SetMessageType(STAT_HEAL);
-    gGame->CurrentState()->AddProcess(p);
+    gGame->CurrentState()->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_HEAL,
+      "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints)));
 
     mHitPoints += aMoreHitpoints;
     if (mHitPoints > mMaxHitPoints) {
@@ -125,9 +124,8 @@ struct GPlayer {
       y = mSprite->y + 32;
     }
 
-    auto *p = new GStatProcess(x, y, "%d", MIN(aMoreMana, mMaxMana - mManaPotion));
-    p->SetMessageType(STAT_MANA);
-    gGame->CurrentState()->AddProcess(p);
+    gGame->CurrentState()->AddProcess(new GStatProcess(GPlayer::mSprite, STAT_MANA,
+      "%d", MIN(aMoreMana, mMaxMana - mManaPotion)));
 
     mManaPotion += aMoreMana;
     if (mManaPotion > mMaxHitPoints) {

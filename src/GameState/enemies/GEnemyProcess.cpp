@@ -19,6 +19,9 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint
 }
 
 GEnemyProcess::~GEnemyProcess() {
+  mGameState->AddProcess(new GStatProcess(mSprite, STAT_EXPERIENCE, "EXP +%d", mExperienceYield));
+  GPlayer::AddExperience(mExperienceYield);
+
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -71,11 +74,16 @@ void GEnemyProcess::DoDamage(TInt aStrength) {
   // Random +/- 20% damage modifier
   aStrength = (aStrength * Random(80, 120)) / 100;
   mHitPoints -= aStrength;
-  auto *p = new GStatProcess(mSprite->x + 68, mSprite->y + 32, "%d", aStrength);
-  p->SetMessageType(STAT_ENEMY_HIT);
-  mGameState->AddProcess(p);
+  mGameState->AddProcess(new GStatProcess(mSprite, STAT_ENEMY_HIT, "%d", aStrength));
   gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV);
   mInvulnerable = ETrue;
+}
+
+void GEnemyProcess::DoHeal(TInt aAmount) {
+  // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
+  TInt healAmount = MIN(aAmount, mMaxHitPoints - mHitPoints);
+  mGameState->AddProcess(new GStatProcess(mSprite, STAT_HEAL, "%d", healAmount));
+  mHitPoints = MIN(mHitPoints + healAmount, mMaxHitPoints);
 }
 
 void GEnemyProcess::UpdateBlink() {

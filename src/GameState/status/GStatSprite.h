@@ -15,21 +15,17 @@ enum STAT_TYPE {
   STAT_INFO,
 };
 
-const TInt STAT_SIZE_8x8 = 0;
-const TInt STAT_SIZE_16x16 = 1;
-
 class GStatSprite : public BSprite {
 public:
-  GStatSprite(TInt aSize, const char *aMessage, TInt aImage = 0);
+  GStatSprite(STAT_TYPE aType, const char *aMessage, TInt aImage = 0);
   ~GStatSprite() OVERRIDE;
-  STAT_TYPE mMessageType;
 
 public:
   TBool Render(BViewPort *aViewPort) OVERRIDE;
 
 protected:
-  BFont *mFont;
   const char *mMessage;
+  STAT_TYPE mMessageType;
 };
 
 #endif

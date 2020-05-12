@@ -3,7 +3,6 @@
 #include "GWizardProjectileProcess.h"
 #include "GWizardPillarProcess.h"
 #include "GWizardDeathProcess.h"
-#include "GStatProcess.h"
 #include "GPlayer.h"
 #include "GItemProcess.h"
 #include "GWizardDecoyProcess.h"
@@ -374,7 +373,6 @@ TBool GWizardProcess::MaybeAttack() {
 TBool GWizardProcess::MaybeDeath() {
   if (mHitPoints <= 0) {
     printf("WIZARD DEATH\n");
-    mGameState->AddProcess(new GStatProcess(mSprite->x + 72, mSprite->y, "EXP +%d", mExperienceYield));
     SetState(STATE_DEATH, mDirection);
     return ETrue;
   }
@@ -560,12 +558,8 @@ TBool GWizardProcess::IllusionState() {
     SetState(STATE_IDLE, mDirection);
   }
   if (mStateTimer-- < 0) {
-    // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
     mStateTimer = FRAMES_PER_SECOND * 3;
-    auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", MIN(HEAL_RATE, mMaxHitPoints - mHitPoints));
-    p->SetMessageType(STAT_HEAL);
-    mSprite->mGameState->AddProcess(p);
-    mHitPoints = MIN(mHitPoints + HEAL_RATE, mMaxHitPoints);
+    DoHeal(HEAL_RATE);
   }
   return ETrue;
 }
