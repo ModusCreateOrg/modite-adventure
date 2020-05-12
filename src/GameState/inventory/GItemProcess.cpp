@@ -40,8 +40,8 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
     //       whether already picked up
 //    mGameState->EndProgram(mIp, ATTR_KEEP, mItemNumber);
 
-    BObjectProgram *program = mGameState->mGamePlayfield->mObjectProgram;
-    mFromPot = (program[mIp].mCode & TUint32(0xffff)) == ATTR_POT;
+//    BObjectProgram *program = mGameState->mGamePlayfield->mObjectProgram;
+//    mFromPot = (program[mIp].mCode & TUint32(0xffff)) == ATTR_POT;
   }
   else {
     Panic("GItemProcess constructor: invalid item number: %d\n", mItemNumber);
@@ -78,8 +78,9 @@ TBool GItemProcess::RunAfter() {
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
-    if (mIp != -1 && !mFromPot) {
-      printf("pickedup %d %d\n", mFromPot, mIp);
+    // Leaving in the following line from https://github.com/ModusCreateOrg/modite-adventure/pull/503
+//    if (mIp != -1 && !mFromPot) {
+    if (mIp != -1) {
       mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     }
     

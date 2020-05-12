@@ -75,7 +75,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW1_DGN3_768_OW1_DGN3_L1_MAP, // 0
-        -1, //OW1_DGN3_768_OW1_DGN3_L1_MAP, // 1
+        OW1_DGN3_768_OW1_DGN3_L1_MAP, // 1
         -1, //OW1_DGN3_768_OW1_DGN3_L2_MAP, // 2
         -1, //OW1_DGN3_768_OW1_DGN3_L3_MAP, // 3
         -1, //OW1_DGN3_768_OW1_DGN3_L4_MAP, // 4
@@ -117,7 +117,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 0
-        -1, //OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
+        OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
         -1, // OW2_DGN1_1280_OW2_DGN1_L2_MAP, // 2
         -1, // OW2_DGN1_1280_OW2_DGN1_L3_MAP, // 3
         -1, // OW2_DGN1_1280_OW2_DGN1_L4_MAP, // 4
@@ -138,7 +138,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 0
-        -1, //OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
+        OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
         -1, //OW2_DGN2_1536_OW2_DGN2_L2_MAP, // 2
         -1, //OW2_DGN2_1536_OW2_DGN2_L3_MAP, // 3
         -1, //OW2_DGN2_1536_OW2_DGN2_L4_MAP, // 4
@@ -159,7 +159,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 0
-        -1, //OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
+        OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
         -1, //OW2_DGN3_1792_OW2_DGN3_L2_MAP, // 2
         -1, //OW2_DGN3_1792_OW2_DGN3_L3_MAP, // 3
         -1, // OW2_DGN3_1792_OW2_DGN3_L4_MAP, // 4
@@ -180,7 +180,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 0
-        -1, //OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1
+        OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1
         -1, //OW2_DGN4_2048_OW2_DGN4_L2_MAP, // 2
         -1, //OW2_DGN4_2048_OW2_DGN4_L3_MAP, // 3
         -1, //OW2_DGN4_2048_OW2_DGN4_L4_MAP, // 4
@@ -201,7 +201,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 0
-        -1, //OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 1
+        OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 1
         -1, //OW3_DGN1_2304_OW3_DGN1_L2_MAP, // 2
         -1, //OW3_DGN1_2304_OW3_DGN1_L3_MAP, // 3
         -1, //OW3_DGN1_2304_OW3_DGN1_L4_MAP, // 4
@@ -222,7 +222,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 0
-        -1, //OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 1
+        OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 1
         -1, //OW3_DGN2_2560_OW3_DGN2_L2_MAP, // 2
         -1, //OW3_DGN2_2560_OW3_DGN2_L3_MAP, // 3
         -1, //OW3_DGN2_2560_OW3_DGN2_L4_MAP, // 4
@@ -243,7 +243,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 0
-        -1, //OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 1
+        OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 1
         -1, //OW3_DGN3_2816_OW3_DGN3_L2_MAP, // 2
         -1, //OW3_DGN3_2816_OW3_DGN3_L3_MAP, // 3
         -1, //OW3_DGN3_2816_OW3_DGN3_L4_MAP, // 4
@@ -264,15 +264,15 @@ struct TDungeonInfo gDungeonDefs[] = {
       OW2_3_DGN_OBJECT_LAYER_BMP,
       {
         OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 0
-          -1, //OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 1
-          -1, //OW3_DGN4_3072_OW3_DGN4_L2_MAP, // 2
-          -1, //OW3_DGN4_3072_OW3_DGN4_L3_MAP, // 3
-          -1, //OW3_DGN4_3072_OW3_DGN4_L4_MAP, // 4
-          -1, //OW3_DGN4_3072_OW3_DGN4_L5_MAP, // 5
-          -1, //OW3_DGN4_3072_OW3_DGN4_L6_MAP, // 6
-          -1, //OW3_DGN4_3072_OW3_DGN4_L7_MAP, // 7
-          -1, //OW3_DGN4_3072_OW3_DGN4_L8_MAP, // 8
-          -1, // OW3_DGN4_3072_OW3_DGN4_L9_MAP, // 9
+        OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 1
+        -1, //OW3_DGN4_3072_OW3_DGN4_L2_MAP, // 2
+        -1, //OW3_DGN4_3072_OW3_DGN4_L3_MAP, // 3
+        -1, //OW3_DGN4_3072_OW3_DGN4_L4_MAP, // 4
+        -1, //OW3_DGN4_3072_OW3_DGN4_L5_MAP, // 5
+        -1, //OW3_DGN4_3072_OW3_DGN4_L6_MAP, // 6
+        -1, //OW3_DGN4_3072_OW3_DGN4_L7_MAP, // 7
+        -1, //OW3_DGN4_3072_OW3_DGN4_L8_MAP, // 8
+        -1, // OW3_DGN4_3072_OW3_DGN4_L9_MAP, // 9
         -1 // EMPTY -- no level 10 evar!!
       },
     }
@@ -285,7 +285,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW4_DGN1_3328_OW4_DGN1_L1_MAP, // 0
-        -1, // OW4_DGN1_3328_OW4_DGN1_L1_MAP, // 1
+        OW4_DGN1_3328_OW4_DGN1_L1_MAP, // 1
         -1, // OW4_DGN1_3328_OW4_DGN1_L2_MAP, // 2
         -1, // OW4_DGN1_3328_OW4_DGN1_L3_MAP, // 3
         -1, // OW4_DGN1_3328_OW4_DGN1_L4_MAP, // 4
@@ -306,7 +306,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW4_DGN2_3584_OW4_DGN2_L1_MAP, // 0
-        -1, //OW4_DGN2_3584_OW4_DGN2_L1_MAP, // 1
+        OW4_DGN2_3584_OW4_DGN2_L1_MAP, // 1
         -1, //OW4_DGN2_3584_OW4_DGN2_L2_MAP, // 2
         -1, //OW4_DGN2_3584_OW4_DGN2_L3_MAP, // 3
         -1, //OW4_DGN2_3584_OW4_DGN2_L4_MAP, // 4
@@ -327,7 +327,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW4_DGN3_3840_OW4_DGN3_L1_MAP, // 0
-        -1, //OW4_DGN3_3840_OW4_DGN3_L1_MAP, // 1
+        OW4_DGN3_3840_OW4_DGN3_L1_MAP, // 1
         -1, //OW4_DGN3_3840_OW4_DGN3_L2_MAP, // 2
         -1, //OW4_DGN3_3840_OW4_DGN3_L3_MAP, // 3
         -1, //OW4_DGN3_3840_OW4_DGN3_L4_MAP, // 4
@@ -348,7 +348,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW4_DGN4_4096_OW4_DGN4_L1_MAP, // 0
-        -1, //OW4_DGN4_4096_OW4_DGN4_L1_MAP, // 1
+        OW4_DGN4_4096_OW4_DGN4_L1_MAP, // 1
         -1, //OW4_DGN4_4096_OW4_DGN4_L2_MAP, // 2
         -1, //OW4_DGN4_4096_OW4_DGN4_L3_MAP, // 3
         -1, //OW4_DGN4_4096_OW4_DGN4_L4_MAP, // 4
@@ -390,7 +390,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN2_4608_OW5_DGN2_L1_MAP, // 0
-        -1, //OW5_DGN2_4608_OW5_DGN2_L1_MAP, // 1
+        OW5_DGN2_4608_OW5_DGN2_L1_MAP, // 1
         -1, //OW5_DGN2_4608_OW5_DGN2_L2_MAP, // 2
         -1, //OW5_DGN2_4608_OW5_DGN2_L3_MAP, // 3
         -1, // OW5_DGN2_4608_OW5_DGN2_L4_MAP, // 4
@@ -411,7 +411,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 0
-        -1, //OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 1
+        OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 1
         -1, //OW5_DGN3_4864_OW5_DGN3_L2_MAP, // 2
         -1, //OW5_DGN3_4864_OW5_DGN3_L3_MAP, // 3
         -1, //OW5_DGN3_4864_OW5_DGN3_L4_MAP, // 4
@@ -432,7 +432,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN4_5120_OW5_DGN4_L1_MAP, // 0
-        -1, //OW5_DGN4_5120_OW5_DGN4_L1_MAP, // 1
+        OW5_DGN4_5120_OW5_DGN4_L1_MAP, // 1
         -1, //OW5_DGN4_5120_OW5_DGN4_L2_MAP, // 2
         -1, //OW5_DGN4_5120_OW5_DGN4_L3_MAP, // 3
         -1, //OW5_DGN4_5120_OW5_DGN4_L4_MAP, // 4
@@ -453,7 +453,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW6_DGN1_5376_OW6_DGN1_L1_MAP, // 0
-        -1, //OW6_DGN1_5376_OW6_DGN1_L1_MAP, // 1
+        OW6_DGN1_5376_OW6_DGN1_L1_MAP, // 1
         -1, //OW6_DGN1_5376_OW6_DGN1_L2_MAP, // 2
         -1, //OW6_DGN1_5376_OW6_DGN1_L3_MAP, // 3
         -1, //OW6_DGN1_5376_OW6_DGN1_L4_MAP, // 4
@@ -474,7 +474,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW6_DGN2_5632_OW6_DGN2_L1_MAP, // 0
-        -1, //OW6_DGN2_5632_OW6_DGN2_L1_MAP, // 1
+        OW6_DGN2_5632_OW6_DGN2_L1_MAP, // 1
         -1, //OW6_DGN2_5632_OW6_DGN2_L2_MAP, // 2
         -1, // OW6_DGN2_5632_OW6_DGN2_L3_MAP, // 3
         -1, // OW6_DGN2_5632_OW6_DGN2_L4_MAP, // 4
@@ -495,7 +495,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW6_DGN3_5888_OW6_DGN3_L1_MAP, // 0
-        -1, //OW6_DGN3_5888_OW6_DGN3_L1_MAP, // 1
+        OW6_DGN3_5888_OW6_DGN3_L1_MAP, // 1
         -1, //OW6_DGN3_5888_OW6_DGN3_L2_MAP, // 2
         -1, //OW6_DGN3_5888_OW6_DGN3_L3_MAP, // 3
         -1, //OW6_DGN3_5888_OW6_DGN3_L4_MAP, // 4
@@ -516,7 +516,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW6_DGN4_6144_OW6_DGN4_L1_MAP, // 0
-        -1, //OW6_DGN4_6144_OW6_DGN4_L1_MAP, // 1
+        OW6_DGN4_6144_OW6_DGN4_L1_MAP, // 1
         -1, //OW6_DGN4_6144_OW6_DGN4_L2_MAP, // 2
         -1, //OW6_DGN4_6144_OW6_DGN4_L3_MAP, // 3
         -1, //OW6_DGN4_6144_OW6_DGN4_L4_MAP, // 4
@@ -537,7 +537,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW7_DGN1_6400_OW7_DGN1_L1_MAP, // 0
-        -1, //OW7_DGN1_6400_OW7_DGN1_L1_MAP, // 1
+        OW7_DGN1_6400_OW7_DGN1_L1_MAP, // 1
         -1, //OW7_DGN1_6400_OW7_DGN1_L2_MAP, // 2
         -1, //OW7_DGN1_6400_OW7_DGN1_L3_MAP, // 3
         -1, //OW7_DGN1_6400_OW7_DGN1_L4_MAP, // 4
@@ -558,7 +558,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW7_DGN2_6656_OW7_DGN2_L1_MAP, // 0
-        -1, //OW7_DGN2_6656_OW7_DGN2_L1_MAP, // 1
+        OW7_DGN2_6656_OW7_DGN2_L1_MAP, // 1
         -1, //OW7_DGN2_6656_OW7_DGN2_L2_MAP, // 2
         -1, //OW7_DGN2_6656_OW7_DGN2_L3_MAP, // 3
         -1, //OW7_DGN2_6656_OW7_DGN2_L4_MAP, // 4
@@ -579,7 +579,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW7_DGN3_6912_OW7_DGN3_L1_MAP, // 0
-        -1, //OW7_DGN3_6912_OW7_DGN3_L1_MAP, // 1
+        OW7_DGN3_6912_OW7_DGN3_L1_MAP, // 1
         -1, //OW7_DGN3_6912_OW7_DGN3_L2_MAP, // 2
         -1, //OW7_DGN3_6912_OW7_DGN3_L3_MAP, // 3
         -1, //OW7_DGN3_6912_OW7_DGN3_L4_MAP, // 4
@@ -600,7 +600,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW7_DGN4_7168_OW7_DGN4_L1_MAP, // 0
-        -1, //OW7_DGN4_7168_OW7_DGN4_L1_MAP, // 1
+        OW7_DGN4_7168_OW7_DGN4_L1_MAP, // 1
         -1, //OW7_DGN4_7168_OW7_DGN4_L2_MAP, // 2
         -1, //OW7_DGN4_7168_OW7_DGN4_L3_MAP, // 3
         -1, //OW7_DGN4_7168_OW7_DGN4_L4_MAP, // 4
@@ -621,7 +621,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW8_DGN1_7424_OW8_DGN1_L1_MAP, // 0
-        -1, // OW8_DGN1_7424_OW8_DGN1_L1_MAP, // 1
+        OW8_DGN1_7424_OW8_DGN1_L1_MAP, // 1
         -1, // OW8_DGN1_7424_OW8_DGN1_L2_MAP, // 2
         -1, // OW8_DGN1_7424_OW8_DGN1_L3_MAP, // 3
         -1, // OW8_DGN1_7424_OW8_DGN1_L4_MAP, // 4
@@ -642,7 +642,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW8_DGN2_7680_OW8_DGN2_L1_MAP, // 0
-        -1, // OW8_DGN2_7680_OW8_DGN2_L1_MAP, // 1
+        OW8_DGN2_7680_OW8_DGN2_L1_MAP, // 1
         -1, // OW8_DGN2_7680_OW8_DGN2_L2_MAP, // 2
         -1, // OW8_DGN2_7680_OW8_DGN2_L3_MAP, // 3
         -1, // OW8_DGN2_7680_OW8_DGN2_L4_MAP, // 4
@@ -663,7 +663,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW8_DGN3_7936_OW8_DGN3_L1_MAP, // 0
-        -1, // OW8_DGN3_7936_OW8_DGN3_L1_MAP, // 1
+        OW8_DGN3_7936_OW8_DGN3_L1_MAP, // 1
         -1, // OW8_DGN3_7936_OW8_DGN3_L2_MAP, // 2
         -1, // OW8_DGN3_7936_OW8_DGN3_L3_MAP, // 3
         -1, // OW8_DGN3_7936_OW8_DGN3_L4_MAP, // 4
@@ -684,7 +684,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW8_DGN4_8192_OW8_DGN4_L1_MAP, // 0
-        -1, // OW8_DGN4_8192_OW8_DGN4_L1_MAP, // 1
+        OW8_DGN4_8192_OW8_DGN4_L1_MAP, // 1
         -1, // OW8_DGN4_8192_OW8_DGN4_L2_MAP, // 2
         -1, // OW8_DGN4_8192_OW8_DGN4_L3_MAP, // 3
         -1, // OW8_DGN4_8192_OW8_DGN4_L4_MAP, // 4
@@ -705,7 +705,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW9_DGN1_8448_OW9_DGN1_L1_MAP, // 0
-        -1, // OW9_DGN1_8448_OW9_DGN1_L1_MAP, // 1
+        OW9_DGN1_8448_OW9_DGN1_L1_MAP, // 1
         -1, // OW9_DGN1_8448_OW9_DGN1_L2_MAP, // 2
         -1, // OW9_DGN1_8448_OW9_DGN1_L3_MAP, // 3
         -1, // OW9_DGN1_8448_OW9_DGN1_L4_MAP, // 4
@@ -726,7 +726,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW9_DGN2_8704_OW9_DGN2_L1_MAP, // 0
-        -1, // OW9_DGN2_8704_OW9_DGN2_L1_MAP, // 1
+        OW9_DGN2_8704_OW9_DGN2_L1_MAP, // 1
         -1, // OW9_DGN2_8704_OW9_DGN2_L2_MAP, // 2
         -1, // OW9_DGN2_8704_OW9_DGN2_L3_MAP, // 3
         -1, // OW9_DGN2_8704_OW9_DGN2_L4_MAP, // 4
@@ -747,7 +747,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW9_DGN3_8960_OW9_DGN3_L1_MAP, // 0
-        -1, // OW9_DGN3_8960_OW9_DGN3_L1_MAP, // 1
+        OW9_DGN3_8960_OW9_DGN3_L1_MAP, // 1
         -1, // OW9_DGN3_8960_OW9_DGN3_L2_MAP, // 2
         -1, // OW9_DGN3_8960_OW9_DGN3_L3_MAP, // 3
         -1, // OW9_DGN3_8960_OW9_DGN3_L4_MAP, // 4
@@ -768,7 +768,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW9_DGN4_9216_OW9_DGN4_L1_MAP, // 0
-        -1, // OW9_DGN4_9216_OW9_DGN4_L1_MAP, // 1
+        OW9_DGN4_9216_OW9_DGN4_L1_MAP, // 1
         -1, // OW9_DGN4_9216_OW9_DGN4_L2_MAP, // 2
         -1, // OW9_DGN4_9216_OW9_DGN4_L3_MAP, // 3
         -1, // OW9_DGN4_9216_OW9_DGN4_L4_MAP, // 4

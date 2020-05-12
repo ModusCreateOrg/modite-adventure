@@ -175,7 +175,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
       for (TInt i = 0; i < r.Height(); i++) {
         chord = sqrt(i * (r.Height() - i)) * 2 * r.Width() / r.Height();
         gDisplay.renderBitmap->DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
-          r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
+                                             r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
       }
       ret = BAnimSprite::Render(aViewPort);
       ClearFlags(SFLAG_CLIPPED);

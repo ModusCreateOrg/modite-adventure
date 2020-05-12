@@ -5,15 +5,15 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 5 * FACTOR;
 const TInt16 LAND_TIMEOUT = 150 * FACTOR;
 
-const TInt IDLE_SPEED = 5 * FACTOR;
+const TInt IDLE_SPEED = 3 * FACTOR;
 const TInt SELECT_SPEED = 5 * FACTOR;
 const TInt ATTACK_SPEED = 3 * FACTOR;
-const TInt HIT_SPEED = 1 * FACTOR;
-const TInt WALK_SPEED = 5 * FACTOR;
-const TInt DEATH_SPEED = 5 * FACTOR;
+const TInt HIT_SPEED = 2 * FACTOR;
+const TInt WALK_SPEED = 2 * FACTOR;
+const TInt DEATH_SPEED = 2 * FACTOR;
 
 const TFloat VELOCITY = 1.5 / TFloat(FACTOR);
 const TInt MAX_ALTITUDE = 8;
@@ -109,7 +109,7 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(BAT_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 3),
+  ASTEP(ATTACK_SPEED * 2, IMG_BAT_ATTACK_DOWN + 3),
   ASTEP(ATTACK_SPEED, IMG_BAT_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
   ASIZE(0,12,32,24),
@@ -382,6 +382,8 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
   mSprite->SetStatMultipliers(1.8, 2.0, 1.0);
+  mSprite->w = 24;
+  mSprite->cx = 8;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   mTaunt = EFalse; // bat does not taunt

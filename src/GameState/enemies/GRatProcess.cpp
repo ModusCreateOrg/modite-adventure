@@ -5,19 +5,15 @@
 #define DEBUGME
 #undef DEBUGME
 
-/*********************************************************************************
- *********************************************************************************
- *********************************************************************************/
+const TInt16 IDLE_TIMEOUT = 3 * FACTOR;
 
-const TInt16 IDLE_TIMEOUT = 10 * FACTOR;
-
-const TInt16 IDLE_SPEED = 5 * FACTOR;
+const TInt16 IDLE_SPEED = 3 * FACTOR;
 const TInt16 SELECT_SPEED = 5 * FACTOR;
-const TInt TAUNT_SPEED = 5 * FACTOR;
+const TInt16 TAUNT_SPEED = 3 * FACTOR;
 const TInt16 ATTACK_SPEED = 2 * FACTOR;
-const TInt16 HIT_SPEED = 1 * FACTOR;
+const TInt16 HIT_SPEED = 2 * FACTOR;
 const TInt16 WALK_SPEED = 2 * FACTOR;
-const TInt16 DEATH_SPEED = 5 * FACTOR;
+const TInt16 DEATH_SPEED = 1;
 
 const TFloat VELOCITY = PLAYER_VELOCITY * 1.5;
 
@@ -49,14 +45,6 @@ static ANIMSCRIPT idleAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(RAT_SLOT),
-  ALABEL,
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_RAT_SELECTED + 2),
-  ALOOP,
-};
 
 static ANIMSCRIPT tauntAnimation[] = {
   ABITMAP(RAT_SLOT),
@@ -76,28 +64,6 @@ static ANIMSCRIPT tauntAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT deathAnimation[] = {
-  ABITMAP(RAT_SLOT),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_RAT_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_DOWN + 0),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_RAT_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_RAT_WALK_DOWN + 0),
-  ASTEP(1, IMG_RAT_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_RAT_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_RAT_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_RAT_WALK_UP + 0),
-  ANULL(1),
-  ASTEP(1, IMG_RAT_WALK_UP + 0),
-  ANULL(1),
-  AEND,
-};
 
 /*
  ____
@@ -110,14 +76,14 @@ static ANIMSCRIPT deathAnimation[] = {
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ADELTA(0, 8),
-  ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 0),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 1),
   ALOOP,
 };
 
 static ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 8),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 1),
   AEND,
@@ -125,7 +91,7 @@ static ANIMSCRIPT walkDownAnimation1[] = {
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 8),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_DOWN + 3),
   AEND,
@@ -133,33 +99,44 @@ static ANIMSCRIPT walkDownAnimation2[] = {
 
 static ANIMSCRIPT attackDownAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 8),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 3),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(0, 16, 32, 40),
+  ASIZE(0, 8, 32, 32),
+  ADELTA(0, 6),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 1),
+  ADELTA(0, 8),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 4, 32, 24),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 0),
+  ASIZE(0, 0, 32, 24),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_DOWN + 3),
   AEND,
 };
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, -2),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
-  AFILL(COLOR_WHITE),
+  ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
   AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
   AEND,
+};
+
+
+static ANIMSCRIPT deathDownAnimation[] = {
+    ABITMAP(RAT_SLOT),
+    ADELTA(0, -2),
+    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+    AEND,
 };
 
 /*
@@ -174,14 +151,15 @@ static ANIMSCRIPT hitDownAnimation[] = {
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ADELTA(8, 0),
+  ADELTA(15, 0),
   AFLIP(1, IMG_RAT_WALK_RIGHT + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(8, 0),
+  ADELTA(15, 0),
+  ASIZE(0, 0, 32, 24),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 0),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 1),
   AEND,
@@ -189,7 +167,7 @@ static ANIMSCRIPT walkLeftAnimation1[] = {
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(8, 0),
+  ADELTA(15, 0),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 2),
   AFLIP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 3),
   AEND,
@@ -197,32 +175,42 @@ static ANIMSCRIPT walkLeftAnimation2[] = {
 
 static ANIMSCRIPT attackLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(8, 0),
-  AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
+  ADELTA(9, 4),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-24, 4, 48, 24),
+  ASIZE(-12, 0, 40, 24),
+  ADELTA(9, 0),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
+  ADELTA(7, 0),
   AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 4, 32, 24),
-  AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
+  ASIZE(0, 0, 32, 24),
+  ADELTA(13, 0),
+  AFLIP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   AEND,
 };
 
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(10, 4),
   AFILL(COLOR_WHITE),
-  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
-  AFILL(COLOR_WHITE),
+  ADELTA(9, 4),
+  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
-  AFILL(-1),
-  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(9, 4),
   AFILL(COLOR_WHITE),
-  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(8, 4),
   AFILL(-1),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  AEND,
+};
+
+static ANIMSCRIPT deathLeftAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ADELTA(8, 4),
+  AFLIP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
   AEND,
 };
 
@@ -238,14 +226,15 @@ static ANIMSCRIPT hitLeftAnimation[] = {
 static ANIMSCRIPT idleRightAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ADELTA(-8, 0),
-  ASTEP(1, IMG_RAT_WALK_RIGHT + 0),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(-8, 0),
+  ADELTA(0, 0),
+  ASIZE(0, 0, 32, 24),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 1),
   AEND,
@@ -253,7 +242,7 @@ static ANIMSCRIPT walkRightAnimation1[] = {
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(-8, 0),
+  ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_RIGHT + 3),
   AEND,
@@ -261,35 +250,44 @@ static ANIMSCRIPT walkRightAnimation2[] = {
 
 static ANIMSCRIPT attackRightAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(-8, 0),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
+  ADELTA(1, 4),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-8, 4, 48, 24),
+  ASIZE(-4, 0, 40, 24),
+  ADELTA(-1, 0),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 1),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 4, 32, 24),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 0),
+  ASIZE(0, 0, 32, 24),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_RIGHT + 3),
   AEND,
 };
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 4),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
-  AFILL(COLOR_WHITE),
+  ADELTA(2, 4),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(2, 4),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(2, 4),
   AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
   AEND,
 };
 
+static ANIMSCRIPT deathRightAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ADELTA(2, 4),
+  ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  AEND,
+};
 /*
  _   _
 | | | |_ __
@@ -302,14 +300,14 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT idleUpAnimation[] = {
   ABITMAP(RAT_SLOT),
   ALABEL,
-  ADELTA(0, 12),
+  ADELTA(0, 10),
   ASTEP(1, IMG_RAT_WALK_UP + 0),
   ALOOP,
 };
 
 static ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 12),
+  ADELTA(0, 10),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 0),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 1),
   AEND,
@@ -317,7 +315,7 @@ static ANIMSCRIPT walkUpAnimation1[] = {
 
 static ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 12),
+  ADELTA(0, 10),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 2),
   ASTEP(WALK_SPEED, IMG_RAT_WALK_UP + 3),
   AEND,
@@ -325,49 +323,72 @@ static ANIMSCRIPT walkUpAnimation2[] = {
 
 static ANIMSCRIPT attackUpAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ADELTA(0, 12),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 3),
+  ADELTA(0, 2),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(0, -16, 32, 40),
+  ASIZE(0, 0, 32, 40),
+  ADELTA(0, 14),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 1),
+  ADELTA(0, 10),
   ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 4, 32, 24),
-  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 0),
+  ASIZE(0, 0, 32, 24),
+  ADELTA(0, 10),
+  ASTEP(ATTACK_SPEED, IMG_RAT_ATTACK_UP + 3),
   AEND,
 };
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(RAT_SLOT),
+  ADELTA(0, 1),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 0),
-  AFILL(COLOR_WHITE),
+  ADELTA(0, 0),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 1),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 2),
+  ADELTA(0, 1),
   AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 2),
+  ADELTA(0, 0),
   AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
   AEND,
 };
 
 static ANIMSCRIPT hitSpellAnimation[] = {
   ABITMAP(RAT_SLOT),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ADELTA(0, -2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ADELTA(0, -2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ADELTA(0, -2),
+  AFILL(COLOR_WHITE),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ADELTA(0, -2),
+  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
+  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
   AEND,
+};
+
+static ANIMSCRIPT deathUpAnimation[] = {
+    ABITMAP(RAT_SLOT),
+    ADELTA(0, 0),
+    ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_UP + 0),
+    AEND,
 };
 
 static ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
@@ -375,7 +396,7 @@ static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, wa
 static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
 static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
-
+static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
 // endregion }}}
 
 /*********************************************************************************
@@ -388,10 +409,13 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->Name("ENEMY RAT");
   mStartX = mSprite->x = aX;
   mStartY = mSprite->y = aY;
-  mSprite->SetStatMultipliers(1.5, 1.5, 1.0);
+  mSprite->SetStatMultipliers(0.5, 0.5, 0.5);
   mSprite->h = 24;
+  mSprite->cy = 0;
   mStateTimer = 0;
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
+//  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
   NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
@@ -460,5 +484,5 @@ void GRatProcess::Spell(DIRECTION aDirection) {
 }
 
 void GRatProcess::Death(DIRECTION aDirection) {
-  mSprite->StartAnimation(deathAnimation);
+  mSprite->StartAnimationInDirection(deathAnimations, aDirection);
 }
