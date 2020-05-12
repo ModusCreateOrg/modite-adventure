@@ -385,7 +385,6 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
 
   mTaunt = EFalse; // bat does not taunt
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GBatProcess::~GBatProcess() = default;

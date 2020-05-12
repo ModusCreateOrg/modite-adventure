@@ -807,8 +807,6 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
 
   mTaunt = EFalse;
-
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GGoblinProcess::~GGoblinProcess() = default;

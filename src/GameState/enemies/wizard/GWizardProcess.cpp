@@ -151,7 +151,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSlot = aSlot;
   mIp = aIp;
   mType = aType;
-  mAttribute = aAttribute;
   //
   mSaveToStream = ETrue;
   //
@@ -173,7 +172,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   }
   mSpriteSheet = aSpriteSheet;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
   mSprite->mDy = -4;
   mSprite->cx = -4;
   mSprite->cy = 0;
@@ -184,7 +182,6 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
   mAttackType = 0;
-  SetState(STATE_IDLE, DIRECTION_DOWN);
   SetAttackTimer();
   mChanneling = EFalse;
 }

@@ -409,8 +409,6 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->cy = 0;
   SetStatMultipliers(2.0, 2.5, 1.0);
   mRangeX = mRangeY = 32;
-
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GSlimeProcess::~GSlimeProcess() = default;

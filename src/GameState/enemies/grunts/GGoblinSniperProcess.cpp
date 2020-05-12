@@ -391,8 +391,6 @@ GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFl
   mSprite->cy = 0;
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_SNIPER_BMP_SPRITES);
-
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GGoblinSniperProcess::~GGoblinSniperProcess() = default;

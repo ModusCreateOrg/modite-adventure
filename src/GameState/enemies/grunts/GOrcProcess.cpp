@@ -889,8 +889,6 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mRangeX = 24;
   mRangeY = 16;
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
-
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GOrcProcess::~GOrcProcess() = default;

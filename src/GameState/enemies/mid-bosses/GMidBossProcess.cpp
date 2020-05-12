@@ -27,7 +27,6 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(aSpriteSheet);
   SetStatMultipliers(8.0, 3.0, 10.0);
   mSpellOverlayProcess = ENull;
-  mSprite->SetFlags(SFLAG_RENDER_SHADOW);
   switch (aAttribute) {
   case ATTR_MID_BOSS_WATER:
     mSprite->mElement = ELEMENT_WATER;

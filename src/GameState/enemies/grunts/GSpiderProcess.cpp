@@ -427,8 +427,6 @@ GSpiderProcess::GSpiderProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   SetStatMultipliers(0.9, 0.9, 0.9);
 
 //  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
-
-  NewState(IDLE_STATE, DIRECTION_DOWN);
 }
 
 GSpiderProcess::~GSpiderProcess() = default;

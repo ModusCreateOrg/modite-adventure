@@ -89,8 +89,6 @@ ANIMSCRIPT idleAnimation[] = {
 // constructor
 GTurretProcess::GTurretProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParam)
     : GGruntProcess(aGameState, aIp, aX, aY, TURRET_SLOT, aParam, VELOCITY, ATTR_TURRET) {
-  mGameState = aGameState;
-
   mSprite->Name("ENEMY TURRET");
   mSprite->w = 22;
   mSprite->h = 16;

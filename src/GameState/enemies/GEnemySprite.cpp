@@ -5,7 +5,7 @@
 GEnemySprite::GEnemySprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg, TUint16 aType) : GAnchorSprite(
         aGameState, aPri, aBM, aImg, aType) {
   SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
-  SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK);
+  SetFlags(SFLAG_KNOCKBACK | SFLAG_CHECK | SFLAG_RENDER_SHADOW);
 
   mMeter = 1.0;
 }
