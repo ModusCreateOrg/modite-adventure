@@ -228,6 +228,7 @@ TBool GGruntProcess::AttackState() {
   }
 
   if (mSprite->AnimDone()) {
+    mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
   }
   return ETrue;
