@@ -67,7 +67,7 @@ TBool GPotProcess::RunAfter() {
       mSprite->cType = 0;
       if (mHitPoints <= 0) {
         GItemProcess::SpawnItem(mGameState, mIp, mParam, mSprite->x, mSprite->y);
-        // mGameState->EndProgram(mIp, ATTR_POT_GONE, mParam); // do not persist crate, but persist item
+        mGameState->EndProgram(mIp, ATTR_POT_GONE, mParam); // do not persist crate, but persist item
         printf("Pot broken param = %x %d\n", mParam, mParam);
         return EFalse;
       }

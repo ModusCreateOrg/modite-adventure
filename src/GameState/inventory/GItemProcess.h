@@ -25,7 +25,8 @@ protected:
   TInt mItemNumber,
       mIp;
   GAnchorSprite *mSprite;
-  TBool mFromPot;
+  // Following line from https://github.com/ModusCreateOrg/modite-adventure/pull/503/files
+//  TBool mFromPot;
 };
 
 #endif //MODITE_GITEMPROCESS_H

@@ -20,6 +20,7 @@ protected:
   void Hit(DIRECTION aDirection) OVERRIDE;
   void Spell(DIRECTION aDirection) OVERRIDE;
   void Death(DIRECTION aDirection) OVERRIDE;
+
 };
 
 #endif //MODITE_GGOBLINPROCESS_H

@@ -23,7 +23,7 @@ const TUint16 HIT_HARD_STATE = 7;
 const TUint16 QUAFF_STATE = 8;
 const TUint16 SPELL_STATE = 9;
 
-const TInt16 BLINK_TIME = FRAMES_PER_SECOND * 0.6;
+const TInt16 BLINK_TIME = FRAMES_PER_SECOND;
 
 DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
 TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
@@ -212,7 +212,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     case WALK_STATE:
       if (mStepFrame > 0) {
         mStep = 1 - mStep;
-        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
+//        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
         mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
         break;
       }
@@ -294,6 +294,7 @@ TBool GPlayerProcess::MaybeHit() {
 
     if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
       hitAmount = other->mAttackStrength;
+
       if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
         mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
       }
@@ -308,7 +309,7 @@ TBool GPlayerProcess::MaybeHit() {
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
       // contact damage independent of enemy attack strength
       hitAmount = BASE_STRENGTH;
-      mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
+      mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
     }
 
     if (hitAmount) {
@@ -479,9 +480,10 @@ TBool GPlayerProcess::MaybeWalk() {
     return ETrue;
   }
 
-  if (MaybeFall()) {
-    return EFalse;
-  }
+  // Disabled by JG 5/5/2020 -- we're going to use the out of the box shadows and can't use this state b/c of this.
+//  if (MaybeFall()) {
+//    return EFalse;
+//  }
 
   TFloat speed = PLAYER_VELOCITY;
   if (gControls.IsPressed(CONTROL_RUN)) {
@@ -630,7 +632,7 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->x = mSprite->x + 16;
         mSprite2->y = mSprite->y + 1;
         mSprite2->StartAnimation(spellOverlayAnimation);
-        printf("SPELLLL\n");
+//        printf("SPELLLL\n");
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
       }

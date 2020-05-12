@@ -5,7 +5,9 @@ const TInt16 WALKSPEED = 4 * FACTOR;
 const TInt16 SWORDSPEED = (TInt16)(3.2 * FACTOR);
 const TInt16 SWORDSPEED_WITH_GLOVE = (TInt16)(2.7 * FACTOR);
 
-const TInt16 HITSPEED = 2 * FACTOR;
+const TInt16 HITSPEED = 3 * FACTOR;
+const TInt16 HITSPEED_FIRST = TInt(1.5 * HITSPEED);
+const TInt16 SPELL_SPEED = 3 * FACTOR;
 
 extern ANIMSCRIPT idleAnimation[];
 
