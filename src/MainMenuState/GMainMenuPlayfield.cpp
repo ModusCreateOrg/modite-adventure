@@ -23,12 +23,6 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   mFont8 = new BFont(gResourceManager.GetBitmap(FONT_8x8_SLOT), FONT_8x8);
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
-  mCloudsOffset = 0;
-  mMountainsOffset = 0;
-  mFarTreesOffset = 0;
-  mNearTreesOffset = 0;
-  mPathOffset = 0;
-
 
   BBitmap *bm = BBitmap::CreateBBitmap(1, 1, SCREEN_DEPTH, MEMF_FAST);
 
@@ -36,61 +30,64 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   mBgLogo = gResourceManager.GetBitmap(BKG_SLOT);
   mBgLogo->Remap(bm);
 
-  gResourceManager.LoadBitmap(SKY_BMP, EARTH_FINAL_BOSS_PROJECTILE_SLOT, IMAGE_ENTIRE);
-  mBgSky = gResourceManager.GetBitmap(EARTH_FINAL_BOSS_PROJECTILE_SLOT);
+  gResourceManager.LoadBitmap(SKY_BMP, PLAYER_SLOT + 1, IMAGE_ENTIRE);
+  mBgSky = gResourceManager.GetBitmap(PLAYER_SLOT + 1);
   mBgSky->Remap(bm);
 
-  gResourceManager.LoadBitmap(FAR_TREES_BMP, FIRE_FINAL_BOSS_PROJECTILE_SLOT, IMAGE_ENTIRE);
-  mBgFarTrees = gResourceManager.GetBitmap(FIRE_FINAL_BOSS_PROJECTILE_SLOT);
-  mBgFarTrees->Remap(bm);
 
-  gResourceManager.LoadBitmap(NEAR_TREES_BMP, ENERGY_FINAL_BOSS_PROJECTILE_SLOT, IMAGE_ENTIRE);
-  mBgNearTrees = gResourceManager.GetBitmap(ENERGY_FINAL_BOSS_PROJECTILE_SLOT);
+  gResourceManager.LoadBitmap(NEAR_TREES_BMP, PLAYER_SLOT + 2, IMAGE_ENTIRE);
+  mBgNearTrees = gResourceManager.GetBitmap(PLAYER_SLOT + 2);
   mBgNearTrees->Remap(bm);
 
-  gResourceManager.LoadBitmap(WALKING_PATH_BMP, EARTH_FINAL_BOSS_PILLAR_SLOT, IMAGE_ENTIRE);
-  mBgWalkingPath = gResourceManager.GetBitmap(EARTH_FINAL_BOSS_PILLAR_SLOT);
+  gResourceManager.LoadBitmap(WALKING_PATH_BMP, PLAYER_SLOT + 3, IMAGE_ENTIRE);
+  mBgWalkingPath = gResourceManager.GetBitmap(PLAYER_SLOT + 3);
   mBgWalkingPath->Remap(bm);
 
-  gResourceManager.LoadBitmap(MOUNTAINS_BMP, WATER_FINAL_BOSS_PROJECTILE_SLOT, IMAGE_ENTIRE);
-  mBgMountains = gResourceManager.GetBitmap(WATER_FINAL_BOSS_PROJECTILE_SLOT);
+  gResourceManager.LoadBitmap(MOUNTAINS_BMP, PLAYER_SLOT + 4, IMAGE_ENTIRE);
+  mBgMountains = gResourceManager.GetBitmap(PLAYER_SLOT + 4);
   mBgMountains->Remap(bm);
+
+  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, PLAYER_SLOT + 5, IMAGE_ENTIRE);
+  mBgMoon = gResourceManager.GetBitmap(PLAYER_SLOT + 5);
+  mBgMoon->Remap(bm);
+  mMoonOffset = SCREEN_WIDTH - mBgMoon->Width() - 10;
 
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
   gResourceManager.GetBitmap(PLAYER_SLOT)->Remap(bm);
 
   mPlayer = new GPlayerSprite(aGameState);
   mPlayer->ClearFlags(SFLAG_RENDER_DEBUG);
-//
+
   mPlayer->StartAnimation(walkRightAnimation);
   mPlayer->x = 10;
-  mPlayer->y = SCREEN_HEIGHT - 20;
-//
-//  for (int i = 0; i < bm->CountUsedColors(); ++i) {
-//    TRGB color = bm->GetColor(i);
-//    printf("%i - %02X%02X%02X\n", i, color.r, color.b, color.g);
-//  }
-//
+  mPlayer->y = SCREEN_HEIGHT - 18;
+
+  mSkyOffset = 0;
+  mMountainsOffset = 0;
+  mMoonOffset = 50;
+  mNearTreesOffset = 0;
+  mPathOffset = 0;
 
   gDisplay.SetPalette(bm->GetPalette(), 0, bm->CountUsedColors());
   mState = 0;
+
+  gDisplay.SetColor(200, 0x45, 0x53, 0x77); // Dark blue bg
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
+  gDisplay.SetColor(COLOR_TEXT_SHADOW, 60,60,60);
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
 }
 
 GMainMenuPlayfield::~GMainMenuPlayfield() {
-//  gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
-//  mPlayer->Remove();
-//  delete mPlayer;
-//  mPlayer = ENull;
-
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
-  gResourceManager.ReleaseBitmapSlot(EARTH_FINAL_BOSS_PROJECTILE_SLOT);
-  gResourceManager.ReleaseBitmapSlot(FIRE_FINAL_BOSS_PROJECTILE_SLOT);
-  gResourceManager.ReleaseBitmapSlot(WATER_FINAL_BOSS_PROJECTILE_SLOT);
-  gResourceManager.ReleaseBitmapSlot(ENERGY_FINAL_BOSS_PROJECTILE_SLOT);
-  gResourceManager.ReleaseBitmapSlot(EARTH_FINAL_BOSS_PILLAR_SLOT);
+  gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT + 1);
+  gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT + 2);
+  gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT + 3);
+  gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT + 4);
+  gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT + 5);
+
+  delete mPlayer;
+  mPlayer = ENull;
 
   delete mFont8;
   delete mFont16;
@@ -118,9 +115,9 @@ TInt GMainMenuPlayfield::CenterText16(const char *s, TInt aY, TInt aColor, TInt 
 void GMainMenuPlayfield::Animate() {
   mPlayer->Animate();
 
-  mCloudsOffset += .5;
-  if ((TInt) mCloudsOffset >= mBgSky->Width()) {
-    mCloudsOffset = 0;
+  mSkyOffset += .3;
+  if ((TInt) mSkyOffset >= mBgSky->Width()) {
+    mSkyOffset = 0;
   }
 
 //  mMountainsOffset += 0;
@@ -128,18 +125,18 @@ void GMainMenuPlayfield::Animate() {
 //    mMountainsOffset = 0;
 //  }
 
-//  mFarTreesOffset += .02;
-//  if ((TInt) mFarTreesOffset >= mBgFarTrees->Width()) {
-//    mFarTreesOffset = 0;
-//  }
 
-  mNearTreesOffset += .03;
+  if ((TInt) mMoonOffset > 10) {
+    mMoonOffset -= .05;
+  }
+
+  mNearTreesOffset += .02;
   if ((TInt) mNearTreesOffset >= mBgNearTrees->Width()) {
     mNearTreesOffset = 0;
   }
 
   mPathOffset += .75;
-  if ((TInt) mPathOffset >= mBgWalkingPath->Width()) {
+  if ((TInt)mPathOffset >= mBgWalkingPath->Width()) {
     mPathOffset = 0;
   }
 
@@ -147,15 +144,22 @@ void GMainMenuPlayfield::Animate() {
 
 
 void GMainMenuPlayfield::Render() {
-  gDisplay.renderBitmap->Clear(9);
+  // Paint screen in dark blue
+//  TRGB color = TRGB(0x45, 0x53, 0x77);
+//  const TInt colorIndex = gDisplay.renderBitmap->FindColor(color);
+//  printf("COLOR Index %i\n", colorIndex);
+  gDisplay.renderBitmap->Clear(200);
 
+  TRect rect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
+
+  const TInt moonX  = SCREEN_WIDTH - mBgMoon->Width() - 20;
+  gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, rect, moonX, (TInt)mMoonOffset);
 
   const TInt walkingPathOffset = DISPLAY_HEIGHT - mBgWalkingPath->Height(),
              nearTreesOffset   = DISPLAY_HEIGHT - mBgNearTrees->Height();
 
-  DrawScrolledBackground(mBgSky, mCloudsOffset, 0, EFalse);
+  DrawScrolledBackground(mBgSky, mSkyOffset, 0, ETrue);
   DrawScrolledBackground(mBgMountains, mMountainsOffset, 50, ETrue);
-  DrawScrolledBackground(mBgFarTrees, mFarTreesOffset, 110, ETrue);
   DrawScrolledBackground(mBgNearTrees, mNearTreesOffset, nearTreesOffset, ETrue);
   DrawScrolledBackground(mBgWalkingPath, mPathOffset, walkingPathOffset, ETrue);
 
@@ -163,7 +167,7 @@ void GMainMenuPlayfield::Render() {
      ENull,                      // ViewPort
      mBgLogo,                      // bitmap
      TRect(0, 0, mBgLogo->Width() - 1, mBgLogo->Height() - 1),  // src rect
-     45,
+     50,
      10// destination point
    );
 
@@ -179,7 +183,7 @@ void GMainMenuPlayfield::DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffset
   TInt16 intOffsetX = (TInt16)aOffsetX,
       canvasWidth = gDisplay.renderBitmap->Width(),
       remainDrawWidth = canvasWidth, // Remaining width to draw, since we'll have to do multiple passes
-  bgWidth = aBitmap->Width(),
+      bgWidth = aBitmap->Width(),
       priorDrawWidth = 0;
 
 

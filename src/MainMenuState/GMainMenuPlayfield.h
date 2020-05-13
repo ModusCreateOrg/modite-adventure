@@ -24,16 +24,16 @@ protected:
 
   BBitmap *mBgSky;
   BBitmap *mBgMountains;
-  BBitmap *mBgFarTrees;
+  BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
   BBitmap *mBgWalkingPath;
   BBitmap *mBgLogo;
   GPlayerSprite *mPlayer;
 
 
-  TFloat mCloudsOffset;
+  TFloat mSkyOffset;
   TFloat mMountainsOffset;
-  TFloat mFarTreesOffset;
+  TFloat mMoonOffset;
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
 };

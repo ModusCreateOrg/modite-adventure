@@ -19,8 +19,8 @@ BITMAP title.bmp
 PATH resources/main_menu/
 BITMAP sky.bmp
 BITMAP mountains.bmp
-BITMAP far_trees.bmp
 BITMAP near_trees.bmp
+BITMAP moon_with_logo.bmp
 BITMAP walking_path.bmp
 BITMAP logo.bmp
 
