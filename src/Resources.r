@@ -12,7 +12,17 @@ PATH resources/
 BITMAP splash.bmp
 # BITMAP splash_sprites.bmp
 BITMAP title.bmp
-PALETTE test.pal
+# PALETTE test.pal
+
+
+#### Main_Menu
+PATH resources/main_menu/
+BITMAP sky.bmp
+BITMAP mountains.bmp
+BITMAP near_trees.bmp
+BITMAP moon_with_logo.bmp
+BITMAP walking_path.bmp
+BITMAP logo.bmp
 
 
 #
