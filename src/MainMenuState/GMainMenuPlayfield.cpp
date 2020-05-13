@@ -64,7 +64,7 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
 
   mSkyOffset = 0;
   mMountainsOffset = 0;
-  mMoonOffset = 50;
+  mMoonOffset = 65;
   mNearTreesOffset = 0;
   mPathOffset = 0;
 
