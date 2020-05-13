@@ -3,6 +3,8 @@
 
 const TInt16 WALKSPEED = 4 * FACTOR;
 
+static TBool moonHitTop = EFalse;
+
 ANIMSCRIPT walkRightAnimation[] = {
   ABITMAP(PLAYER_SLOT),
   ALABEL,
@@ -64,7 +66,7 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
 
   mSkyOffset = 0;
   mMountainsOffset = 0;
-  mMoonOffset = 65;
+  mMoonOffset = moonHitTop ? 10 : 65;
   mNearTreesOffset = 0;
   mPathOffset = 0;
 
@@ -128,6 +130,9 @@ void GMainMenuPlayfield::Animate() {
 
   if ((TInt) mMoonOffset > 10) {
     mMoonOffset -= .05;
+  }
+  else {
+    moonHitTop = ETrue;
   }
 
   mNearTreesOffset += .02;

@@ -1,7 +1,7 @@
 #include "GResetOptionsWidget.h"
 #include "Game.h"
 
-GResetOptionsWidget::GResetOptionsWidget() : BButtonWidget("OPTIONS", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetOptionsWidget::GResetOptionsWidget() : BButtonWidget("Reset Options", COLOR_TEXT, COLOR_TEXT_BG) {}
 
 GResetOptionsWidget::~GResetOptionsWidget() {}
 
@@ -37,7 +37,6 @@ void GResetOptionsWidget::Select() {
   // Go Back
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
 
-  // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   // Play notification sound
   gSoundPlayer.SfxMenuIn();

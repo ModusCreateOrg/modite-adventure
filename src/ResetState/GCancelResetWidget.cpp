@@ -1,7 +1,7 @@
 #include "GCancelResetWidget.h"
 #include "Game.h"
 
-GCancelResetWidget::GCancelResetWidget() : BButtonWidget("CANCEL", COLOR_TEXT, COLOR_TEXT_BG) {}
+GCancelResetWidget::GCancelResetWidget() : BButtonWidget("Back", COLOR_TEXT, COLOR_TEXT_BG) {}
 
 GCancelResetWidget::~GCancelResetWidget() {}
 
@@ -32,7 +32,6 @@ TInt GCancelResetWidget::Render(TInt aX, TInt aY) {
 
 void GCancelResetWidget::Select() {
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
-  // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuOut();
 #endif
