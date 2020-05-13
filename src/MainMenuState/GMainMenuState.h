@@ -1,11 +1,11 @@
 #ifndef GENUS_GMAINMENUSTATE_H
 #define GENUS_GMAINMENUSTATE_H
 
-//#include "Game.h"
+#include "Game.h"
 
 class GMainMenuState : public BGameEngine {
 public:
-  GMainMenuState();
+  GMainMenuState(GGameState *aGameState);
   virtual ~GMainMenuState();
 
 private:
