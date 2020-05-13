@@ -1,6 +1,8 @@
 #include "GResetWidget.h"
 
-GResetWidget::GResetWidget() : GButtonWidget("Reset Game", GAME_STATE_RESET_OPTIONS) {}
+GResetWidget::GResetWidget() : GButtonWidget("Reset Game", GAME_STATE_RESET_OPTIONS) {
+  mHeight = 20;
+}
 
 GResetWidget::~GResetWidget() {}
 

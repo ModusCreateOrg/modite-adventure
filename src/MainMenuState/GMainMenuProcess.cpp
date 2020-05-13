@@ -19,7 +19,7 @@ TBool GMainMenuProcess::RunBefore() {
 }
 
 TBool GMainMenuProcess::RunAfter() {
-  mContainer->Render(120, 120);
+  mContainer->Render(120, 110);
   mContainer->Run();
   if (gControls.WasPressed(BUTTON_START)) {
     gGame->SetState(GAME_STATE_GAME);

@@ -1,7 +1,9 @@
 #include "GResetAllWidget.h"
 #include "Game.h"
 
-GResetAllWidget::GResetAllWidget() : BButtonWidget("Reset All", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetAllWidget::GResetAllWidget() : BButtonWidget("Reset All", COLOR_TEXT, COLOR_TEXT_BG) {
+  mHeight = 20;
+}
 
 GResetAllWidget::~GResetAllWidget() {}
 

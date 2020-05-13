@@ -40,7 +40,7 @@ public:
     }
 
     TBool RunAfter() {
-      mContainer->Render(85, 60);
+      mContainer->Render(85, 55);
       mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_MENU);
