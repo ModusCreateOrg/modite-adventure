@@ -22,8 +22,6 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   mGameState = aGameState;
   mFont8 = new BFont(gResourceManager.GetBitmap(FONT_8x8_SLOT), FONT_8x8);
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
-//  gResourceManager.LoadBitmap(TITLE_BMP, BKG_SLOT, IMAGE_ENTIRE);
-//  mBackground = gResourceManager.GetBitmap(BKG_SLOT);
 
   mCloudsOffset = 0;
   mMountainsOffset = 0;
@@ -67,12 +65,12 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   mPlayer->StartAnimation(walkRightAnimation);
   mPlayer->x = 10;
   mPlayer->y = SCREEN_HEIGHT - 20;
-
-  for (int i = 0; i < bm->CountUsedColors(); ++i) {
-    TRGB color = bm->GetColor(i);
-    printf("%i - %02X%02X%02X\n", i, color.r, color.b, color.g);
-  }
-
+//
+//  for (int i = 0; i < bm->CountUsedColors(); ++i) {
+//    TRGB color = bm->GetColor(i);
+//    printf("%i - %02X%02X%02X\n", i, color.r, color.b, color.g);
+//  }
+//
 
   gDisplay.SetPalette(bm->GetPalette(), 0, bm->CountUsedColors());
   mState = 0;
@@ -149,10 +147,6 @@ void GMainMenuPlayfield::Animate() {
 
 
 void GMainMenuPlayfield::Render() {
-//  gDisplay.renderBitmap->CopyPixels(mBackground);
-
-//  const TRGB clearColor = TRGB(0xEF, 0xF5, 0xF4);
-
   gDisplay.renderBitmap->Clear(9);
 
 
