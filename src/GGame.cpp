@@ -221,7 +221,7 @@ void GGame::Run() {
           break;
         case GAME_STATE_MAIN_MENU:
           delete gGameEngine;
-          gGameEngine = new GMainMenuState();
+          gGameEngine = new GMainMenuState((GGameState *)gGameEngine);
           break;
         case GAME_STATE_LOAD_GAME:
           delete gGameEngine;

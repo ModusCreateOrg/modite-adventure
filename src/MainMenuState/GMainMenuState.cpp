@@ -3,10 +3,10 @@
 #include "GMainMenuPlayfield.h"
 #include "common/GSavedGameList.h"
 
-GMainMenuState::GMainMenuState() : BGameEngine(gViewPort) {
+GMainMenuState::GMainMenuState(GGameState *aGameState) : BGameEngine(gViewPort) {
   gSavedGameList.LoadSavedGameList();
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
-  mPlayfield = new GMainMenuPlayfield();
+  mPlayfield = new GMainMenuPlayfield(aGameState);
   AddProcess(new GMainMenuProcess());
 
   gWidgetTheme.Configure(
