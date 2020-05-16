@@ -57,7 +57,6 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   TBool res = gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
 
-  printf("Result = %i\n", res);
   gResourceManager.GetBitmap(PLAYER_SLOT)->Remap(bm);
 //  BBitmap *playerBM = gResourceManager.GetBitmap(PLAYER_SLOT);
 //  printf("playerBM = %p\n", playerBM);
