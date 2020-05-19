@@ -101,9 +101,9 @@ static ANIMSCRIPT walkDownAnimation1[] = {
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(TROLL_SLOT),
-  ADELTA(0, 0),
+  ADELTA(0, -1),
   ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 2),
-  ADELTA(0, 0),
+  ADELTA(0, -1),
   ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3),
   AEND,
 };
@@ -161,7 +161,7 @@ static ANIMSCRIPT deathDownAnimation[] = {
 
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  ADELTA(-9, -1),
+  ADELTA(-7, -1),
   AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
   AEND,
 };

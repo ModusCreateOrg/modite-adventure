@@ -30,7 +30,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mCollided = ENull;
   mShadow = TRect();
   mElement = ELEMENT_NONE;
-  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 38, 35, 58);
 
 }
 
@@ -51,7 +51,7 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
   aOther->GetRect(hisRect);
   GetRect(myRect);
   if (!myRect.Overlaps(hisRect)) {
-    // already dafe to position here (not on top of other sprite)
+    // already safe to position here (not on top of other sprite)
     return;
   }
   x = hisRect.x1 - hisRect.Width() - 1;
