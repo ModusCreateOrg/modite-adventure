@@ -161,7 +161,7 @@ static ANIMSCRIPT deathDownAnimation[] = {
 
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  ADELTA(-9, -1),
+  ADELTA(-7, -1),
   AFLIP(WALK_SPEED, IMG_TROLL_WALK_RIGHT + 3),
   AEND,
 };
