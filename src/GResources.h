@@ -85,6 +85,13 @@ enum {
   // temporary slot
   TEMP_SLOT,
 
+  MAIN_MENU_SLOT0,
+  MAIN_MENU_SLOT1,
+  MAIN_MENU_SLOT2,
+  MAIN_MENU_SLOT3,
+  MAIN_MENU_SLOT4,
+  MAIN_MENU_SLOT5,
+
   SLOT_MAX,
 };
 

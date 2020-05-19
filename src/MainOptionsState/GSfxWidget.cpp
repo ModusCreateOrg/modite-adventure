@@ -6,7 +6,7 @@ static const TRange sfx_options = {
 };
 
 GSfxWidget::GSfxWidget() : GSoundSliderWidget("SFX", &sfx_options, COLOR_TEXT, COLOR_TEXT_BG) {
-  mHeight = 24;
+  mHeight = 20;
 }
 
 GSfxWidget::~GSfxWidget() {}
@@ -20,7 +20,7 @@ void GSfxWidget::Select(TInt aVal) {
   gOptions->sfx = aVal * 0.125;
   gOptions->muted = EFalse;
   gOptions->Save();
-  // TODO: @jaygarcia
+
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SetEffectsVolume(gOptions->sfx);
   gSoundPlayer.MuteMusic(gOptions->muted);

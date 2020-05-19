@@ -8,15 +8,17 @@ public:
   GMainMenuPlayfield(GGameState *aGameState);
   virtual ~GMainMenuPlayfield();
 
-  TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
+//  TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
   TInt CenterText16(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
-    void Animate() override;
-    void Render() override;
-    void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset, TBool aDrawTransparent);
+
+  void Animate() override;
+  void Render() override;
+  void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset, TBool aDrawTransparent);
 public:
 
-  BFont   *mFont8, *mFont16;
-  TInt    mState;
+//  BFont *mFont8;
+  BFont *mFont16;
+  TInt  mState;
 
 protected:
 
@@ -30,12 +32,13 @@ protected:
   BBitmap *mBgLogo;
   GPlayerSprite *mPlayer;
 
-
   TFloat mSkyOffset;
   TFloat mMountainsOffset;
   TFloat mMoonOffset;
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
+  TRGB mSavedPalette[256];
+  TInt8 mFadeState;
 };
 
 #endif //GENUS_GMAINMENUPLAYFIELD_H

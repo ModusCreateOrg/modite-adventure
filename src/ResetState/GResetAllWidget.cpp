@@ -1,7 +1,9 @@
 #include "GResetAllWidget.h"
 #include "Game.h"
 
-GResetAllWidget::GResetAllWidget() : BButtonWidget("EVERYTHING", COLOR_TEXT, COLOR_TEXT_BG) {}
+GResetAllWidget::GResetAllWidget() : BButtonWidget("Reset All", COLOR_TEXT, COLOR_TEXT_BG) {
+  mHeight = 20;
+}
 
 GResetAllWidget::~GResetAllWidget() {}
 
@@ -36,7 +38,6 @@ void GResetAllWidget::Select() {
   // Go Back
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
 
-  // TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
   // Play notification sound
   gSoundPlayer.SfxMenuIn();
