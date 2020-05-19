@@ -101,9 +101,9 @@ static ANIMSCRIPT walkDownAnimation1[] = {
 
 static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(TROLL_SLOT),
-  ADELTA(0, 0),
+  ADELTA(0, -1),
   ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 2),
-  ADELTA(0, 0),
+  ADELTA(0, -1),
   ASTEP(WALK_SPEED, IMG_TROLL_WALK_DOWN + 3),
   AEND,
 };
