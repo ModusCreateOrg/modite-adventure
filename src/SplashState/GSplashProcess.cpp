@@ -1,17 +1,17 @@
 #include "GSplashProcess.h"
 
-static const char *splash_message1 = "Press any button";
+//static const char *splash_message1 = "Press any button";
 //static const char *splash_message2 = "Press any button";
 
 GSplashProcess::GSplashProcess() : BProcess() {
   mColor       = 0;
   mState       = STATE_FADEIN;
-  mFont        = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
-  mCurrentText = splash_message1;
+//  mFont        = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
+//  mCurrentText = splash_message1;
 }
 
 GSplashProcess::~GSplashProcess() {
-  delete mFont;
+//  delete mFont;
 }
 
 TBool GSplashProcess::RunBefore() {
@@ -47,10 +47,10 @@ TBool GSplashProcess::FadeOutState() {
 }
 
 TBool GSplashProcess::WaitState() {
-  mTimer--;
-  if (mTimer < 0) {
-    mState = STATE_FADEOUT;
-  }
+//  mTimer--;
+//  if (mTimer < 0) {
+//    mState = STATE_FADEOUT;
+//  }
   return ETrue;
 }
 
@@ -71,16 +71,16 @@ TBool GSplashProcess::RunAfter() {
 #endif
     return EFalse;
   }
-  switch (mState) {
-    case STATE_FADEIN:
-      return FadeInState();
-    case STATE_FADEOUT:
-      return FadeOutState();
-    case STATE_WAIT:
-      return WaitState();
-    default:
-      Panic("GSplashProcess invalid state");
-  }
+//  switch (mState) {
+//    case STATE_FADEIN:
+//      return FadeInState();
+//    case STATE_FADEOUT:
+//      return FadeOutState();
+//    case STATE_WAIT:
+//      return WaitState();
+//    default:
+//      Panic("GSplashProcess invalid state");
+//  }
   return ETrue;
 }
 

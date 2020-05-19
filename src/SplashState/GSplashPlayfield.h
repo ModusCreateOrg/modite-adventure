@@ -14,7 +14,7 @@ public:
 
 public:
   BBitmap *mBackground;
-  TRGB mSavedPalette[256];
+  TRGB mSavedPalette[27];
   TInt16 mYPosition;
   TFloat mYStep;
   TUint16 mFrame;
