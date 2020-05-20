@@ -5,7 +5,7 @@
 
 class ResetOptionsContainer : public GDialogWidget {
 public:
-    ResetOptionsContainer(TInt aX, TInt aY) : GDialogWidget("RESET GAME", aX, aY) {
+    ResetOptionsContainer(TInt aX, TInt aY) : GDialogWidget("Reset Game", aX, aY) {
       AddWidget((BWidget &) *new GResetOptionsWidget());
       AddWidget((BWidget &) *new GResetAllWidget());
       AddWidget((BWidget &) *new GCancelResetWidget());
@@ -15,7 +15,7 @@ public:
 class GResetOptionsProcess : public BProcess {
 public:
     GResetOptionsProcess() : BProcess() {
-      mContainer = new ResetOptionsContainer(80, 92);
+      mContainer = new ResetOptionsContainer(0, 0);
     }
 
     ~GResetOptionsProcess() OVERRIDE {
@@ -28,11 +28,11 @@ public:
     }
 
     TBool RunAfter() OVERRIDE {
-      mContainer->Render(30, 20);
+      mContainer->Render(100, 125);
       mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_OPTIONS);
-        // TODO: @jaygarcia
+
 #ifdef ENABLE_AUDIO
         gSoundPlayer.SfxMenuOut();
 #endif
@@ -61,19 +61,6 @@ public:
 public:
     void Render() OVERRIDE {
       gDisplay.renderBitmap->CopyPixels(mBackground);
-
-      const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
-      const char* questionStr = "What would you like to reset?";
-      const TInt charWidth = f->mWidth - 6;
-
-      gDisplay.renderBitmap->DrawStringShadow(ENull,
-          questionStr,
-          f,
-          (SCREEN_WIDTH - strlen(questionStr) * charWidth) / 2, 80,
-          gWidgetTheme.GetInt(WIDGET_TITLE_FG),
-          COLOR_TEXT_SHADOW,
-          COLOR_TEXT_TRANSPARENT,
-          -6);
     }
 
 public:

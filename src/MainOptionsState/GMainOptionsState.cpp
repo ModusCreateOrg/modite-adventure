@@ -40,7 +40,7 @@ public:
     }
 
     TBool RunAfter() OVERRIDE {
-      mContainer->Render(80, 60);
+      mContainer->Render(85, 55);
       mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
         gGame->SetState(GAME_STATE_MAIN_MENU);

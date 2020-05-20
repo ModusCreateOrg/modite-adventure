@@ -33,7 +33,6 @@ protected:
   }
 
   void RenderText() {
-    // TODO: Render text based on state, see GENUS for an example
     RenderString(mText, 144 - 24);
   }
 
@@ -75,7 +74,6 @@ protected:
     if (gControls.WasPressed(BUTTON_ANY)) {
       gGame->SetState(GAME_STATE_MAIN_MENU);
 
-// TODO: @jaygarcia
 #ifdef ENABLE_AUDIO
       gSoundPlayer.SfxMenuOut();
 #endif

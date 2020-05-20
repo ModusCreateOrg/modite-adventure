@@ -18,7 +18,7 @@ GSplashPlayfield::GSplashPlayfield() {
 
   // Cache colors
   TRGB *source = mBackground->GetPalette();
-  for (TInt color = 0; color < COLOR_SHADOW; color++) {
+  for (TInt color = 0; color < 26; color++) {
     TRGB c = source[color];
     mSavedPalette[color] = c;
     gDisplay.SetColor(color, 200,200,200);
@@ -60,6 +60,7 @@ void GSplashPlayfield::Render() {
   if (height > mBitmapHeight) {
     height = mBitmapHeight;
   }
+
   rect.Height(height);
 
   gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
@@ -67,7 +68,6 @@ void GSplashPlayfield::Render() {
   gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBackground, rect, mBackgroundX, mBackgroundY);
 
   if (mYPosition < SCREEN_HEIGHT) {
-
     gDisplay.renderBitmap->DrawFastHLine(ENull, 0, mYPosition - 1, 319, (TUint8)252);
     gDisplay.renderBitmap->DrawFastHLine(ENull, 0, mYPosition, 319, (TUint8) 253);
   }
@@ -102,13 +102,13 @@ void GSplashPlayfield::Animate() {
 
       TRGB newC;
 
-      TUint16 red =  c.r + (TUint8)mAnimatedColorValue;
+      TUint16 red = c.r + (TUint8)mAnimatedColorValue;
       newC.r = (TUint8)((red > 0xFF) ? 0xFF :  red);
 
-      TUint16 green =  c.g + (TUint8)mAnimatedColorValue;
+      TUint16 green = c.g + (TUint8)mAnimatedColorValue;
       newC.g = (TUint8)((green > 0xFF) ? 0xFF : green);
 
-      TUint16 blue =  c.b + (TUint8)mAnimatedColorValue;
+      TUint16 blue = c.b + (TUint8)mAnimatedColorValue;
       newC.b = (TUint8)((blue > 0xFF) ? 0xFF : blue);
 
       gDisplay.SetColor(color, newC);

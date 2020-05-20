@@ -127,13 +127,26 @@ TBool GDoorProcess::RunAfter() {
     mSprite2->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY);
   }
 
+  const TBool collided =
+      mSprite->TestAndClearCType(STYPE_PBULLET) ||
+      (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET));
+
+  if (collided) {
+    if (mSprite->mCollided) {
+      mSprite->mCollided->ClearCMask(STYPE_ENEMY);
+    }
+    if (mSprite2->mCollided) {
+      mSprite2->mCollided->ClearCMask(STYPE_ENEMY);
+    }
+  }
+
   // if is in a group, we don't open on collisions.
   TInt group = mObjectAttribute->item.group;
   if (group && group != OA_GROUP_ITEM) {
     return ETrue;
   }
 
-  if (mSprite->TestAndClearCType(STYPE_PBULLET) || (mSprite2 && mSprite2->TestAndClearCType(STYPE_PBULLET))) {
+  if (collided) {
     if (group == OA_GROUP_ITEM) {
       TUint16 item = mObjectAttribute->item.item;
       if (GPlayer::mInventoryList.UseItem(item)) {
