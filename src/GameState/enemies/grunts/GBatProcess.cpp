@@ -374,7 +374,7 @@ static ANIMSCRIPT* landedAnimations[] = {landedUpAnimation, landedDownAnimation,
 
 // constructor
 GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY, TUint16 aParams)
-    : GGruntProcess(aGameState, aX, aY, aIp, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
+    : GGruntProcess(aGameState, aIp, aX, aY, BAT_SLOT, aParams, VELOCITY, ATTR_BAT) {
   mStateTimer = 0;
   mLandTimer = 0;
   mAltitude = MAX_ALTITUDE;
