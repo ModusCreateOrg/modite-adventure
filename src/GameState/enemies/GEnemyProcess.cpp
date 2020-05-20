@@ -19,8 +19,10 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint
 }
 
 GEnemyProcess::~GEnemyProcess() {
-  mGameState->AddProcess(new GStatProcess(STAT_EXPERIENCE, mSprite->Center(), "EXP +%d", mExperienceYield));
-  GPlayer::AddExperience(mExperienceYield);
+  if (mHitPoints <= 0) {
+    mGameState->AddProcess(new GStatProcess(STAT_EXPERIENCE, mSprite->Center(), "EXP +%d", mExperienceYield));
+    GPlayer::AddExperience(mExperienceYield);
+  }
 
   if (mSprite) {
     mSprite->Remove();
