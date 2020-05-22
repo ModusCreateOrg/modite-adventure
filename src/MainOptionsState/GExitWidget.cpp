@@ -4,7 +4,7 @@ GExitWidget::GExitWidget() : GButtonWidget("Back") {
   mHeight = 20;
 }
 
-GExitWidget::~GExitWidget() {}
+GExitWidget::~GExitWidget() = default;
 
 TInt GExitWidget::Render(TInt aX, TInt aY) {
 #ifdef __XTENSA__

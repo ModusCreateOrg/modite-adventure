@@ -7,7 +7,7 @@ class GCreditsState : public BGameEngine {
 public:
   GCreditsState();
 
-  virtual ~GCreditsState();
+  ~GCreditsState() OVERRIDE;
 
 public:
   void Render();

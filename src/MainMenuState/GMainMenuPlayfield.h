@@ -6,13 +6,13 @@
 class GMainMenuPlayfield : public BPlayfield {
 public:
   GMainMenuPlayfield(GGameState *aGameState);
-  virtual ~GMainMenuPlayfield();
+  ~GMainMenuPlayfield() OVERRIDE;
 
 //  TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
   TInt CenterText16(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
 
-  void Animate() override;
-  void Render() override;
+  void Animate() OVERRIDE;
+  void Render() OVERRIDE;
   void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset, TBool aDrawTransparent);
 public:
 

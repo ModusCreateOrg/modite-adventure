@@ -6,7 +6,7 @@ const TInt VELOCITY = 4;
 
 class BulletSprite : public GAnchorSprite {
 public:
-    BulletSprite(GGameState *aGameState) : GAnchorSprite(aGameState, 0, PLAYER_SLOT) {
+    EXPLICIT BulletSprite(GGameState *aGameState) : GAnchorSprite(aGameState, 0, PLAYER_SLOT) {
       Name("PLAYER BULLET");
       type = STYPE_PBULLET;
       SetCMask(STYPE_ENEMY | STYPE_OBJECT | STYPE_EBULLET);

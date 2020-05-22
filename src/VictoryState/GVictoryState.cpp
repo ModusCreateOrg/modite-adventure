@@ -8,7 +8,7 @@ public:
     gDisplay.SetPalette(mBackground);
   }
 
-  void Render() {
+  void Render() OVERRIDE {
     gDisplay.renderBitmap->CopyPixels(mBackground);
   }
 
@@ -41,14 +41,14 @@ protected:
   }
 
 public:
-  TBool RunBefore() {
+  TBool RunBefore() OVERRIDE {
     gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
     gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
     CenterText16("You won!", 120, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
     CenterText8("> QUIT", 180, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
     return ETrue;
   }
-  TBool RunAfter() {
+  TBool RunAfter() OVERRIDE {
     if (gControls.WasPressed(BUTTON_SELECT | BUTTONA)) {
       gGame->SetState(GAME_STATE_MAIN_MENU);
     }

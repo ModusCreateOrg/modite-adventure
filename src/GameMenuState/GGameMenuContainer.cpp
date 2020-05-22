@@ -14,7 +14,7 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState)
   mState = GAME_MENU_PAUSE_STATE;
 }
 
-GGameMenuContainer::~GGameMenuContainer() {}
+GGameMenuContainer::~GGameMenuContainer() = default;
 
 void GGameMenuContainer::State(GAME_MENU_STATE aState) {
   mState = aState;

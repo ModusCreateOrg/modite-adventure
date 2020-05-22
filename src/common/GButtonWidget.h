@@ -5,11 +5,11 @@
 
 class GButtonWidget : public BButtonWidget {
 public:
-    GButtonWidget(const char *aText, TInt aState = -1);
-    ~GButtonWidget();
+    EXPLICIT GButtonWidget(const char *aText, TInt aState = -1);
+    ~GButtonWidget() OVERRIDE;
 
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 
     TInt mState;
 };

@@ -6,12 +6,12 @@
 class GSplashProcess : public BProcess {
 public:
   GSplashProcess();
-  ~GSplashProcess();
+  ~GSplashProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 protected:
   void RenderText();

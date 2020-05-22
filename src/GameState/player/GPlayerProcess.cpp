@@ -23,33 +23,18 @@ const TUint16 HIT_HARD_STATE = 7;
 const TUint16 QUAFF_STATE = 8;
 const TUint16 SPELL_STATE = 9;
 
-// To make the player blink and be invulnerable, a second Process is spawned to
-// countdown the invulnerable time.  At the start, the player's mSprite is set to
-// invulnerable.  As the countdown happens, the SFLAG_RENDER flag is toggled to
-// cause a blinking effect
 const TInt16 BLINK_TIME = FRAMES_PER_SECOND;
-
-void GPlayerProcess::BlinkOn() {
-  GPlayer::mSprite->ClearFlags(SFLAG_RENDER);
-}
-
-void GPlayerProcess::BlinkOff() {
-  GPlayer::mSprite->SetFlags(SFLAG_RENDER);
-}
-
-TFloat GPlayerProcess::PlayerX() { return mSprite->x; }
-
-TFloat GPlayerProcess::PlayerY() { return mSprite->y; }
 
 DIRECTION GPlayerProcess::mLastDirection = DIRECTION_DOWN;
 TFloat GPlayerProcess::mRespawnAt[2] = { '\0', '\0' };
 
-GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLAYER_IN1) {
+GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GProcess(ATTR_PLAYER_IN1), mGameState(aGameState) {
   mState = IDLE_STATE;
   mStep = 0;
   mStepFrame = 0;
-  mGameState = aGameState;
+  mBlinkTimer = 0;
   mPlayfield = ENull;
+  GPlayer::mInvulnerable = EFalse;
   GPlayer::mSprite = mSprite = ENull;
 
   // initialize player sprite
@@ -62,12 +47,6 @@ GPlayerProcess::GPlayerProcess(GGameState *aGameState) : GLivingProcess(ATTR_PLA
 }
 
 GPlayerProcess::~GPlayerProcess() {
-  if (mSprite2) {
-    mSprite2->Remove();
-    delete mSprite2;
-    mSprite2 = ENull;
-  }
-
   if (mSprite) {
     mSprite->Remove();
     delete mSprite;
@@ -222,6 +201,7 @@ void GPlayerProcess::StartKnockback() {
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
+  mSprite->mSwordCharge = -1;
 
   mLastDirection = aDirection;
 
@@ -268,7 +248,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
 
-      mInvulnerable = ETrue;
+      GPlayer::mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
       break;
@@ -302,7 +282,7 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->Nudge();
   }
 
-  if (mInvulnerable) {
+  if (GPlayer::mInvulnerable) {
     mSprite->cType = 0;
     return EFalse;
   }
@@ -327,13 +307,9 @@ TBool GPlayerProcess::MaybeHit() {
     }
 
     if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
+      // contact damage independent of enemy attack strength
+      hitAmount = BASE_STRENGTH;
       mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
-
-      if (other->mHitPoints > 0) {
-        // contact damage independent of enemy attack strength
-        hitAmount = BASE_STRENGTH + other->mLevel * (BASE_STRENGTH / 5);
-        mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
-      }
     }
 
     if (hitAmount) {
@@ -347,10 +323,8 @@ TBool GPlayerProcess::MaybeHit() {
       }
 
       GPlayer::mHitPoints -= hitAmount;
-      mInvulnerable = ETrue;
-      auto *p = new GStatProcess(mSprite->x + 72, mSprite->y + 32, "%d", hitAmount);
-      p->SetMessageType(STAT_PLAYER_HIT);
-      mGameState->AddProcess(p);
+      GPlayer::mInvulnerable = ETrue;
+      mGameState->AddProcess(new GStatProcess(STAT_PLAYER_HIT, mSprite->Center(), "%d", hitAmount));
 
       StartBlink(BLINK_TIME);
 
@@ -674,7 +648,7 @@ TBool GPlayerProcess::SpellState() {
       break;
     case 2:
       if (mSprite->AnimDone()) {
-        mInvulnerable = EFalse;
+        GPlayer::mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
 
         // affect nearby enemies
@@ -748,7 +722,6 @@ TBool GPlayerProcess::HitState() {
 }
 
 TBool GPlayerProcess::RunBefore() {
-  GLivingProcess::RunBefore();
   switch (mState) {
     case IDLE_STATE:
       return IdleState();
@@ -771,7 +744,18 @@ TBool GPlayerProcess::RunBefore() {
 }
 
 TBool GPlayerProcess::RunAfter() {
-  GLivingProcess::RunAfter();
+  if (mBlinkTimer > 1) {
+    mBlinkTimer--;
+    if ((mBlinkTimer & 1u) == 0) {
+      mSprite->ClearFlags(SFLAG_RENDER);
+    } else {
+      mSprite->SetFlags(SFLAG_RENDER);
+    }
+  } else if (mBlinkTimer == 1) {
+    mBlinkTimer--;
+    mSprite->SetFlags(SFLAG_RENDER);
+    GPlayer::mInvulnerable = EFalse;
+  }
   mSprite->mCollided = ENull;
   mSprite->cType = 0;
 

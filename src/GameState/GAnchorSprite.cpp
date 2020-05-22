@@ -20,11 +20,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mAttributeSave = 0xffff;
   w = 64;
   h = 64;
-  mBaseHitPoints = BASE_HIT_POINTS;
-  mBaseStrength = BASE_STRENGTH;
-  mBaseExperience = BASE_EXPERIENCE;
-  mLevel = 1;
-  SetStatMultipliers();
+  mAttackStrength = BASE_STRENGTH;
   mLastX = 0;
   mLastY = 0;
   mCollided = ENull;
@@ -34,9 +30,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
 }
 
-GAnchorSprite::~GAnchorSprite() {
-  //
-}
+GAnchorSprite::~GAnchorSprite() = default;
 
 void GAnchorSprite::SetAttribute(TUint aAttribute) {
   if (mAttributeSave == 0xffff) {
@@ -285,23 +279,12 @@ void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
   }
 }
 
-void GAnchorSprite::SetStatMultipliers(TFloat aModHitPoints, TFloat aModStrength, TFloat aModExperience) {
-  mBaseHitPoints = round(aModHitPoints * BASE_HIT_POINTS);
-  mBaseStrength = round(aModStrength * BASE_STRENGTH);
-  mBaseExperience = round(aModExperience * BASE_EXPERIENCE);
-  SetLevel(mLevel);
-}
-
-void GAnchorSprite::SetLevel(TInt aLevel) {
-  mLevel = aLevel;
-  mMaxHitPoints = mBaseHitPoints + mLevel * (mBaseHitPoints / 5);
-  mHitPoints = mMaxHitPoints;
-  mAttackStrength = mBaseStrength + mLevel * (mBaseStrength / 5);
-  mExperience = mBaseExperience + mLevel * (mBaseExperience / 5);
-}
-
 void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
   aRect.Set(x + cx + w / 2.0, y + cy - h, x + cx + w + w / 2.0, y + cy);
+}
+
+TPoint GAnchorSprite::Center() {
+  return TPoint((TInt) x + cx + w, (TInt) y - h / 2);
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {

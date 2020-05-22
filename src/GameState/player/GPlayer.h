@@ -7,7 +7,7 @@
 #define MODITE_GPLAYER_H
 
 class GPlayerProcess;
-class GLivingProcess;
+class GBossProcess;
 
 #include <BMemoryStream.h>
 #include <BResourceManager.h>
@@ -73,6 +73,7 @@ struct GPlayer {
     mExperience = 0;
     mMaxHitPoints = DEFAULT_PLAYER_HITPOINTS;
     mHitPoints = mMaxHitPoints;
+    mInvulnerable = EFalse;
     mAttackStrength = 35;
     mMaxMana = DEFAULT_PLAYER_MANA;
     mManaPotion = mMaxMana;
@@ -98,17 +99,9 @@ struct GPlayer {
     }
   }
 
-  static void AddHitPoints(TInt aMoreHitpoints, TFloat x = -1, TFloat y = -1) {
-    if (x < 0) {
-      x = mSprite->x + 72;
-    }
-    if (y < 0) {
-      y = mSprite->y + 32;
-    }
-
-    auto *p = new GStatProcess(x, y, "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints));
-    p->SetMessageType(STAT_HEAL);
-    gGame->CurrentState()->AddProcess(p);
+  static void AddHitPoints(TInt aMoreHitpoints, const TPoint &aPoint = GPlayer::mSprite->Center()) {
+    gGame->CurrentState()->AddProcess(new GStatProcess(STAT_HEAL, aPoint,
+      "%d", MIN(aMoreHitpoints, mMaxHitPoints - mHitPoints)));
 
     mHitPoints += aMoreHitpoints;
     if (mHitPoints > mMaxHitPoints) {
@@ -116,25 +109,15 @@ struct GPlayer {
     }
   }
 
-  static void AddMana(TInt aMoreMana, TFloat x = -1, TFloat y = -1) {
-    if (x < 0) {
-      x = mSprite->x + 72;
-    }
-    if (y < 0) {
-      y = mSprite->y + 32;
-    }
-
-    auto *p = new GStatProcess(x, y, "%d", MIN(aMoreMana, mMaxMana - mManaPotion));
-    p->SetMessageType(STAT_MANA);
-    gGame->CurrentState()->AddProcess(p);
+  static void AddMana(TInt aMoreMana, const TPoint &aPoint = GPlayer::mSprite->Center()) {
+    gGame->CurrentState()->AddProcess(new GStatProcess(STAT_MANA, aPoint,
+      "%d", MIN(aMoreMana, mMaxMana - mManaPotion)));
 
     mManaPotion += aMoreMana;
-    if (mManaPotion > mMaxHitPoints) {
+    if (mManaPotion > mMaxMana) {
       mManaPotion = mMaxMana;
     }
   }
-
-  static TBool MaybeDamage(GLivingProcess *aProcess, TBool aIsSpell);
 
   static void WriteToStream(BMemoryStream &stream);
   static void ReadFromStream(BMemoryStream &stream);
@@ -143,6 +126,7 @@ struct GPlayer {
   static TUint32 mLevel;
   static TUint32 mNextLevel, mExperience;
   static TInt16 mHitPoints, mMaxHitPoints;
+  static TBool mInvulnerable;
   static TInt32 mAttackStrength;
   static TInt32 mManaPotion, mMaxMana;
   static GInventoryList mInventoryList;
@@ -151,7 +135,7 @@ struct GPlayer {
   static GGameState *mGameState;
   static GEquipped mEquipped;
   static TBool mGameOver;
-  static GAnchorSprite *mActiveBoss;
+  static GBossProcess *mActiveBoss;
 
   static void Dump();
 };

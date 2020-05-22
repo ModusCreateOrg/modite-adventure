@@ -8,22 +8,15 @@ class GStatSprite;
 
 class GStatProcess : public GProcess {
 public:
-  GStatProcess(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, ...);
-  GStatProcess(TFloat aX, TFloat aY, const char *aFmt, ...);
+  GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, TInt aImageNumber, TInt aTimeout, const char *aFmt, ...);
+  GStatProcess(STAT_TYPE aStatType, const TPoint& aPoint, const char *aFmt, ...);
 
-  ~GStatProcess();
+  ~GStatProcess() OVERRIDE;
 
 public:
-  void SetImageNumber(TInt aImageNumber);
-  void SetMessageType(STAT_TYPE aType);
-  void SetTimeout(TInt aTime) { mTimeout = aTime; };
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunBefore();
-
-  TBool RunAfter();
-
-protected:
-  void Init(BGameEngine *aState, TFloat aX, TFloat aY, const char *aFmt, va_list args);
+  TBool RunAfter() OVERRIDE;
 
 protected:
   GStatSprite *mSprite;

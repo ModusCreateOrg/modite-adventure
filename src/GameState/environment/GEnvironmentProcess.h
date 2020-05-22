@@ -14,7 +14,7 @@ const TInt ENVIRONMENT_PRIORITY_DOOR = 10;     // doors run after switches for g
 class GEnvironmentProcess : public GProcess {
 public:
   GEnvironmentProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TInt aPri = ENVIRONMENT_PRIORITY_DEFAULT);
-  ~GEnvironmentProcess();
+  ~GEnvironmentProcess() OVERRIDE;
 
 protected:
   GGameState *mGameState;

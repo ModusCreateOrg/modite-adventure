@@ -9,9 +9,9 @@ class GDebugMenuContainer;
 class GDebugButtonWidget : public GButtonWidget {
 public:
     GDebugButtonWidget(const char *mText, TInt aState, GDebugMenuContainer *aContainer);
-    ~GDebugButtonWidget();
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    ~GDebugButtonWidget() OVERRIDE;
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 
 public:
     GDebugMenuContainer *mContainer;

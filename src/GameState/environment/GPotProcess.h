@@ -8,15 +8,16 @@ class GPotProcess : public GEnvironmentProcess {
 public:
   GPotProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY);
 
-  ~GPotProcess();
+  ~GPotProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 protected:
   TBool mAnimating;
+  TInt mHitPoints;
 };
 
 

@@ -10,12 +10,12 @@ public:
   GItemProcess(GGameState *aGameState, TInt aIp, TInt mItemNumber, TFloat aX, TFloat aY);
 
 public:
-  ~GItemProcess();
+  ~GItemProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
+  TBool RunBefore() OVERRIDE;
 
-  TBool RunAfter();
+  TBool RunAfter() OVERRIDE;
 
 public:
   static GItemProcess *SpawnItem(GGameState *aGameState, TInt aIp, TInt mItemNumber, TFloat aX, TFloat aY);

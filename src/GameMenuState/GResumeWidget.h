@@ -6,10 +6,10 @@
 class GResumeWidget : public GButtonWidget {
 public:
     GResumeWidget();
-    ~GResumeWidget();
+    ~GResumeWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GRESUMEWIDGET_H

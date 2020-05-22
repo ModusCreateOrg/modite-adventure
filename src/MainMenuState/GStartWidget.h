@@ -6,7 +6,7 @@
 class GStartWidget : public GButtonWidget {
 public:
     GStartWidget();
-    ~GStartWidget();
+    ~GStartWidget() OVERRIDE;
 };
 
 #endif //GENUS_GSTARTWIDGET_H

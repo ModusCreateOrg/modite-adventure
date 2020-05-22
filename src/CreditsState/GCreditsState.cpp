@@ -10,7 +10,7 @@ public:
     mColor = 0;
   }
 
-  ~CreditsProcess() {
+  ~CreditsProcess() OVERRIDE {
     delete mFont;
     mFont = ENull;
   }
@@ -70,7 +70,7 @@ protected:
     return ETrue;
   }
 
-  TBool RunBefore() {
+  TBool RunBefore() OVERRIDE {
     if (gControls.WasPressed(BUTTON_ANY)) {
       gGame->SetState(GAME_STATE_MAIN_MENU);
 
@@ -82,7 +82,7 @@ protected:
     return ETrue;
   }
 
-  TBool RunAfter() {
+  TBool RunAfter() OVERRIDE {
     RenderText();
     switch (mState) {
       case STATE_FADEIN:
@@ -107,12 +107,12 @@ public:
     gDisplay.SetColor(0, 0, 0, 0);
   }
 
-  virtual ~GCreditsPlayfield() {
+  ~GCreditsPlayfield() OVERRIDE {
     gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
   }
 
 public:
-  void Render() {
+  void Render() OVERRIDE {
     gDisplay.renderBitmap->CopyPixels(mBackground);
   }
 
@@ -125,5 +125,5 @@ GCreditsState::GCreditsState() : BGameEngine(gViewPort) {
   AddProcess(new CreditsProcess());
 }
 
-GCreditsState::~GCreditsState() {}
+GCreditsState::~GCreditsState() = default;
 

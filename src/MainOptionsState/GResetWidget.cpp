@@ -4,7 +4,7 @@ GResetWidget::GResetWidget() : GButtonWidget("Reset Game", GAME_STATE_RESET_OPTI
   mHeight = 20;
 }
 
-GResetWidget::~GResetWidget() {}
+GResetWidget::~GResetWidget() = default;
 
 TInt GResetWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);

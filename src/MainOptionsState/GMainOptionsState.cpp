@@ -30,16 +30,16 @@ public:
       mContainer = new OptionsContainer(10, WIDGET_CONTAINER_Y);
     }
 
-    ~GMainOptionsProcess() {
+    ~GMainOptionsProcess() OVERRIDE {
       delete mContainer;
     }
 
 public:
-    TBool RunBefore() {
+    TBool RunBefore() OVERRIDE {
       return ETrue;
     }
 
-    TBool RunAfter() {
+    TBool RunAfter() OVERRIDE {
       mContainer->Render(85, 55);
       mContainer->Run();
       if (gControls.WasPressed(BUTTON_MENU | BUTTON_START)) {
@@ -65,12 +65,12 @@ public:
       gDisplay.SetPalette(mBackground);
     }
 
-    virtual ~GMainOptionsPlayfield() {
+    ~GMainOptionsPlayfield() OVERRIDE {
       gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
     }
 
 public:
-    void Render() {
+    void Render() OVERRIDE {
       gDisplay.renderBitmap->CopyPixels(mBackground);
     }
 

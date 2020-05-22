@@ -18,7 +18,7 @@ GMainMenuContainer::GMainMenuContainer(TInt aX, TInt aY, GMainMenuProcess *aProc
 
 }
 
-GMainMenuContainer::~GMainMenuContainer() {}
+GMainMenuContainer::~GMainMenuContainer() = default;
 
 TBool GMainMenuContainer::OnNavigate(TUint16 bits) {
   GDialogWidget::OnNavigate(bits);

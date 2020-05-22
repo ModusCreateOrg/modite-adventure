@@ -6,11 +6,11 @@
 class GChestProcess : public GEnvironmentProcess {
 public:
   GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aIsOpen);
-  ~GChestProcess();
+  ~GChestProcess() OVERRIDE;
 
 public:
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 };
 
 #endif //MODITE_GCHESTPROCESS_H

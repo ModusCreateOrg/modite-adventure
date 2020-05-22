@@ -6,6 +6,7 @@
 #include "GHud.h"
 #include "Items.h"
 #include "Game.h"
+#include "GBossProcess.h"
 
 static const TRect heart(0, 384, 15, 399);
 static const TRect magic(16, 384, 31, 399);
@@ -114,16 +115,16 @@ void GHud::Render() {
     screen->DrawBitmapTransparent(&vp, b, gold_key, 294, 0);
   }
 
-  GAnchorSprite *s = GPlayer::mActiveBoss;
-  if (s) {
+  GBossProcess *boss = GPlayer::mActiveBoss;
+  if (boss) {
     TInt h = gViewPort->mRect.Height();
-    gDisplay.renderBitmap->DrawStringShadow(gViewPort, s->Name(), gFont8x8, 21, h - 24, COLOR_TEXT, COLOR_TEXT_SHADOW,
-                                      COLOR_TEXT_TRANSPARENT);
+    gDisplay.renderBitmap->DrawStringShadow(gViewPort, boss->mSprite->Name(), gFont8x8, 21, h - 24, COLOR_TEXT, COLOR_TEXT_SHADOW,
+                                            COLOR_TEXT_TRANSPARENT);
     gDisplay.renderBitmap->DrawFastHLine(gViewPort, 21, h - 11, STAT_WIDTH + 1, COLOR_METER_OUTLINE);
     gDisplay.renderBitmap->DrawFastVLine(gViewPort, 22 + STAT_WIDTH, h - 15, 5, COLOR_METER_OUTLINE);
     gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
-    if (s->mHitPoints > 0) {
-      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + s->mHitPoints * STAT_WIDTH / s->mMaxHitPoints,
+    if (boss->mHitPoints > 0) {
+      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + boss->mHitPoints * STAT_WIDTH / boss->mMaxHitPoints,
                                       h - 12, COLOR_HEALTH2);
     }
   }

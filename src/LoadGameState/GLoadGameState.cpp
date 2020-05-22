@@ -11,9 +11,7 @@ GLoadGameState::GLoadGameState() : BGameEngine(gViewPort) {
   Reload();
 }
 
-GLoadGameState::~GLoadGameState() {
-  //
-}
+GLoadGameState::~GLoadGameState() = default;
 
 void GLoadGameState::Reload() {
   gSavedGameList.LoadSavedGameList();

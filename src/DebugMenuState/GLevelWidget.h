@@ -7,10 +7,10 @@
 class GLevelWidget : public GButtonWidget {
 public:
     GLevelWidget(TInt aLevel, TInt aDepth);
-    ~GLevelWidget();
+    ~GLevelWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
 
 public:
     TInt mLevel;

@@ -5,7 +5,7 @@ GButtonWidget::GButtonWidget(const char *aText, TInt aState) : BButtonWidget(aTe
   mState = aState;
 }
 
-GButtonWidget::~GButtonWidget() {}
+GButtonWidget::~GButtonWidget() = default;
 
 TInt GButtonWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

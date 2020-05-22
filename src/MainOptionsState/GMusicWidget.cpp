@@ -9,7 +9,7 @@ GMusicWidget::GMusicWidget() : GSoundSliderWidget("Music", &music_options, COLOR
   mHeight = 20;
 }
 
-GMusicWidget::~GMusicWidget() {}
+GMusicWidget::~GMusicWidget() = default;
 
 TInt GMusicWidget::Render(TInt aX, TInt aY) {
   mSelectedValue = gOptions->music / 0.125;

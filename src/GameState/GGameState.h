@@ -42,9 +42,9 @@ public:
   GGameState();
 
   // game engine loads saved game
-  GGameState(const char *aName);
+  EXPLICIT GGameState(const char *aName);
 
-  ~GGameState();
+  ~GGameState() OVERRIDE;
 
   void Init();
 

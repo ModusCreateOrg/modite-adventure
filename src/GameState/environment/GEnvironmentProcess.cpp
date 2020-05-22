@@ -10,15 +10,4 @@ GEnvironmentProcess::GEnvironmentProcess(GGameState *aGameState, TInt aIp, TUint
   mSprite = mSprite2 = ENull;
 }
 
-GEnvironmentProcess::~GEnvironmentProcess() {
-  if (mSprite2) {
-    mSprite2->Remove();
-    delete mSprite2;
-    mSprite2= ENull;
-  }
-  if (mSprite) {
-    mSprite->Remove();
-    delete mSprite;
-    mSprite = ENull;
-  }
-}
+GEnvironmentProcess::~GEnvironmentProcess() = default;

@@ -6,8 +6,8 @@
 class GResetWidget : public GButtonWidget {
 public:
     GResetWidget();
-    ~GResetWidget();
-    TInt Render(TInt aX, TInt aY);
+    ~GResetWidget() OVERRIDE;
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
 };
 
 #endif //GENUS_GRESETWIDGET_H

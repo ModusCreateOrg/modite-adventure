@@ -14,7 +14,5 @@ GSplashState::GSplashState() : BGameEngine(gViewPort) {
 //  AddProcess(new GDropProcess(this, 5));
 }
 
-GSplashState::~GSplashState() {
-//  delete mPlayfield;
-}
+GSplashState::~GSplashState() = default;
 

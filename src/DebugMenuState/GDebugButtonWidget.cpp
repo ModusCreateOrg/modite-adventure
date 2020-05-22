@@ -5,7 +5,7 @@ GDebugButtonWidget::GDebugButtonWidget(const char *mText, TInt aState, GDebugMen
   mContainer = aContainer;
 }
 
-GDebugButtonWidget::~GDebugButtonWidget() {}
+GDebugButtonWidget::~GDebugButtonWidget() = default;
 
 TInt GDebugButtonWidget::Render(TInt aX, TInt aY) {
   aY += 20;

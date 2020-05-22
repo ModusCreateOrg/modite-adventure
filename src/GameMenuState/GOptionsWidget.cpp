@@ -7,7 +7,7 @@ GOptionsWidget::GOptionsWidget(GGameMenuContainer *aContainer, TBool aExit) : GB
   mHeight = 24;
 }
 
-GOptionsWidget::~GOptionsWidget() {}
+GOptionsWidget::~GOptionsWidget() = default;
 
 TInt GOptionsWidget::Render(TInt aX, TInt aY) {
   GButtonWidget::Render(aX, aY);

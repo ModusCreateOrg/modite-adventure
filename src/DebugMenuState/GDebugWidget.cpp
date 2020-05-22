@@ -2,7 +2,7 @@
 
 GDebugWidget::GDebugWidget() : GButtonWidget("") {}
 
-GDebugWidget::~GDebugWidget() {}
+GDebugWidget::~GDebugWidget() = default;
 
 TInt GDebugWidget::Render(TInt aX, TInt aY) {
   aY += 20;

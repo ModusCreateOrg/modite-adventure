@@ -8,11 +8,11 @@
 class GInventory;
 class GInventoryProcess : public BProcess {
 public:
-  GInventoryProcess(GInventory *aGameState);
-  ~GInventoryProcess();
+  EXPLICIT GInventoryProcess(GInventory *aGameState);
+  ~GInventoryProcess() OVERRIDE;
 
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
 protected:
     GInventory *mGameState;

@@ -7,11 +7,11 @@
 class GItemWidget : public GButtonWidget {
 public:
     GItemWidget(TInt aItem, BGameEngine *aState);
-    ~GItemWidget();
+    ~GItemWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select();
-    void Run();
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select() OVERRIDE;
+    void Run() OVERRIDE;
 
 public:
     TInt mItem;

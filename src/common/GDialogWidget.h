@@ -8,10 +8,10 @@ class GDialogWidget : public BDialogWidget {
 public:
   GDialogWidget(char *aTitle, TInt aX, TInt aY);
   GDialogWidget(const char *aTitle, TInt aX, TInt aY);
-  virtual ~GDialogWidget();
-  TBool OnNavigate(TUint16 bits);
+  ~GDialogWidget() OVERRIDE;
+  TBool OnNavigate(TUint16 bits) OVERRIDE;
 
-  void Run();
+  void Run() OVERRIDE;
 
 private:
   TUint mTimer;

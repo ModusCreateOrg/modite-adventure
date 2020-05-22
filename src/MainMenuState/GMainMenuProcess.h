@@ -9,12 +9,12 @@ static const TInt TIMEOUT = 30 * 5;
 class GMainMenuProcess : public BProcess {
 public:
   GMainMenuProcess();
-  ~GMainMenuProcess();
+  ~GMainMenuProcess() OVERRIDE;
 
 public:
   void ResetTimer();
-  TBool RunBefore();
-  TBool RunAfter();
+  TBool RunBefore() OVERRIDE;
+  TBool RunAfter() OVERRIDE;
 
 private:
   TBool mShowHighScores;

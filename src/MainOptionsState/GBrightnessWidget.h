@@ -6,10 +6,10 @@
 class GBrightnessWidget : public GSoundSliderWidget {
 public:
     GBrightnessWidget();
-    ~GBrightnessWidget();
+    ~GBrightnessWidget() OVERRIDE;
 public:
-    TInt Render(TInt aX, TInt aY);
-    void Select(TInt aVal);
+    TInt Render(TInt aX, TInt aY) OVERRIDE;
+    void Select(TInt aVal) OVERRIDE;
 };
 
 #endif //GENUS_GBRIGHTNESSWIDGET_H

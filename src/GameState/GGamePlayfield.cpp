@@ -23,9 +23,7 @@ GGamePlayfield::GGamePlayfield(BViewPort *aViewPort, TUint16 aTileMapId)
 
 }
 
-GGamePlayfield::~GGamePlayfield() {
-  //
-}
+GGamePlayfield::~GGamePlayfield() = default;
 
 void GGamePlayfield::Render() {
   BMapPlayfield::Render();

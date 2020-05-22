@@ -81,7 +81,7 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() {}
+GGameState::~GGameState() = default;
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);

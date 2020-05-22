@@ -5,7 +5,7 @@ GResetAllWidget::GResetAllWidget() : BButtonWidget("Reset All", COLOR_TEXT, COLO
   mHeight = 20;
 }
 
-GResetAllWidget::~GResetAllWidget() {}
+GResetAllWidget::~GResetAllWidget() = default;
 
 TInt GResetAllWidget::Render(TInt aX, TInt aY) {
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);

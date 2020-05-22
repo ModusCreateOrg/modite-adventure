@@ -8,7 +8,7 @@
 
 class GProcess : public BProcess {
 public:
-  GProcess(TUint16 aAttribute, TInt aPriority = 0) : BProcess(aPriority) {
+  EXPLICIT GProcess(TUint16 aAttribute, TInt aPriority = 0) : BProcess(aPriority) {
     mAttribute = aAttribute;
     mSprite = mSprite2 = ENull;
     mSaveToStream = EFalse;

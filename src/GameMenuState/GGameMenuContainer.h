@@ -14,11 +14,11 @@ enum GAME_MENU_STATE {
 class GGameMenuContainer : public GDialogWidget {
 public:
   GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState);
-  ~GGameMenuContainer();
+  ~GGameMenuContainer() OVERRIDE;
   void PauseState();
   void OptionsState();
   void State(GAME_MENU_STATE aState);
-  TInt Render(TInt aX, TInt aY);
+  TInt Render(TInt aX, TInt aY) OVERRIDE;
   TInt mTimer;
 protected:
   void Clear();

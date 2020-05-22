@@ -94,13 +94,11 @@ public:
 
   void SafePosition(BSprite *aOther);
 
-  void SetLevel(TInt aLevel);
-
-  void SetStatMultipliers(TFloat aModHitPoints = 1.0, TFloat aModStrength = 1.0, TFloat aModExperience = 1.0);
-
   void ResetShadow();
 
   void GetFloatRect(GFloatRect &aRect);
+
+  TPoint Center();
 
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
@@ -123,10 +121,7 @@ public:
   GGameState *mGameState;
   DIRECTION mDirection;
   GAnchorSprite *mCollided;
-  TInt16 mLevel, mExperience;
-  TInt16 mHitPoints, mMaxHitPoints;
   TInt32 mAttackStrength;
-  TInt32 mBaseHitPoints, mBaseStrength, mBaseExperience;
   TFloat mLastX, mLastY; // coordinates from last frame
   TRect mShadow;
   TUint mAttributeSave;
