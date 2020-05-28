@@ -563,8 +563,7 @@ TBool GWizardProcess::IllusionState() {
 
 TBool GWizardProcess::DeathState() {
   if (mDeathCounter <= 3) {
-    printf("drop $%x %d\n", mAttribute, mAttribute);
-    GItemProcess::SpawnItem(mGameState, mIp, mAttribute, GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    SpawnUniqueItem(mIp, mAttribute);
     return EFalse;
   }
   // maybe drop item

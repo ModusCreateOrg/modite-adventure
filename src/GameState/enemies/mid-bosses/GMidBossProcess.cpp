@@ -503,9 +503,7 @@ TBool GMidBossProcess::DeathState() {
     printf("MID BOSS DEATH\n");
   }
   if (mDeathCounter <= 3) {
-    printf("drop $%x %d\n", mDropsItemAttribute, mDropsItemAttribute);
-    GItemProcess::SpawnItem(mGameState, mIp, mDropsItemAttribute,
-                            GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
+    SpawnUniqueItem(mIp, mDropsItemAttribute);
     return EFalse;
   }
   // maybe drop item
