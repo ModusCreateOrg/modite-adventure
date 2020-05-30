@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 PROJECT(Modite)
-
+MESSAGE("<Modite-Adventure CmakeLists.txt>")
 ADD_COMPILE_DEFINITIONS(CE_SDL2_WINDOW_TITLE="Modite Adventure :: by Modus Create")
 
 SET(CMAKE_CXX_STANDARD 14)
@@ -8,7 +8,6 @@ SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-implicit-exception-
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-implicit-exception-spec-mismatch")
 include(ProcessorCount)
 
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/cmake.files)
 
 
 #ADD_COMPILE_DEFINITIONS(__DINGUX__=true)
@@ -77,7 +76,7 @@ if (NOT N EQUAL 0)
 endif ()
 
 BUILD_COMMAND(
-  $(MAKE) --slient
+  $(MAKE) --silent
 )
 
 # make Modite.app
@@ -88,4 +87,5 @@ endif (APPLE)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${CREATIVE_ENGINE_LINK_LIBRARIES})
 
-INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cmake )
+#INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cmake )
+MESSAGE("</Modite-Adventure CmakeLists.txt>")
