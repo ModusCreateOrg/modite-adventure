@@ -24,7 +24,7 @@ public:
   TBool PlayMusic(TInt16 aResourceId);
   void MuteMusic(TBool aMuted);
 
-  void TriggerSfx(TUint16 aSfxNumber);
+  void TriggerSfx(TUint16 aSfxNumber, TInt8 aChannel = -1);
   TBool SetMusicVolume(TFloat aPercent) {
     return soundEngine.SetMusicVolume(aPercent);
   }

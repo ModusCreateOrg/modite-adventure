@@ -160,34 +160,34 @@ void  GSoundPlayer::MuteMusic(TBool aMuted) {
 
 
 
-void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber) {
-  soundEngine.PlaySfx(FindSfxNumber(aSfxNumber));
+void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber, TInt8 aChannel) {
+  soundEngine.PlaySfx(FindSfxNumber(aSfxNumber), aChannel);
 }
 
 
 void GSoundPlayer::SfxOptionSelect() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OPTION_SELECT_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OPTION_SELECT_WAV), -1);
 }
 
 void GSoundPlayer::SfxMenuNavDown() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_DOWN_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_DOWN_WAV), -1);
 }
 
 void GSoundPlayer::SfxMenuNavUp() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_UP_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_UP_WAV), -1);
 }
 
 void GSoundPlayer::SfxMenuIn() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_IN_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_IN_WAV), -1);
 }
 
 void GSoundPlayer::SfxMenuOut() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OUT_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OUT_WAV), -1);
 }
 
 
 void GSoundPlayer::SfxSaveGame() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_SAVE_GAME_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_SAVE_GAME_WAV), -1);
 }
 
 void GSoundPlayer::SfxStartGame() {
@@ -196,13 +196,13 @@ void GSoundPlayer::SfxStartGame() {
 
 // SFX Player //
 void GSoundPlayer::SfxPlayerSlash(){
-  soundEngine.PlaySfx(FindSfxNumber(SFX_PLAYER_SLASH_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_PLAYER_SLASH_WAV), 1);
 }
 
 
 void GSoundPlayer::SfxItemHeart() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_ITEM_HEART_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_ITEM_HEART_WAV), 2);
 }
 void GSoundPlayer::SfxItemPickupGeneric() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_ITEM_PICKUP_GENERIC_WAV));
+  soundEngine.PlaySfx(FindSfxNumber(SFX_ITEM_PICKUP_GENERIC_WAV), 3);
 }

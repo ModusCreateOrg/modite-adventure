@@ -64,7 +64,7 @@ public:
 protected:
   static void SfxTakeDamage() {}
   static void SfxDeath() {
-    gSoundPlayer.TriggerSfx(SFX_ENEMY_DEATH_WAV);
+    gSoundPlayer.TriggerSfx(SFX_ENEMY_DEATH_WAV, 5);
   }
   static void SfxTaunt() {
 //    gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV);
