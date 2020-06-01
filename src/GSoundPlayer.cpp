@@ -155,7 +155,7 @@ TBool GSoundPlayer::LoadEffects() {
 
 
 void  GSoundPlayer::MuteMusic(TBool aMuted) {
-  return soundEngine.MuteMusic();
+  return soundEngine.MuteMusic(aMuted);
 }
 
 
