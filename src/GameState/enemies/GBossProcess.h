@@ -14,6 +14,9 @@ public:
   }
 
 protected:
+  void SpawnUniqueItem(TInt16 aIp, TInt16 aItemNumber);
+
+protected:
   TInt16 mStateTimer, mAttackTimer, mHitTimer; // state timer variables
   TInt16 mDeathCounter; // number of death animation processes spawned/outstanding
   TInt16 mSpellCounter; // number of spell animation processes spawned/outstanding
