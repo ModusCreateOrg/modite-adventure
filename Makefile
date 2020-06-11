@@ -35,7 +35,7 @@ INCLUDE = -I $(CREATIVE_ENGINE_SOURCE_DIR) \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/BStore \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/BStore/DesktopStore \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/Audio \
-          -I $(CREATIVE_ENGINE_SOURCE_DIR)/Audio/LDKAudio \
+          -I $(CREATIVE_ENGINE_SOURCE_DIR)/Audio/mixer \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/Display \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/Display/LDKDisplay \
           -I $(CREATIVE_ENGINE_SOURCE_DIR)/Controls \

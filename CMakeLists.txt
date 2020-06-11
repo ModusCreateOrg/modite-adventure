@@ -29,44 +29,44 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/CreativeEngine.cmake)
 ### LDK END   ####
 
 SET(MODITE_INCLUDE_DIRS
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_SOURCE_DIR}/src/resources
-  ${CMAKE_SOURCE_DIR}/src/LoadGameState
-  ${CMAKE_SOURCE_DIR}/src/GameState
-  ${CMAKE_SOURCE_DIR}/src/GameState/environment
-  ${CMAKE_SOURCE_DIR}/src/GameState/player
-  ${CMAKE_SOURCE_DIR}/src/GameState/inventory
-  ${CMAKE_SOURCE_DIR}/src/GameState/enemies
-  ${CMAKE_SOURCE_DIR}/src/GameState/enemies/final-boss
-  ${CMAKE_SOURCE_DIR}/src/GameState/enemies/grunts
-  ${CMAKE_SOURCE_DIR}/src/GameState/enemies/mid-bosses
-  ${CMAKE_SOURCE_DIR}/src/GameState/enemies/wizard
-  ${CMAKE_SOURCE_DIR}/src/GameState/status
-  ${CMAKE_SOURCE_DIR}/src/GameMenuState
-  ${CMAKE_SOURCE_DIR}/src/DebugMenuState
-  ${CMAKE_SOURCE_DIR}/src/GameOverState
-  ${CMAKE_SOURCE_DIR}/src/VictoryState
-  ${CMAKE_SOURCE_DIR}/src/MainMenuState
-  ${CMAKE_SOURCE_DIR}/src/MainOptionsState
-  ${CMAKE_SOURCE_DIR}/src/SplashState
-  ${CMAKE_SOURCE_DIR}/src/CreditsState
-  ${CMAKE_SOURCE_DIR}/src/ResetState
-  ${CMAKE_BINARY_DIR}/usr/local/include
-  )
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/resources
+    ${CMAKE_SOURCE_DIR}/src/LoadGameState
+    ${CMAKE_SOURCE_DIR}/src/GameState
+    ${CMAKE_SOURCE_DIR}/src/GameState/environment
+    ${CMAKE_SOURCE_DIR}/src/GameState/player
+    ${CMAKE_SOURCE_DIR}/src/GameState/inventory
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies/final-boss
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies/grunts
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies/mid-bosses
+    ${CMAKE_SOURCE_DIR}/src/GameState/enemies/wizard
+    ${CMAKE_SOURCE_DIR}/src/GameState/status
+    ${CMAKE_SOURCE_DIR}/src/GameMenuState
+    ${CMAKE_SOURCE_DIR}/src/DebugMenuState
+    ${CMAKE_SOURCE_DIR}/src/GameOverState
+    ${CMAKE_SOURCE_DIR}/src/VictoryState
+    ${CMAKE_SOURCE_DIR}/src/MainMenuState
+    ${CMAKE_SOURCE_DIR}/src/MainOptionsState
+    ${CMAKE_SOURCE_DIR}/src/SplashState
+    ${CMAKE_SOURCE_DIR}/src/CreditsState
+    ${CMAKE_SOURCE_DIR}/src/ResetState
+    ${CMAKE_BINARY_DIR}/usr/local/include
+    )
 
 INCLUDE_DIRECTORIES(
-  ${MODITE_INCLUDE_DIRS}
-  ${CREATIVE_ENGINE_INCLUDE_DIRS}
+    ${MODITE_INCLUDE_DIRS}
+    ${CREATIVE_ENGINE_INCLUDE_DIRS}
 )
 
 # gather Modite sources
 FILE(GLOB_RECURSE MODITE_SRC RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 
 ADD_EXECUTABLE(
-  ${PROJECT_NAME}
-  Resources.bin
-  ${CREATIVE_ENGINE_SOURCE_FILES}
-  ${MODITE_SRC}
+    ${PROJECT_NAME}
+    Resources.bin
+    ${CREATIVE_ENGINE_SOURCE_FILES}
+    ${MODITE_SRC}
 )
 
 ProcessorCount(N)
@@ -77,7 +77,7 @@ if (NOT N EQUAL 0)
 endif ()
 
 BUILD_COMMAND(
-  $(MAKE) --slient
+    $(MAKE) --silent
 )
 
 # make Modite.app

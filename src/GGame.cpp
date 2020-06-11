@@ -23,8 +23,6 @@ GGame::GGame() {
   mLocalData = ENull;
   mLocalDataSize = 0;
 
-//  TRect r(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
-//  gFullViewPort.SetRect(r);
   gFullViewPort.SetRect(TRect (0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1));
 
   // Load Game Options
@@ -32,16 +30,8 @@ GGame::GGame() {
   gOptions = new TOptions();
 #endif
 
-#ifdef __XTENSA__
-#ifdef ENABLE_OPTIONS
-  gDisplay.SetBrightness(
-    MAX(MIN_BRIGHTNESS, MAX_BRIGHTNESS * gOptions->brightness));
-#endif
-#endif
-
-  // TODO: Jay - this needs to be in BApplication constructor (I think)
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.Init(5 /*channels*/);
+  gSoundPlayer.Init(6 /*channels*/);
 #endif
 
   // preload bitmaps

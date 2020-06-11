@@ -12,6 +12,7 @@ GGameMenuContainer::GGameMenuContainer(TInt aX, TInt aY, GGameState *aGameState)
   mGameState = aGameState;
   mTimer = 30;
   mState = GAME_MENU_PAUSE_STATE;
+  mStateLevel = 0;
 }
 
 GGameMenuContainer::~GGameMenuContainer() = default;
@@ -24,6 +25,7 @@ void GGameMenuContainer::PauseState() {
   Clear();
   State(GAME_MENU_KEEP_STATE);
   mTitle = (char *)"Pause";
+  mStateLevel = 1;
   GGameState *gameState = (GGameState *)gGameEngine;
 
   AddWidget((BWidget &) *new GResumeWidget());
@@ -48,6 +50,7 @@ void GGameMenuContainer::OptionsState() {
   Clear();
   State(GAME_MENU_KEEP_STATE);
   mTitle = (char *)"Options";
+  mStateLevel = 2;
 
   AddWidget((BWidget &) *new GMusicWidget());
   AddWidget((BWidget &) *new GSfxWidget());
@@ -83,7 +86,7 @@ TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
 
   TUint8 color = gWidgetTheme.GetInt(WIDGET_TEXT_BG);;
   const BFont *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
-  const TInt x = (SCREEN_WIDTH - (strlen(mTitle) * f->mWidth)) / 2;
+  TInt x = (mStateLevel == 1) ? 105 : 100;
 
 //  if (--mTimer < 0) {
 //    mTimer = 30;
@@ -94,15 +97,15 @@ TInt GGameMenuContainer::Render(TInt aX, TInt aY) {
 //  }
 
   gDisplay.renderBitmap->DrawStringShadow(
-      ENull,
-      mTitle,
-      f,
-      aX + x, aY + 16,
-      color,
-      COLOR_TEXT_SHADOW,
-      COLOR_TEXT_TRANSPARENT,
-      -6
-      );
+    ENull,
+    mTitle,
+    f,
+    aX + x, aY + 16,
+    color,
+    COLOR_TEXT_SHADOW,
+    COLOR_TEXT_TRANSPARENT,
+    -6
+  );
 
   return GDialogWidget::Render(aX, aY);
 }

@@ -20,6 +20,7 @@ public:
   void State(GAME_MENU_STATE aState);
   TInt Render(TInt aX, TInt aY) OVERRIDE;
   TInt mTimer;
+  TInt8 mStateLevel;
 protected:
   void Clear();
   GGameState *mGameState;

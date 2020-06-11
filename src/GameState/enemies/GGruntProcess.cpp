@@ -289,6 +289,7 @@ TBool GGruntProcess::DeathState() {
       case 2:
       case 3:
         GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
+        // TODO: Fix @jgarcia -- these SFX items should be "drop item"
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
         break;
       case 4:
