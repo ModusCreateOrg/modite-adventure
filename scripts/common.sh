@@ -90,7 +90,8 @@ function ensure_creative_engine {
 
 function ensure_resources {
     if [[ ! -d "$RESOURCES_DIR" ]]; then
-        git clone https://github.com/ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
+        git clone git@github.com:ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
+        #git clone https://github.com/ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
     fi
 }
 
