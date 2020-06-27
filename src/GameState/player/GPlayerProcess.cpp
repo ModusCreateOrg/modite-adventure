@@ -201,8 +201,6 @@ void GPlayerProcess::StartKnockback() {
 void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   mState = aState;
   mSprite->mDirection = aDirection;
-  mSprite->mSwordCharge = -1;
-
   mLastDirection = aDirection;
 
   mSprite->mDx = 0;
@@ -352,11 +350,6 @@ TBool GPlayerProcess::MaybeHit() {
     mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
   }
 
-  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
-    NewState(IDLE_STATE, mSprite->mDirection);
-    return ETrue;
-  }
-
   return EFalse;
 }
 
@@ -467,6 +460,10 @@ DIRECTION GPlayerProcess::MaybeMove(TFloat aSpeed) {
     } else {
       newVx = newVy = 0;
     }
+  }
+
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    newVx = newVy = 0;
   }
 
   mSprite->vy = newVy;
