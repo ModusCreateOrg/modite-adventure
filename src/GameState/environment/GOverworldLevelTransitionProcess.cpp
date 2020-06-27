@@ -1,4 +1,5 @@
 #include "GOverworldLevelTransitionProcess.h"
+#include "GPlayer.h"
 
 GOverworldLevelTransitionProcess::GOverworldLevelTransitionProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aParams, TFloat aX,
                                TFloat aY, const char *aKind)
@@ -108,7 +109,7 @@ TBool GOverworldLevelTransitionProcess::RunAfter() {
       printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
       mGameState->NextLevel(dungeon == 0 ? -1 : dungeon,level);
     }
-    mSprite->mCollided->ClearCType(STYPE_OBJECT);
+    GPlayer::mSprite->ClearCType(STYPE_OBJECT);
   }
   mSprite->cType = 0;
   return ETrue;

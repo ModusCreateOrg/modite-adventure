@@ -168,25 +168,19 @@ TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
 }
 
 void GPlayerProcess::StartKnockback() {
-  GAnchorSprite *other = mSprite->mCollided;
-  if (other && other->TestFlags(SFLAG_KNOCKBACK)) {
-    // push player away from center of other sprite's hit box
-    TRect myRect, otherRect;
-    mSprite->GetRect(myRect);
-    other->GetRect(otherRect);
-    TFloat dx = (mSprite->x + myRect.x1 + TFloat(myRect.Width()) / 2) - (other->x + otherRect.x1 + TFloat(otherRect.Width()) / 2),
-            dy = (mSprite->y + myRect.y1 + TFloat(myRect.Height()) / 2) - (other->y + otherRect.y1 + TFloat(otherRect.Height()) / 2);
+  GCollidedData other = mSprite->mCollided;
+  if (other.collisionAngle >= 0) {
     TFloat newVx, newVy;
 
-    newVx = PLAYER_VELOCITY * dx / hypot(dx, dy);
-    newVy = PLAYER_VELOCITY * dy / hypot(dx, dy);
+    newVx = PLAYER_VELOCITY * SIN(other.collisionAngle);
+    newVy = PLAYER_VELOCITY * COS(other.collisionAngle);
 
     // if other sprite is moving towards player, add its momentum to player knockback
-    if (dx > 0 ^ other->vx < 0) {
-      newVx += other->vx;
+    if (newVx > 0 ^ other.vx < 0) {
+      newVx += other.vx;
     }
-    if (dy > 0 ^ other->vy < 0) {
-      newVy += other->vy;
+    if (newVy > 0 ^ other.vy < 0) {
+      newVy += other.vy;
     }
 
     if (CanWalk(newVx, 0)) {
@@ -285,69 +279,64 @@ TBool GPlayerProcess::MaybeHit() {
     return EFalse;
   }
 
-  GAnchorSprite *other = mSprite->mCollided;
+  GCollidedData other = mSprite->mCollided;
+  TInt hitAmount = 0;
 
-  if (other) {
-    TInt hitAmount = 0;
+  if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
+    hitAmount = other.attackStrength;
 
-    if (mSprite->TestAndClearCType(STYPE_EBULLET)) {
-      hitAmount = other->mAttackStrength;
+    if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
+      mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+    }
+    else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
+      mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+    }
+    else {
+      mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+    }
+  }
 
-      if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
-      }
-      else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
-      }
-      else {
-        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
+  if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
+    // contact damage independent of enemy attack strength
+    hitAmount = BASE_STRENGTH;
+    mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+  }
+
+  if (hitAmount) {
+    TInt state = HIT_LIGHT_STATE;
+    // Random +/- 20% variation
+    hitAmount = (hitAmount * Random(80, 120)) / 100;
+
+
+    if (GPlayer::mEquipped.mAmuletElement && other.element) {
+      hitAmount *= AMULET_MATRIX[GPlayer::mEquipped.mAmuletElement - 1][other.element - 1];
+    }
+
+    GPlayer::mHitPoints -= hitAmount;
+    GPlayer::mInvulnerable = ETrue;
+    mGameState->AddProcess(new GStatProcess(STAT_PLAYER_HIT, mSprite->Center(), "%d", hitAmount));
+
+    StartBlink(BLINK_TIME);
+
+    gSoundPlayer.TriggerSfx(SFX_PLAYER_TAKE_DAMAGE_WAV);
+
+    mState = state;
+
+    if (GPlayer::mHitPoints <= 0) {
+      // PLAYER DEAD
+      GPlayer::mHitPoints = 0;
+      //      printf("Player dead\n");
+      // TO RESUME:
+      //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
+      if (!GPlayer::mGameOver) {
+        mGameState->GameOver();
       }
     }
 
-    if (mSprite->TestAndClearCType(STYPE_ENEMY)) {
-      // contact damage independent of enemy attack strength
-      hitAmount = BASE_STRENGTH;
-      mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other->mDirection, 2));
-    }
+    StartKnockback();
 
-    if (hitAmount) {
-      TInt state = HIT_LIGHT_STATE;
-      // Random +/- 20% variation
-      hitAmount = (hitAmount * Random(80, 120)) / 100;
-
-
-      if (GPlayer::mEquipped.mAmuletElement && other->mElement) {
-        hitAmount *= AMULET_MATRIX[GPlayer::mEquipped.mAmuletElement - 1][other->mElement - 1];
-      }
-
-      GPlayer::mHitPoints -= hitAmount;
-      GPlayer::mInvulnerable = ETrue;
-      mGameState->AddProcess(new GStatProcess(STAT_PLAYER_HIT, mSprite->Center(), "%d", hitAmount));
-
-      StartBlink(BLINK_TIME);
-
-      gSoundPlayer.TriggerSfx(SFX_PLAYER_TAKE_DAMAGE_WAV);
-
-      mState = state;
-
-      if (GPlayer::mHitPoints <= 0) {
-        // PLAYER DEAD
-        GPlayer::mHitPoints = 0;
-        //      printf("Player dead\n");
-        // TO RESUME:
-        //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
-        if (!GPlayer::mGameOver) {
-          mGameState->GameOver();
-        }
-      }
-
-      StartKnockback();
-
-      mSprite->cType = 0;
-      return ETrue;
-    }
-  } else {
-    mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET);
+    mSprite->cType = 0;
+    return ETrue;
   }
 
   return EFalse;
@@ -752,7 +741,6 @@ TBool GPlayerProcess::RunAfter() {
     mSprite->SetFlags(SFLAG_RENDER);
     GPlayer::mInvulnerable = EFalse;
   }
-  mSprite->mCollided = ENull;
   mSprite->cType = 0;
 
   return ETrue;

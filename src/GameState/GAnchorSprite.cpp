@@ -23,7 +23,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mAttackStrength = BASE_STRENGTH;
   mLastX = 0;
   mLastY = 0;
-  mCollided = ENull;
+  mCollided = GCollidedData();
   mShadow = TRect();
   mElement = ELEMENT_NONE;
   gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 38, 35, 58);
@@ -135,10 +135,24 @@ void GAnchorSprite::Move() {
   }
 }
 
+void GAnchorSprite::SaveDataFromCollided(GAnchorSprite *aOther) {
+  mCollided.element = aOther->mElement;
+  mCollided.direction = aOther->mDirection;
+  mCollided.attackStrength = aOther->mAttackStrength;
+  if (aOther->TestFlags(SFLAG_KNOCKBACK)) {
+    TPoint myCenter = this->Center(), otherCenter = aOther->Center();
+    mCollided.collisionAngle = ATAN2(myCenter.x - otherCenter.x, myCenter.y - otherCenter.y) + 2 * M_PI;
+    mCollided.vx = aOther->vx;
+    mCollided.vy = aOther->vy;
+  } else {
+    mCollided.collisionAngle = -1;
+  }
+}
+
 void GAnchorSprite::Collide(BSprite *aOther) {
   auto *s = (GAnchorSprite *)aOther;
-  mCollided = s;
-  s->mCollided = this;
+  SaveDataFromCollided(s);
+  s->SaveDataFromCollided(this);
   cType |= s->type;
   s->cType |= type;
 }

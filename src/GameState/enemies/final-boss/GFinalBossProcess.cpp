@@ -421,9 +421,8 @@ TBool GFinalBossProcess::MaybeHit() {
     return ETrue;
   }
 
-  GAnchorSprite *other = mSprite->mCollided;
   if (BasicDamageCheck()) {
-    SetState(STATE_HIT, GAnchorSprite::RotateDirection(other->mDirection, 2));
+    SetState(STATE_HIT, GAnchorSprite::RotateDirection(mSprite->mCollided.direction, 2));
     return ETrue;
   }
 
