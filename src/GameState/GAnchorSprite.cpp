@@ -169,6 +169,7 @@ void GAnchorSprite::ResetShadow() {
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret;
+  BBitmap &bm = *gDisplay.renderBitmap;
   if (TestFlags(SFLAG_RENDER_SHADOW) && TestFlags(SFLAG_RENDER)) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
@@ -182,7 +183,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
       TFloat chord;
       for (TInt i = 0; i < r.Height(); i++) {
         chord = sqrt(i * (r.Height() - i)) * 2 * r.Width() / r.Height();
-        gDisplay.renderBitmap->DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
+        bm.DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
                                              r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
       }
       ret = BAnimSprite::Render(aViewPort);
@@ -196,22 +197,40 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
 
 #ifdef DEBUG_MODE
   if (GGame::mDebug && !Clipped() && TestFlags(SFLAG_RENDER_DEBUG)) {
+    TPoint p = Center();
+    p.Offset(-aViewPort->mWorldX, -aViewPort->mWorldY);
     // render sprite border if sprite is visible
-    if (flags & SFLAG_RENDER) {
-      gDisplay.renderBitmap->DrawRect(aViewPort, mRect, COLOR_WHITE);
-      gDisplay.renderBitmap->DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
-      gDisplay.renderBitmap->DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
+    if (TestFlags(SFLAG_RENDER)) {
+      bm.DrawRect(aViewPort, mRect, COLOR_WHITE);
+      bm.DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
+      bm.DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
+      bm.DrawString(aViewPort, Name(), gFont8x8, mRect.x1 + 1, mRect.y2 + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -1);
+      switch (mDirection) {
+        case DIRECTION_UP:
+          bm.DrawFastVLine(aViewPort, p.x, p.y - 20, 20, COLOR_HEALTH2);
+          break;
+        case DIRECTION_DOWN:
+          bm.DrawFastVLine(aViewPort, p.x, p.y, 20, COLOR_HEALTH2);
+          break;
+        case DIRECTION_LEFT:
+          bm.DrawFastHLine(aViewPort, p.x - 20, p.y, 20, COLOR_HEALTH2);
+          break;
+        case DIRECTION_RIGHT:
+          bm.DrawFastHLine(aViewPort, p.x, p.y, 20, COLOR_HEALTH2);
+          break;
+      }
     }
     // render collision rect
-    if (flags & SFLAG_CHECK) {
+    if (TestFlags(SFLAG_CHECK)) {
       TRect r;
       GetRect(r);
-      r.x1 -= aViewPort->mWorldX;
-      r.x2 -= aViewPort->mWorldX;
-      r.y1 -= aViewPort->mWorldY;
-      r.y2 -= aViewPort->mWorldY;
+      r.Offset(-aViewPort->mWorldX, -aViewPort->mWorldY);
 //      gDisplay.SetColor(COLOR_HEALTH, 255, 0, 0);
-      gDisplay.renderBitmap->DrawRect(aViewPort, r, COLOR_HEALTH);
+      bm.DrawRect(aViewPort, r, COLOR_HEALTH);
+    }
+    // render velocity vector
+    if (vx != 0 || vy != 0) {
+      bm.DrawLine(aViewPort, p.x, p.y, p.x + vx * FRAMES_PER_SECOND / 10, p.y + vy * FRAMES_PER_SECOND / 10, COLOR_EXPERIENCE);
     }
   }
 #endif
@@ -298,7 +317,7 @@ void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
 }
 
 TPoint GAnchorSprite::Center() {
-  return TPoint((TInt) x + cx + w, (TInt) y - h / 2);
+  return TPoint((TInt) x + cx + w, (TInt) y + cy - h / 2);
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
