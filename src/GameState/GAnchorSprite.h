@@ -25,8 +25,10 @@ enum ELEMENT {
 
 const TUint32 STYPE_OBJECT_BIT = STYPE_USER_BIT;
 const TUint32 STYPE_OBJECT = 1 << STYPE_OBJECT_BIT;
-const TUint32 STYPE_SPELL_BIT = STYPE_OBJECT_BIT + 1;
+const TUint32 STYPE_SPELL_BIT = STYPE_USER_BIT + 1;
 const TUint32 STYPE_SPELL = 1 << STYPE_SPELL_BIT;
+const TUint32 STYPE_BARRIER_BIT = STYPE_USER_BIT + 2;
+const TUint32 STYPE_BARRIER = 1 << STYPE_BARRIER_BIT; // sprite blocks projectiles
 
 const TUint32 SFLAG_BELOW_BIT = SFLAG_USER_BIT;
 const TUint32 SFLAG_BELOW = 1 << SFLAG_BELOW_BIT;
@@ -70,6 +72,14 @@ struct GFloatRect {
   }
 };
 
+struct GCollidedData {
+  DIRECTION direction = DIRECTION_DOWN;
+  ELEMENT element = ELEMENT_NONE;
+  TInt32 attackStrength = 0;
+  TFloat collisionAngle = -1;
+  TFloat vx = 0.0, vy = 0.0;
+};
+
 class GAnchorSprite : public BAnimSprite {
 public:
   GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUint16 aImg = 0, TUint16 aType = STYPE_DEFAULT);
@@ -81,6 +91,7 @@ public:
 
   TBool Render(BViewPort *aViewPort) OVERRIDE;
 
+  void SaveDataFromCollided(GAnchorSprite *aOther);
   void Collide(BSprite *aOther) OVERRIDE;
 
   void Nudge();
@@ -120,7 +131,7 @@ public:
 public:
   GGameState *mGameState;
   DIRECTION mDirection;
-  GAnchorSprite *mCollided;
+  GCollidedData mCollided;
   TInt32 mAttackStrength;
   TFloat mLastX, mLastY; // coordinates from last frame
   TRect mShadow;

@@ -1,4 +1,5 @@
 #include "GStairsProcess.h"
+#include "GPlayer.h"
 
 GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDirection, TInt aParams, TFloat aX,
                                TFloat aY, const char *aKind)
@@ -119,7 +120,7 @@ TBool GStairsProcess::RunAfter() {
       printf("USE STAIRS down to dungeon %d level %d\n", dungeon, level);
       mGameState->NextLevel(dungeon == 0 ? -1 : dungeon,level);
     }
-    mSprite->mCollided->ClearCType(STYPE_OBJECT);
+    GPlayer::mSprite->ClearCType(STYPE_OBJECT);
   }
   mSprite->cType = 0;
   return ETrue;
