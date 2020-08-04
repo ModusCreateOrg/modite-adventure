@@ -42,7 +42,7 @@ TBool GEnemyProcess::BasicDamageCheck() {
     return EFalse;
   }
 
-  TInt attackAmount = mSprite->mCollided->mAttackStrength;
+  TInt attackAmount = mSprite->mCollided.attackStrength;
   // Be able to attack a mid-boss with a like ring
   if (GPlayer::mEquipped.mRingElement) {
     if (mSprite->mElement) {
