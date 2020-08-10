@@ -65,9 +65,6 @@ void GGruntProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       break;
 
     case TAUNT_STATE:
-#ifdef DEBUGME
-      printf("new state TAUNT\n");
-#endif
       SfxTaunt();
       mStep = 0;
       mSprite->vx = 0;
@@ -451,7 +448,6 @@ void GGruntProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mStateTimer, sizeof(mStateTimer));
   aStream.Write(&mVelocity, sizeof(mVelocity));
   mSprite->WriteToStream(aStream);
-  printf("mSprite->mDirection = %i\n", mSprite->mDirection);
 }
 
 void GGruntProcess::ReadFromStream(BMemoryStream &aStream) {
@@ -466,7 +462,5 @@ void GGruntProcess::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mStateTimer, sizeof(mStateTimer));
   aStream.Read(&mVelocity, sizeof(mVelocity));
   mSprite->ReadFromStream(aStream);
-  printf("mSprite->mDirection = %i\n", mSprite->mDirection);
-
   NewState(mState, mSprite->mDirection);
 }

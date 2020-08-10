@@ -17,7 +17,7 @@ const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 4 * FACTOR;
 const TInt DEATH_SPEED = 1;
 
-const TFloat VELOCITY = 1.4 / FACTOR;
+const TFloat VELOCITY =  .5 * FACTOR;
 
 // region  ANIMATIONS {{{
 /*********************************************************************************
@@ -70,20 +70,6 @@ static ANIMSCRIPT tauntAnimation[] = {
   ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 2),
   ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 1),
   ASTEP(TAUNT_SPEED, IMG_GOBLIN_IDLE + 0),
-  AEND,
-};
-
-// TODO: Finish death animations for all directions. See GRatProcess.cpp for example
-static ANIMSCRIPT deathAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_UP + 0),
-  AFLIP(DEATH_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ASTEP(DEATH_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
   AEND,
 };
 
@@ -155,7 +141,7 @@ static ANIMSCRIPT attackComboDownAnimation[] = {
   ADELTA(2, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_DOWN + 3),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_DOWN + 0),
 
   ATYPE(STYPE_EBULLET),
   ASIZE(8, 20, 24, 32),
@@ -178,14 +164,17 @@ static ANIMSCRIPT attackComboDownAnimation[] = {
   ADELTA(2, 18),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 2),
   ADELTA(2, 0),
-  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 3),
+  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_DOWN + 3),
+
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 0),
   AEND,
 };
 
 static ANIMSCRIPT attackQuickDownAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_DOWN + 0),
   ATYPE(STYPE_EBULLET),
   ASIZE(8, 20, 24, 32),
   ADELTA(2, 20),
@@ -222,6 +211,8 @@ static ANIMSCRIPT attackQuickDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 2),
   ADELTA(2, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_DOWN + 0),
   AEND,
 };
 
@@ -318,7 +309,7 @@ static ANIMSCRIPT attackComboLeftAnimation[] = {
   ADELTA(-9, 0),
   AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
   ADELTA(0, 0),
-  AFLIP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  AFLIP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_RIGHT + 0),
   /*****/
   ATYPE(STYPE_EBULLET),
   ASIZE(-16, 4, 40, 16),
@@ -329,7 +320,7 @@ static ANIMSCRIPT attackComboLeftAnimation[] = {
   ADELTA(-17, 0),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(-9, 0),
-  AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
   /*****/
   ADELTA(0, 0),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
@@ -343,13 +334,15 @@ static ANIMSCRIPT attackComboLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(-9, 0),
   AFLIP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   AEND,
 };
 
 static ANIMSCRIPT attackQuickLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  AFLIP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  AFLIP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
   ASIZE(-16, 4, 40, 16),
   ADELTA(-18, 0),
@@ -386,6 +379,8 @@ static ANIMSCRIPT attackQuickLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(-9, 0),
   AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  AFLIP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -482,7 +477,7 @@ static ANIMSCRIPT attackComboRightAnimation[] = {
   ADELTA(3, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_RIGHT + 0),
 
   ATYPE(STYPE_EBULLET),
   ASIZE(0, 4, 40, 16),
@@ -493,7 +488,7 @@ static ANIMSCRIPT attackComboRightAnimation[] = {
   ADELTA(4, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(3, 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
 
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
@@ -507,13 +502,15 @@ static ANIMSCRIPT attackComboRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(3, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   AEND,
 };
 
 static ANIMSCRIPT attackQuickRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_RIGHT + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_RIGHT + 0),
   ATYPE(STYPE_EBULLET),
   ASIZE(0, 4, 40, 16),
   ADELTA(4, 0),
@@ -550,6 +547,8 @@ static ANIMSCRIPT attackQuickRightAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 2),
   ADELTA(3, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -627,7 +626,7 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
   ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_UP + 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 0),
   AEND,
 };
 
@@ -641,12 +640,12 @@ static ANIMSCRIPT attackComboUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
-  ADELTA(4, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_UP + 0),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_UP + 0),
 
   ATYPE(STYPE_EBULLET),
   ASIZE(8, 4, 24, 32),
@@ -654,10 +653,10 @@ static ANIMSCRIPT attackComboUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
+  ADELTA(0, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
 
   ADELTA(2, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 0),
@@ -667,26 +666,28 @@ static ANIMSCRIPT attackComboUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 2, IMG_GOBLIN_ATTACK_UP + 3),
+  ADELTA(2, 0),
+  ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 0),
   AEND,
 };
 
 static ANIMSCRIPT attackQuickUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(2, 0),
-  ASTEP(ATTACK_SPEED * 8, IMG_GOBLIN_ATTACK_UP + 0),
+  ASTEP(ATTACK_SPEED * 4, IMG_GOBLIN_ATTACK_UP + 0),
   ATYPE(STYPE_EBULLET),
   ASIZE(8, 4, 24, 32),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
 
   ADELTA(2, 0),
@@ -697,9 +698,9 @@ static ANIMSCRIPT attackQuickUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
 
   ADELTA(2, 0),
@@ -710,9 +711,9 @@ static ANIMSCRIPT attackQuickUpAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 1),
   ATYPE(STYPE_ENEMY),
   ASIZE(8, 4, 24, 16),
-  ADELTA(-2, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 2),
-  ADELTA(-3, 0),
+  ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_GOBLIN_ATTACK_UP + 3),
   AEND,
 };
@@ -817,7 +818,8 @@ GGoblinProcess::~GGoblinProcess() = default;
 
 void GGoblinProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
-  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
+  // Disabled so that we don't have random directions;
+//  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GGoblinProcess::Taunt(DIRECTION aDirection) {
@@ -828,11 +830,122 @@ void GGoblinProcess::Taunt(DIRECTION aDirection) {
 void GGoblinProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
+
+  TFloat xx = mSprite->x,
+         yy = mSprite->y;
+
+  // Angles are in radians
+  const TFloat angleToPlayerRad = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
+
   if (mStateTimer <= 0) {
     mStateTimer = TInt16(TFloat(Random(3, 8)) * 32 / VELOCITY);
   }
+
+
+  TFloat vx = cos(angleToPlayerRad) * VELOCITY,
+         vy = sin(angleToPlayerRad) * VELOCITY;
+
+
+  // IDK if there is a simpler way to do this. -JG Aug 09, 2020
+  if (angleToPlayerRad >= -2.35619 && angleToPlayerRad <= -.785397) {
+    aDirection = DIRECTION_UP;
+  }
+  else if (angleToPlayerRad >= -.785397 && angleToPlayerRad <= .785397) {
+    aDirection = DIRECTION_RIGHT;
+  }
+  else if (angleToPlayerRad >= .785397 && angleToPlayerRad <= 2.35619 ) {
+    aDirection = DIRECTION_DOWN;
+  }
+  else if (angleToPlayerRad <= 2.35619  || angleToPlayerRad >= 2.35619 ) {
+    aDirection = DIRECTION_LEFT;
+  }
+
+//  if (! CanWalkInDirection(DIRECTION_DOWN, vx, vy)
+//     || ! CanWalkInDirection(DIRECTION_UP, vx, vy)
+//     || ! CanWalkInDirection(DIRECTION_LEFT, vx, vy)
+//     || ! CanWalkInDirection(DIRECTION_RIGHT, vx, vy)) {
+//    vx = 0;
+//    vy = 0;
+//  }
+
+  if (! CanWalkInDirection(DIRECTION_DOWN, vx, vy)
+      || ! CanWalkInDirection(DIRECTION_UP, vx, vy)) {
+    vy = 0;
+  }
+
+  if ( ! CanWalkInDirection(DIRECTION_LEFT, vx, vy)
+       || ! CanWalkInDirection(DIRECTION_RIGHT, vx, vy)) {
+    vx = 0;
+  }
+
+  mSprite->mDirection = mDirection = aDirection;
+  printf("angleToPlayerRad %.5f, goblin->vx %.5f, goblin->vy %.5f\n", angleToPlayerRad, mSprite->vx, mSprite->vy);
+
+  if (abs(vx) <= .000001 && abs(vy) <= .000001) {
+    NewState(IDLE_STATE, aDirection);
+    return;
+  }
+
+  mSprite->vx = vx;
+  mSprite->vy = vy;
   mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
-  mSprite->MoveInDirection(VELOCITY, aDirection);
+}
+
+// @Override for GGruntProcess.cpp
+// This takes into account walls and stops the goblin from walking and enters a taunt state.
+TBool GGoblinProcess::WalkState() {
+
+  if (MaybeAttack()) {
+    return ETrue;
+  }
+
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (MaybeTaunt()) {
+    return ETrue;
+  }
+
+  mAttackTimer = 1;
+
+  if (--mStateTimer < 0) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (! CanWalkInDirection(DIRECTION_DOWN, mSprite->vx, mSprite->vy)
+      || ! CanWalkInDirection(DIRECTION_UP, mSprite->vx, mSprite->vy)) {
+    mSprite->vy = 0;
+  }
+
+  if ( ! CanWalkInDirection(DIRECTION_LEFT, mSprite->vx, mSprite->vy)
+      || ! CanWalkInDirection(DIRECTION_RIGHT, mSprite->vx, mSprite->vy)) {
+    mSprite->vx = 0;
+  }
+
+  if (mSprite->vx == 0 && mSprite->vy == 0) {
+    NewState(TAUNT_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (!CanWalkInDirection(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    mSprite->Nudge();
+    NewState(IDLE_STATE, mSprite->mDirection);
+    return ETrue;
+  }
+
+  if (mSprite->AnimDone()) {
+    // done with left/right step, start animation for the other foot
+    NewState(WALK_STATE, mSprite->mDirection);
+  }
+
+  return ETrue;
 }
 
 void GGoblinProcess::Attack(DIRECTION aDirection) {
