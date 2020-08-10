@@ -77,12 +77,11 @@ void GEnemyProcess::DoDamage(TInt aStrength) {
   aStrength = (aStrength * Random(80, 120)) / 100;
   mHitPoints -= aStrength;
   mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));
-  gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV);
+  gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV, 5);
   mInvulnerable = ETrue;
 }
 
 void GEnemyProcess::DoHeal(TInt aAmount) {
-  // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
   TInt healAmount = MIN(aAmount, mMaxHitPoints - mHitPoints);
   mGameState->AddProcess(new GStatProcess(STAT_HEAL, mSprite->Center(), "%d", healAmount));
   mHitPoints = MIN(mHitPoints + healAmount, mMaxHitPoints);
