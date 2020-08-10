@@ -202,7 +202,7 @@ struct TDungeonInfo gDungeonDefs[] = {
       {
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 0
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 1
-        -1, //OW3_DGN1_2304_OW3_DGN1_L2_MAP, // 2
+        OW3_DGN1_2304_OW3_DGN1_L2_MAP, // 2
         -1, //OW3_DGN1_2304_OW3_DGN1_L3_MAP, // 3
         -1, //OW3_DGN1_2304_OW3_DGN1_L4_MAP, // 4
         -1, //OW3_DGN1_2304_OW3_DGN1_L5_MAP, // 5
@@ -223,8 +223,8 @@ struct TDungeonInfo gDungeonDefs[] = {
       {
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 0
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 1
-        -1, //OW3_DGN2_2560_OW3_DGN2_L2_MAP, // 2
-        -1, //OW3_DGN2_2560_OW3_DGN2_L3_MAP, // 3
+        OW3_DGN2_2560_OW3_DGN2_L2_MAP, // 2
+        OW3_DGN2_2560_OW3_DGN2_L3_MAP, // 3
         -1, //OW3_DGN2_2560_OW3_DGN2_L4_MAP, // 4
         -1, //OW3_DGN2_2560_OW3_DGN2_L5_MAP, // 5
         -1, //OW3_DGN2_2560_OW3_DGN2_L6_MAP, // 6
