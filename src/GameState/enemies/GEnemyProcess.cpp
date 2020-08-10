@@ -77,7 +77,7 @@ void GEnemyProcess::DoDamage(TInt aStrength) {
   aStrength = (aStrength * Random(80, 120)) / 100;
   mHitPoints -= aStrength;
   mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));
-  gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV);
+  gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV, 4);
   mInvulnerable = ETrue;
 }
 
