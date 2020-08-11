@@ -8,16 +8,17 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
   mDirection = aDirection;
   mGameState = aGameState;
   mLevel = aParams;
+
   TBool isWood = strcmp(aKind, "WOOD") == 0;
   if (mDirection == DIRECTION_UP) {
     mAttribute = isWood ? ATTR_WOOD_STAIRS_UP : ATTR_STONE_STAIRS_UP;
-    const int img = isWood ? IMG_STONE_STAIRS_UP : IMG_WOOD_STAIRS_UP;
+    const int img = isWood ? IMG_WOOD_STAIRS_UP : IMG_STONE_STAIRS_UP;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name(isWood ? "ENVIRONMENT WOOD STAIRS UP" : "ENVIRONMENT STONE STAIRS UP");
 //    mSprite->w = mSprite->h = 32;
     mSprite->h = 32;
-    mSprite->w = 16;
-    mSprite->cx = 8;
+    mSprite->w = 32;
+    mSprite->cx = -16;
 //    mSprite->cy = 0;
 
     mSprite->x = aX;
@@ -29,9 +30,11 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mGameState->AddSprite(mSprite);
 
     mSprite2 = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img - 10);
-    mSprite->Name(isWood ? "IGNORE WOOD STAIRS UP 2" : "IGNORE STONE STAIRS UP 2");
+    mSprite2->Name(isWood ? "IGNORE WOOD STAIRS UP 2" : "IGNORE STONE STAIRS UP 2");
     mSprite2->SetFlags(SFLAG_BELOW);
+    mSprite2->SetCMask(STYPE_PLAYER | STYPE_ENEMY);
     mSprite2->cx = -16;
+//    mSprite2->cy = -16;
     mSprite2->w = mSprite2->h = 32;
     mSprite2->x = aX;
     mSprite2->y = aY;
@@ -58,7 +61,8 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->ClearFlags(SFLAG_RENDER);
   }
   else {
-    const int img = isWood ? IMG_STONE_STAIRS_DOWN : IMG_WOOD_STAIRS_DOWN;
+    // DOWN //
+    const int img = isWood ? IMG_WOOD_STAIRS_DOWN : IMG_STONE_STAIRS_DOWN;
     mAttribute = isWood ? ATTR_WOOD_STAIRS_DOWN : ATTR_STONE_STAIRS_DOWN;
     mSprite = new GAnchorSprite(mGameState, STAIRS_PRIORITY, ENVIRONMENT_SLOT, img, STYPE_OBJECT);
     mSprite->Name(isWood ? "OVERWORLD WOOD STAIRS DOWN" : "OVERWORLD STONE STAIRS DOWN");

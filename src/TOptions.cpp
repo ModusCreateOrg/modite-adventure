@@ -11,7 +11,7 @@ void TOptions::SetDefaults() {
   version = VERSION;
   muted = EFalse;
   music = 0.5f;
-  sfx = 0.875f;
+  sfx = 0.5f;
   brightness = 0.875f;
 
   ResetGameProgress();
