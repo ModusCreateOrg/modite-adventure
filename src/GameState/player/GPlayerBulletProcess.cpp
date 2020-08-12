@@ -17,9 +17,7 @@ public:
 
 GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection, TFloat aMultiplier)
     : GProcess(ATTR_GONE) {
-  mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
-  mSprite->type = STYPE_PBULLET;
   mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
   mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection);
@@ -48,7 +46,6 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
 
   mSprite->x = GPlayer::mSprite->x - mSprite->w / 2 + 32;
   mSprite->y = GPlayer::mSprite->y - mSprite->h / 2 - 8;
-  mSprite->mDirection = mDirection;
   mAge = 0;
   aGameState->AddSprite(mSprite);
 }
