@@ -5,7 +5,7 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
+const TInt16 IDLE_TIMEOUT = 10 * FACTOR;
 
 const TInt IDLE_SPEED = 3 * FACTOR;
 const TInt TAUNT_SPEED = 3 * FACTOR;
@@ -15,7 +15,7 @@ const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 1;
 
-const TFloat VELOCITY = PLAYER_VELOCITY * 0.55;
+const TFloat VELOCITY = PLAYER_VELOCITY * 0.75;
 
 // region  ANIMATIONS {{{
 
@@ -417,7 +417,7 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mRangeX = mRangeY = 16;
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
-  mSprite->cy = 0;
+  mSprite->cy = 16;
   mSprite->h = 16;
 }
 
