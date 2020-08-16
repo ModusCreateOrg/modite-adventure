@@ -204,7 +204,7 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
       bm.DrawRect(aViewPort, mRect, COLOR_WHITE);
       bm.DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
       bm.DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
-      bm.DrawString(aViewPort, Name(), gFont8x8, mRect.x1 + 1, mRect.y2 + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -1);
+//      bm.DrawString(aViewPort, Name(), gFont8x8, mRect.x1 + 1, mRect.y2 + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -1);
       switch (mDirection) {
         case DIRECTION_UP:
           bm.DrawFastVLine(aViewPort, p.x, p.y - 20, 20, COLOR_HEALTH2);
