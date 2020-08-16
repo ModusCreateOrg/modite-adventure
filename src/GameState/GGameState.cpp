@@ -1031,7 +1031,7 @@ void GGameState::InitRemapSlots() {
 // Load aBMP, and remap it to playfield's tilemap palette
 void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
   if (aSlot == TILESET_SLOT) {
-    Panic("Attemp to RemapSlot(TILESET_SLOT)\n");
+    Panic("Attempt to RemapSlot(TILESET_SLOT)\n");
   }
   if (mSlotRemapState[aSlot]) {
     return;

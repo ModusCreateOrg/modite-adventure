@@ -406,7 +406,7 @@ TBool GGruntProcess::WalkState() {
 }
 
 TBool GGruntProcess::RunBefore() {
-  if (mSprite->Clipped()) {
+  if (mSprite->Clipped() && mHitPoints > 0) {
     mInvulnerable = EFalse;
     NewState(IDLE_STATE, mSprite->mDirection);
     return ETrue;

@@ -3,7 +3,7 @@
 #include "GResources.h"
 #include "GPlayer.h"
 
-static TInt16 SPELL_SPEED = 2;
+static TInt16 SPELL_SPEED = 5;
 
 static ANIMSCRIPT spellOverlayAnimation[] = {
   ASTEP(SPELL_SPEED, IMG_SPELL + 0),
