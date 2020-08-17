@@ -448,13 +448,13 @@ struct TDungeonInfo gDungeonDefs[] = {
   
   // OVER WORLD 6 Dungeon 1. 
   { 
-    "O5 D1   5376",
+    "O6 D1   5376",
     {
       GLOBAL_OBJECT_LAYER_BMP,
       {
         OW6_DGN1_5376_OW6_DGN1_L1_MAP, // 0
         OW6_DGN1_5376_OW6_DGN1_L1_MAP, // 1
-        -1, //OW6_DGN1_5376_OW6_DGN1_L2_MAP, // 2
+        OW6_DGN1_5376_OW6_DGN1_L2_MAP, // 2
         -1, //OW6_DGN1_5376_OW6_DGN1_L3_MAP, // 3
         -1, //OW6_DGN1_5376_OW6_DGN1_L4_MAP, // 4
         -1, //OW6_DGN1_5376_OW6_DGN1_L5_MAP, // 5
