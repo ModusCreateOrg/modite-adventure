@@ -74,8 +74,9 @@ struct GCollidedData {
   DIRECTION direction = DIRECTION_DOWN;
   ELEMENT element = ELEMENT_NONE;
   TInt32 attackStrength = 0;
-  TFloat collisionAngle = -1;
+  TFloat collisionAngle = 0.0;
   TFloat vx = 0.0, vy = 0.0;
+  TUint32 flags = 0;
 };
 
 class GAnchorSprite : public BAnimSprite {

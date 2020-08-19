@@ -144,9 +144,8 @@ void GAnchorSprite::SaveDataFromCollided(GAnchorSprite *aOther) {
     mCollided.collisionAngle = ATAN2(myCenter.x - otherCenter.x, myCenter.y - otherCenter.y) + 2 * M_PI;
     mCollided.vx = aOther->vx;
     mCollided.vy = aOther->vy;
-  } else {
-    mCollided.collisionAngle = -1;
   }
+  mCollided.flags = aOther->flags;
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {
