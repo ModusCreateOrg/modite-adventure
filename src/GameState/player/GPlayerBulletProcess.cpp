@@ -66,7 +66,7 @@ TBool GPlayerBulletProcess::RunAfter() {
   if (!mSprite->mGameState->mGamePlayfield->IsFloor(mSprite->x + mSprite->w / 2, mSprite->y + mSprite->h / 2)) {
     return EFalse;
   }
-  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET | STYPE_BARRIER)) {
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
     return EFalse;
   }
   mAge++;
