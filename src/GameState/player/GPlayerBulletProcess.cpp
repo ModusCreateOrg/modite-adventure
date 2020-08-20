@@ -73,6 +73,8 @@ TBool GPlayerBulletProcess::RunAfter() {
   if (mAge * VELOCITY > mRange) {
     return EFalse;
   }
-  mSprite->ClearCType(STYPE_OBJECT);
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    mSprite->ClearCMask(STYPE_OBJECT);
+  }
   return ETrue;
 }
