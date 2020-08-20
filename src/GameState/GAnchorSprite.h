@@ -95,8 +95,6 @@ public:
 
   void Nudge();
 
-  void SetWall(TBool aState = ETrue);
-
   TBool IsFloorTile(TFloat aX, TFloat aY);
 
   TBool CanWalkInDirection(DIRECTION aDirection, TFloat aDx = 0.0, TFloat aDy = 0.0);
@@ -125,7 +123,8 @@ public:
   void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);
 
   // set the BMapPlayfield tile in map attribute
-  void SetAttribute(TUint mAttribute);
+  void SetMapAttribute(TUint aAttribute);
+  void ResetMapAttribute();
 
 public:
   GGameState *mGameState;
