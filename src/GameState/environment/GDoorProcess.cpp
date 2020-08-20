@@ -14,7 +14,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
       aWood ? IMG_WOOD_DOOR_H_BOTTOM : IMG_METAL_GATE_H_BOTTOM,
                                 STYPE_OBJECT);
 
-    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR BOTTOM" : "ENVIRONMENT HORIZONTAL METAL GATE BOTTOM");
+    mSprite->Name(aWood ? "WOOD DOOR H BOTTOM" : "METAL GATE H BOTTOM");
     mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_GATE_H;
 
     mSprite->SetCMask(STYPE_PBULLET);
@@ -29,9 +29,9 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
 
     // Top Part
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
-                                 aWood ? IMG_WOOD_DOOR_H_TOP : IMG_METAL_GATE_H_TOP, STYPE_OBJECT);
+                                 aWood ? IMG_WOOD_DOOR_H_TOP : IMG_METAL_GATE_H_TOP, STYPE_DEFAULT);
 
-    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR 2" : "IGNORE VERTICAL METAL GATE 2");
+    mSprite2->Name(aWood ? "WOOD DOOR H TOP" : "METAL GATE H TOP");
   }
   else {
     // Bottom Part (The controlling factor)
@@ -39,7 +39,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
                                 aWood ? IMG_WOOD_DOOR_V_BOTTOM : IMG_METAL_GATE_V_BOTTOM,
                                 STYPE_OBJECT);
 
-    mSprite->Name(aWood ? "ENVIRONMENT HORIZONTAL WOOD DOOR BOTTOM" : "ENVIRONMENT HORIZONTAL METAL GATE BOTTOM");
+    mSprite->Name(aWood ? "WOOD DOOR V BOTTOM" : "METAL GATE V BOTTOM");
     mAttribute = aWood ? ATTR_WOOD_DOOR_H : ATTR_METAL_GATE_H;
 
     mSprite->SetCMask(STYPE_PBULLET);
@@ -56,7 +56,7 @@ GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFl
     mSprite2 = new GAnchorSprite(mGameState, DOOR_PRIORITY, ENVIRONMENT_SLOT,
                                  aWood ? IMG_WOOD_DOOR_V_TOP : IMG_METAL_GATE_V_TOP, STYPE_DEFAULT);
 
-    mSprite2->Name(aWood ? "IGNORE VERTICAL WOOD DOOR TOP" : "IGNORE VERTICAL METAL GATE TOP");
+    mSprite2->Name(aWood ? "WOOD DOOR V TOP" : "METAL GATE V TOP");
   }
   mSprite2->x = mSprite->x;
   mSprite2->y = mSprite->y;

@@ -9,11 +9,11 @@ GChestProcess::GChestProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, T
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST + 1, STYPE_OBJECT);
     //    mSprite->SetCType(STYPE_OBJECT);
     //    mSprite->ClearFlags(SFLAG_CHECK);
-    mSprite->Name("ENVIRONMENT CHEST OPEN");
+    mSprite->Name("CHEST OPEN");
     mAttribute = ATTR_CHEST_OPEN;
   } else {
     mSprite = new GAnchorSprite(aGameState, CHEST_PRIORITY, ENVIRONMENT_SLOT, IMG_CHEST, STYPE_OBJECT);
-    mSprite->Name("ITEM CHEST CLOSED");
+    mSprite->Name("CHEST CLOSED");
     mAttribute = ATTR_CHEST;
   }
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_ENEMY);
