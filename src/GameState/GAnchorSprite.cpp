@@ -320,6 +320,13 @@ TPoint GAnchorSprite::Center() {
   return TPoint((TInt) x + cx + w, (TInt) y + cy - h / 2);
 }
 
+TFloat GAnchorSprite::DistanceTo(GAnchorSprite *aOther) {
+  TPoint myCenter = this->Center(),
+      otherCenter = aOther->Center();
+
+  return hypot(myCenter.x - otherCenter.x, myCenter.y - otherCenter.y);
+}
+
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {
   WriteCustomToStream(aStream); // write additional data, if any
   aStream.Write(&x, sizeof(x));

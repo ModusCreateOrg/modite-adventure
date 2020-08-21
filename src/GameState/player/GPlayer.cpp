@@ -22,6 +22,8 @@ GPlayerSprite *GPlayer::mSprite;
 GGameState *GPlayer::mGameState;
 GEquipped GPlayer::mEquipped;
 GBossProcess *GPlayer::mActiveBoss;
+GAnchorSprite *GPlayer::mTargeted;
+GAnchorSprite *GPlayer::mClosestEnemy;
 
 void GPlayer::WriteToStream(BMemoryStream &stream) {
   stream.Write(&mLevel, sizeof(mLevel));

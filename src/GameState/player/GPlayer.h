@@ -83,6 +83,7 @@ struct GPlayer {
 
     mGameOver = EFalse;
     mActiveBoss = ENull;
+    mTargeted = mClosestEnemy = ENull;
   }
 
   static void AddExperience(TInt aExperience) {
@@ -136,6 +137,7 @@ struct GPlayer {
   static GEquipped mEquipped;
   static TBool mGameOver;
   static GBossProcess *mActiveBoss;
+  static GAnchorSprite *mClosestEnemy, *mTargeted;
 
   static void Dump();
 };

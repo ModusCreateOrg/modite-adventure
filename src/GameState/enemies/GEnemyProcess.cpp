@@ -19,6 +19,12 @@ GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint
 }
 
 GEnemyProcess::~GEnemyProcess() {
+  if (GPlayer::mClosestEnemy == mSprite) {
+    GPlayer::mClosestEnemy = ENull;
+  }
+  if (GPlayer::mTargeted == mSprite) {
+    GPlayer::mTargeted = ENull;
+  }
   if (mHitPoints <= 0) {
     mGameState->AddProcess(new GStatProcess(STAT_EXPERIENCE, mSprite->Center(), "EXP +%d", mExperienceYield));
     GPlayer::AddExperience(mExperienceYield);

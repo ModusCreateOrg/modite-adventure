@@ -111,6 +111,8 @@ public:
 
   TPoint Center();
 
+  TFloat DistanceTo(GAnchorSprite *aOther);
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }

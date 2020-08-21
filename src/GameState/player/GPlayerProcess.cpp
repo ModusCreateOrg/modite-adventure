@@ -6,6 +6,7 @@
 #include "GStatProcess.h"
 #include "GResources.h"
 #include "GPlayerBulletProcess.h"
+#include "GBossProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -729,6 +730,18 @@ TBool GPlayerProcess::RunBefore() {
 }
 
 TBool GPlayerProcess::RunAfter() {
+  if (GPlayer::mTargeted) {
+    if (GPlayer::mTargeted->Clipped() || !gControls.IsPressed(CONTROL_TARGET)) {
+      GPlayer::mTargeted = ENull;
+    }
+  } else if (gControls.WasPressed(CONTROL_TARGET)) {
+    if (GPlayer::mActiveBoss && GPlayer::mActiveBoss->mSprite &&
+        !GPlayer::mActiveBoss->mSprite->Clipped()) {
+      GPlayer::mTargeted = GPlayer::mActiveBoss->mSprite;
+    } else if (GPlayer::mClosestEnemy && !GPlayer::mClosestEnemy->Clipped()) {
+      GPlayer::mTargeted = GPlayer::mClosestEnemy;
+    }
+  }
   if (mBlinkTimer > 1) {
     mBlinkTimer--;
     if ((mBlinkTimer & 1u) == 0) {
