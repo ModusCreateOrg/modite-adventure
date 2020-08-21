@@ -204,9 +204,30 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case WALK_STATE:
       if (mStepFrame > 0) {
-        mStep = 1 - mStep;
-//        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
-        mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+        if ((aDirection == DIRECTION_UP && mSprite->vy < 0) ||
+            (aDirection == DIRECTION_DOWN && mSprite->vy > 0) ||
+            (aDirection == DIRECTION_LEFT && mSprite->vx < 0) ||
+            (aDirection == DIRECTION_RIGHT && mSprite->vx > 0)) {
+          mStep = (mStep + 1) % 4;
+        } else {
+          // invert walk animation order if walking backwards
+          mStep = (mStep + 3) % 4;
+        }
+        switch (mStep) {
+          case 0:
+          default:
+            mSprite->StartAnimationInDirection(walkAnimations1, aDirection);
+            break;
+          case 1:
+            mSprite->StartAnimationInDirection(walkAnimations2, aDirection);
+            break;
+          case 2:
+            mSprite->StartAnimationInDirection(walkAnimations3, aDirection);
+            break;
+          case 3:
+            mSprite->StartAnimationInDirection(walkAnimations4, aDirection);
+            break;
+        }
         break;
       }
     case IDLE_STATE:
@@ -459,7 +480,7 @@ DIRECTION GPlayerProcess::MaybeMove(TFloat aSpeed) {
   mSprite->vy = newVy;
   mSprite->vx = newVx;
 
-  if (GPlayer::mTargeted) {
+  if (GPlayer::mTargeted && !gControls.IsPressed(CONTROL_RUN)) {
     TPoint myCenter = mSprite->Center(), otherCenter = GPlayer::mTargeted->Center();
     newDirection = GAnchorSprite::VectorToDirection(otherCenter.x - myCenter.x, otherCenter.y - myCenter.y);
   }
@@ -489,10 +510,10 @@ TBool GPlayerProcess::MaybeWalk() {
   DIRECTION newDirection = MaybeMove(speed);
 
   if (mSprite->vx == 0 && mSprite->vy == 0) {
-    NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
   else if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
+    mStep = 0;
     NewState(WALK_STATE, newDirection);
   }
   return ETrue;
@@ -542,7 +563,8 @@ TBool GPlayerProcess::WalkState() {
   }
 
   mStepFrame++;
-  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >= (WALKSPEED * 2) * PLAYER_VELOCITY / SQRT(POW(mSprite->vx, 2) + POW(mSprite->vy, 2)))) {
+  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >=
+      TInt(WALKSPEED * PLAYER_VELOCITY / hypot(mSprite->vx, mSprite->vy)))) {
     mStepFrame = 1;
     NewState(WALK_STATE, mSprite->mDirection);
   }

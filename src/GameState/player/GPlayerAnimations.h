@@ -72,6 +72,8 @@ extern ANIMSCRIPT hitHardUpAnimation[]; // attacked
 extern ANIMSCRIPT* idleAnimations[];
 extern ANIMSCRIPT* walkAnimations1[];
 extern ANIMSCRIPT* walkAnimations2[];
+extern ANIMSCRIPT* walkAnimations3[];
+extern ANIMSCRIPT* walkAnimations4[];
 extern ANIMSCRIPT* swordChargeAnimations[];
 extern ANIMSCRIPT* swordAnimationsNoGloves[];
 extern ANIMSCRIPT* swordAnimationsWithGloves[];
