@@ -37,9 +37,6 @@ TBool GEnemySprite::Render(BViewPort *aViewPort) {
                                            MAX(mMeter * 20, 1), COLOR_HEALTH2);
     }
   }
-  if (this == GPlayer::mTargeted) {
-    gDisplay.renderBitmap->DrawString(aViewPort, "v", gFont16x16, MID(mRect.x1, mRect.x2) - 8, mRect.y2 - 60, COLOR_SHMOO_RED, -1);
-  }
   return ret;
 }
 
