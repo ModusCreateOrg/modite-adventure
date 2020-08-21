@@ -12,6 +12,8 @@ public:
 public:
   TBool Render(BViewPort *aViewPort) OVERRIDE;
 
+  void RenderAboveShadow(BViewPort *aViewPort) OVERRIDE;
+
 public:
   TFloat mMeter;
 };

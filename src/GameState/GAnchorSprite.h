@@ -90,6 +90,7 @@ public:
   void Move() OVERRIDE;
 
   TBool Render(BViewPort *aViewPort) OVERRIDE;
+  virtual void RenderAboveShadow(BViewPort *aViewPort) {};
 
   void SaveDataFromCollided(GAnchorSprite *aOther);
   void Collide(BSprite *aOther) OVERRIDE;

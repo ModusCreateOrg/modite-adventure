@@ -168,7 +168,7 @@ void GAnchorSprite::ResetShadow() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  TBool ret;
+  TBool ret, overrideClipped = EFalse;
   BBitmap &bm = *gDisplay.renderBitmap;
   if (TestFlags(SFLAG_RENDER_SHADOW) && TestFlags(SFLAG_RENDER)) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
@@ -186,13 +186,13 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
         bm.DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
                                              r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
       }
-      ret = BAnimSprite::Render(aViewPort);
-      ClearFlags(SFLAG_CLIPPED);
-    } else {
-      ret = BAnimSprite::Render(aViewPort);
+      overrideClipped = ETrue;
     }
-  } else {
-    ret = BAnimSprite::Render(aViewPort);
+  }
+  RenderAboveShadow(aViewPort);
+  ret = BAnimSprite::Render(aViewPort);
+  if (overrideClipped) {
+    ClearFlags(SFLAG_CLIPPED);
   }
 
 #ifdef DEBUG_MODE
