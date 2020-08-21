@@ -124,6 +124,7 @@ public:
 public:
   static DIRECTION RandomDirection();
   static DIRECTION RotateDirection(DIRECTION aDirection, TInt aRotateClockwiseCount);
+  static DIRECTION VectorToDirection(TInt aDx, TInt aDy);
 
   void StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection);
   void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);

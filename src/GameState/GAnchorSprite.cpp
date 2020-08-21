@@ -273,6 +273,14 @@ DIRECTION GAnchorSprite::RotateDirection(DIRECTION aDirection, TInt aRotateClock
   }
 }
 
+DIRECTION GAnchorSprite::VectorToDirection(TInt aDx, TInt aDy) {
+  if (aDy < aDx) {
+    return aDy < -aDx ? DIRECTION_UP : DIRECTION_RIGHT;
+  } else {
+    return aDy < -aDx ? DIRECTION_LEFT : DIRECTION_DOWN;
+  }
+}
+
 void GAnchorSprite::StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:

@@ -389,6 +389,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->h = 16;
   mSprite->cx = 8;
   mSprite->cy = 0;
+  mSprite->ResetShadow();
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
   mRangeX = mRangeY = 16;

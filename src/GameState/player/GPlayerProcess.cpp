@@ -459,6 +459,11 @@ DIRECTION GPlayerProcess::MaybeMove(TFloat aSpeed) {
   mSprite->vy = newVy;
   mSprite->vx = newVx;
 
+  if (GPlayer::mTargeted) {
+    TPoint myCenter = mSprite->Center(), otherCenter = GPlayer::mTargeted->Center();
+    newDirection = GAnchorSprite::VectorToDirection(otherCenter.x - myCenter.x, otherCenter.y - myCenter.y);
+  }
+
   return newDirection;
 }
 
