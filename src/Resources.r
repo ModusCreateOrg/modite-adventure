@@ -264,5 +264,5 @@ RAW SFX_midboss_attack_water.wav
 RAW SFX_midboss_attack_earth.wav
 RAW SFX_door_open.wav
 RAW SFX_door_open_group.wav
-
-
+RAW SFX_wizard_fire_pillar.wav
+RAW SFX_wizard_fire_pillar_death.wav

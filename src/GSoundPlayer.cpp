@@ -44,6 +44,8 @@ static const TUint16 effectsList[] = {
   SFX_MIDBOSS_ATTACK_EARTH_WAV,
   SFX_DOOR_OPEN_WAV,
   SFX_DOOR_OPEN_GROUP_WAV,
+  SFX_WIZARD_FIRE_PILLAR_WAV,
+  SFX_WIZARD_FIRE_PILLAR_DEATH_WAV
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
