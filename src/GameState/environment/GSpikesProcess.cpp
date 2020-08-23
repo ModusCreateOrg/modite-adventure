@@ -11,9 +11,9 @@ static const ANIMSCRIPT spikesAnimation[] = {
   ATYPE(STYPE_EBULLET),
   ASTEP(SPIKE_SPEED, IMG_SPIKES + 2),
   ASTEP(SPIKE_SPEED, IMG_SPIKES + 3),
-  ATYPE(STYPE_DEFAULT),
   ASTEP(SPIKE_SPEED, IMG_SPIKES + 2),
   ASTEP(SPIKE_SPEED, IMG_SPIKES + 1),
+  ATYPE(STYPE_DEFAULT),
   ASTEP(SPIKE_SPEED, IMG_SPIKES),
   AEND,
 };
@@ -33,6 +33,7 @@ GSpikesProcess::GSpikesProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   mSprite->x = aX;
   mSprite->y = aY + 32;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
   mGameState->AddSprite(mSprite);
   mState = EFalse;
   mTime = (7 * SPIKE_SPEED);

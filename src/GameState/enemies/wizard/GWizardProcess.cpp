@@ -157,15 +157,19 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   switch (mType) {
     case ATTR_WIZARD_EARTH:
       mSprite->Name("Ikuyim");
+      mSprite->mElement = ELEMENT_EARTH;
       break;
     case ATTR_WIZARD_WATER:
       mSprite->Name("Asakust");
+      mSprite->mElement = ELEMENT_WATER;
       break;
     case ATTR_WIZARD_FIRE:
       mSprite->Name("Imagak");
+      mSprite->mElement = ELEMENT_FIRE;
       break;
     case ATTR_WIZARD_ENERGY:
       mSprite->Name("Atanok");
+      mSprite->mElement = ELEMENT_ENERGY;
       break;
     default:
       Panic("Invalid wizard type");
@@ -460,6 +464,8 @@ TBool GWizardProcess::ProjectileState() {
           break;
       }
       mGameState->AddProcess(new GWizardProjectileProcess(mGameState, this, angle, mType));
+
+
     }
     return ETrue;
   }
@@ -494,6 +500,9 @@ TBool GWizardProcess::PillarState() {
 
     // spawn pillars
     if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
+      if (mType == ATTR_WIZARD_FIRE) {
+        gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_WAV, 4);
+      }
       // Follows Player if water or fire
       mGameState->AddProcess(
               new GWizardPillarProcess(mGameState, this, 0, 0, ETrue, FRAMES_PER_SECOND * 6));
@@ -501,7 +510,7 @@ TBool GWizardProcess::PillarState() {
     } else {
       for (TInt n = 0; n < 8; n++) {
         TFloat angle = RandomFloat() * 2 * M_PI,
-                distance = Random(50, 100);
+               distance = Random(50, 100);
 
         mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, distance, EFalse, FRAMES_PER_SECOND * 4));
         mStateTimer = 2 * FRAMES_PER_SECOND;

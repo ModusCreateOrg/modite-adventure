@@ -111,7 +111,8 @@ void GWizardProjectileProcess::StartExplodeAnimation() {
     break;
   case ATTR_WIZARD_FIRE:
     mSprite->StartAnimation(explodeFireAnimation);
-    break;
+      gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_DEATH_WAV, 3);
+      break;
   case ATTR_WIZARD_EARTH:
     mSprite->StartAnimation(explodeEarthAnimation);
     break;
@@ -119,10 +120,10 @@ void GWizardProjectileProcess::StartExplodeAnimation() {
     mSprite->StartAnimation(explodeWaterAnimation);
     break;
   default:
-    Panic("StartExplision: invalid mAttribute: %d\n", mAttribute);
+    Panic("StartExplosion: invalid mAttribute: %d\n", mAttribute);
   }
 }
-// consructor
+// constructor
 GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState,
                                                    GWizardProcess *aParent,
                                                    TFloat aAngle,
@@ -135,27 +136,31 @@ GWizardProjectileProcess::GWizardProjectileProcess(GGameState *aGameState,
   mAngle = aAngle;
   mSaveToStream = EFalse;
   mStep = 0;
+
   switch (mAttribute) {
-  case ATTR_WIZARD_ENERGY:
-    mSprite = new GAnchorSprite(aGameState, 0, ENERGY_WIZARD_PROJECTILE_SLOT);
-    break;
-  case ATTR_WIZARD_FIRE:
-    mSprite = new GAnchorSprite(aGameState, 0, FIRE_WIZARD_PROJECTILE_SLOT);
-    break;
-  case ATTR_WIZARD_EARTH:
-    mSprite = new GAnchorSprite(aGameState, 0, EARTH_WIZARD_PROJECTILE_SLOT);
-    break;
-  case ATTR_WIZARD_WATER:
-    mSprite = new GAnchorSprite(aGameState, 0, WATER_WIZARD_PROJECTILE_SLOT);
-    break;
-  default:
-    Panic("Projectile invalid mAttribute: %d\n", mAttribute);
+    case ATTR_WIZARD_ENERGY:
+      mSprite = new GAnchorSprite(aGameState, 0, ENERGY_WIZARD_PROJECTILE_SLOT);
+      break;
+    case ATTR_WIZARD_FIRE:
+      mSprite = new GAnchorSprite(aGameState, 0, FIRE_WIZARD_PROJECTILE_SLOT);
+      gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_WAV, 4);
+      break;
+    case ATTR_WIZARD_EARTH:
+      mSprite = new GAnchorSprite(aGameState, 0, EARTH_WIZARD_PROJECTILE_SLOT);
+      break;
+    case ATTR_WIZARD_WATER:
+      mSprite = new GAnchorSprite(aGameState, 0, WATER_WIZARD_PROJECTILE_SLOT);
+      break;
+    default:
+      Panic("Projectile invalid mAttribute: %d\n", mAttribute);
   }
+
   mSprite->type = STYPE_EBULLET;
-  mSprite->SetCMask(
-      STYPE_PLAYER | STYPE_PBULLET |
-      STYPE_OBJECT); // collide with player, player attacks, and environment
+
+  // collide with player, player attacks, and environment
+  mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT);
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
   mSprite->mAttackStrength = mParent->mSprite->mAttackStrength;
 
   mSprite->x = mParent->mSprite->x + SIN(aAngle) * 24 + 16;

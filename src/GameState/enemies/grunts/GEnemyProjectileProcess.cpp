@@ -313,6 +313,7 @@ GEnemyProjectileProcess::GEnemyProjectileProcess(GGameState *aGameState, TFloat 
   mSprite->y = aY;
   mSprite->w = 8;
   mSprite->h = 8;
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
   ConfigSprite(aAngle);
 
   // Angles are in radians
