@@ -154,4 +154,9 @@ void GInventoryPlayfield::Render() {
     }
     bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
   }
+  else {
+    sprintf(buf, "Explore to find this item.");
+    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
+  }
+
 }
