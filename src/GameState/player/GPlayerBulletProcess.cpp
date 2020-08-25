@@ -17,9 +17,7 @@ public:
 
 GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDirection, TFloat aMultiplier)
     : GProcess(ATTR_GONE) {
-  mDirection = aDirection;
   mSprite = new BulletSprite(aGameState);
-  mSprite->type = STYPE_PBULLET;
   mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
   mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection);
@@ -48,7 +46,6 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
 
   mSprite->x = GPlayer::mSprite->x - mSprite->w / 2 + 32;
   mSprite->y = GPlayer::mSprite->y - mSprite->h / 2 - 8;
-  mSprite->mDirection = mDirection;
   mAge = 0;
   aGameState->AddSprite(mSprite);
 }
@@ -69,13 +66,15 @@ TBool GPlayerBulletProcess::RunAfter() {
   if (!mSprite->mGameState->mGamePlayfield->IsFloor(mSprite->x + mSprite->w / 2, mSprite->y + mSprite->h / 2)) {
     return EFalse;
   }
-  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET | STYPE_BARRIER)) {
+  if (mSprite->TestAndClearCType(STYPE_ENEMY | STYPE_EBULLET)) {
     return EFalse;
   }
   mAge++;
   if (mAge * VELOCITY > mRange) {
     return EFalse;
   }
-  mSprite->ClearCType(STYPE_OBJECT);
+  if (mSprite->TestAndClearCType(STYPE_OBJECT)) {
+    mSprite->ClearCMask(STYPE_OBJECT);
+  }
   return ETrue;
 }

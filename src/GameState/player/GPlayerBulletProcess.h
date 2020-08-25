@@ -21,7 +21,6 @@ protected:
   BulletSprite *mSprite;
   TFloat mAge;
   TFloat mRange;
-  DIRECTION mDirection;
 };
 
 
