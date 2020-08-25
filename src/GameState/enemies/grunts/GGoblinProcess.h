@@ -16,10 +16,12 @@ protected:
   void Idle(DIRECTION aDirection) OVERRIDE;
   void Taunt(DIRECTION aDirection) OVERRIDE;
   void Walk(DIRECTION aDirection) OVERRIDE;
+  TBool WalkState() OVERRIDE;
   void Attack(DIRECTION aDirection) OVERRIDE;
   void Hit(DIRECTION aDirection) OVERRIDE;
   void Spell(DIRECTION aDirection) OVERRIDE;
   void Death(DIRECTION aDirection) OVERRIDE;
+
 
 };
 

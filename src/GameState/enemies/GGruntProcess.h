@@ -67,9 +67,9 @@ protected:
     gSoundPlayer.TriggerSfx(SFX_ENEMY_DEATH_WAV, 5);
   }
   static void SfxTaunt() {
-//    gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV);
-//    printf("Enemy Taunt\n");
-
+    if (Random(0, 5) > 4) {
+      gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV);
+    }
   }
   static void SfxAttack() {
     gSoundPlayer.TriggerSfx(SFX_ENEMY_ATTACK_WAV);
@@ -100,7 +100,7 @@ protected:
   TBool TauntState();
 
   virtual void Walk(DIRECTION aDirection) = 0;
-  TBool WalkState();
+  virtual TBool WalkState();
 
   virtual void Attack(DIRECTION aDirection) = 0;
   TBool AttackState();

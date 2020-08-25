@@ -1,3 +1,4 @@
+
 #include "GEnemyProcess.h"
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute)
