@@ -10,7 +10,8 @@ BFont *gFont8x8, *gFont16x16;
 BViewPort gFullViewPort;
 
 #ifdef DEBUG_MODE
-TBool GGame::mDebug = ETrue;
+//TBool GGame::mDebug = ETrue;
+TBool GGame::mDebug = EFalse;
 #else
 TBool GGame::mDebug = EFalse;
 #endif

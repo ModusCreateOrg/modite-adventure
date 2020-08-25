@@ -43,6 +43,7 @@ TBool GWizardDeathProcess::RunBefore() {
     mSprite->SetFlags(SFLAG_BELOW);
     mGameState->AddSprite(mSprite);
     mSprite->StartAnimation(deathAnimation);
+    gSoundPlayer.TriggerSfx(SFX_WIZARD_EXPLODING_WAV, 4);
   }
   return ETrue;
 }

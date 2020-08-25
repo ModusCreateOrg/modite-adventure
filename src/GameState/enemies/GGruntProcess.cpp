@@ -137,7 +137,12 @@ TBool GGruntProcess::MaybeHit() {
   }
 
   if (BasicDamageCheck()) {
-    NewState(HIT_STATE, GAnchorSprite::RotateDirection(mSprite->mCollided.direction, 2));
+    if (mSprite->mCollided.direction != DIRECTION_UNSPECIFIED) {
+      NewState(HIT_STATE, GAnchorSprite::RotateDirection(mSprite->mCollided.direction, 2));
+    }
+    else {
+      NewState(HIT_STATE, mSprite->mDirection);
+    }
     return ETrue;
   }
 
