@@ -75,17 +75,22 @@ TBool GEnemyProcess::SpellDamageCheck() {
 void GEnemyProcess::DoDamage(TInt aStrength) {
   // Random +/- 20% damage modifier
   aStrength = (aStrength * Random(80, 120)) / 100;
-  mHitPoints -= aStrength;
-  mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));
-  gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV, 4);
-  mInvulnerable = ETrue;
+  if (aStrength > 0) {
+    mHitPoints -= aStrength;
+    mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));
+    gSoundPlayer.TriggerSfx(SFX_ENEMY_TAKE_DAMAGE_WAV, 4);
+    mInvulnerable = ETrue;
+  }
+  else {
+    DoHeal(aStrength * -1);
+  }
 }
 
 void GEnemyProcess::DoHeal(TInt aAmount) {
-  // TODO: @jaygarcia SfxWizardHeal (or use existing SfxPlayerQuaffHealthPotion)
   TInt healAmount = MIN(aAmount, mMaxHitPoints - mHitPoints);
   mGameState->AddProcess(new GStatProcess(STAT_HEAL, mSprite->Center(), "%d", healAmount));
   mHitPoints = MIN(mHitPoints + healAmount, mMaxHitPoints);
+  gSoundPlayer.TriggerSfx(SFX_ENEMY_HEAL_WAV, 3);
 }
 
 void GEnemyProcess::UpdateBlink() {

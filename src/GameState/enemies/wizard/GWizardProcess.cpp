@@ -181,7 +181,7 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
-  SetStatMultipliers(10.0, 3.0, 10.0);
+  SetStatMultipliers(50.0, 7.0, 15.0);
   //
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
@@ -342,8 +342,6 @@ TBool GWizardProcess::MaybeDamage() {
     mSpellCounter += 2;
     auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
     mGameState->AddProcess(p);
-    p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
-    mGameState->AddProcess(p);
     StartBlink(FRAMES_PER_SECOND / 4);
     return ETrue;
   }
@@ -500,13 +498,13 @@ TBool GWizardProcess::PillarState() {
 
     // spawn pillars
     if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
+      // Follows Player if water or fire
+      mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, 0, 0, ETrue, FRAMES_PER_SECOND * 6));
+      mStateTimer = 0.3 * FRAMES_PER_SECOND;
+
       if (mType == ATTR_WIZARD_FIRE) {
         gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_WAV, 4);
       }
-      // Follows Player if water or fire
-      mGameState->AddProcess(
-              new GWizardPillarProcess(mGameState, this, 0, 0, ETrue, FRAMES_PER_SECOND * 6));
-      mStateTimer = 0.3 * FRAMES_PER_SECOND;
     } else {
       for (TInt n = 0; n < 8; n++) {
         TFloat angle = RandomFloat() * 2 * M_PI,
@@ -525,7 +523,7 @@ TBool GWizardProcess::PillarState() {
 TBool GWizardProcess::TeleportState() {
   --mAttackTimer;
   if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-    // TODO: @jaygarcia SfxWizardTeleport
+    gSoundPlayer.TriggerSfx(SFX_WIZARD_TELEPORT_WAV, 5);
     RandomLocation();
     mSprite->StartAnimation(teleportAnimation2);
     mStep++;
@@ -539,7 +537,7 @@ TBool GWizardProcess::TeleportState() {
 
   if (mSprite->AnimDone()) {
     if (mStep == 0) {
-      // TODO: @jaygarcia SfxWizardTeleport
+      gSoundPlayer.TriggerSfx(SFX_WIZARD_TELEPORT_WAV, 5);
       RandomLocation();
       // illusion sometimes when below 75% health
       if (TFloat(mHitPoints) / TFloat(mMaxHitPoints) < 0.75 && (Random() & 1u)) {
@@ -560,6 +558,7 @@ TBool GWizardProcess::TeleportState() {
 TBool GWizardProcess::IllusionState() {
   if (MaybeDamage() || mHitPoints == mMaxHitPoints) {
     // TODO: @jaygarcia SfxWizardSpellInterrupt
+    printf("TODO: @jaygarcia SfxWizardSpellInterrupt");
     mChanneling = EFalse;
     SetState(STATE_IDLE, mDirection);
   }

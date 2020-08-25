@@ -3,6 +3,8 @@
 #include "GPlayer.h"
 #include "BSpriteSheet.h"
 
+//OAL value model for closing doors
+//16 * (ATTR_BLUE_SPELLBOOK) + 15
 GDoorProcess::GDoorProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloat aX, TFloat aY, TBool aWood, TBool aHorizontal)
     : GEnvironmentProcess(aGameState, aIp, aParam, aX, aY, ENVIRONMENT_PRIORITY_DOOR) {
 
