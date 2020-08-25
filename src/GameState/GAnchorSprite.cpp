@@ -218,6 +218,8 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
         case DIRECTION_RIGHT:
           bm.DrawFastHLine(aViewPort, p.x, p.y, 20, COLOR_HEALTH2);
           break;
+        default:
+          break;
       }
     }
     // render collision rect
@@ -269,6 +271,8 @@ DIRECTION GAnchorSprite::RotateDirection(DIRECTION aDirection, TInt aRotateClock
         return GAnchorSprite::RotateDirection(DIRECTION_UP, aRotateClockwiseCount);
       case DIRECTION_RIGHT:
         return GAnchorSprite::RotateDirection(DIRECTION_DOWN, aRotateClockwiseCount);
+      default:
+        return aDirection;
     }
   }
 }
