@@ -286,13 +286,28 @@ TBool GPlayerProcess::MaybeHit() {
     hitAmount = other.attackStrength;
 
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-      mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      if (other.direction == DIRECTION_UNSPECIFIED) {
+        mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
+      }
+      else {
+        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      }
     }
     else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-      mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      if (other.direction == DIRECTION_UNSPECIFIED) {
+        mSprite->StartAnimationInDirection(hitMediumAnimations, mSprite->mDirection);
+      }
+      else {
+        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      }
     }
     else {
-      mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      if (other.direction == DIRECTION_UNSPECIFIED) {
+        mSprite->StartAnimationInDirection(hitHardAnimations, mSprite->mDirection);
+      }
+      else {
+        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
+      }
     }
   }
 

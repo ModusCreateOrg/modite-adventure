@@ -144,7 +144,7 @@ void GFinalBossProjectileProcess::StartExplodeAnimation() {
       Panic("StartExplision: invalid mAttribute: %d\n", mAttribute);
   }
 }
-// consructor
+// constructor
 GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute)
     : GProcess(0, 0) {
 
@@ -162,7 +162,8 @@ GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState,
   mSprite->SetCMask(STYPE_PLAYER);
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);
   mSprite->mAttackStrength = 55;
-
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
+  mExploding = EFalse;
   mSprite->x = aX;
   mSprite->y = aY;
   //   mSprite->x = aParent->mSprite->x + 16;
