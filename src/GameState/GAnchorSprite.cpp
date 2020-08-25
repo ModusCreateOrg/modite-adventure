@@ -32,11 +32,18 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
 
 GAnchorSprite::~GAnchorSprite() = default;
 
-void GAnchorSprite::SetAttribute(TUint aAttribute) {
+void GAnchorSprite::SetMapAttribute(TUint aAttribute) {
   if (mAttributeSave == 0xffff) {
     mAttributeSave = mGameState->mGamePlayfield->GetAttribute(x, y);
   }
   mGameState->mGamePlayfield->SetAttribute(x, y, aAttribute);
+}
+
+void GAnchorSprite::ResetMapAttribute() {
+  if (mAttributeSave != 0xffff) {
+    SetMapAttribute(mAttributeSave);
+    mAttributeSave = 0xffff;
+  }
 }
 
 // safely position sprite so it's not on top of player
@@ -53,17 +60,6 @@ void GAnchorSprite::SafePosition(BSprite *aOther) {
     return;
   }
   x = hisRect.x2 + 1;
-}
-
-// set or clear wall bits in playfield depending on aState (true = set, false = clear)
-void GAnchorSprite::SetWall(TBool aState) {
-  TUint16 attribute = mGameState->mGamePlayfield->GetAttribute(x, y);
-  if (aState) {
-    SetAttribute(0);
-  }
-  else {
-    SetAttribute(mAttributeSave);
-  }
 }
 
 TBool GAnchorSprite::IsFloorTile(TFloat aX, TFloat aY) {
@@ -144,9 +140,8 @@ void GAnchorSprite::SaveDataFromCollided(GAnchorSprite *aOther) {
     mCollided.collisionAngle = ATAN2(myCenter.x - otherCenter.x, myCenter.y - otherCenter.y) + 2 * M_PI;
     mCollided.vx = aOther->vx;
     mCollided.vy = aOther->vy;
-  } else {
-    mCollided.collisionAngle = -1;
   }
+  mCollided.flags = aOther->flags;
 }
 
 void GAnchorSprite::Collide(BSprite *aOther) {

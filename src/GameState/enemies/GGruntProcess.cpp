@@ -430,7 +430,7 @@ TBool GGruntProcess::RunBefore() {
 
 TBool GGruntProcess::RunAfter() {
   UpdateBlink();
-  mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT | STYPE_BARRIER);
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_OBJECT);
   mSprite->mMeter = (TFloat) mHitPoints / (TFloat) mMaxHitPoints;
 
   return ETrue;
