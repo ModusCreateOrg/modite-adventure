@@ -26,6 +26,8 @@ const TUint16 ATTR_THIN_WALL = 2;
 const TUint16 ATTR_CORNER_IN = 3;
 const TUint16 ATTR_CORNER_OUT = 4;
 const TUint16 ATTR_CORNER_DIAGONAL = 5;
+const TUint16 ATTR_HORIZONTAL_DOOR_WALL = 6;
+const TUint16 ATTR_VERTICAL_DOOR_WALL = 7;
 
 //const TUint16 ATTR_PROJECTILE_ARROW = 25;  // not sure this is going to be used like a GEnemyProcess
 
@@ -200,6 +202,10 @@ public:
           return inverted ^ (x > WALL_THICKNESS || y > WALL_THICKNESS);
         case ATTR_CORNER_DIAGONAL:
           return inverted ^ (x + y < TILESIZE - WALL_THICKNESS);
+        case ATTR_HORIZONTAL_DOOR_WALL:
+          return y < 16;
+        case ATTR_VERTICAL_DOOR_WALL:
+          return x < 8 || x > 24;
       }
     }
     else {
