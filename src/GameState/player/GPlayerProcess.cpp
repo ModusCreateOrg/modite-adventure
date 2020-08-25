@@ -172,7 +172,7 @@ TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
 
 void GPlayerProcess::StartKnockback() {
   GCollidedData other = mSprite->mCollided;
-  if (other.collisionAngle >= 0) {
+  if (other.flags & SFLAG_KNOCKBACK) {
     TFloat newVx, newVy;
 
     newVx = PLAYER_VELOCITY * SIN(other.collisionAngle);
