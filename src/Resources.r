@@ -249,6 +249,7 @@ RAW SFX_player_quaff_energy_spell.wav
 RAW SFX_player_quaff_spell.wav
 RAW SFX_player_take_damage.wav
 RAW SFX_player_death.wav
+RAW SFX_player_parry_projectile.wav
 RAW SFX_enemy_attack.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
