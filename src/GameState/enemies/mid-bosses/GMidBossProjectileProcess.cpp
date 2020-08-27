@@ -81,6 +81,8 @@ GMidBossProjectileProcess::GMidBossProjectileProcess(GGameState *aGameState,
 
   mSprite->vx = (x1 - x2) / FRAMES_TO_HIT_PLAYER;
   mSprite->vy = (y1 - y2) / FRAMES_TO_HIT_PLAYER;
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
+
   mGameState->AddSprite(mSprite);
   mState = EFalse;
 }

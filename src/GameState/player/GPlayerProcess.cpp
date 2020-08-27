@@ -639,7 +639,7 @@ TBool GPlayerProcess::SwordState() {
         mSprite->mSwordCharge = 2.0;
         damageMultiplier = PERFECT_CHARGE_BONUS;
       }
-      
+
       mGameState->AddProcess(new GPlayerBulletProcess(mGameState, mSprite->mDirection, damageMultiplier));
       mStep++;
       break;
