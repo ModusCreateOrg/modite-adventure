@@ -100,7 +100,7 @@ void GGruntProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
       mSpellOverlayProcess = p;
       mGameState->AddProcess(p);
       mSprite->mDirection = DIRECTION_DOWN;

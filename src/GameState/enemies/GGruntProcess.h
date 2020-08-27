@@ -67,12 +67,12 @@ protected:
     gSoundPlayer.TriggerSfx(SFX_ENEMY_DEATH_WAV, 5);
   }
   static void SfxTaunt() {
-    if (Random(0, 5) > 4) {
-      gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV);
+    if (Random(0, 10) > 8) {
+      gSoundPlayer.TriggerSfx(SFX_ENEMY_TAUNT_WAV, 4);
     }
   }
   static void SfxAttack() {
-    gSoundPlayer.TriggerSfx(SFX_ENEMY_ATTACK_WAV);
+    gSoundPlayer.TriggerSfx(SFX_ENEMY_ATTACK_WAV, 4);
   }
 
 protected:

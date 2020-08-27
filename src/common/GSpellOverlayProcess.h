@@ -6,8 +6,9 @@
 
 class GSpellOverlayProcess : public GProcess {
 public:
-  GSpellOverlayProcess(GGameState *aGameState, GProcess *aProcess, TFloat aX, TFloat aY);
-
+  GSpellOverlayProcess(GGameState *aGameState, GProcess *aProcess, TFloat aX, TFloat aY, TInt16 aSpawnDelay,
+                       TFloat aVX, TFloat aVY);
+  TInt16 mTimer;
   ~GSpellOverlayProcess() OVERRIDE;
 
 public:
@@ -16,8 +17,10 @@ public:
   TBool RunAfter() OVERRIDE;
 
 protected:
+    TInt16 mSpawnDelay;
   GAnchorSprite *mSprite;
   GProcess *mParent;
+  GGameState *mGameState;
 };
 
 #endif //MODITE_GSPELLOVERLAYPROCESS_H

@@ -114,7 +114,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     mSprite->vy = 0;
     Ball(aDirection);
     mSprite->ClearFlags(SFLAG_KNOCKBACK);
-    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_IN_WAV);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_IN_WAV, 4);
     break;
 
   case MB_MOVE_STATE:
@@ -142,7 +142,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     Revert(aDirection);
     mSprite->ResetShadow();
     mSprite->SetFlags(SFLAG_KNOCKBACK);
-    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_OUT_WAV);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_TRANSFORM_OUT_WAV, 4);
 
     break;
 
@@ -175,14 +175,13 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     mSprite->ClearCMask(STYPE_EBULLET);
     Spell(aDirection);
     {
-      mSpellCounter += 2;
-      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 22,
-                                         mSprite->y + 1);
+      mSpellCounter++;
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 22, mSprite->y + 1, 0, 0, 0);
       mSpellOverlayProcess = p;
       mGameState->AddProcess(p);
-      p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44,
-                                   mSprite->y + 1);
-      mGameState->AddProcess(p);
+//      p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44,
+//                                   mSprite->y + 1);
+//      mGameState->AddProcess(p);
     }
     break;
 
@@ -196,11 +195,10 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       TRect r;
       mSprite->GetRect(r);
       //        r.Dump();
-      mDeathCounter = 10;
+      mDeathCounter = 15;
       for (TInt delay = 0; delay < mDeathCounter; delay++) {
         printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
-        auto *p =
-            new GMidBossDeathProcess(mGameState, this, r.x1, r.y1 - 64, delay);
+        auto *p = new GMidBossDeathProcess(mGameState, this, r.x1, r.y1 - 64, delay);
         mGameState->AddProcess(p);
       }
     }
@@ -384,7 +382,7 @@ TBool GMidBossProcess::MaybeBounce() {
   }
 
   if (bouncedX || bouncedY) {
-    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_BOUNCE_WALL_WAV);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_BOUNCE_WALL_WAV, 4);
   }
 
   return bouncedX || bouncedY;

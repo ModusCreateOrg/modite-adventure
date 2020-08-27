@@ -355,11 +355,8 @@ void GFinalBossProcess::Hit(DIRECTION aDirection) {
 void GFinalBossProcess::Spell(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(hitAnimation);
-  mSpellCounter += 2;
-  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
-  //  mSpellOverlayProcess = p;
-  mGameState->AddProcess(p);
-  p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44, mSprite->y + 1);
+  mSpellCounter++;
+  auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
   mGameState->AddProcess(p);
 }
 

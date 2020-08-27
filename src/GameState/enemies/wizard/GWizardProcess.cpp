@@ -181,7 +181,8 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
-  SetStatMultipliers(50.0, 7.0, 15.0);
+  SetStatMultipliers(.5, 7.0, 15.0);
+//  SetStatMultipliers(50.0, 7.0, 15.0);
   //
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
@@ -339,8 +340,8 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 TBool GWizardProcess::MaybeDamage() {
   if (SpellDamageCheck()) {
     mSprite->vx = mSprite->vy = 0;
-    mSpellCounter += 2;
-    auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+    mSpellCounter++;
+    auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
     mGameState->AddProcess(p);
     StartBlink(FRAMES_PER_SECOND / 4);
     return ETrue;
@@ -580,7 +581,7 @@ TBool GWizardProcess::DeathState() {
 
 TBool GWizardProcess::RunBefore() {
   // Patch to prevent the damn thing from going out of screen.
-  if ((mSprite->x < 0) || (mSprite->y <0)) {
+  if ((mSprite->x < 0) || (mSprite->y < 0)) {
     mSprite->x = mStartX;
     mSprite->y = mStartY;
   }

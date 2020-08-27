@@ -1,7 +1,7 @@
 #include "GFinalBossDeathProcess.h"
 #include "GGameState.h"
 
-const TInt16 DEATH_SPEED = 4;
+const TInt16 DEATH_SPEED = 8;
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_DEATH_SLOT),

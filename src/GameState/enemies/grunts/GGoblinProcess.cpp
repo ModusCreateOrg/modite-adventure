@@ -879,7 +879,6 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
   }
 
   mSprite->mDirection = mDirection = aDirection;
-  printf("angleToPlayerRad %.5f, goblin->vx %.5f, goblin->vy %.5f\n", angleToPlayerRad, mSprite->vx, mSprite->vy);
 
   if (abs(vx) <= .000001 && abs(vy) <= .000001) {
     NewState(IDLE_STATE, aDirection);
