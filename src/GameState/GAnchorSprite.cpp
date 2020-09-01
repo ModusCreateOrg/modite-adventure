@@ -292,22 +292,27 @@ void GAnchorSprite::StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIREC
   }
 }
 
-void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection) {
+void GAnchorSprite::MoveInDirection(TFloat aSpeed, DIRECTION aDirection, TBool aIgnoreWallFlag) {
+  TFloat newVx = vx, newVy = vy;
   switch (aDirection) {
     case DIRECTION_UP:
-      vy = -aSpeed;
+      newVy = -aSpeed;
       break;
     case DIRECTION_DOWN:
-      vy = aSpeed;
+      newVy = aSpeed;
       break;
     case DIRECTION_LEFT:
-      vx = -aSpeed;
+      newVx = -aSpeed;
       break;
     case DIRECTION_RIGHT:
-      vx = aSpeed;
+      newVx = aSpeed;
       break;
     default:
       Panic("No move direction\n");
+  }
+  if (aIgnoreWallFlag || CanWalkInDirection(aDirection, newVx, newVy)) {
+    vx = newVx;
+    vy = newVy;
   }
 }
 

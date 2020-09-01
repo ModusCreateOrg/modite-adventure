@@ -121,7 +121,7 @@ public:
   static DIRECTION RotateDirection(DIRECTION aDirection, TInt aRotateClockwiseCount);
 
   void StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection);
-  void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);
+  void MoveInDirection(TFloat aSpeed, DIRECTION aDirection, TBool aIgnoreWallFlag = EFalse);
 
   // set the BMapPlayfield tile in map attribute
   void SetMapAttribute(TUint aAttribute);

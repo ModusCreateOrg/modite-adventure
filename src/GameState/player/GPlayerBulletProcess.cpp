@@ -20,7 +20,7 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
   mSprite = new BulletSprite(aGameState);
   mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
-  mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection);
+  mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection, ETrue);
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->w = 30;
