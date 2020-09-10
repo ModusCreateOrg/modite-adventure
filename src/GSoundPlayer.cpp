@@ -50,6 +50,7 @@ static const TUint16 effectsList[] = {
   SFX_WIZARD_FIRE_PILLAR_DEATH_WAV,
   SFX_WIZARD_EXPLODING_WAV,
   SFX_WIZARD_TELEPORT_WAV,
+  SFX_TOWER_PROJECTILE_DEATH_WAV
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
