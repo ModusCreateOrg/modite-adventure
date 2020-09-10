@@ -86,8 +86,6 @@ BGameEngine *GGame::CurrentState() {
 }
 
 void GGame::ToggleInGameMenu() {
-  // TODO: @jaygarcia pause main game music and switch to pause menu specifc (if
-  // need be)
   if (GPlayer::mGameOver || mDebugMenu || mInventory) {
     return;
   }
