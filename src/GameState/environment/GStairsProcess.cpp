@@ -79,6 +79,10 @@ GStairsProcess::GStairsProcess(GGameState *aGameState, TInt aIp, DIRECTION aDire
     mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
     mGameState->AddSprite(mSprite);
   }
+
+  if (mAttribute == ATTR_DUNGEON_EXIT_FROM_LEVEL_1) {
+    mSprite->ClearFlags(SFLAG_RENDER);
+  }
 }
 
 GStairsProcess::~GStairsProcess() {
