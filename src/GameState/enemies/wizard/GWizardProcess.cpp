@@ -181,8 +181,9 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
+
   SetStatMultipliers(50.0, 7.0, 15.0);
-  //
+
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
   mAttackType = 0;
@@ -339,8 +340,8 @@ void GWizardProcess::SetState(TInt aState, DIRECTION aDirection) {
 TBool GWizardProcess::MaybeDamage() {
   if (SpellDamageCheck()) {
     mSprite->vx = mSprite->vy = 0;
-    mSpellCounter += 2;
-    auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+    mSpellCounter++;
+    auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
     mGameState->AddProcess(p);
     StartBlink(FRAMES_PER_SECOND / 4);
     return ETrue;
@@ -441,7 +442,6 @@ TBool GWizardProcess::ProjectileState() {
 
   if (mStep < 360) {
     if (mStateTimer-- <= 0) {
-      // TODO: @jaygarcia SfxWizardCreateProjectile
       TFloat angle = 2 * M_PI;
       switch (mAttackType) {
         default:
@@ -486,7 +486,7 @@ TBool GWizardProcess::ProjectileState() {
 
 TBool GWizardProcess::PillarState() {
   if (MaybeDamage()) {
-    // TODO: @jaygarcia SfxWizardSpellInterrupt
+    gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 5);
     mChanneling = EFalse;
     SetAttackTimer();
     SetState(STATE_IDLE, mDirection);
@@ -494,7 +494,6 @@ TBool GWizardProcess::PillarState() {
   }
 
   if (mStateTimer-- < 0) {
-    // TODO: @jaygarcia SfxWizardCreatePillar
 
     // spawn pillars
     if (mType == ATTR_WIZARD_WATER || mType == ATTR_WIZARD_FIRE) {
@@ -502,15 +501,51 @@ TBool GWizardProcess::PillarState() {
       mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, 0, 0, ETrue, FRAMES_PER_SECOND * 6));
       mStateTimer = 0.3 * FRAMES_PER_SECOND;
 
-      if (mType == ATTR_WIZARD_FIRE) {
-        gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_WAV, 4);
+      switch (mType) {
+        case ATTR_WIZARD_FIRE:
+          gSoundPlayer.TriggerSfx(SFX_WIZARD_FIRE_PILLAR_WAV, 4);
+          break;
+        case ATTR_WIZARD_EARTH:
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 4);
+          break;
+        case ATTR_WIZARD_WATER:
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV, 4);
+          break;
+        case ATTR_WIZARD_ENERGY:
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV, 4);
+          break;
+        default:
+        break;
       }
+
     } else {
+
+      TUint16 sfxType;
+      switch (mType) {
+        case ATTR_WIZARD_FIRE:
+          sfxType = SFX_WIZARD_FIRE_PILLAR_WAV;
+          break;
+        case ATTR_WIZARD_EARTH:
+          sfxType = SFX_MIDBOSS_ATTACK_EARTH_WAV;
+          break;
+        case ATTR_WIZARD_WATER:
+          sfxType = SFX_MIDBOSS_ATTACK_WATER_WAV;
+          break;
+        case ATTR_WIZARD_ENERGY:
+          sfxType = SFX_MIDBOSS_ATTACK_ENERGY_WAV;
+          break;
+        default:
+          sfxType = SFX_EMPTY_WAV;
+          break;
+      }
+
       for (TInt n = 0; n < 8; n++) {
         TFloat angle = RandomFloat() * 2 * M_PI,
                distance = Random(50, 100);
 
         mGameState->AddProcess(new GWizardPillarProcess(mGameState, this, angle, distance, EFalse, FRAMES_PER_SECOND * 4));
+
+        gSoundPlayer.TriggerSfx(sfxType, 4);
         mStateTimer = 2 * FRAMES_PER_SECOND;
       }
 
@@ -557,8 +592,7 @@ TBool GWizardProcess::TeleportState() {
 
 TBool GWizardProcess::IllusionState() {
   if (MaybeDamage() || mHitPoints == mMaxHitPoints) {
-    // TODO: @jaygarcia SfxWizardSpellInterrupt
-    printf("TODO: @jaygarcia SfxWizardSpellInterrupt");
+    gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 5);
     mChanneling = EFalse;
     SetState(STATE_IDLE, mDirection);
   }
@@ -580,7 +614,7 @@ TBool GWizardProcess::DeathState() {
 
 TBool GWizardProcess::RunBefore() {
   // Patch to prevent the damn thing from going out of screen.
-  if ((mSprite->x < 0) || (mSprite->y <0)) {
+  if ((mSprite->x < 0) || (mSprite->y < 0)) {
     mSprite->x = mStartX;
     mSprite->y = mStartY;
   }

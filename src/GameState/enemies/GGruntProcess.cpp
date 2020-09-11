@@ -100,7 +100,7 @@ void GGruntProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       mSprite->vy = 0;
       mStep = 0;
       mSprite->cMask &= ~STYPE_EBULLET;
-      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1);
+      auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
       mSpellOverlayProcess = p;
       mGameState->AddProcess(p);
       mSprite->mDirection = DIRECTION_DOWN;
@@ -290,7 +290,6 @@ TBool GGruntProcess::DeathState() {
       case 2:
       case 3:
         GItemProcess::SpawnItem(mGameState, -1, ITEM_HEART, mSprite->x + 16, mSprite->y);
-        // TODO: Fix @jgarcia -- these SFX items should be "drop item"
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
         break;
       case 4:

@@ -373,7 +373,7 @@ TBool GEnemyProjectileProcess::RunAfter() {
       mTimer = PROJECTILE_EXPIRE;
       mState = DIE;
     } else if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
-//      TODO: @jaygarcia -- SFX here
+    gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 2);
 #ifdef DEBUGME
       printf("PLAYER HIT PROJECTILE\n");
 #endif

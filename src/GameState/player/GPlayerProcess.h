@@ -76,6 +76,8 @@ protected:
 
   TBool HitState();
 
+  void SpawnSpellProcesses();
+
 public:
   void WriteCustomToStream(BMemoryStream &aStream) OVERRIDE;
   void ReadCustomFromStream(BMemoryStream &aStream) OVERRIDE;

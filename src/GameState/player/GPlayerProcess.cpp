@@ -7,6 +7,9 @@
 #include "GResources.h"
 #include "GPlayerBulletProcess.h"
 #include "GBossProcess.h"
+#include "../../common/GSpellOverlayProcess.h"
+#include "GBossProcess.h"
+#include "../../common/GSpellOverlayProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -265,6 +268,7 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       GPlayer::mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
+
       break;
   }
 }
@@ -637,6 +641,7 @@ TBool GPlayerProcess::SwordState() {
         mSprite->mSwordCharge = 2.0;
         damageMultiplier = PERFECT_CHARGE_BONUS;
       }
+
       mGameState->AddProcess(new GPlayerBulletProcess(mGameState, mSprite->mDirection, damageMultiplier));
       mStep++;
       break;
@@ -652,6 +657,56 @@ TBool GPlayerProcess::SwordState() {
   return ETrue;
 }
 
+void GPlayerProcess::SpawnSpellProcesses() {
+//  mSprite->x = mParent->mSprite->x + COS(aAngle) * aDistance * 1.5 + 16;
+//  mSprite->y = mParent->mSprite->y + SIN(aAngle) * aDistance;
+  switch (GPlayer::mEquipped.mSpellBookElement) {
+    case ELEMENT_WATER: // Random locations around the player
+      for (int i = 0; i < 15; ++i) {
+        TInt16 spellX = mSprite->x + Random(-100, 100);
+        TInt16 spellY = mSprite->y + 16 + Random(-100, 100);
+
+        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(1, 30), 0, 0);
+        mGameState->AddProcess(p);
+      }
+      break;
+    case ELEMENT_FIRE:
+      printf("ELEMENT_FIRE\n");
+
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2.5 ,0));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2, -2));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 0, 2.5));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2, 2));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 0, -2.5));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2, -2));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2.5, 0));
+      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2, 2));
+
+      break;
+    case ELEMENT_EARTH:
+      printf("ELEMENT_EARTH\n");
+      for (int i = 0; i < 5; ++i) {
+        TInt16 spellX = mSprite->x + Random(-120, 120);
+        TInt16 spellY = mSprite->y + 16 + Random(-120, 120);
+        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(5, 40), 0 , 0);
+        mGameState->AddProcess(p);
+      }
+      break;
+    case ELEMENT_ENERGY:
+      for (int i = 0; i < 5; ++i) {
+        TInt16 spellX = mSprite->x + Random(-100, 100);
+        TInt16 spellY = mSprite->y + 16 + Random(-100, 100);
+
+        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, 0, 0, 0);
+//        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(5, 60), Random(-3, 3), Random(-3, 3));
+        mGameState->AddProcess(p);
+      }
+      break;
+    default:
+      Panic("Invalid spell");
+  }
+
+}
 TBool GPlayerProcess::SpellState() {
   switch (mStep) {
     case 0:
@@ -663,6 +718,20 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->StartAnimation(spellOverlayAnimation);
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
+        SpawnSpellProcesses();
+
+        // affect nearby enemies
+//        for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
+//          if (!s->Clipped() && s->type == STYPE_ENEMY) {
+//            TFloat dx = s->x - mSprite->x,
+//                dy = s->y - mSprite->y,
+//                distance = SQRT((dx * dx + dy * dy));
+//            if (distance < SPELL_DISTANCE) {
+//              s->SetCType(STYPE_SPELL);
+//            }
+//          }
+//        }
+
       }
       break;
     case 1:
@@ -678,7 +747,7 @@ TBool GPlayerProcess::SpellState() {
       if (mSprite->AnimDone()) {
         GPlayer::mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
-
+//
         // affect nearby enemies
         for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
           if (!s->Clipped() && s->type == STYPE_ENEMY) {

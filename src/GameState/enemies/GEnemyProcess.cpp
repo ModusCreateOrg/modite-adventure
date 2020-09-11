@@ -82,6 +82,7 @@ TBool GEnemyProcess::SpellDamageCheck() {
 void GEnemyProcess::DoDamage(TInt aStrength) {
   // Random +/- 20% damage modifier
   aStrength = (aStrength * Random(80, 120)) / 100;
+
   if (aStrength > 0) {
     mHitPoints -= aStrength;
     mGameState->AddProcess(new GStatProcess(STAT_ENEMY_HIT, mSprite->Center(), "%d", aStrength));

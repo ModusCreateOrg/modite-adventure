@@ -86,6 +86,7 @@ TBool GEnemyCrystalProcess::RunAfter() {
   }
 
   if (mState == LIVE && !mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
+    gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
     mSprite->StartAnimation(explodeAnimation);
     mSprite->ClearFlags(SFLAG_CHECK);
     mSprite->vx = mSprite->vy = 0;
@@ -100,6 +101,8 @@ TBool GEnemyCrystalProcess::RunAfter() {
 #ifdef DEBUGME
       printf("ENEMY PROJECTILE HIT TARGET\n");
 #endif
+      gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
+
       mSprite->StartAnimation(explodeAnimation);
       mSprite->ClearFlags(SFLAG_CHECK);
       mSprite->vx = mSprite->vy = 0;
@@ -109,7 +112,7 @@ TBool GEnemyCrystalProcess::RunAfter() {
 #ifdef DEBUGME
       printf("PLAYER HIT PROJECTILE\n");
 #endif
-      // TODO: @jaygarcia -- SFX here
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 5);
       mSprite->type = STYPE_PBULLET;
       mSprite->cMask = STYPE_ENEMY | STYPE_OBJECT;
       mSprite->ClearFlags(SFLAG_FLIP | SFLAG_FLOP | SFLAG_LEFT | SFLAG_RIGHT);

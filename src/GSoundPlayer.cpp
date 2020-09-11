@@ -29,6 +29,7 @@ static const TUint16 effectsList[] = {
   SFX_PLAYER_QUAFF_SPELL_WAV,
   SFX_PLAYER_TAKE_DAMAGE_WAV,
   SFX_PLAYER_DEATH_WAV,
+  SFX_PLAYER_PARRY_PROJECTILE_WAV,
   SFX_ENEMY_ATTACK_WAV,
   SFX_ENEMY_DEATH_WAV,
   SFX_ENEMY_HEAL_WAV,
@@ -49,6 +50,7 @@ static const TUint16 effectsList[] = {
   SFX_WIZARD_FIRE_PILLAR_DEATH_WAV,
   SFX_WIZARD_EXPLODING_WAV,
   SFX_WIZARD_TELEPORT_WAV,
+  SFX_TOWER_PROJECTILE_DEATH_WAV
 };
 
 static TUint16 FindSfxNumber(TUint16 aSfxFile) {
@@ -172,28 +174,28 @@ void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber, TInt8 aChannel) {
 
 
 void GSoundPlayer::SfxOptionSelect() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OPTION_SELECT_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OPTION_SELECT_WAV), 1);
 }
 
 void GSoundPlayer::SfxMenuNavDown() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_DOWN_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_DOWN_WAV), 1);
 }
 
 void GSoundPlayer::SfxMenuNavUp() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_UP_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_NAV_UP_WAV), 1);
 }
 
 void GSoundPlayer::SfxMenuIn() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_IN_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_IN_WAV), 1);
 }
 
 void GSoundPlayer::SfxMenuOut() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OUT_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_MENU_OUT_WAV), 1);
 }
 
 
 void GSoundPlayer::SfxSaveGame() {
-  soundEngine.PlaySfx(FindSfxNumber(SFX_SAVE_GAME_WAV), -1);
+  soundEngine.PlaySfx(FindSfxNumber(SFX_SAVE_GAME_WAV), 1);
 }
 
 void GSoundPlayer::SfxStartGame() {
