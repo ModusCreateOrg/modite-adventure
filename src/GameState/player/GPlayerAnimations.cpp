@@ -163,15 +163,25 @@ ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(0, 4),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 0),
-  ADELTA(0, 2),
-  ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
   AEND,
 };
 
 ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(0, 2),
+  ASTEP(WALKSPEED, IMG_WALK_DOWN + 1),
+  AEND,
+};
+
+ANIMSCRIPT walkDownAnimation3[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(0, 4),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 2),
+  AEND,
+};
+
+ANIMSCRIPT walkDownAnimation4[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(0, 4),
   ASTEP(WALKSPEED, IMG_WALK_DOWN + 3),
   AEND,
@@ -279,15 +289,25 @@ ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(-6, 0),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 0),
-  ADELTA(-10, 0),
-  AFLIP(WALKSPEED, IMG_WALK_RIGHT + 1),
   AEND,
 };
 
 ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(-10, 0),
+  AFLIP(WALKSPEED, IMG_WALK_RIGHT + 1),
+  AEND,
+};
+
+ANIMSCRIPT walkLeftAnimation3[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(-7, 0),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 2),
+  AEND,
+};
+
+ANIMSCRIPT walkLeftAnimation4[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(-9, 0),
   AFLIP(WALKSPEED, IMG_WALK_RIGHT + 3),
   AEND,
@@ -398,15 +418,25 @@ ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(1, 0),
   ASTEP(WALKSPEED, IMG_WALK_RIGHT + 0),
-  ADELTA(-1, 0),
-  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 1),
   AEND,
 };
 
 ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(-1, 0),
+  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 1),
+  AEND,
+};
+
+ANIMSCRIPT walkRightAnimation3[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(0, 0),
   ASTEP(WALKSPEED, IMG_WALK_RIGHT + 2),
+  AEND,
+};
+
+ANIMSCRIPT walkRightAnimation4[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(0, 0),
   ASTEP(WALKSPEED, IMG_WALK_RIGHT + 3),
   AEND,
@@ -513,15 +543,25 @@ ANIMSCRIPT walkUpAnimation1[] = {
   ABITMAP(PLAYER_SLOT),
   ADELTA(0, 0),
   ASTEP(WALKSPEED, IMG_WALK_UP + 0),
-  ADELTA(0, 0),
-  ASTEP(WALKSPEED, IMG_WALK_UP + 1),
   AEND,
 };
 
 ANIMSCRIPT walkUpAnimation2[] = {
   ABITMAP(PLAYER_SLOT),
+  ADELTA(0, 0),
+  ASTEP(WALKSPEED, IMG_WALK_UP + 1),
+  AEND,
+};
+
+ANIMSCRIPT walkUpAnimation3[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(-1, 0),
   ASTEP(WALKSPEED, IMG_WALK_UP + 2),
+  AEND,
+};
+
+ANIMSCRIPT walkUpAnimation4[] = {
+  ABITMAP(PLAYER_SLOT),
   ADELTA(0, 0),
   ASTEP(WALKSPEED, IMG_WALK_UP + 3),
   AEND,
@@ -612,6 +652,8 @@ ANIMSCRIPT hitHardUpAnimation[] = {
 ANIMSCRIPT* idleAnimations[] = {idleUpAnimation, idleDownAnimation, idleLeftAnimation, idleRightAnimation};
 ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
 ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+ANIMSCRIPT* walkAnimations3[] = {walkUpAnimation3, walkDownAnimation3, walkLeftAnimation3, walkRightAnimation3};
+ANIMSCRIPT* walkAnimations4[] = {walkUpAnimation4, walkDownAnimation4, walkLeftAnimation4, walkRightAnimation4};
 
 ANIMSCRIPT* swordChargeAnimations[] = {
   swordChargeUpAnimation, swordChargeDownAnimation, swordChargeLeftAnimation, swordChargeRightAnimation

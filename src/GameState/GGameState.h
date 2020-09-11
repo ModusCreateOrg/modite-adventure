@@ -21,6 +21,7 @@ static TUint16 MESSAGE_FLOOR_SWITCH_UP = MESSAGE_FLOOR_SWITCH_DOWN + 1;
 
 const TInt16 OVERWORLD_DUNGEON = 0;
 
+const TInt TARGET_PAN_DURATION = 0.8 * FRAMES_PER_SECOND;
 
 //#include "GPlayerProcess.h"
 
@@ -95,7 +96,7 @@ public:
   TInt16 LastOverworldLevel() { return mLastOverworldLevel; }
   TBool PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss);
 protected:
-  TInt mTimer;
+  TInt mTimer, mCameraTimer;
   char mText[128];
   char mName[128];
   TInt16 mNextLevel, mLevel, mNextObjectsId, mLastOverworldLevel;

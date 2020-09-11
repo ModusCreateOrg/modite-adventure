@@ -90,6 +90,7 @@ public:
   void Move() OVERRIDE;
 
   TBool Render(BViewPort *aViewPort) OVERRIDE;
+  virtual void RenderAboveShadow(BViewPort *aViewPort) {};
 
   void SaveDataFromCollided(GAnchorSprite *aOther);
   void Collide(BSprite *aOther) OVERRIDE;
@@ -109,6 +110,8 @@ public:
 
   TPoint Center();
 
+  TFloat DistanceTo(GAnchorSprite *aOther);
+
 public:
   void Name(const char *aName) { strcpy(mName, aName); }
   const char *Name() { return mName; }
@@ -119,6 +122,7 @@ public:
 public:
   static DIRECTION RandomDirection();
   static DIRECTION RotateDirection(DIRECTION aDirection, TInt aRotateClockwiseCount);
+  static DIRECTION VectorToDirection(TInt aDx, TInt aDy);
 
   void StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection);
   void MoveInDirection(TFloat aSpeed, DIRECTION aDirection);

@@ -176,23 +176,43 @@ void GGameState::PositionCamera() {
   // half viewport size
   const TFloat ww = gViewPort->mRect.Width() / 2.0,
           hh = gViewPort->mRect.Height() / 2.0;
+  TPoint playerCenter = GPlayer::mSprite->Center();
 
   // upper left corner of desired viewport position
-  TFloat xx = gViewPort->mWorldX = TInt(GPlayer::mSprite->x - ww) + 32,
-          yy = gViewPort->mWorldY = TInt(GPlayer::mSprite->y - hh) - 8;
+  TFloat xx = playerCenter.x - ww,
+    yy = playerCenter.y - hh;
 
-  if (xx < 0) {
-    gViewPort->mWorldX = 0;
+  if (GPlayer::mTargeted) {
+    mCameraTimer = TARGET_PAN_DURATION;
+    // shift camera towards targeted enemy if applicable
+    TPoint targetCenter = GPlayer::mTargeted->Center();
+    xx = xx * .6 + (targetCenter.x - ww) * .4;
+    yy = yy * .6 + (targetCenter.y - hh) * .4;
   }
-  else if (xx > maxx) {
-    gViewPort->mWorldX = maxx;
+  if (mCameraTimer > 0) {
+    mCameraTimer--;
+    TFloat cameraInertia = exp(-FACTOR * TFloat(mCameraTimer) / TARGET_PAN_DURATION);
+    mWorldXX += (xx - mWorldXX) * cameraInertia;
+    mWorldYY += (yy - mWorldYY) * cameraInertia;
+  } else {
+    mWorldXX = xx;
+    mWorldYY = yy;
   }
-  if (yy < 0) {
-    gViewPort->mWorldY = 0;
+  if (mWorldXX < 0) {
+    mWorldXX = 0;
   }
-  else if (yy > maxy) {
-    gViewPort->mWorldY = maxy;
+  else if (mWorldXX > maxx) {
+    mWorldXX = maxx;
   }
+  if (mWorldYY < 0) {
+    mWorldYY = 0;
+  }
+  else if (mWorldYY > maxy) {
+    mWorldYY = maxy;
+  }
+
+  gViewPort->mWorldX = TInt(mWorldXX);
+  gViewPort->mWorldY = TInt(mWorldYY);
 }
 
 static void fuel_gauge(BViewPort *vp, TInt x, TInt y, TInt stat, TInt stat_max, TUint8 color) {

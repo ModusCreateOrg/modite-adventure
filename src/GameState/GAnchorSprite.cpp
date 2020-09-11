@@ -163,7 +163,7 @@ void GAnchorSprite::ResetShadow() {
 }
 
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
-  TBool ret;
+  TBool ret, overrideClipped = EFalse;
   BBitmap &bm = *gDisplay.renderBitmap;
   if (TestFlags(SFLAG_RENDER_SHADOW) && TestFlags(SFLAG_RENDER)) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
@@ -181,13 +181,13 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
         bm.DrawFastHLine(aViewPort, r.x2 - aViewPort->mOffsetX - TInt(chord / 2),
                                              r.y1 - aViewPort->mOffsetY + i - 1, chord, COLOR_SHADOW);
       }
-      ret = BAnimSprite::Render(aViewPort);
-      ClearFlags(SFLAG_CLIPPED);
-    } else {
-      ret = BAnimSprite::Render(aViewPort);
+      overrideClipped = ETrue;
     }
-  } else {
-    ret = BAnimSprite::Render(aViewPort);
+  }
+  RenderAboveShadow(aViewPort);
+  ret = BAnimSprite::Render(aViewPort);
+  if (overrideClipped) {
+    ClearFlags(SFLAG_CLIPPED);
   }
 
 #ifdef DEBUG_MODE
@@ -272,6 +272,14 @@ DIRECTION GAnchorSprite::RotateDirection(DIRECTION aDirection, TInt aRotateClock
   }
 }
 
+DIRECTION GAnchorSprite::VectorToDirection(TInt aDx, TInt aDy) {
+  if (aDy < aDx) {
+    return aDy < -aDx ? DIRECTION_UP : DIRECTION_RIGHT;
+  } else {
+    return aDy < -aDx ? DIRECTION_LEFT : DIRECTION_DOWN;
+  }
+}
+
 void GAnchorSprite::StartAnimationInDirection(ANIMSCRIPT* aScriptGroup[4], DIRECTION aDirection) {
   switch (aDirection) {
     case DIRECTION_UP:
@@ -317,6 +325,13 @@ void GAnchorSprite::GetFloatRect(GFloatRect &aRect) {
 
 TPoint GAnchorSprite::Center() {
   return TPoint((TInt) x + cx + w, (TInt) y + cy - h / 2);
+}
+
+TFloat GAnchorSprite::DistanceTo(GAnchorSprite *aOther) {
+  TPoint myCenter = this->Center(),
+      otherCenter = aOther->Center();
+
+  return hypot(myCenter.x - otherCenter.x, myCenter.y - otherCenter.y);
 }
 
 void GAnchorSprite::WriteToStream(BMemoryStream &aStream) {

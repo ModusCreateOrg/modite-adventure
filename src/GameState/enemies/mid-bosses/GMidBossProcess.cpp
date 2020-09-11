@@ -447,14 +447,9 @@ TBool GMidBossProcess::ChargeState() {
 
   if (mStateTimer < 0) {
     mStateTimer++;
-    TFloat xx = GPlayer::mSprite->x - mSprite->x - 32,
-           yy = GPlayer::mSprite->y - mSprite->y - 4;
-    DIRECTION direction;
-    if (yy < xx) {
-      direction = yy < -xx ? DIRECTION_UP : DIRECTION_RIGHT;
-    } else {
-      direction = yy < -xx ? DIRECTION_LEFT : DIRECTION_DOWN;
-    }
+    TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+           yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+    DIRECTION direction = GAnchorSprite::VectorToDirection(xx, yy);
     if (mSprite->AnimDone() || mSprite->mDirection != direction) {
       mSprite->mDirection = direction;
       Charge(direction);
