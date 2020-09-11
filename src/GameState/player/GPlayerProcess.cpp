@@ -9,7 +9,6 @@
 #include "GBossProcess.h"
 #include "../../common/GSpellOverlayProcess.h"
 #include "GBossProcess.h"
-#include "../../common/GSpellOverlayProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -173,7 +172,7 @@ TBool GPlayerProcess::CanWalk(TFloat aVx, TFloat aVy) {
 
 void GPlayerProcess::StartKnockback() {
   GCollidedData other = mSprite->mCollided;
-  if (other.flags & SFLAG_KNOCKBACK) {
+  if (other.collisionAngle >= 0) {
     TFloat newVx, newVy;
 
     newVx = PLAYER_VELOCITY * SIN(other.collisionAngle);
@@ -207,30 +206,9 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
     case WALK_STATE:
       if (mStepFrame > 0) {
-        if ((aDirection == DIRECTION_UP && mSprite->vy < 0) ||
-            (aDirection == DIRECTION_DOWN && mSprite->vy > 0) ||
-            (aDirection == DIRECTION_LEFT && mSprite->vx < 0) ||
-            (aDirection == DIRECTION_RIGHT && mSprite->vx > 0)) {
-          mStep = (mStep + 1) % 4;
-        } else {
-          // invert walk animation order if walking backwards
-          mStep = (mStep + 3) % 4;
-        }
-        switch (mStep) {
-          case 0:
-          default:
-            mSprite->StartAnimationInDirection(walkAnimations1, aDirection);
-            break;
-          case 1:
-            mSprite->StartAnimationInDirection(walkAnimations2, aDirection);
-            break;
-          case 2:
-            mSprite->StartAnimationInDirection(walkAnimations3, aDirection);
-            break;
-          case 3:
-            mSprite->StartAnimationInDirection(walkAnimations4, aDirection);
-            break;
-        }
+        mStep = 1 - mStep;
+//        printf("walkAnimation %i, direction %i\n", mStep ? 1 : 2, aDirection);
+        mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
         break;
       }
     case IDLE_STATE:
@@ -268,7 +246,6 @@ void GPlayerProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       GPlayer::mInvulnerable = ETrue;
       mSprite->StartAnimation(spell1Animation);
       mSprite->mDirection = DIRECTION_DOWN;
-
       break;
   }
 }
@@ -312,28 +289,13 @@ TBool GPlayerProcess::MaybeHit() {
     hitAmount = other.attackStrength;
 
     if (hitAmount <= GPlayer::mMaxHitPoints * 0.15) {
-      if (other.direction == DIRECTION_UNSPECIFIED) {
-        mSprite->StartAnimationInDirection(hitLightAnimations, mSprite->mDirection);
-      }
-      else {
-        mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
-      }
+      mSprite->StartAnimationInDirection(hitLightAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
     }
     else if (hitAmount <= GPlayer::mMaxHitPoints * 0.30) {
-      if (other.direction == DIRECTION_UNSPECIFIED) {
-        mSprite->StartAnimationInDirection(hitMediumAnimations, mSprite->mDirection);
-      }
-      else {
-        mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
-      }
+      mSprite->StartAnimationInDirection(hitMediumAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
     }
     else {
-      if (other.direction == DIRECTION_UNSPECIFIED) {
-        mSprite->StartAnimationInDirection(hitHardAnimations, mSprite->mDirection);
-      }
-      else {
-        mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
-      }
+      mSprite->StartAnimationInDirection(hitHardAnimations, GAnchorSprite::RotateDirection(other.direction, 2));
     }
   }
 
@@ -499,7 +461,7 @@ DIRECTION GPlayerProcess::MaybeMove(TFloat aSpeed) {
   mSprite->vy = newVy;
   mSprite->vx = newVx;
 
-  if (GPlayer::mTargeted && !gControls.IsPressed(CONTROL_RUN)) {
+  if (GPlayer::mTargeted) {
     TPoint myCenter = mSprite->Center(), otherCenter = GPlayer::mTargeted->Center();
     newDirection = GAnchorSprite::VectorToDirection(otherCenter.x - myCenter.x, otherCenter.y - myCenter.y);
   }
@@ -529,10 +491,10 @@ TBool GPlayerProcess::MaybeWalk() {
   DIRECTION newDirection = MaybeMove(speed);
 
   if (mSprite->vx == 0 && mSprite->vy == 0) {
+    NewState(IDLE_STATE, newDirection);
     return EFalse;
   }
   else if (mState != WALK_STATE || mSprite->mDirection != newDirection) {
-    mStep = 0;
     NewState(WALK_STATE, newDirection);
   }
   return ETrue;
@@ -582,8 +544,7 @@ TBool GPlayerProcess::WalkState() {
   }
 
   mStepFrame++;
-  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >=
-      TInt(WALKSPEED * PLAYER_VELOCITY / hypot(mSprite->vx, mSprite->vy)))) {
+  if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >= (WALKSPEED * 2) * PLAYER_VELOCITY / SQRT(POW(mSprite->vx, 2) + POW(mSprite->vy, 2)))) {
     mStepFrame = 1;
     NewState(WALK_STATE, mSprite->mDirection);
   }
@@ -641,7 +602,6 @@ TBool GPlayerProcess::SwordState() {
         mSprite->mSwordCharge = 2.0;
         damageMultiplier = PERFECT_CHARGE_BONUS;
       }
-
       mGameState->AddProcess(new GPlayerBulletProcess(mGameState, mSprite->mDirection, damageMultiplier));
       mStep++;
       break;
@@ -657,56 +617,6 @@ TBool GPlayerProcess::SwordState() {
   return ETrue;
 }
 
-void GPlayerProcess::SpawnSpellProcesses() {
-//  mSprite->x = mParent->mSprite->x + COS(aAngle) * aDistance * 1.5 + 16;
-//  mSprite->y = mParent->mSprite->y + SIN(aAngle) * aDistance;
-  switch (GPlayer::mEquipped.mSpellBookElement) {
-    case ELEMENT_WATER: // Random locations around the player
-      for (int i = 0; i < 15; ++i) {
-        TInt16 spellX = mSprite->x + Random(-100, 100);
-        TInt16 spellY = mSprite->y + 16 + Random(-100, 100);
-
-        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(1, 30), 0, 0);
-        mGameState->AddProcess(p);
-      }
-      break;
-    case ELEMENT_FIRE:
-      printf("ELEMENT_FIRE\n");
-
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2.5 ,0));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2, -2));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 0, 2.5));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2, 2));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 0, -2.5));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2, -2));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, 2.5, 0));
-      mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2, 2));
-
-      break;
-    case ELEMENT_EARTH:
-      printf("ELEMENT_EARTH\n");
-      for (int i = 0; i < 5; ++i) {
-        TInt16 spellX = mSprite->x + Random(-120, 120);
-        TInt16 spellY = mSprite->y + 16 + Random(-120, 120);
-        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(5, 40), 0 , 0);
-        mGameState->AddProcess(p);
-      }
-      break;
-    case ELEMENT_ENERGY:
-      for (int i = 0; i < 5; ++i) {
-        TInt16 spellX = mSprite->x + Random(-100, 100);
-        TInt16 spellY = mSprite->y + 16 + Random(-100, 100);
-
-        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, 0, 0, 0);
-//        auto *p = new GSpellOverlayProcess(mGameState, this, spellX, spellY, Random(5, 60), Random(-3, 3), Random(-3, 3));
-        mGameState->AddProcess(p);
-      }
-      break;
-    default:
-      Panic("Invalid spell");
-  }
-
-}
 TBool GPlayerProcess::SpellState() {
   switch (mStep) {
     case 0:
@@ -718,20 +628,6 @@ TBool GPlayerProcess::SpellState() {
         mSprite2->StartAnimation(spellOverlayAnimation);
         gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_SPELL_WAV);
         mGameState->AddSprite(mSprite2);
-        SpawnSpellProcesses();
-
-        // affect nearby enemies
-//        for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
-//          if (!s->Clipped() && s->type == STYPE_ENEMY) {
-//            TFloat dx = s->x - mSprite->x,
-//                dy = s->y - mSprite->y,
-//                distance = SQRT((dx * dx + dy * dy));
-//            if (distance < SPELL_DISTANCE) {
-//              s->SetCType(STYPE_SPELL);
-//            }
-//          }
-//        }
-
       }
       break;
     case 1:
@@ -747,7 +643,7 @@ TBool GPlayerProcess::SpellState() {
       if (mSprite->AnimDone()) {
         GPlayer::mInvulnerable = EFalse;
         NewState(IDLE_STATE, DIRECTION_DOWN);
-//
+
         // affect nearby enemies
         for (BSprite *s = mGameState->mSpriteList.First(); !mGameState->mSpriteList.End(s); s = mGameState->mSpriteList.Next(s)) {
           if (!s->Clipped() && s->type == STYPE_ENEMY) {
