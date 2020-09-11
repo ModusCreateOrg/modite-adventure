@@ -181,9 +181,9 @@ GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUi
   mSprite->cy = 0;
   mSprite->w = 36;
   mSprite->h = 20;
-  SetStatMultipliers(.5, 7.0, 15.0);
-//  SetStatMultipliers(50.0, 7.0, 15.0);
-  //
+
+  SetStatMultipliers(50.0, 7.0, 15.0);
+
   mHitTimer = HIT_SPAM_TIME;
   mStateTimer = 2 * 60;
   mAttackType = 0;
