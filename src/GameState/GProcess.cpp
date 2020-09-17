@@ -48,6 +48,9 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
     default:
       return ENull;
 
+    case ATTR_DUNGEON_EXIT_FROM_LEVEL_1:
+      return aGameState->AddProcess(new GOverworldLevelTransitionProcess(aGameState, ip, DIRECTION_RIGHT, params, xx, yy, " "));
+
     case ATTR_STONE_STAIRS_UP:
       return aGameState->AddProcess(new GStairsProcess(aGameState, ip, DIRECTION_UP, aParams, xx, yy, "STONE"));
 

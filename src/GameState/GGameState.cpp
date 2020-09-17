@@ -448,6 +448,12 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         //
         // ENVIRONMENT
         //
+      case ATTR_DUNGEON_EXIT_FROM_LEVEL_1:
+#ifdef DEBUGME
+        printf("EXIT TO OVERWORLD at %.2f,%.2f %d,%d %d/%x\n", xx, yy, row, col, params, params);
+#endif
+        GProcess::Spawn(this, op, ip, xx, yy, params, DIRECTION_RIGHT, " ");
+        break;
 
       case ATTR_STONE_STAIRS_UP:
 #ifdef DEBUGME
