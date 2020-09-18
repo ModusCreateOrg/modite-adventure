@@ -39,6 +39,7 @@ GEnemyCrystalProcess::GEnemyCrystalProcess(GGameState *aGameState, TFloat aX, TF
   mSprite->SetCMask(STYPE_PLAYER | STYPE_PBULLET | STYPE_OBJECT); // collide with player, player attacks, and environment
   mSprite->SetFlags(SFLAG_CHECK);
   mSprite->mAttackStrength = PROJECTILE_DAMAGE;
+  mSprite->mDirection = DIRECTION_UNSPECIFIED;
   mTimer = PROJECTILE_TIMEOUT;
   mState = LIVE;
 
