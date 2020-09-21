@@ -254,7 +254,6 @@ RAW SFX_enemy_attack.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
 RAW SFX_enemy_heal.wav
-RAW SFX_enemy_taunt.wav
 RAW SFX_item_heart.wav
 RAW SFX_item_pickup_generic.wav
 RAW SFX_midboss_bounce_wall.wav

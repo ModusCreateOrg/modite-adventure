@@ -127,7 +127,7 @@ void GInventoryPlayfield::Render() {
   y += 20;
   render_meter(mViewPort, "Health", COLOR_HEALTH, x, y, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
   y += 20;
-  render_meter(mViewPort, "Magic", COLOR_MAGIC, x, y, GPlayer::mManaPotion, GPlayer::mMaxMana);
+  render_meter(mViewPort, "Mana", COLOR_MAGIC, x, y, GPlayer::mManaPotion, GPlayer::mMaxMana);
   y += 20;
   sprintf(buf, "Attack: %d", GPlayer::mAttackStrength);
   bm->DrawString(mViewPort, buf, gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
@@ -154,9 +154,9 @@ void GInventoryPlayfield::Render() {
     }
     bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
   }
-  else {
-    sprintf(buf, "Explore to find this item.");
-    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
-  }
+//  else {
+//    sprintf(buf, "Explore to find this item.");
+//    bm->DrawString(mViewPort, buf, gFont16x16, 4, 220, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -5);
+//  }
 
 }
