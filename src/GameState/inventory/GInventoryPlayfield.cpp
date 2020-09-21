@@ -127,7 +127,7 @@ void GInventoryPlayfield::Render() {
   y += 20;
   render_meter(mViewPort, "Health", COLOR_HEALTH, x, y, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
   y += 20;
-  render_meter(mViewPort, "Magic", COLOR_MAGIC, x, y, GPlayer::mManaPotion, GPlayer::mMaxMana);
+  render_meter(mViewPort, "Mana", COLOR_MAGIC, x, y, GPlayer::mManaPotion, GPlayer::mMaxMana);
   y += 20;
   sprintf(buf, "Attack: %d", GPlayer::mAttackStrength);
   bm->DrawString(mViewPort, buf, gFont8x8, x, y, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
