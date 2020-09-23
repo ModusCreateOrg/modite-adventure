@@ -412,6 +412,7 @@ GRatProcess::GRatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->cy = 0;
   mStateTimer = 0;
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
+  mSprite->ResetShadow();
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_RAT_BMP_SPRITES);
 //  printf("%s -> %i\n", mSprite->Name(), mSprite->mHitPoints);
 }

@@ -419,6 +419,7 @@ GTrollProcess::GTrollProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_TROLL_BMP_SPRITES);
   mSprite->cy = 0;
   mSprite->h = 16;
+  mSprite->ResetShadow();
 }
 
 GTrollProcess::~GTrollProcess() = default;
