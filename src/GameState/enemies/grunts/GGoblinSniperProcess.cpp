@@ -390,6 +390,7 @@ GGoblinSniperProcess::GGoblinSniperProcess(GGameState *aGameState, TInt aIp, TFl
   mSprite->Name("ENEMY GOBLIN SNIPER");
   mSprite->cy = 0;
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
+  mSprite->ResetShadow();
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_SNIPER_BMP_SPRITES);
 }
 

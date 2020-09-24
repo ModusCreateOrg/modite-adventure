@@ -407,6 +407,7 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SLIME_BMP_SPRITES);
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->cy = 0;
+  mSprite->ResetShadow();
   SetStatMultipliers(2.0, 2.5, 1.0);
   mRangeX = mRangeY = 32;
 }
