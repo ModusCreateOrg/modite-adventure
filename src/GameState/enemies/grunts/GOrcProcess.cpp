@@ -5,7 +5,7 @@
  *********************************************************************************
  *********************************************************************************/
 
-const TInt16 IDLE_TIMEOUT = 120;
+const TInt16 IDLE_TIMEOUT = 50;
 
 const TInt IDLE_SPEED = 3 * FACTOR;
 const TInt TAUNT_SPEED = 3 * FACTOR;
@@ -15,7 +15,7 @@ const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 5 * FACTOR;
 const TInt DEATH_SPEED = 1;
 
-const TFloat VELOCITY = 1.5 / FACTOR;
+const TFloat VELOCITY = .65 * PLAYER_VELOCITY;
 
 // region  ANIMATIONS {{{
 
@@ -100,8 +100,6 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ASIZE(0, 0, 32, 16),
   ADELTA(0, 16),
   ASTEP(ATTACK_SPEED * 5, IMG_ORC_ATTACK_DOWN + 3),
-  ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_DOWN + 0),
   AEND,
 };
 
@@ -109,7 +107,7 @@ static ANIMSCRIPT attackDoubleDownAnimation[] = {
   ABITMAP(ORC_SLOT),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_WALK_DOWN + 0),
-  ASTEP(ATTACK_SPEED * 4, IMG_ORC_ATTACK_DOWN + 0),
+  ASTEP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_DOWN + 0),
   ADELTA(0, 26),
   ATYPE(STYPE_EBULLET),
   ASIZE(0, 24, 32, 32),
@@ -142,7 +140,7 @@ static ANIMSCRIPT attackDoubleDownAnimation[] = {
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 3),
   ATYPE(STYPE_ENEMY),
   ASIZE(0, 0, 32, 16),
-  ASTEP(ATTACK_SPEED * 5, IMG_ORC_ATTACK_DOWN + 3),
+  ASTEP(ATTACK_SPEED * 3, IMG_ORC_ATTACK_DOWN + 3),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_DOWN + 0),
 
@@ -285,8 +283,8 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-18, 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-36, 4, 56, 30),
-  AFLIP(ATTACK_SPEED * 3, IMG_ORC_ATTACK_RIGHT + 1),
+  ASIZE(-29, 4, 51, 26),
+  AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
   ADELTA(-18, 0),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
@@ -295,8 +293,6 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   ATYPE(STYPE_ENEMY),
   ASIZE(0, 0, 32, 16),
   AFLIP(ATTACK_SPEED * 5, IMG_ORC_ATTACK_RIGHT + 3),
-  ADELTA(9, 0),
-  AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   AEND,
 };
 
@@ -306,7 +302,7 @@ static ANIMSCRIPT attackDoubleLeftAnimation[] = {
   AFLIP(ATTACK_SPEED * 4, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-18, 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-36, 4, 56, 30),
+  ASIZE(-29, 4, 51, 26),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
   ADELTA(-18, 0),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
@@ -317,7 +313,7 @@ static ANIMSCRIPT attackDoubleLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-18, 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-36, 4, 56, 30),
+  ASIZE(-29, 4, 51, 26),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
   ADELTA(-18, 0),
@@ -329,7 +325,7 @@ static ANIMSCRIPT attackDoubleLeftAnimation[] = {
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-18, 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-36, 4, 56, 30),
+  ASIZE(-29, 4, 51, 26),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
   ATYPE(STYPE_ENEMY),
   ADELTA(-18, 0),
@@ -351,7 +347,7 @@ static ANIMSCRIPT attackRoundLeftAnimation[] = {
   AFLIP(ATTACK_SPEED * 4, IMG_ORC_ATTACK_RIGHT + 0),
   ADELTA(-18, 0),
   ATYPE(STYPE_EBULLET),
-  ASIZE(-36, 4, 56, 30),
+  ASIZE(-29, 4, 51, 26),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
   ADELTA(-18, 0),
   AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
@@ -493,9 +489,6 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ASIZE(0, 0, 32, 16),
   ADELTA(5, 0),
   ASTEP(ATTACK_SPEED * 5, IMG_ORC_ATTACK_RIGHT + 3),
-  ADELTA(0, 0),
-  ASTEP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
-
   AEND,
 };
 
@@ -580,7 +573,7 @@ static ANIMSCRIPT attackRoundRightAnimation[] = {
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
     ADELTA(-18, 0),
     ATYPE(STYPE_EBULLET),
-    ASIZE(-34, 4, 56, 32),
+    ASIZE(-29, 4, 51, 26),
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
     ADELTA(-18, 0),
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
@@ -687,9 +680,6 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ASIZE(0, 0, 32, 16),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED * 5, IMG_ORC_ATTACK_UP + 3),
-  ADELTA(0, 6),
-  ASTEP(ATTACK_SPEED * 2, IMG_ORC_ATTACK_UP + 0),
-
   AEND,
 };
 
@@ -789,7 +779,7 @@ static ANIMSCRIPT attackRoundUpAnimation[] = {
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 0),
     ADELTA(-18, 0),
     ATYPE(STYPE_EBULLET),
-    ASIZE(-34, 4, 56, 32),
+    ASIZE(-29, 4, 51, 26),
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 1),
     ADELTA(-18, 0),
     AFLIP(ATTACK_SPEED, IMG_ORC_ATTACK_RIGHT + 2),
@@ -884,7 +874,7 @@ GOrcProcess::GOrcProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
     : GGruntProcess(aGameState, aIp, aX, aY, ORC_SLOT, aParams, VELOCITY, ATTR_ORC) {
   mSprite->Name("ENEMY ORC");
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_ORC_BMP_SPRITES);
-  mSprite->cy = 0;
+  mSprite->cy = 4;
   SetStatMultipliers(4.0, 3.0, 4.0);
   mRangeX = 24;
   mRangeY = 16;
@@ -912,7 +902,7 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
   if (mStateTimer <= 0) {
-    mStateTimer = TInt16(TFloat(Random(1, 3)) * 32 / VELOCITY);
+    mStateTimer = TInt16(TFloat(Random(3, 7)) * 32 / VELOCITY);
   }
   mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
   mSprite->MoveInDirection(VELOCITY, aDirection);
@@ -921,7 +911,7 @@ void GOrcProcess::Walk(DIRECTION aDirection) {
 void GOrcProcess::Attack(DIRECTION aDirection) {
   TInt attackType = Random() & TUint8(3);
 
-  attackType = 5;
+//  attackType = 1;
   // 25% chance for either round or double attack
   if (attackType < 2) {
     mSprite->StartAnimationInDirection(attackAnimations, aDirection);
