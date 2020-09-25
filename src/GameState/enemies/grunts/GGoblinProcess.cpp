@@ -17,7 +17,7 @@ const TInt HIT_SPEED = 2 * FACTOR;
 const TInt WALK_SPEED = 4 * FACTOR;
 const TInt DEATH_SPEED = 1;
 
-const TFloat VELOCITY =  .5 * FACTOR;
+const TFloat VELOCITY =  1.35 * PLAYER_VELOCITY;
 
 // region  ANIMATIONS {{{
 /*********************************************************************************
@@ -28,32 +28,32 @@ const TFloat VELOCITY =  .5 * FACTOR;
  * Animations
  */
 
-/*
- ___    _ _         ______       _           _           _
-|_ _|__| | | ___   / / ___|  ___| | ___  ___| |_ ___  __| |
- | |/ _` | |/ _ \ / /\___ \ / _ \ |/ _ \/ __| __/ _ \/ _` |
- | | (_| | |  __// /  ___) |  __/ |  __/ (__| ||  __/ (_| |
-|___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
- */
+///*
+// ___    _ _         ______       _           _           _
+//|_ _|__| | | ___   / / ___|  ___| | ___  ___| |_ ___  __| |
+// | |/ _` | |/ _ \ / /\___ \ / _ \ |/ _ \/ __| __/ _ \/ _` |
+// | | (_| | |  __// /  ___) |  __/ |  __/ (__| ||  __/ (_| |
+//|___\__,_|_|\___/_/  |____/ \___|_|\___|\___|\__\___|\__,_|
+// */
+//
+//static ANIMSCRIPT idleAnimation[] = {
+//  ABITMAP(GOBLIN_SLOT),
+//  ALABEL,
+//  ASTEP(40, IMG_GOBLIN_IDLE + 0),
+//  ASTEP(4, IMG_GOBLIN_IDLE + 1),
+//  ASTEP(40, IMG_GOBLIN_IDLE + 2),
+//  ASTEP(4, IMG_GOBLIN_IDLE + 1),
+//  ALOOP,
+//};
 
-static ANIMSCRIPT idleAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ALABEL,
-  ASTEP(40, IMG_GOBLIN_IDLE + 0),
-  ASTEP(4, IMG_GOBLIN_IDLE + 1),
-  ASTEP(40, IMG_GOBLIN_IDLE + 2),
-  ASTEP(4, IMG_GOBLIN_IDLE + 1),
-  ALOOP,
-};
-
-static ANIMSCRIPT selectAnimation[] = {
-  ABITMAP(GOBLIN_SLOT),
-  ALABEL,
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 0),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 1),
-  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 2),
-  ALOOP,
-};
+//static ANIMSCRIPT selectAnimation[] = {
+//  ABITMAP(GOBLIN_SLOT),
+//  ALABEL,
+//  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 0),
+//  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 1),
+//  ASTEP(SELECT_SPEED, IMG_GOBLIN_SELECTED + 2),
+//  ALOOP,
+//};
 
 static ANIMSCRIPT tauntAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
@@ -83,6 +83,7 @@ static ANIMSCRIPT tauntAnimation[] = {
 
 static ANIMSCRIPT idleDownAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ALABEL,
   ADELTA(0, 1),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
@@ -91,7 +92,7 @@ static ANIMSCRIPT idleDownAnimation[] = {
 
 static ANIMSCRIPT walkDownAnimation1[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(0, 1),
+  ADELTA(0, 2),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 0),
   ADELTA(0, 2),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 1),
@@ -102,7 +103,7 @@ static ANIMSCRIPT walkDownAnimation2[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 2),
-  ADELTA(0, 1),
+  ADELTA(0, 2),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_DOWN + 3),
   AEND,
 };
@@ -218,6 +219,7 @@ static ANIMSCRIPT attackQuickDownAnimation[] = {
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ADELTA(0, 0),
   AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_DOWN + 0),
@@ -251,24 +253,25 @@ static ANIMSCRIPT deathDownAnimation[] = {
 
 static ANIMSCRIPT idleLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ALABEL,
-  ADELTA(-4, 0),
-  AFLIP(WALK_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
+  ADELTA(-5, 0),
+  AFLIP(WALK_SPEED * 9, IMG_GOBLIN_DAMAGE_RIGHT + 3),
   ALOOP,
 };
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(-8, 0),
+  ADELTA(-7, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ADELTA(-9, 0),
+  ADELTA(-8, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
   AEND,
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(-8, 0),
+  ADELTA(-6, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
   ADELTA(-8, 0),
   AFLIP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
@@ -386,6 +389,7 @@ static ANIMSCRIPT attackQuickLeftAnimation[] = {
 
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ADELTA(-6, 0),
   AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
@@ -419,6 +423,7 @@ static ANIMSCRIPT deathLeftAnimation[] = {
 
 static ANIMSCRIPT idleRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ALABEL,
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 3),
@@ -429,16 +434,16 @@ static ANIMSCRIPT walkRightAnimation1[] = {
   ABITMAP(GOBLIN_SLOT),
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 0),
-  ADELTA(0, 0),
+  ADELTA(1, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 1),
   AEND,
 };
 
 static ANIMSCRIPT walkRightAnimation2[] = {
   ABITMAP(GOBLIN_SLOT),
-  ADELTA(0, 0),
+  ADELTA(1, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 2),
-  ADELTA(0, 0),
+  ADELTA(1, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_RIGHT + 3),
   AEND,
 };
@@ -554,6 +559,7 @@ static ANIMSCRIPT attackQuickRightAnimation[] = {
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ADELTA(0, 0),
   AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_RIGHT + 0),
@@ -587,6 +593,7 @@ static ANIMSCRIPT deathRightAnimation[] = {
 
 static ANIMSCRIPT idleUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ALABEL,
   ADELTA(0, 0),
   ASTEP(WALK_SPEED, IMG_GOBLIN_WALK_UP + 3),
@@ -720,6 +727,7 @@ static ANIMSCRIPT attackQuickUpAnimation[] = {
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(GOBLIN_SLOT),
+  ASIZE(8, 4, 24, 16),
   ADELTA(0, 0),
   AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_GOBLIN_DAMAGE_UP + 0),
@@ -806,7 +814,7 @@ GGoblinProcess::GGoblinProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFlo
   SetStatMultipliers(2.2, 2.5, 2.5);
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_GOBLIN_BMP_SPRITES);
-
+  mRangeX = mRangeY = 16;
   mTaunt = EFalse;
 }
 
@@ -819,7 +827,7 @@ GGoblinProcess::~GGoblinProcess() = default;
 void GGoblinProcess::Idle(DIRECTION aDirection) {
   mStateTimer = IDLE_TIMEOUT;
   // Disabled so that we don't have random directions;
-//  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
+  mSprite->StartAnimationInDirection(idleAnimations, aDirection);
 }
 
 void GGoblinProcess::Taunt(DIRECTION aDirection) {
@@ -923,10 +931,10 @@ TBool GGoblinProcess::WalkState() {
     mSprite->vx = 0;
   }
 
-  if (mSprite->vx == 0 && mSprite->vy == 0) {
-    NewState(TAUNT_STATE, mSprite->mDirection);
-    return ETrue;
-  }
+//  if (mSprite->vx == 0 && mSprite->vy == 0) {
+//    NewState(TAUNT_STATE, mSprite->mDirection);
+//    return ETrue;
+//  }
 
   if (!CanWalkInDirection(mSprite->mDirection, mSprite->vx, mSprite->vy)) {
     NewState(IDLE_STATE, mSprite->mDirection);

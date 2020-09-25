@@ -368,7 +368,6 @@ static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, wa
 static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
 static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
-//static ANIMSCRIPT* landedAnimations[] = {landedUpAnimation, landedDownAnimation, landedLeftAnimation, landedRightAnimation};
 static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
 
 /* endregion }}} */
@@ -388,7 +387,7 @@ GBatProcess::GBatProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat aY,
   mSprite->w = 24;
   mSprite->h = 16;
   mSprite->cx = 8;
-  mSprite->cy = 0;
+  mSprite->cy = 4;
   mSprite->ResetShadow();
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_BAT_BMP_SPRITES);
