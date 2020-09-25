@@ -9,13 +9,13 @@ const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 
 const TInt16 IDLE_SPEED = 3 * FACTOR;
 const TInt16 SELECT_SPEED = 3 * FACTOR;
-const TInt16 TAUNT_SPEED = 5 * FACTOR;
+const TInt16 TAUNT_SPEED = 4 * FACTOR;
 const TInt16 ATTACK_SPEED = 2 * FACTOR;
 const TInt16 HIT_SPEED = 2 * FACTOR;
-const TInt16 WALK_SPEED = 4 * FACTOR;
+const TInt16 WALK_SPEED = 3 * FACTOR;
 const TInt16 DEATH_SPEED = 5;
 
-const TFloat VELOCITY = PLAYER_VELOCITY / 4;
+const TFloat VELOCITY = PLAYER_VELOCITY * .5;
 
 // region  ANIMATIONS {{{
 
@@ -99,7 +99,7 @@ static ANIMSCRIPT attackDownAnimation[] = {
   ADELTA(0, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 0, 32, 24),
+  ASIZE(0, 2, 32, 24),
   ADELTA(0, 32),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_DOWN + 3),
   ADELTA(0, -1),
@@ -151,14 +151,18 @@ static ANIMSCRIPT idleLeftAnimation[] = {
 
 static ANIMSCRIPT walkLeftAnimation1[] = {
   ABITMAP(SLIME_SLOT),
+  ADELTA(-2, 0),
   AFLIP(WALK_SPEED, IMG_SLIME_WALK_RIGHT + 0),
+  ADELTA(-2, 0),
   AFLIP(WALK_SPEED, IMG_SLIME_WALK_RIGHT + 1),
   AEND
 };
 
 static ANIMSCRIPT walkLeftAnimation2[] = {
   ABITMAP(SLIME_SLOT),
+  ADELTA(-2, 0),
   AFLIP(WALK_SPEED, IMG_SLIME_WALK_RIGHT + 2),
+  ADELTA(-2, 0),
   AFLIP(WALK_SPEED, IMG_SLIME_WALK_RIGHT + 3),
   AEND
 };
@@ -177,7 +181,7 @@ static ANIMSCRIPT attackLeftAnimation[] = {
   ADELTA(-7, 2),
   AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 0, 32, 24),
+  ASIZE(0, 2, 32, 24),
   ADELTA(-20, 2),
   AFLIP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   ADELTA(-1, 0),
@@ -254,7 +258,7 @@ static ANIMSCRIPT attackRightAnimation[] = {
   ADELTA(0, 2),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 0, 32, 24),
+  ASIZE(0, 2, 32, 24),
   ADELTA(2, 2),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_RIGHT + 3),
   ADELTA(0, 0),
@@ -331,7 +335,7 @@ static ANIMSCRIPT attackUpAnimation[] = {
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 2),
   ATYPE(STYPE_ENEMY),
-  ASIZE(0, 0, 32, 24),
+  ASIZE(0, 2, 32, 24),
   ADELTA(0, 0),
   ASTEP(ATTACK_SPEED, IMG_SLIME_ATTACK_UP + 3),
   ADELTA(0, 1),
@@ -406,7 +410,8 @@ GSlimeProcess::GSlimeProcess(GGameState *aGameState, TInt aIp, TFloat aX, TFloat
   mSprite->Name("ENEMY SLIME");
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_SLIME_BMP_SPRITES);
   mSprite->ClearFlags(SFLAG_RENDER_SHADOW); // Disable shadow
-  mSprite->cy = 0;
+  mSprite->cy = 2;
+  mSprite->h = 16;
   mSprite->ResetShadow();
   SetStatMultipliers(2.0, 2.5, 1.0);
   mRangeX = mRangeY = 32;
