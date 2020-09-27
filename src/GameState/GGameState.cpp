@@ -39,6 +39,7 @@ void GGameState::Init() {
   mNextObjectsId = 0;
 
   mTimer = FRAMES_PER_SECOND * 1;
+  mCameraTimer = 0;
   mGameOver = ENull;
 
   mGamePlayfield = mNextGamePlayfield = ENull;
