@@ -3,6 +3,7 @@
 #include "GPlayer.h"
 
 const TInt VELOCITY = 4;
+const TInt VELOCITY_WITH_GLOVES = VELOCITY + 5;
 
 class BulletSprite : public GAnchorSprite {
 public:
@@ -20,25 +21,25 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
   mSprite = new BulletSprite(aGameState);
   mSprite->mAttackStrength = GPlayer::mAttackStrength * aMultiplier;
 
-  mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? (VELOCITY + 5) : VELOCITY, aDirection, ETrue);
+  mSprite->MoveInDirection(GPlayer::mEquipped.mGloves ? VELOCITY_WITH_GLOVES : VELOCITY, aDirection, ETrue);
   mSprite->mDirection = aDirection;
   switch (aDirection) {
     case DIRECTION_UP:
       mSprite->w = 30;
       mSprite->h = 8;
-      mRange = GPlayer::mEquipped.mGloves ? 24 : 48;
+      mRange = GPlayer::mEquipped.mGloves ? 20 : 42;
       break;
     case DIRECTION_DOWN:
       mSprite->w = 30;
       mSprite->h = 8;
-      mRange = GPlayer::mEquipped.mGloves ? 15 : 30;
+      mRange = GPlayer::mEquipped.mGloves ? 14 : 27;
       break;
     case DIRECTION_LEFT:
     case DIRECTION_RIGHT:
       mSprite->w = 8;
-      mSprite->h = 26;
+      mSprite->h = 30;
       mSprite->cy = -8;
-      mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
+      mRange = GPlayer::mEquipped.mGloves ? 19 : 39;
       break;
     default:
       mRange = 0;
