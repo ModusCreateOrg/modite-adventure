@@ -26,19 +26,19 @@ GPlayerBulletProcess::GPlayerBulletProcess(GGameState *aGameState, DIRECTION aDi
     case DIRECTION_UP:
       mSprite->w = 30;
       mSprite->h = 8;
-      mRange = GPlayer::mEquipped.mGloves ? 24 : 48;
+      mRange = GPlayer::mEquipped.mGloves ? 23 : 42;
       break;
     case DIRECTION_DOWN:
       mSprite->w = 30;
       mSprite->h = 8;
-      mRange = GPlayer::mEquipped.mGloves ? 15 : 30;
+      mRange = GPlayer::mEquipped.mGloves ? 15 : 27;
       break;
     case DIRECTION_LEFT:
     case DIRECTION_RIGHT:
       mSprite->w = 8;
-      mSprite->h = 26;
+      mSprite->h = 30;
       mSprite->cy = -8;
-      mRange = GPlayer::mEquipped.mGloves ? 20 : 40;
+      mRange = GPlayer::mEquipped.mGloves ? 19 : 39;
       break;
     default:
       mRange = 0;
