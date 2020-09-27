@@ -73,8 +73,12 @@ static const TUint16 allSongs[] = {
   OVERWORLD_XM,
   BOSS_1_XM,
   BOSS_2_XM,
+  BOSS_3_XM,
+  DUNGEON_HOME_XM,
+  DUNGEON1_XM,
   DUNGEON4_XM,
-  DUNGEON9_XM
+  DUNGEON9_XM,
+  ENDING_THEME_XM
 };
 
 GSoundPlayer::~GSoundPlayer() {

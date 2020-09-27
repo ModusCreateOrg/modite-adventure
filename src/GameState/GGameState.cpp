@@ -960,16 +960,17 @@ TBool GGameState::PlayMusicForCurrentLevel() {
 TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
 
   TUint16 song = EMPTYSONG_XM;
-
+  printf("aNextDungeon = %i\n", aNextDungeon);
   // For levels -- bosses get their own treatment!
   if (aSpawnedBoss == -1) {
     if (aNextDungeon == 0) {
       song = OVERWORLD_XM;
     }
-
-    if (aNextDungeon >= 2 && aNextDungeon <= 4) {
-      //      song = DUNGEON4_XM;
-
+    else if (aNextDungeon == 1) {
+     song = DUNGEON_HOME_XM;
+    }
+    else if (aNextDungeon >= 2 && aNextDungeon <= 4) {
+      song = DUNGEON1_XM;
     }
     else if (aNextDungeon >= 13 && aNextDungeon <= 18) {
       song = DUNGEON4_XM;
@@ -981,8 +982,11 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
   else {
     if (aSpawnedBoss == ATTR_MID_BOSS_WATER || aSpawnedBoss == ATTR_MID_BOSS_ENERGY || aSpawnedBoss == ATTR_MID_BOSS_EARTH || aSpawnedBoss == ATTR_MID_BOSS_FIRE) {
       song = BOSS_1_XM;
-    } else{
+    }
+    else if (aSpawnedBoss == ATTR_WIZARD_ENERGY || aSpawnedBoss == ATTR_WIZARD_WATER || aSpawnedBoss == ATTR_WIZARD_EARTH || aSpawnedBoss == ATTR_WIZARD_FIRE) {
       song = BOSS_2_XM;
+    } else {
+      song = BOSS_3_XM;
     }
   }
 

@@ -219,6 +219,8 @@ SPRITESHEET 32x32 OW5_7_DGN_OBJECT_LAYER.bmp
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
 RAW EmptySong.xm
+RAW Dungeon_Home.xm
+RAW Dungeon1.xm
 RAW Dungeon4.xm
 RAW Dungeon9.xm
 RAW GameOver.xm
@@ -227,6 +229,8 @@ RAW Overworld.xm
 RAW Logo_Reveal.xm
 RAW Boss_1.xm
 RAW Boss_2.xm
+RAW Boss_3.xm
+RAW Ending_Theme.xm
 
 ########### SOUND :: SFX ###########
 PATH resources/sound_effects/
