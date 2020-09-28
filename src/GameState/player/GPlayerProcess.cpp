@@ -604,7 +604,7 @@ TBool GPlayerProcess::SwordState() {
       }
       return ETrue;
     }
-    if (!gControls.IsPressed(CONTROL_FIRE)) {
+    if (mStepFrame++ > SWORDSPEED && !gControls.IsPressed(CONTROL_FIRE)) {
       mStep = 3;
       return ETrue;
     }
