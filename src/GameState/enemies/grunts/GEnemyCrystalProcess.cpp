@@ -1,3 +1,4 @@
+#include "GPlayer.h"
 #include "GEnemyCrystalProcess.h"
 
 #define DEBUGME
@@ -54,6 +55,25 @@ void GEnemyCrystalProcess::Explode() {
 
 void GEnemyCrystalProcess::Parry() {
   gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 5);
-  mSprite->vx *= -1;
-  mSprite->vy *= -1;
+  if (GPlayer::mTargeted) {
+    TPoint target = GPlayer::mTargeted->Center(), center = mSprite->Center();
+    mAngle = ATAN2(target.y - center.y, target.x - center.x);
+  } else {
+    switch (GPlayer::mSprite->mDirection) {
+      case DIRECTION_UP:
+        mAngle = 3 * M_PI_2;
+        break;
+      case DIRECTION_DOWN:
+        mAngle = M_PI_2;
+        break;
+      case DIRECTION_LEFT:
+        mAngle = M_PI;
+        break;
+      case DIRECTION_RIGHT:
+      default:
+        mAngle = 0;
+    }
+  }
+  mSprite->vx = COS(mAngle) * PROJECTILE_VELOCITY;
+  mSprite->vy = SIN(mAngle) * PROJECTILE_VELOCITY;
 }
