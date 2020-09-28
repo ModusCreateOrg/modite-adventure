@@ -2,24 +2,18 @@
 #define GENEMYCRYSTALPROCESS_H
 
 #include "GGameState.h"
-#include "GProcess.h"
+#include "GEnemyProjectileProcess.h"
 
-class GEnemyCrystalProcess : public GProcess {
+class GEnemyCrystalProcess : public GEnemyProjectileProcess {
 public:
   GEnemyCrystalProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TUint16 aSlot, TUint16 aImg = 0);
-  ~GEnemyCrystalProcess() OVERRIDE;
 
 public:
-  TBool RunBefore() OVERRIDE;
-  TBool RunAfter() OVERRIDE;
+  void Explode() OVERRIDE;
+  void Parry() OVERRIDE;
 
 protected:
-  TInt mTimer;
   TFloat mAngle;
-  enum {
-    LIVE,
-    DIE,
-  } mState;
 };
 
 #endif
