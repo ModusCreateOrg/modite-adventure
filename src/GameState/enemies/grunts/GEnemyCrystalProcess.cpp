@@ -8,6 +8,10 @@ const TFloat PROJECTILE_VELOCITY = 3;
 const TInt PROJECTILE_DAMAGE = 55;
 const TInt16 PROJECTILE_SPEED = 4;
 
+const TFloat PARRY_DEVIATION_BASE = 90 * M_PI / 180;
+const TFloat PARRY_ACCURACY_BONUS_SWORD = 30 * M_PI / 180;
+const TFloat PARRY_ACCURACY_BONUS_GLOVES = 45 * M_PI / 180;
+
 static ANIMSCRIPT shootAnimation[] = {
   ABITMAP(PROJECTILE_CRYSTAL_SLOT),
   ALABEL,
@@ -74,6 +78,15 @@ void GEnemyCrystalProcess::Parry() {
         mAngle = 0;
     }
   }
+  // random deviation depending on equipped items
+  TFloat deviationAmount = PARRY_DEVIATION_BASE;
+  if (GPlayer::mEquipped.mGloves) {
+    deviationAmount = MAX(0, deviationAmount - PARRY_ACCURACY_BONUS_GLOVES);
+  }
+  if (GPlayer::mEquipped.mSword) {
+    deviationAmount = MAX(0, deviationAmount - PARRY_ACCURACY_BONUS_SWORD);
+  }
+  mAngle += (RandomFloat() - 0.5) * deviationAmount;
   mSprite->vx = COS(mAngle) * PROJECTILE_VELOCITY;
   mSprite->vy = SIN(mAngle) * PROJECTILE_VELOCITY;
 }
