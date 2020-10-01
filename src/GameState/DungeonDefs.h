@@ -783,20 +783,20 @@ struct TDungeonInfo gDungeonDefs[] = {
   },
   // OVER WORLD 9 Dungeon 5 (Also Dev Dungeon!!).
   {
-    "DEV DGN",
+    "O2 D6 (F)",
     {
       GLOBAL_OBJECT_LAYER_BMP,
       {
-        OWX_DEVDGN_9472_OWX_DEVDGN_L1_MAP, // 0
-        OWX_DEVDGN_9472_OWX_DEVDGN_L1_MAP, // 1
-        OWX_DEVDGN_9472_OWX_DEVDGN_L2_MAP, // 2
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L3_MAP, // 3
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L4_MAP, // 4
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L5_MAP, // 5
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L6_MAP, // 6
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L7_MAP, // 7
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L8_MAP, // 8
-        -1, //OWX_DEVDGN_9472_OWX_DEVDGN_L9_MAP, // 9
+        OW2_DGN5_9472_OW2_DGN5_L1_MAP, // 0
+        OW2_DGN5_9472_OW2_DGN5_L1_MAP, // 1
+        OW2_DGN5_9472_OW2_DGN5_L2_MAP, // 2
+        OW2_DGN5_9472_OW2_DGN5_L3_MAP, // 3
+        OW2_DGN5_9472_OW2_DGN5_L4_MAP, // 4
+        OW2_DGN5_9472_OW2_DGN5_L5_MAP, // 5
+        OW2_DGN5_9472_OW2_DGN5_L6_MAP, // 6
+        OW2_DGN5_9472_OW2_DGN5_L7_MAP, // 7
+        OW2_DGN5_9472_OW2_DGN5_L8_MAP, // 8
+        OW2_DGN5_9472_OW2_DGN5_L9_MAP, // 9
         -1 // EMPTY -- no level 10 evar!!
       },
     }
