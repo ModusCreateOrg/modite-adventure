@@ -1,6 +1,6 @@
 #include "GPotProcess.h"
 
-static const TInt BREAK_SPEED = 3;
+static const TInt BREAK_SPEED = 5;
 
 static ANIMSCRIPT crateAnimation[] = {
   ALABEL,
@@ -42,7 +42,7 @@ GPotProcess::GPotProcess(GGameState *aGameState, TInt aIp, TUint16 aParam, TFloa
   mSprite->cx = -16;
   mSprite->x = aX;
   mSprite->y = aY + 32;
-  mHitPoints = 3;
+  mHitPoints = 1;
   mSprite->StartAnimation(crateAnimation);
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(GLOBAL_OBJECT_LAYER_BMP_SPRITES);
   mGameState->AddSprite(mSprite);
