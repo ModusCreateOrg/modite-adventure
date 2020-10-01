@@ -3,14 +3,13 @@
 
 #include "GSoundSliderWidget.h"
 
-class GManaWidget : public GSoundSliderWidget {
+class GManaWidget : public GButtonWidget {
 public:
     GManaWidget();
-    ~GManaWidget() OVERRIDE;
+    ~GManaWidget() OVERRIDE = default;
 public:
     TInt Render(TInt aX, TInt aY) OVERRIDE;
-    TInt RenderTitle(TInt aX, TInt aY, TBool aActive = EFalse) OVERRIDE;
-    void Select(TInt aVal) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GMANAWIDGET_H

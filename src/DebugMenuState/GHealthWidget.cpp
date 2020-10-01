@@ -2,31 +2,19 @@
 #include "GHealthWidget.h"
 #include "GPlayer.h"
 
-static const TRange health_options = {
-  0, DEFAULT_PLAYER_HITPOINTS, DEFAULT_PLAYER_HITPOINTS / 8
-};
-
-GHealthWidget::GHealthWidget() : GSoundSliderWidget("Health", &health_options, COLOR_TEXT, COLOR_TEXT_BG) {
-  mHeight = 25;
-}
-
-GHealthWidget::~GHealthWidget() = default;
-
-TInt GHealthWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
-  aY += mHeight;
-  return GSoundSliderWidget::RenderTitle(aX, aY, aActive);
+GHealthWidget::GHealthWidget() : GButtonWidget("Fill Health") {
+  mHeight = 20;
 }
 
 TInt GHealthWidget::Render(TInt aX, TInt aY) {
   aY += mHeight;
-  mSelectedValue = GPlayer::mHitPoints;
-  GSoundSliderWidget::Render(aX + 10, aY);
-  return 4;
+  GButtonWidget::Render(aX, aY);
+  return mHeight; //gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight;
 }
 
-void GHealthWidget::Select(TInt aVal) {
-  GPlayer::mHitPoints = aVal;
+void GHealthWidget::Select() {
+  GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxOptionSelect();
+  gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV, 2);
 #endif
 }

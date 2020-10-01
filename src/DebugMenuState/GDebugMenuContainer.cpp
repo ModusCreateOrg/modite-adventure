@@ -2,6 +2,8 @@
 #include "GLevelWidget.h"
 #include "GDebugWidget.h"
 #include "GHealthWidget.h"
+#include "GGiveAllPowerUpsWidget.h"
+#include "GLevelUpPlayer.h"
 #include "GManaWidget.h"
 #include "GItemWidget.h"
 #include "GDebugButtonWidget.h"
@@ -35,8 +37,10 @@ void GDebugMenuContainer::SetState(TInt aState) {
   if (mState == DEBUG_MAIN) {
     mTitle = (char*)"DEBUG MODE";
     AddWidget((BWidget &) *new GDebugWidget());
+    AddWidget((BWidget &) *new GGiveAllPowerUpsWidget());
     AddWidget((BWidget &) *new GHealthWidget());
     AddWidget((BWidget &) *new GManaWidget());
+    AddWidget((BWidget &) *new GLevelUpPlayer());
     AddWidget((BWidget &) *new GDebugButtonWidget("Dungeon Levels", DEBUG_LEVEL, this));
     AddWidget((BWidget &) *new GDebugButtonWidget("Inventory", DEBUG_INV, this));
   } else if (mState == DEBUG_LEVEL) {

@@ -4,6 +4,7 @@
 #include "GStatProcess.h"
 
 GItemWidget::GItemWidget(TInt aItem, BGameEngine *aState) : GButtonWidget("") {
+  printf("aItem = %i \n", aItem);
   mItem = aItem;
   mState = aState;
 
@@ -64,6 +65,7 @@ void GItemWidget::Run() {
 }
 
 void GItemWidget::Select() {
+  printf("ADD mItem %i\n", mItem);
   mState->AddProcess(new GStatProcess(STAT_INFO, GPlayer::mSprite->Center(),
                                       items[mItem], 5 * FRAMES_PER_SECOND, itemNames[mItem]));
   GPlayer::mInventoryList.PickupItem(mItem);
