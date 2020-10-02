@@ -7,7 +7,7 @@
 
 GItemProcess *GItemProcess::SpawnItem(GGameState *aGameState, TInt aIp, TInt aItemNumber, TFloat aX, TFloat aY) {
   if (aItemNumber && aItemNumber < sizeof(items)) {
-    GItemProcess *p = new GItemProcess(aGameState, aIp, aItemNumber, aX, aY);
+    auto *p = new GItemProcess(aGameState, aIp, aItemNumber, aX, aY);
     aGameState->AddProcess(p);
     return p;
   }
@@ -22,6 +22,7 @@ GItemProcess::GItemProcess(GGameState *aGameState, TInt aIp, TInt aItemNumber, T
   mSaveToStream = EFalse;
   mIp = aIp;
   mItemNumber = aItemNumber;
+
   if (mItemNumber && mItemNumber < sizeof(items)) {
     mSprite = new GAnchorSprite(mGameState, ITEM_PRIORITY, ENVIRONMENT_SLOT, items[mItemNumber], STYPE_OBJECT);
     char work[2048];

@@ -367,12 +367,13 @@ const TUint16 IMG_BLUE_AMULET = 100;
 const TUint16 IMG_RED_AMULET = 101;
 const TUint16 IMG_GREEN_AMULET = 102;
 const TUint16 IMG_YELLOW_AMULET = 103;
-const TUint16 IMG_GREEN_POTION1 = 110;
-const TUint16 IMG_GREEN_POTION2 = 111;
-const TUint16 IMG_BLUE_POTION1 = 112;
-const TUint16 IMG_BLUE_POTION2 = 113;
+const TUint16 IMG_RED_POTION1_LRG = 110;// <-- large image
+const TUint16 IMG_RED_POTION2_LRG = 111;// <-- large image
+const TUint16 IMG_BLUE_POTION1_LRG = 112; // <-- large image
+const TUint16 IMG_BLUE_POTION2_LRG = 113;// <-- large image
 const TUint16 IMG_EMPTY_BOTTLE = 114;  // EMPTY
 const TUint16 IMG_HEART = 84;          // EMPTY
+
 const TUint16 IMG_BLUE_BOTTLE1 = 120;  // 25% full
 const TUint16 IMG_BLUE_BOTTLE2 = 121;  // 50% full
 const TUint16 IMG_BLUE_BOTTLE3 = 122;  // 75% full
