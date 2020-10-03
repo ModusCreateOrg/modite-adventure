@@ -299,6 +299,9 @@ void GMidBossGenericProcess::Walk(DIRECTION aDirection) {
 }
 
 TBool GMidBossGenericProcess::MaybeAttack() {
+  if (mGameState->IsGameOver()) {
+    return EFalse;
+  }
   if (mState != MB_IDLE_STATE) {
     return EFalse;
   }

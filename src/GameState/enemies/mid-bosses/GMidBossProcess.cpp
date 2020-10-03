@@ -248,13 +248,15 @@ TBool GMidBossProcess::IdleState() {
   }
 
   if (--mStateTimer < 0) {
-    if (!(Random() % 10)) {
-      NewState(MB_BALL_STATE, DIRECTION_DOWN);
-      return ETrue;
-    }
-    if (!(Random() % 3)) {
-      NewState(MB_CHARGE_STATE, mSprite->mDirection);
-      return ETrue;
+    if (!mGameState->IsGameOver()) {
+      if (!(Random() % 10)) {
+        NewState(MB_BALL_STATE, DIRECTION_DOWN);
+        return ETrue;
+      }
+      if (!(Random() % 3)) {
+        NewState(MB_CHARGE_STATE, mSprite->mDirection);
+        return ETrue;
+      }
     }
 
     DIRECTION direction = GAnchorSprite::RandomDirection();

@@ -433,7 +433,7 @@ TBool GFinalBossProcess::MaybeHit() {
 }
 
 TBool GFinalBossProcess::MaybeAttack() {
-  if (--mAttackTimer < 0) {
+  if (!mGameState->IsGameOver() && --mAttackTimer < 0) {
 #ifdef DEBUGME
     printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
 #endif

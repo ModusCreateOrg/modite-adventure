@@ -839,20 +839,24 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
   mSprite->vx = 0;
   mSprite->vy = 0;
 
+  if (mStateTimer <= 0) {
+    mStateTimer = TInt16(TFloat(Random(3, 8)) * 32 / VELOCITY);
+  }
+
+  if (mGameState->IsGameOver()) {
+    mSprite->StartAnimationInDirection(mStep ? walkAnimations1 : walkAnimations2, aDirection);
+    mSprite->MoveInDirection(VELOCITY, aDirection);
+    return;
+  }
+
   TFloat xx = mSprite->x,
          yy = mSprite->y;
 
   // Angles are in radians
   const TFloat angleToPlayerRad = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
 
-  if (mStateTimer <= 0) {
-    mStateTimer = TInt16(TFloat(Random(3, 8)) * 32 / VELOCITY);
-  }
-
-
   TFloat vx = cos(angleToPlayerRad) * VELOCITY,
          vy = sin(angleToPlayerRad) * VELOCITY;
-
 
   // IDK if there is a simpler way to do this. -JG Aug 09, 2020
   if (angleToPlayerRad >= -2.35619 && angleToPlayerRad <= -.785397) {
@@ -867,14 +871,6 @@ void GGoblinProcess::Walk(DIRECTION aDirection) {
   else if (angleToPlayerRad <= 2.35619  || angleToPlayerRad >= 2.35619 ) {
     aDirection = DIRECTION_LEFT;
   }
-
-//  if (! CanWalkInDirection(DIRECTION_DOWN, vx, vy)
-//     || ! CanWalkInDirection(DIRECTION_UP, vx, vy)
-//     || ! CanWalkInDirection(DIRECTION_LEFT, vx, vy)
-//     || ! CanWalkInDirection(DIRECTION_RIGHT, vx, vy)) {
-//    vx = 0;
-//    vy = 0;
-//  }
 
   if (! CanWalkInDirection(DIRECTION_DOWN, vx, vy)
       || ! CanWalkInDirection(DIRECTION_UP, vx, vy)) {
