@@ -110,16 +110,12 @@ static ANIMSCRIPT attackDownAnimation[] = {
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
   ADELTA(0, -2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
   ADELTA(0, -2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
   AEND,
 };
@@ -130,6 +126,27 @@ static ANIMSCRIPT deathDownAnimation[] = {
     ADELTA(0, -2),
     ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
     AEND,
+};
+
+static ANIMSCRIPT hitSpellDownAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  AEND,
 };
 
 /*
@@ -186,16 +203,12 @@ static ANIMSCRIPT attackLeftAnimation[] = {
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(10, 4),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
   ADELTA(9, 4),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
   ADELTA(9, 4),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
   ADELTA(8, 4),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -204,6 +217,27 @@ static ANIMSCRIPT deathLeftAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(8, 4),
   AFLIP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  AEND,
+};
+
+static ANIMSCRIPT hitSpellLeftAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(0, -2),
+  AFLIP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
   AEND,
 };
 
@@ -261,16 +295,12 @@ static ANIMSCRIPT attackRightAnimation[] = {
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(0, 4),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
   ADELTA(2, 4),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
   ADELTA(2, 4),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
   ADELTA(2, 4),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -281,6 +311,28 @@ static ANIMSCRIPT deathRightAnimation[] = {
   ASTEP(DEATH_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
   AEND,
 };
+
+static ANIMSCRIPT hitSpellRightAnimation[] = {
+  ABITMAP(RAT_SLOT),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 0),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 1),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 2),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_RIGHT + 3),
+  AEND,
+};
+
 /*
  _   _
 | | | |_ __
@@ -337,46 +389,34 @@ static ANIMSCRIPT attackUpAnimation[] = {
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(0, 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 0),
   ADELTA(0, 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 1),
   ADELTA(0, 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 2),
   ADELTA(0, 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
   AEND,
 };
 
-static ANIMSCRIPT hitSpellAnimation[] = {
+static ANIMSCRIPT hitSpellUpAnimation[] = {
   ABITMAP(RAT_SLOT),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 0),
   ADELTA(0, -2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 1),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 2),
   ADELTA(0, -2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 0),
   ADELTA(0, -2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 1),
   ADELTA(0, -2),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 2),
   ADELTA(0, -2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_RAT_DAMAGE_UP + 3),
   AEND,
 };
 
@@ -393,6 +433,7 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
 static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
+static ANIMSCRIPT* hitSpellAnimations[] = {hitSpellUpAnimation, hitSpellDownAnimation, hitSpellLeftAnimation, hitSpellRightAnimation};
 // endregion }}}
 
 /*********************************************************************************
@@ -468,7 +509,7 @@ void GRatProcess::Hit(DIRECTION aDirection) {
 }
 
 void GRatProcess::Spell(DIRECTION aDirection) {
-  mSprite->StartAnimation(hitSpellAnimation);
+  mSprite->StartAnimationInDirection(hitSpellAnimations, aDirection);
 }
 
 void GRatProcess::Death(DIRECTION aDirection) {
