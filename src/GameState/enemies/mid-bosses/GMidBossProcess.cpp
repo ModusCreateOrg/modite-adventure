@@ -178,16 +178,13 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
     mSprite->vy = 0;
     mStep = 0;
     mSprite->ClearCMask(STYPE_EBULLET);
-    Spell(aDirection);
     {
       mSpellCounter++;
       auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 22, mSprite->y + 1, 0, 0, 0);
       mSpellOverlayProcess = p;
       mGameState->AddProcess(p);
-//      p = new GSpellOverlayProcess(mGameState, this, mSprite->x + 44,
-//                                   mSprite->y + 1);
-//      mGameState->AddProcess(p);
     }
+    Spell(aDirection);
     break;
 
   case MB_DEATH_STATE:
@@ -214,6 +211,7 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
 
 TBool GMidBossProcess::MaybeHit() {
   if (SpellDamageCheck()) {
+    StartBlink(BLINK_DURATION);
     NewState(MB_SPELL_STATE, mSprite->mDirection);
     mHitTimer += HIT_SPAM_TIME * 2;
     return ETrue;
@@ -519,12 +517,7 @@ TBool GMidBossProcess::DeathState() {
 }
 
 TBool GMidBossProcess::SpellState() {
-  //  while (BEventMessage *m = GetMessage()) {
-  //    if (m->mType == EVENT_SPELL_PROCESS_EXIT) {
-  //      mSpellCounter--;
-  //    }
-  //  }
-  if (mSprite->AnimDone() && mSpellCounter <= 0) {
+  if (mSprite->AnimDone() && !mSpellOverlayProcess) {
     if (mHitPoints <= 0) {
       NewState(MB_DEATH_STATE, mSprite->mDirection);
     } else {
@@ -536,7 +529,9 @@ TBool GMidBossProcess::SpellState() {
   return ETrue;
 }
 
-void GMidBossProcess::OverlayAnimationComplete() { mSpellCounter--; }
+void GMidBossProcess::OverlayAnimationComplete() {
+  mSpellOverlayProcess = ENull;
+}
 
 void GMidBossProcess::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mIp, sizeof(mIp));
