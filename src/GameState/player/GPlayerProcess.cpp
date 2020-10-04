@@ -371,6 +371,8 @@ TBool GPlayerProcess::MaybeHit() {
       //      GPlayer::mHitPoints = GPlayer::mMaxHitPoints;
       if (!GPlayer::mGameOver) {
         mGameState->GameOver();
+        // don't collide with enemy, enemy attacks, and environment
+        mSprite->ClearCMask(STYPE_ENEMY | STYPE_EBULLET | STYPE_OBJECT);
       }
     }
 
