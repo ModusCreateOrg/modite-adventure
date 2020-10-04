@@ -266,6 +266,8 @@ RAW SFX_enemy_heal.wav
 RAW SFX_item_heart.wav
 RAW SFX_item_pickup_generic.wav
 RAW SFX_midboss_bounce_wall.wav
+RAW SFX_midboss_charge_step.wav
+RAW SFX_midboss_land.wav
 RAW SFX_midboss_transform_in.wav
 RAW SFX_midboss_transform_out.wav
 RAW SFX_midboss_attack_energy.wav
