@@ -110,6 +110,7 @@ TBool GMidBossProjectileProcess::RunAfter() {
     if (mSprite->TestAndClearCType(STYPE_PLAYER | STYPE_ENEMY)) {
       mSprite->Explode();
       mState = ETrue;
+      gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
     } else if (mSprite->TestAndClearCType(STYPE_PBULLET)) {
       mSprite->type = STYPE_PBULLET;
       mSprite->cMask = STYPE_ENEMY | STYPE_OBJECT;
@@ -118,14 +119,17 @@ TBool GMidBossProjectileProcess::RunAfter() {
     }
     if (mSprite->TimedOut()) {
       mSprite->Explode();
+      gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
       mState = ETrue;
     }
     if (mSprite->Clipped()) {
       mSprite->Explode();
+      gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
       mState = ETrue;
     }
     if (!mSprite->CanWalk(mSprite->vx, mSprite->vy)) {
       mSprite->Explode();
+      gSoundPlayer.TriggerSfx(SFX_TOWER_PROJECTILE_DEATH_WAV, 2);
       mState = ETrue;
     }
     mSprite->ClearCType(STYPE_ENEMY);
