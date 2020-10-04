@@ -362,7 +362,7 @@ TBool GWizardProcess::MaybeDamage() {
 }
 
 TBool GWizardProcess::MaybeAttack() {
-  if (--mAttackTimer < 0) {
+  if (!mGameState->IsGameOver() && --mAttackTimer < 0) {
     printf("Attack!\n");
     SetState(Random() & 1u ? STATE_PROJECTILE : STATE_PILLAR, mDirection);
     return ETrue;
@@ -485,7 +485,7 @@ TBool GWizardProcess::ProjectileState() {
 }
 
 TBool GWizardProcess::PillarState() {
-  if (MaybeDamage()) {
+  if (mGameState->IsGameOver() || MaybeDamage()) {
     gSoundPlayer.TriggerSfx(SFX_PLAYER_PARRY_PROJECTILE_WAV, 5);
     mChanneling = EFalse;
     SetAttackTimer();

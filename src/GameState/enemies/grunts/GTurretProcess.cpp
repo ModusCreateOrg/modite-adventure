@@ -164,7 +164,7 @@ TBool GTurretProcess::HitState() {
 }
 
 TBool GTurretProcess::MaybeAttack() {
-  if (GPlayer::mInvulnerable) {
+  if (mGameState->IsGameOver() || GPlayer::mInvulnerable) {
     return EFalse;
   }
 

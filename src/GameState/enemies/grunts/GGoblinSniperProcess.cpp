@@ -465,7 +465,7 @@ void GGoblinSniperProcess::Death(DIRECTION aDirection) {
 }
 
 TBool GGoblinSniperProcess::MaybeAttack() {
-  if (GPlayer::mInvulnerable) {
+  if (mGameState->IsGameOver() || GPlayer::mInvulnerable) {
     return EFalse;
   }
 

@@ -158,7 +158,7 @@ TBool GGruntProcess::MaybeAttack() {
   mSprite->GetRect(myRect);
   GPlayer::mSprite->GetRect(hisRect);
 
-  if (!GPlayer::mInvulnerable) {
+  if (!mGameState->IsGameOver() && !GPlayer::mInvulnerable) {
     if (myRect.y1 <= hisRect.y2 && myRect.y2 >= hisRect.y1) {
       // vertical overlap
       if (myRect.x1 >= hisRect.x2 && myRect.x1 - hisRect.x2 < mRangeX) {
