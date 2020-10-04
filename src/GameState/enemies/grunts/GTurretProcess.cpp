@@ -123,24 +123,26 @@ void GTurretProcess::Idle(DIRECTION aDirection) {
 }
 
 void GTurretProcess::Attack(DIRECTION aDirection) {
-  // fire 1-3 projectiled
-  TFloat xx = mSprite->x,
-         yy = mSprite->y;
+  // fire 1-3 projectiles
+  TPoint p = mSprite->Center();
+  p.Offset(0, -24);
+  TPoint playerCenter = GPlayer::mSprite->Center();
 
   // Angles are in radians
-  const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
+  const TFloat angleToPlayer = atan2(playerCenter.y - p.y, playerCenter.x - p.x);
 
   TInt attackType = Random() & TUint8(3);
 
+  p.Offset(-16, 16);
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angleToPlayer, PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, p.x, p.y, angleToPlayer, PROJECTILE_CRYSTAL_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[0], PROJECTILE_CRYSTAL_SLOT));
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[1], PROJECTILE_CRYSTAL_SLOT));
-    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, xx + 16, yy - 8, angles[2], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, p.x, p.y, angles[0], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, p.x, p.y, angles[1], PROJECTILE_CRYSTAL_SLOT));
+    mGameState->AddProcess(new GEnemyCrystalProcess(mGameState, p.x, p.y, angles[2], PROJECTILE_CRYSTAL_SLOT));
   }
 
   NewState(IDLE_STATE, DIRECTION_DOWN);
