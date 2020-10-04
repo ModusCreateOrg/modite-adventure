@@ -78,6 +78,7 @@ void GEnemyCrystalProcess::Parry() {
         mAngle = 0;
     }
   }
+<<<<<<< HEAD
   // random deviation depending on equipped items
   TFloat deviationAmount = PARRY_DEVIATION_BASE;
   if (GPlayer::mEquipped.mGloves) {
@@ -87,6 +88,8 @@ void GEnemyCrystalProcess::Parry() {
     deviationAmount = MAX(0, deviationAmount - PARRY_ACCURACY_BONUS_SWORD);
   }
   mAngle += (RandomFloat() - 0.5) * deviationAmount;
+=======
+>>>>>>> a7b79c1... aim parry at targeted enemy
   mSprite->vx = COS(mAngle) * PROJECTILE_VELOCITY;
   mSprite->vy = SIN(mAngle) * PROJECTILE_VELOCITY;
 }
