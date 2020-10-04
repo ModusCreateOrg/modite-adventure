@@ -9,11 +9,12 @@
 #include "GGameState.h"
 #include "GBossProcess.h"
 #include "common/GSpellOverlayProcess.h"
+#include "GPlayerProcess.h"
 
-const TInt MID_BOSS_ATTACK_TIME = 3 * FRAMES_PER_SECOND;
-const TFloat VELOCITY = 1.5;
-const TFloat CHARGE_VELOCITY = 3.0;
-const TInt BOUNCE_TIME = 10; // bounce around for 10 seconds
+const TInt MID_BOSS_ATTACK_TIME = 2 * FRAMES_PER_SECOND;
+const TFloat VELOCITY = 2.5;
+const TFloat CHARGE_VELOCITY = 4 * PLAYER_VELOCITY;
+const TInt BOUNCE_TIME = 5; // bounce around for 10 seconds
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 3;
 const TFloat MID_BOSS_FRICTION = 0.1 / TFloat(FACTOR);
@@ -89,6 +90,25 @@ protected:
   virtual void Spell(DIRECTION aDirection) = 0;
   TBool SpellState();
 
+  void TriggerProjectileAttackSfx() {
+    switch (mAttribute) {
+      case ATTR_MID_BOSS_ENERGY:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV);
+        break;
+      case ATTR_MID_BOSS_EARTH:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV);
+        break;
+      case ATTR_MID_BOSS_WATER:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV);
+        break;
+      case ATTR_MID_BOSS_FIRE:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV);
+        break;
+      default:
+        break;
+    }
+  }
+
 public:
   void OverlayAnimationComplete() OVERRIDE;
   void WriteToStream(BMemoryStream &aStream) OVERRIDE;
@@ -97,6 +117,7 @@ public:
 protected:
   TInt16 mDropsItemAttribute;
   TInt mIp;
+  TInt16 mBallAttackModulo;
   GSpellOverlayProcess *mSpellOverlayProcess;
 };
 

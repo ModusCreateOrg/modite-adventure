@@ -2,31 +2,19 @@
 #include "GManaWidget.h"
 #include "GPlayer.h"
 
-static const TRange health_options = {
-  0, 100, 25
-};
-
-GManaWidget::GManaWidget() : GSoundSliderWidget("Mana", &health_options, COLOR_TEXT, COLOR_TEXT_BG) {
-  mHeight = 25;
-}
-
-GManaWidget::~GManaWidget() = default;
-
-TInt GManaWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
-  aY += mHeight;
-  return GSoundSliderWidget::RenderTitle(aX, aY, aActive);
+GManaWidget::GManaWidget() : GButtonWidget("Fill Mana") {
+  mHeight = 20;
 }
 
 TInt GManaWidget::Render(TInt aX, TInt aY) {
   aY += mHeight;
-  mSelectedValue = GPlayer::mManaPotion;
-  GSoundSliderWidget::Render(aX + 10, aY);
-  return 4;
+  GButtonWidget::Render(aX, aY);
+  return mHeight; //gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight;
 }
 
-void GManaWidget::Select(TInt aVal) {
-  GPlayer::mManaPotion = aVal;
+void GManaWidget::Select() {
+  GPlayer::mManaPotion = GPlayer::mMaxMana;
 #ifdef ENABLE_AUDIO
-  gSoundPlayer.SfxOptionSelect();
+  gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV, 2);
 #endif
 }

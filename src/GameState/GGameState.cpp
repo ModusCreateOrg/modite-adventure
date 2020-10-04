@@ -6,6 +6,7 @@
 #include "GameState/environment/GSpikesProcess.h"
 #include "GameState/player/GPlayerProcess.h"
 #include "GHud.h"
+#include "Items.h"
 
 #include "GPlayer.h"
 
@@ -937,6 +938,43 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         spawnedBoss = op;
 
         break;
+
+      // Spawn potions, heart
+      case ATTR_SPAWN_SMALL_HEALTH:
+#ifdef DEBUGME
+        printf("SMALL HEALTH at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GItemProcess::SpawnItem(this, ip, ITEM_RED_POTION1, xx, yy + 32);
+        break;
+
+      case ATTR_SPAWN_LARGE_HEALTH:
+#ifdef DEBUGME
+        printf("LARGE HEALTH at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GItemProcess::SpawnItem(this, ip, ITEM_RED_POTION2, xx, yy + 32);
+        break;
+
+      case ATTR_SPAWN_SMALL_MANA:
+#ifdef DEBUGME
+        printf("SMALL MANA at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GItemProcess::SpawnItem(this, ip, ITEM_BLUE_POTION1, xx, yy + 32);
+        break;
+
+      case ATTR_SPAWN_LARGE_MANA:
+#ifdef DEBUGME
+        printf("LARGE MANA at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GItemProcess::SpawnItem(this, ip, ITEM_BLUE_POTION2, xx, yy + 32);
+        break;
+
+      case ATTR_SPAWN_HEART:
+#ifdef DEBUGME
+        printf("HEART at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GItemProcess::SpawnItem(this, ip, ITEM_HEART, xx, yy + 32);
+        break;
+
 
       default:
         printf("======== > Invalid op code in Object Program: $%0x at col,row %d,%d\n", program[ip].mCode, col, row);

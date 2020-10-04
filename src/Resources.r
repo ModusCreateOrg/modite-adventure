@@ -128,6 +128,8 @@ PATH resources/tilemaps/OW2,3/OW2_DGN3_1792
 TMX OW2_DGN3_1792.txt
 PATH resources/tilemaps/OW2,3/OW2_DGN4_2048
 TMX OW2_DGN4_2048.txt
+PATH resources/tilemaps/OW2,3/OW2_DGN5_9472
+TMX OW2_DGN5_9472.txt
 
 ## OVERWORLD 2 Dungeons
 PATH resources/tilemaps/OW2,3/OW3_DGN1_2304
@@ -138,6 +140,8 @@ PATH resources/tilemaps/OW2,3/OW3_DGN3_2816
 TMX OW3_DGN3_2816.txt
 PATH resources/tilemaps/OW2,3/OW3_DGN4_3072
 TMX OW3_DGN4_3072.txt
+
+
 
 ## OVERWORLD 3 Dungeons
 PATH resources/tilemaps/OW4,6/OW4_DGN1_3328
@@ -200,8 +204,8 @@ PATH resources/tilemaps/OW8,9/OW9_DGN4_9216
 TMX OW9_DGN4_9216.txt
 
 # Dev Dungeons
-PATH resources/tilemaps/OWX_DevDGN_9472
-TMX OWX_DevDGN_9472.txt
+# PATH resources/tilemaps/OWX_DevDGN_9472
+# TMX OWX_DevDGN_9472.txt
 
 
 #
@@ -254,6 +258,7 @@ RAW SFX_player_quaff_spell.wav
 RAW SFX_player_take_damage.wav
 RAW SFX_player_death.wav
 RAW SFX_player_parry_projectile.wav
+RAW SFX_player_level_up.wav
 RAW SFX_enemy_attack.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav
@@ -261,6 +266,8 @@ RAW SFX_enemy_heal.wav
 RAW SFX_item_heart.wav
 RAW SFX_item_pickup_generic.wav
 RAW SFX_midboss_bounce_wall.wav
+RAW SFX_midboss_charge_step.wav
+RAW SFX_midboss_land.wav
 RAW SFX_midboss_transform_in.wav
 RAW SFX_midboss_transform_out.wav
 RAW SFX_midboss_attack_energy.wav

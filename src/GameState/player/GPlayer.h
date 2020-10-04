@@ -18,6 +18,7 @@ class GBossProcess;
 #include "GResources.h"
 #include "inventory/GInventoryList.h"
 #include "GStatProcess.h"
+#include "GSoundPlayer.h"
 
 const TInt DEFAULT_PLAYER_HITPOINTS = 200;
 const TInt DEFAULT_PLAYER_MANA = 100;
@@ -97,6 +98,7 @@ struct GPlayer {
       mHitPoints = mMaxHitPoints;
       mManaPotion = mMaxMana;
       mAttackStrength += 7;
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_LEVEL_UP_WAV, 2);
     }
   }
 

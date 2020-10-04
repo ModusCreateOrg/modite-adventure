@@ -1,7 +1,7 @@
 #include "GMidBossDeathProcess.h"
 #include "GGameState.h"
 
-const TInt16 DEATH_SPEED = 4;
+const TInt16 DEATH_SPEED = 5;
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_DEATH_SLOT),
@@ -43,6 +43,7 @@ TBool GMidBossDeathProcess::RunBefore() {
     mSprite->SetFlags(SFLAG_BELOW);
     mGameState->AddSprite(mSprite);
     mSprite->StartAnimation(deathAnimation);
+    gSoundPlayer.TriggerSfx(SFX_WIZARD_EXPLODING_WAV, 4);
   }
   return ETrue;
 }

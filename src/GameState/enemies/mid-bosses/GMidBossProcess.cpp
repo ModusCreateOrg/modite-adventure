@@ -3,6 +3,7 @@
 #include "GMidBossDeathProcess.h"
 #include "GPlayer.h"
 #include "common/GSpellOverlayProcess.h"
+#include "GMidBossProjectileProcess.h"
 #include "Resources.h"
 #include "GGame.h"
 
@@ -31,18 +32,22 @@ GMidBossProcess::GMidBossProcess(GGameState *aGameState, TFloat aX, TFloat aY,
   case ATTR_MID_BOSS_WATER:
     mSprite->mElement = ELEMENT_WATER;
     mSprite->Name("Iuy");
+    mBallAttackModulo = 40;
     break;
   case ATTR_MID_BOSS_FIRE:
     mSprite->mElement = ELEMENT_FIRE;
     mSprite->Name("Ustir");
+    mBallAttackModulo = 35;
     break;
   case ATTR_MID_BOSS_EARTH:
     mSprite->mElement = ELEMENT_EARTH;
     mSprite->Name("Oim");
+    mBallAttackModulo = 45;
     break;
   case ATTR_MID_BOSS_ENERGY:
     mSprite->mElement = ELEMENT_ENERGY;
     mSprite->Name("Igum");
+    mBallAttackModulo = 30;
     break;
   default:
     break;
@@ -58,28 +63,28 @@ GMidBossProcess::~GMidBossProcess() {
 
 TBool GMidBossProcess::RunBefore() {
   switch (mState) {
-  case MB_IDLE_STATE:
-    return IdleState();
-  case MB_BALL_STATE:
-    return BallState();
-  case MB_MOVE_STATE:
-    return MoveState();
-  case MB_RETURN_STATE:
-    return ReturnState();
-  case MB_REVERT_STATE:
-    return RevertState();
-  case MB_WALK_STATE:
-    return WalkState();
-  case MB_ATTACK_STATE:
-    return AttackState();
-  case MB_CHARGE_STATE:
-    return ChargeState();
-  case MB_DEATH_STATE:
-    return DeathState();
-  case MB_SPELL_STATE:
-    return SpellState();
-  default:
-    return ETrue;
+    case MB_IDLE_STATE:
+      return IdleState();
+    case MB_BALL_STATE:
+      return BallState();
+    case MB_MOVE_STATE:
+      return MoveState();
+    case MB_RETURN_STATE:
+      return ReturnState();
+    case MB_REVERT_STATE:
+      return RevertState();
+    case MB_WALK_STATE:
+      return WalkState();
+    case MB_ATTACK_STATE:
+      return AttackState();
+    case MB_CHARGE_STATE:
+      return ChargeState();
+    case MB_DEATH_STATE:
+      return DeathState();
+    case MB_SPELL_STATE:
+      return SpellState();
+    default:
+      return ETrue;
   }
 }
 
@@ -388,9 +393,19 @@ TBool GMidBossProcess::MaybeBounce() {
   return bouncedX || bouncedY;
 }
 
+// Moving while in a ball
 TBool GMidBossProcess::MoveState() {
   mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET |
                       STYPE_SPELL); // invulnerable
+
+//  TUint32 shouldShoot = Random(1, 50) % 20;
+//  printf("mStateTimer %i\n", mStateTimer);
+  if (mStateTimer % mBallAttackModulo == 0) {
+    printf("Shoot %i\n", mStateTimer);
+    auto *p = (GProcess *)new GMidBossProjectileProcess(mGameState, mSprite->x + 48, mSprite->y);
+    mGameState->AddProcess(p);
+    TriggerProjectileAttackSfx();
+  }
 
   if (--mStateTimer <= 0) {
     NewState(MB_RETURN_STATE, DIRECTION_UP);

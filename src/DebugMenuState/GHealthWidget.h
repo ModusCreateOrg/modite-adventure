@@ -1,16 +1,15 @@
 #ifndef GENUS_GHEALTHWIDGET_H
 #define GENUS_GHEALTHWIDGET_H
 
-#include "GSoundSliderWidget.h"
+#include "common/GButtonWidget.h"
 
-class GHealthWidget : public GSoundSliderWidget {
+class GHealthWidget : public GButtonWidget {
 public:
     GHealthWidget();
-    ~GHealthWidget() OVERRIDE;
+    ~GHealthWidget() OVERRIDE = default;
 public:
     TInt Render(TInt aX, TInt aY) OVERRIDE;
-    TInt RenderTitle(TInt aX, TInt aY, TBool aActive = EFalse) OVERRIDE;
-    void Select(TInt aVal) OVERRIDE;
+    void Select() OVERRIDE;
 };
 
 #endif //GENUS_GHEALTHWIDGET_H
