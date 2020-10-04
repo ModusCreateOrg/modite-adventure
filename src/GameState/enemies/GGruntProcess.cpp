@@ -103,8 +103,7 @@ void GGruntProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
       mSpellOverlayProcess = p;
       mGameState->AddProcess(p);
-      mSprite->mDirection = DIRECTION_DOWN;
-      Spell(DIRECTION_DOWN);
+      Spell(aDirection);
     } break;
 
     case DEATH_STATE: {

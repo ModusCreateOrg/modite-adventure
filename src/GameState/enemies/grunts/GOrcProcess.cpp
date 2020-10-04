@@ -226,19 +226,28 @@ static ANIMSCRIPT attackRoundDownAnimation[] = {
 
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(ORC_SLOT),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 3),
   AEND,
 };
 static ANIMSCRIPT deathDownAnimation[] = {
   ABITMAP(ORC_SLOT),
   ASTEP(DEATH_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
+  AEND,
+};
+
+static ANIMSCRIPT hitSpellDownAnimation[] = {
+  ABITMAP(ORC_SLOT),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 3),
   AEND,
 };
 
@@ -417,16 +426,12 @@ static ANIMSCRIPT attackRoundLeftAnimation[] = {
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(ORC_SLOT),
   ADELTA(-3, 0),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
   ADELTA(1, 0),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
   ADELTA(1, 0),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
   ADELTA(-2, 0),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -439,6 +444,18 @@ static ANIMSCRIPT deathLeftAnimation[] = {
   AEND,
 };
 
+static ANIMSCRIPT hitSpellLeftAnimation[] = {
+  ABITMAP(ORC_SLOT),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
+  AFLIP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
+  AEND,
+};
 
 /*
  ____  _       _     _
@@ -614,13 +631,9 @@ static ANIMSCRIPT attackRoundRightAnimation[] = {
 
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(ORC_SLOT),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -628,6 +641,19 @@ static ANIMSCRIPT hitRightAnimation[] = {
 static ANIMSCRIPT deathRightAnimation[] = {
   ABITMAP(ORC_SLOT),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  AEND,
+};
+
+static ANIMSCRIPT hitSpellRightAnimation[] = {
+  ABITMAP(ORC_SLOT),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_RIGHT + 3),
   AEND,
 };
 
@@ -806,13 +832,9 @@ static ANIMSCRIPT attackRoundUpAnimation[] = {
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(ORC_SLOT),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 3),
   AEND,
 };
@@ -823,24 +845,16 @@ static ANIMSCRIPT deathUpAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT hitSpellAnimation[] = {
+static ANIMSCRIPT hitSpellUpAnimation[] = {
   ABITMAP(ORC_SLOT),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 3),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 0),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 2),
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 3),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 0),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 1),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 2),
+  ASTEP(HIT_SPEED, IMG_ORC_DAMAGE_UP + 3),
   AEND,
 };
 
@@ -862,6 +876,7 @@ static ANIMSCRIPT* attackDoubleAnimations[] = {
 };
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
 static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
+static ANIMSCRIPT* hitSpellAnimations[] = {hitSpellUpAnimation, hitSpellDownAnimation, hitSpellLeftAnimation, hitSpellRightAnimation};
 
 // endregion }}}
 
@@ -927,7 +942,7 @@ void GOrcProcess::Hit(DIRECTION aDirection) {
 }
 
 void GOrcProcess::Spell(DIRECTION aDirection) {
-  mSprite->StartAnimation(hitSpellAnimation);
+  mSprite->StartAnimationInDirection(hitSpellAnimations, aDirection);
 }
 
 void GOrcProcess::Death(DIRECTION aDirection) {

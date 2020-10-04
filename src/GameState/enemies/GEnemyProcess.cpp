@@ -1,5 +1,6 @@
-
 #include "GEnemyProcess.h"
+
+const TUint8 BLINK_TIME = 4 * FACTOR;
 
 GEnemyProcess::GEnemyProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TUint16 aAttribute)
     : GProcess(aAttribute), mGameState(aGameState), mPlayfield(aGameState->mGamePlayfield) {
@@ -59,6 +60,7 @@ TBool GEnemyProcess::BasicDamageCheck() {
     }
   }
   DoDamage(attackAmount);
+  StartBlink(BLINK_TIME);
 
   return ETrue;
 }
@@ -75,6 +77,7 @@ TBool GEnemyProcess::SpellDamageCheck() {
     attackAmount *= SPELL_ATTACK_BONUS;
   }
   DoDamage(attackAmount);
+  StartBlink(BLINK_TIME);
 
   return ETrue;
 }

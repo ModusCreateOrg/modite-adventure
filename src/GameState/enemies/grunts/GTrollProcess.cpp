@@ -128,16 +128,12 @@ static ANIMSCRIPT attackDownAnimation[] = {
 static ANIMSCRIPT hitDownAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(0, -1),
-  AFILL(COLOR_WHITE),
   ADELTA(0, -1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
-  AFILL(-1),
   ADELTA(0, -1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
   ADELTA(0, -1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
-  AFILL(-1),
   ADELTA(0, -1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
   AEND,
@@ -148,6 +144,29 @@ static ANIMSCRIPT deathDownAnimation[] = {
     ADELTA(0, -1),
     ASTEP(DEATH_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
     AEND,
+};
+
+static ANIMSCRIPT hitSpellDownAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  AEND,
 };
 
 /*
@@ -202,16 +221,12 @@ static ANIMSCRIPT attackLeftAnimation[] = {
 static ANIMSCRIPT hitLeftAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(-3, -1),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
   ADELTA(-7, -1),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
   ADELTA(-7, -1),
-  AFILL(COLOR_WHITE),
   AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
   ADELTA(-3, -1),
-  AFILL(-1),
   AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -220,6 +235,29 @@ static ANIMSCRIPT deathLeftAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(-7, -1),
   AFLIP(DEATH_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT hitSpellLeftAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  ADELTA(0, -1),
+  AFLIP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
   AEND,
 };
 
@@ -275,16 +313,12 @@ static ANIMSCRIPT attackRightAnimation[] = {
 static ANIMSCRIPT hitRightAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(0, 0),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
   ADELTA(0, 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
   ADELTA(0, 0),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
   ADELTA(0, 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
   AEND,
 };
@@ -293,6 +327,29 @@ static ANIMSCRIPT deathRightAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(0, 0),
   ASTEP(DEATH_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  AEND,
+};
+
+static ANIMSCRIPT hitSpellRightAnimation[] = {
+  ABITMAP(TROLL_SLOT),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
+  ADELTA(0, -1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 0),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 1),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 2),
+  ADELTA(0, -1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_RIGHT + 3),
   AEND,
 };
 
@@ -347,13 +404,9 @@ static ANIMSCRIPT attackUpAnimation[] = {
 
 static ANIMSCRIPT hitUpAnimation[] = {
   ABITMAP(TROLL_SLOT),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 0),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 1),
-  AFILL(COLOR_WHITE),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
-  AFILL(-1),
   ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
   AEND,
 };
@@ -365,34 +418,26 @@ static ANIMSCRIPT deathUpAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT hitSpellAnimation[] = {
+static ANIMSCRIPT hitSpellUpAnimation[] = {
   ABITMAP(TROLL_SLOT),
   ADELTA(0, -1),
-  AFILL(COLOR_WHITE),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 0),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 1),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
   ADELTA(0, -1),
-  AFILL(COLOR_WHITE),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 0),
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 0),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 1),
-  AFILL(COLOR_WHITE),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 1),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 2),
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 2),
   ADELTA(0, -1),
-  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_DOWN + 3),
+  ASTEP(HIT_SPEED, IMG_TROLL_DAMAGE_UP + 3),
   AEND,
 };
 
@@ -402,6 +447,7 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 static ANIMSCRIPT* attackAnimations[] = {attackUpAnimation, attackDownAnimation, attackLeftAnimation, attackRightAnimation};
 static ANIMSCRIPT* hitAnimations[] = {hitUpAnimation, hitDownAnimation, hitLeftAnimation, hitRightAnimation};
 static ANIMSCRIPT* deathAnimations[] = {deathUpAnimation, deathDownAnimation, deathLeftAnimation, deathRightAnimation};
+static ANIMSCRIPT* hitSpellAnimations[] = {hitSpellUpAnimation, hitSpellDownAnimation, hitSpellLeftAnimation, hitSpellRightAnimation};
 
 // endregion }}}
 
@@ -457,7 +503,7 @@ void GTrollProcess::Hit(DIRECTION aDirection) {
 }
 
 void GTrollProcess::Spell(DIRECTION aDirection) {
-  mSprite->StartAnimation(hitSpellAnimation);
+  mSprite->StartAnimationInDirection(hitSpellAnimations, aDirection);
 }
 
 void GTrollProcess::Death(DIRECTION aDirection) {
