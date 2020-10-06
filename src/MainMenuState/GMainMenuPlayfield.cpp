@@ -1,21 +1,21 @@
 #include "GMainMenuPlayfield.h"
 #include "GAnchorSprite.h"
 
-const TInt16 WALKSPEED = 4 * FACTOR;
+const TInt16 WALK_SPEED = 4 * FACTOR;
 
 static TBool moonHitTop = EFalse;
 
-ANIMSCRIPT walkRightAnimation[] = {
+ANIMSCRIPT walkAnimation[] = {
   ABITMAP(PLAYER_SLOT),
   ALABEL,
   ADELTA(1, 0),
-  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 0),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 0),
   ADELTA(-1, 0),
-  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 1),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 1),
   ADELTA(0, 0),
-  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 2),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 2),
   ADELTA(0, 0),
-  ASTEP(WALKSPEED, IMG_WALK_RIGHT + 3),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 3),
   ALOOP,
 };
 
@@ -68,7 +68,7 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
   mPlayer = new GPlayerSprite(aGameState);
   mPlayer->ClearFlags(SFLAG_RENDER_DEBUG);
 
-  mPlayer->StartAnimation(walkRightAnimation);
+  mPlayer->StartAnimation(walkAnimation);
   mPlayer->x = 10;
   mPlayer->y = SCREEN_HEIGHT - 18;
 
