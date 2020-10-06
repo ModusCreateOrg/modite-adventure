@@ -1,20 +1,5 @@
 #include "Game.h"
-
-class GVictoryPlayfield : public BPlayfield {
-public:
-  GVictoryPlayfield() {
-    gResourceManager.LoadBitmap(TITLE_BMP, BKG_SLOT, IMAGE_ENTIRE);
-    mBackground = gResourceManager.GetBitmap(BKG_SLOT);
-    gDisplay.SetPalette(mBackground);
-  }
-
-  void Render() OVERRIDE {
-    gDisplay.renderBitmap->CopyPixels(mBackground);
-  }
-
-protected:
-  BBitmap *mBackground;
-};
+#include "GVictoryPlayfield.h"
 
 class GVictoryProcess : public BProcess {
 public:
@@ -56,8 +41,8 @@ public:
   }
 };
 
-GVictoryState::GVictoryState() : BGameEngine(gViewPort) {
-  mPlayfield = new GVictoryPlayfield();
+GVictoryState::GVictoryState(GGameState *aGameEngine) : BGameEngine(gViewPort) {
+  mPlayfield = new GVictoryPlayfield(aGameEngine);
   AddProcess(new GVictoryProcess());
 }
 
