@@ -585,7 +585,7 @@ TBool GPlayerProcess::WalkState() {
 
   mStepFrame++;
   if (mSprite->AnimDone() || (mState == WALK_STATE && mStepFrame - 1 >=
-      TInt(WALKSPEED * PLAYER_VELOCITY / hypot(mSprite->vx, mSprite->vy)))) {
+      TInt(WALK_SPEED * PLAYER_VELOCITY / hypot(mSprite->vx, mSprite->vy)))) {
     mStepFrame = 1;
     NewState(WALK_STATE, mSprite->mDirection);
   }
