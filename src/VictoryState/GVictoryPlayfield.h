@@ -4,60 +4,66 @@
 #include "Game.h"
 #include "GPlayerSprite.h"
 #include "GStarFieldProcess.h"
+#include "GVictoryCreditsProcess.h"
 
 class GVictoryPlayfield : public BPlayfield {
 public:
   explicit GVictoryPlayfield(GGameState *aGameState);
   ~GVictoryPlayfield() OVERRIDE;
 
-//  TInt CenterText8(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
-  TInt CenterText16(const char *s, TInt aY, TInt aColor = COLOR_TEXT, TInt aBackground = -1);
-
   void Animate() OVERRIDE;
   void Render() OVERRIDE;
   void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset);
-public:
 
-//  BFont *mFont8;
-  BFont *mFont16;
   TInt  mState;
 
 protected:
 
-  void CacheColors(BBitmap *aBitmap, TRGB *aColorCache) {
-    TInt  numColors = aBitmap->CountUsedColors();
-    TFloat pct = .25;
-
-    for (TInt i = 0; i < numColors; i++) {
-      if (i == aBitmap->TransparentColor()) {
-        continue;
-      }
-
-      TRGB color = aBitmap->GetColor(i);
-
-      aColorCache[i].Set(color.r, color.b, color.g);
+  void FadeInColors() {
+    for (TInt16 i = 0; i < 255; i++) {
+      TRGB color = mBgColors[i];
 
       // Reduce color cache
-      TUint16 red = (TFloat) color.r * pct;
+      TUint16 red = (TFloat) color.r * mFadePct;
       color.r = (TUint8) ((red > 0xFF) ? 0xFF : red);
 
-      TUint16 green = (TFloat) color.g * pct;
+      TUint16 green = (TFloat) color.g * mFadePct;
       color.g = (TUint8) ((green > 0xFF) ? 0xFF : green);
 
-      TUint16 blue = (TFloat) color.b * pct;
+      TUint16 blue = (TFloat) color.b * mFadePct;
       color.b = (TUint8) ((blue > 0xFF) ? 0xFF : blue);
 
-      aBitmap->SetColor(i, color);
+      gDisplay.SetColor(i, color);
     }
   }
 
-  TRGB *mBgLogoColors;
-  TRGB *mBgSkyColors;
-  TRGB *mBgNearTreesColors;
-  TRGB *mBgWalkingPathColors;
-  TRGB *mBgMountainsColors;
-  TRGB *mBgMoonColors;
-  TRGB mStarsColor;
+  void CacheColors() {
+    for (TInt16 i = 0; i < 255; i++) {
+      TRGB color =  gDisplay.renderBitmap->GetPalette()[i];
+
+      mBgColors[i].Set(color.r, color.g, color.b);
+
+      // Reduce color cache
+      TUint16 red = (TFloat) color.r * mFadePct;
+      color.r = (TUint8) ((red > 0xFF) ? 0xFF : red);
+
+      TUint16 green = (TFloat) color.g * mFadePct;
+      color.g = (TUint8) ((green > 0xFF) ? 0xFF : green);
+
+      TUint16 blue = (TFloat) color.b * mFadePct;
+      color.b = (TUint8) ((blue > 0xFF) ? 0xFF : blue);
+
+      gDisplay.SetColor(i, color);
+    }
+
+  }
+
+  TRGB *mBgColors;
+
+  TFloat mFadePct;
+  TFloat mFadeStep;
+
+  TUint8 mSkyColorIndex;
 
   GGameState *mGameState;
 
@@ -70,6 +76,7 @@ protected:
   GPlayerSprite *mPlayer;
 
   GStarFieldProcess *mStarfieldProcess;
+  GVictoryCreditsProcess *mCreditsProcess;
 
   TFloat mSkyOffset;
   TFloat mMountainsOffset;
@@ -78,6 +85,7 @@ protected:
   TFloat mPathOffset;
   TRGB mSavedPalette[256];
   TInt8 mFadeState;
+  TInt32 mStateTimer;
 
 };
 

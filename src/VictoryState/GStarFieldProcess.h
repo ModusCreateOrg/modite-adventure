@@ -9,6 +9,7 @@ const TInt NUM_STARS = 30;
 class GStarFieldProcess {
 public:
   explicit GStarFieldProcess() {
+    mStarsColor.Set(TUint8(200), TUint8(200), TUint8(200));
     for (TInt i = 0; i < NUM_STARS; i++) {
       InitStar(i, 0);
     }
@@ -19,7 +20,8 @@ public:
 
   void Render() {
     Animate();
-//  gDisplay.renderBitmap->Clear(86);
+    gDisplay.SetColor(COLOR_EXPERIENCE, mStarsColor);
+
     for (TInt i = 0; i < NUM_STARS; i++) {
       gDisplay.renderBitmap->DrawFastHLine(ENull, mStarX[i], mStarY[i], mStarWidth[i], COLOR_EXPERIENCE);
     }
@@ -27,6 +29,7 @@ public:
 
 
 protected:
+  TRGB mStarsColor;
 
   void InitStar(TInt aIndex, TInt32 aXStartIndex = 320) {
     mStarX[aIndex] = Random(aXStartIndex, 480);
