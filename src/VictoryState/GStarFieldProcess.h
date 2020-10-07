@@ -4,7 +4,7 @@
 #include "BProcess.h"
 #include "Game.h"
 
-const TInt NUM_STARS = 30;
+const TInt8 NUM_STARS = 45;
 
 class GStarFieldProcess {
 public:
@@ -16,7 +16,6 @@ public:
   }
 
   ~GStarFieldProcess() = default;
-
 
   void Render() {
     Animate();
@@ -31,13 +30,10 @@ public:
 protected:
   TRGB mStarsColor;
 
-  void InitStar(TInt aIndex, TInt32 aXStartIndex = 320) {
+  void InitStar(TInt aIndex, TInt32 aXStartIndex = 319) {
     mStarX[aIndex] = Random(aXStartIndex, 480);
     mStarY[aIndex] = Random(0, 80);
     mStarWidth[aIndex] = Random(1, 3);
-//    mStarSpeed[aIndex] = Random(10, 40) * 0.01f;
-//    printf("INIT %i -- x(%i), y(%i), speed(%2f)\n", aIndex, mStarX[aIndex], mStarY[aIndex], mStarSpeed[aIndex]);
-
 
     if (mStarWidth[aIndex] >= 3) {
       mStarSpeed[aIndex] = Random(20, 30) * 0.01f;
@@ -52,8 +48,6 @@ protected:
   }
   void Animate() {
     for (TInt i = 0; i < NUM_STARS; i++) {
-//      printf("i=%i - x(%i), y(%i), speed(%2f)\n", i, (TInt16)mStarX[i], (TInt16)mStarY[i], (TInt16)mStarSpeed[i]);
-
       if (mStarX[i] < -10) {
         InitStar(i);
       }
@@ -63,12 +57,10 @@ protected:
     }
   }
 
-    TFloat mStarX[NUM_STARS]{},
-       mStarY[NUM_STARS]{},
-       mStarWidth[NUM_STARS]{};
-
+  TFloat mStarX[NUM_STARS]{};
+  TFloat mStarY[NUM_STARS]{};
+  TFloat mStarWidth[NUM_STARS]{};
   TFloat mStarSpeed[NUM_STARS]{};
-
 };
 
 
