@@ -5,27 +5,31 @@
 #include "GVictoryPlayfield.h"
 #include "GAnchorSprite.h"
 
-const TInt16 WALKSPEED = 4 * FACTOR;
+const TInt16 WALK_SPEED = 10 * FACTOR;
 
 static TBool moonHitTop = EFalse;
 
-ANIMSCRIPT walkRightAnimation[] = {
+ANIMSCRIPT walkAnimation[] = {
     ABITMAP(PLAYER_SLOT),
     ALABEL,
     ADELTA(1, 0),
-    ASTEP(WALKSPEED, IMG_WALK_RIGHT + 0),
+    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 0),
     ADELTA(-1, 0),
-    ASTEP(WALKSPEED, IMG_WALK_RIGHT + 1),
+    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 1),
     ADELTA(0, 0),
-    ASTEP(WALKSPEED, IMG_WALK_RIGHT + 2),
+    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 2),
     ADELTA(0, 0),
-    ASTEP(WALKSPEED, IMG_WALK_RIGHT + 3),
+    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 3),
     ALOOP,
 };
 
 
 GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mGameState = aGameState;
+  mStarfieldProcess = new GStarFieldProcess();
+
+  mStarsColor.Set(TUint8(100), TUint8(100), TUint8(100));
+
 //  mFont8 = new BFont(gResourceManager.GetBitmap(FONT_8x8_SLOT), FONT_8x8);
   mFont16 = new BFont(gResourceManager.GetBitmap(FONT_16x16_SLOT), FONT_16x16);
 
@@ -36,35 +40,51 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mBgLogo = gResourceManager.GetBitmap(BKG_SLOT);
   mBgLogo->Remap(bm);
 
-  gResourceManager.LoadBitmap(SKY_BMP, MAIN_MENU_SLOT1, IMAGE_ENTIRE);
-  mBgSky = gResourceManager.GetBitmap(MAIN_MENU_SLOT1);
+  gResourceManager.LoadBitmap(CLOUDS_TOP_BMP, MAIN_MENU_SLOT0, IMAGE_ENTIRE);
+  mBgSky = gResourceManager.GetBitmap(MAIN_MENU_SLOT0);
+  mBgSkyColors = (TRGB *)malloc(sizeof(TRGB) * mBgSky->CountUsedColors());
+  CacheColors(mBgSky, mBgSkyColors);
   mBgSky->Remap(bm);
 
+  for (TInt i = 0; i < mBgSky->CountUsedColors(); i++) {
+    TRGB color = mBgSky->GetColor(i);
 
-  gResourceManager.LoadBitmap(NEAR_TREES_BMP, MAIN_MENU_SLOT2, IMAGE_ENTIRE);
-  mBgNearTrees = gResourceManager.GetBitmap(MAIN_MENU_SLOT2);
+    printf("mBgSkyColors[%i] = r(%i) b(%i) g(%i)\n", i, mBgSkyColors[i].r, mBgSkyColors[i].b, mBgSkyColors[i].g);
+    printf("color[%i]        = r(%i) b(%i) g(%i)\n", i, color.r, color.b, color.g);
+  }
+
+  gResourceManager.LoadBitmap(NEAR_TREES_BMP, MAIN_MENU_SLOT1, IMAGE_ENTIRE);
+  mBgNearTrees = gResourceManager.GetBitmap(MAIN_MENU_SLOT1);
+  mBgNearTreesColors = (TRGB *)malloc(sizeof(TRGB) * mBgNearTrees->CountUsedColors());
+  CacheColors(mBgNearTrees, mBgNearTreesColors);
   mBgNearTrees->Remap(bm);
 
-  gResourceManager.LoadBitmap(WALKING_PATH_BMP, MAIN_MENU_SLOT3, IMAGE_ENTIRE);
-  mBgWalkingPath = gResourceManager.GetBitmap(MAIN_MENU_SLOT3);
+  gResourceManager.LoadBitmap(WALKING_PATH_BMP, MAIN_MENU_SLOT2, IMAGE_ENTIRE);
+  mBgWalkingPath = gResourceManager.GetBitmap(MAIN_MENU_SLOT2);
+  mBgWalkingPathColors = (TRGB *)malloc(sizeof(TRGB) * mBgWalkingPath->CountUsedColors());
+  CacheColors(mBgWalkingPath, mBgWalkingPathColors);
   mBgWalkingPath->Remap(bm);
 
-  gResourceManager.LoadBitmap(MOUNTAINS_BMP, MAIN_MENU_SLOT4, IMAGE_ENTIRE);
-  mBgMountains = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
+
+  gResourceManager.LoadBitmap(MOUNTAINS_BMP, MAIN_MENU_SLOT3, IMAGE_ENTIRE);
+  mBgMountains = gResourceManager.GetBitmap(MAIN_MENU_SLOT3);
+  mBgMountainsColors = (TRGB *)malloc(sizeof(TRGB) * mBgMountains->CountUsedColors());
+  CacheColors(mBgMountains, mBgMountainsColors);
   mBgMountains->Remap(bm);
 
-  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, MAIN_MENU_SLOT5, IMAGE_ENTIRE);
-  mBgMoon = gResourceManager.GetBitmap(MAIN_MENU_SLOT5);
-  mBgMoon->Remap(bm);
+
+  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, MAIN_MENU_SLOT4, IMAGE_ENTIRE);
+  mBgMoon = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
   mMoonOffset = SCREEN_WIDTH - mBgMoon->Width() - 10;
+  mBgMoon->Remap(bm);
+
+
+
 
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
-  TBool res = gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
+  gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
 
   gResourceManager.GetBitmap(PLAYER_SLOT)->Remap(bm);
-//  BBitmap *playerBM = gResourceManager.GetBitmap(PLAYER_SLOT);
-//  printf("playerBM = %p\n", playerBM);
-//  printf("gViewPort = %p\n", gViewPort);
   gViewPort->mWorldX = 0;
   gViewPort->mWorldY = 0;
   gViewPort->Offset(0, 0);
@@ -72,15 +92,16 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mPlayer = new GPlayerSprite(aGameState);
   mPlayer->ClearFlags(SFLAG_RENDER_DEBUG);
 
-  mPlayer->StartAnimation(walkRightAnimation);
-  mPlayer->x = 10;
-  mPlayer->y = SCREEN_HEIGHT - 18;
+  mPlayer->StartAnimation(walkAnimation);
+  mPlayer->x = 20;
+  mPlayer->y = SCREEN_HEIGHT - 20;
 
   mSkyOffset = 0;
   mMountainsOffset = 0;
   mMoonOffset = moonHitTop ? 10 : 65;
   mNearTreesOffset = 0;
   mPathOffset = 0;
+
 
   // states
   // -2 fade out done, move to GAME_STATE_GAME
@@ -90,6 +111,19 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 
   mFadeState = 0; // -1 fade out in progress;
   mState = 0;
+
+//  TRGB *pathPalette = mBgWalkingPath->GetPalette();
+//  for (TInt16 i = 0;  i < mBgWalkingPath->CountUsedColors(); i++) {
+//
+//    printf("mBGWalkingPath Color[%i] = r(%i) b(%i) g(%i)\n", i, pathPalette[i].r, pathPalette[i].b, pathPalette[i].g);
+//
+////    if (pathPalette[i].r != 255 && pathPalette[i].r != )
+//
+//  }
+
+
+
+
 
   TRGB *sourcePalette = bm->GetPalette();
   sourcePalette[200].Set(0x45, 0x53, 0x77); // Dark blue bg
@@ -111,14 +145,22 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 GVictoryPlayfield::~GVictoryPlayfield() {
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
+  gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT0);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT1);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT2);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT3);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT4);
-  gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT5);
 
   delete mPlayer;
   mPlayer = ENull;
+
+  mBgLogoColors = ENull;
+  mBgSkyColors = ENull;
+  mBgNearTreesColors = ENull;
+  mBgMountainsColors = ENull;
+//  delete mBgMoonColors;
+//  mBgMoonColors = ENull;
+//
 
 //  delete mFont8;
   delete mFont16;
@@ -146,7 +188,10 @@ TInt GVictoryPlayfield::CenterText16(const char *s, TInt aY, TInt aColor, TInt a
 void GVictoryPlayfield::Animate() {
   mPlayer->Animate();
 
-  mSkyOffset += .3;
+  const TFloat pathSpeed = .75,
+               nearTreesSpeed = pathSpeed - .70;
+
+  mSkyOffset += .009;
   if ((TInt) mSkyOffset >= mBgSky->Width()) {
     mSkyOffset = 0;
   }
@@ -158,15 +203,21 @@ void GVictoryPlayfield::Animate() {
     moonHitTop = ETrue;
   }
 
-  mNearTreesOffset += .02;
+  mNearTreesOffset += nearTreesSpeed;
   if ((TInt) mNearTreesOffset >= mBgNearTrees->Width()) {
     mNearTreesOffset = 0;
   }
 
-  mPathOffset += .75;
+  mPathOffset += pathSpeed;
   if ((TInt)mPathOffset >= mBgWalkingPath->Width()) {
     mPathOffset = 0;
   }
+
+  mMountainsOffset += .001;
+  if ((TInt)mMountainsOffset >= mBgMountains->Width()) {
+    mMountainsOffset = 0;
+  }
+
 
 // Left the code below in so I could  noodle on it more later on.
 //  // Fade In
@@ -229,28 +280,32 @@ void GVictoryPlayfield::Animate() {
 
 void GVictoryPlayfield::Render() {
   // Paint screen in dark blue
-  gDisplay.renderBitmap->Clear(200);
+  //200 = blue;
 
-  TRect rect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
+  gDisplay.renderBitmap->Clear(COLOR_TEXT_BG);
+  gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE, mStarsColor);
+//  gDisplay.renderBitmap->FillRect(ENull, 0, 0, 128, 100, COLOR_SHMOO);
+  mStarfieldProcess->Render();
 
-  const TInt moonX = SCREEN_WIDTH - mBgMoon->Width() - 20;
-  gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, rect, moonX, (TInt)mMoonOffset);
+//  TRect rect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
+//  const TInt moonX = SCREEN_WIDTH - mBgMoon->Width() - 20;
+//  gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, rect, moonX, (TInt)mMoonOffset);
 
-  const TInt walkingPathOffset = DISPLAY_HEIGHT - mBgWalkingPath->Height(),
-      nearTreesOffset   = DISPLAY_HEIGHT - mBgNearTrees->Height();
+  const TInt walkingPathOffset = DISPLAY_HEIGHT - mBgWalkingPath->Height();
 
-  DrawScrolledBackground(mBgSky, mSkyOffset, 0, ETrue);
-  DrawScrolledBackground(mBgMountains, mMountainsOffset, 50, ETrue);
-  DrawScrolledBackground(mBgNearTrees, mNearTreesOffset, nearTreesOffset, ETrue);
-  DrawScrolledBackground(mBgWalkingPath, mPathOffset, walkingPathOffset, ETrue);
+  DrawScrolledBackground(mBgSky, mSkyOffset, 0);
+  DrawScrolledBackground(mBgMountains, mMountainsOffset, 70);
+  DrawScrolledBackground(mBgNearTrees, mNearTreesOffset, 80);
+  DrawScrolledBackground(mBgWalkingPath, mPathOffset, walkingPathOffset);
 
-  gDisplay.renderBitmap->DrawBitmapTransparent(
-      ENull,  // ViewPort
-      mBgLogo, // bitmap
-      TRect(0, 0, mBgLogo->Width() - 1, mBgLogo->Height() - 1),  // src rect
-      50,   // Dest X
-      10    // Dest Y
-  );
+    // Draw the Modite Adventure Logo
+//  gDisplay.renderBitmap->DrawBitmapTransparent(
+//      ENull,  // ViewPort
+//      mBgLogo, // bitmap
+//      TRect(0, 0, mBgLogo->Width() - 1, mBgLogo->Height() - 1),  // src rect
+//      50,   // Dest X
+//      10    // Dest Y
+//  );
 
   mPlayer->Render(gViewPort);
 
@@ -259,27 +314,20 @@ void GVictoryPlayfield::Render() {
 
 
 
-void GVictoryPlayfield::DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset, TBool aDrawTransparent) {
+void GVictoryPlayfield::DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset) {
 
   TInt16 intOffsetX = (TInt16)aOffsetX,
       canvasWidth = gDisplay.renderBitmap->Width(),
       remainDrawWidth = canvasWidth, // Remaining width to draw, since we'll have to do multiple passes
-  bgWidth = aBitmap->Width(),
-      priorDrawWidth = 0;
-
-
-  TInt16 imgWidthDelta = bgWidth - intOffsetX;
+      bgWidth = aBitmap->Width(),
+      priorDrawWidth = 0,
+      imgWidthDelta = bgWidth - intOffsetX;
 
   // Background is too big for the canvas, so just draw the full canvas width and be done!
   if (imgWidthDelta >= canvasWidth) {
     TRect rect = TRect(intOffsetX, 0, bgWidth, aBitmap->Height());
 
-    if (aDrawTransparent) {
-      gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
-    }
-    else {
-      gDisplay.renderBitmap->DrawBitmap(ENull, aBitmap, rect, 0, aVerticalOffset);
-    }
+    gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
     return;
   }
 
@@ -293,24 +341,13 @@ void GVictoryPlayfield::DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX
         drawWidth = imgWidthDelta;
         TRect rect = TRect(intOffsetX, 0, bgWidth, aBitmap->Height());
 
-        if (aDrawTransparent) {
-          gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
-        }
-        else {
-          gDisplay.renderBitmap->DrawBitmap(ENull, aBitmap, rect, 0, aVerticalOffset);
-        }
-
+        gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
       }
       else {
         drawWidth = SCREEN_WIDTH - priorDrawWidth;
         TRect rect = TRect(0, 0, drawWidth, aBitmap->Height());
 
-        if (aDrawTransparent) {
-          gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, priorDrawWidth, aVerticalOffset);
-        }
-        else {
-          gDisplay.renderBitmap->DrawBitmap(ENull, aBitmap, rect, priorDrawWidth, aVerticalOffset);
-        }
+        gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, priorDrawWidth, aVerticalOffset);
       }
     }
     else { // Backgrounds that are too small for the canvas
@@ -318,23 +355,13 @@ void GVictoryPlayfield::DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX
         drawWidth = bgWidth - intOffsetX;
         TRect rect = TRect(intOffsetX, 0, bgWidth, aBitmap->Height());
 
-        if (aDrawTransparent) {
-          gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
-        }
-        else {
-          gDisplay.renderBitmap->DrawBitmap(ENull, aBitmap, rect, 0, aVerticalOffset);
-        }
+        gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect, 0, aVerticalOffset);
       }
       else {
         drawWidth = (remainDrawWidth > bgWidth) ? bgWidth : remainDrawWidth;
         TRect rect = TRect(0, 0, drawWidth, aBitmap->Height());
 
-        if (aDrawTransparent) {
-          gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect,  priorDrawWidth, aVerticalOffset);
-        }
-        else {
-          gDisplay.renderBitmap->DrawBitmap(ENull, aBitmap, rect, priorDrawWidth, aVerticalOffset);
-        }
+        gDisplay.renderBitmap->DrawBitmapTransparent(ENull, aBitmap, rect,  priorDrawWidth, aVerticalOffset);
       }
     }
 

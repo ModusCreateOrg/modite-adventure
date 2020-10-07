@@ -4,6 +4,7 @@
 class GVictoryProcess : public BProcess {
 public:
   GVictoryProcess() : BProcess(0) {
+//    gSoundPlayer.PlayMusic(ENDING_THEME_XM);
   }
 
 protected:
@@ -46,7 +47,4 @@ GVictoryState::GVictoryState(GGameState *aGameEngine) : BGameEngine(gViewPort) {
   AddProcess(new GVictoryProcess());
 }
 
-GVictoryState::~GVictoryState() {
-  //
-}
-
+GVictoryState::~GVictoryState() = default;

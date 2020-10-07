@@ -10,9 +10,7 @@ BITMAP charset_16x16.bmp
 #
 PATH resources/
 BITMAP splash.bmp
-# BITMAP splash_sprites.bmp
 BITMAP title.bmp
-# PALETTE test.pal
 
 
 #### Main_Menu
@@ -24,13 +22,16 @@ BITMAP moon_with_logo.bmp
 BITMAP walking_path.bmp
 BITMAP logo.bmp
 
+#### Ending
+PATH resources/ending/
+BITMAP clouds_top.bmp
+
 
 #
 ### HERO
 #
 PATH resources/sprites/hero/
 SPRITESHEET 64x64 chara_hero.bmp
-# SPRITESHEET 32x32 chara_hero_heal_effect.bmp
 SPRITESHEET 32x32 chara_hero_spell_effect.bmp
 
 #
