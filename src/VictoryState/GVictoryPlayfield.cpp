@@ -35,9 +35,6 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 
   mStateTimer = 0;
 
-
-
-
   // ** Load Bitmaps and cache their colors for a later fade in **//
   BBitmap *bm = BBitmap::CreateBBitmap(1, 1, SCREEN_DEPTH, MEMF_FAST);
 
@@ -93,7 +90,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mSkyColorIndex = 200;
   TRGB *sourcePalette = bm->GetPalette();
 
-  sourcePalette[mSkyColorIndex].Set(0x88, 0xAA, 0xAA);
+  sourcePalette[mSkyColorIndex].Set(0x66, 0x99, 0xCC);
 
   sourcePalette[COLOR_TEXT].Set(255, 255, 255);
   sourcePalette[COLOR_TEXT_SHADOW].Set(60, 60, 60);
@@ -126,7 +123,6 @@ void GVictoryPlayfield::Animate() {
     mFadePct += mFadeStep;
     if (mFadePct > 1) {
       mFadePct = 1;
-      printf("****** mFadePct 1 --- mStateTimer == %i ******* \n", mStateTimer);
     }
     else {
       FadeInColors();
@@ -164,17 +160,11 @@ void GVictoryPlayfield::Animate() {
   if ((TInt)mMountainsOffset >= mBgMountains->Width()) {
     mMountainsOffset = 0;
   }
-
-
 }
 
 
 void GVictoryPlayfield::Render() {
-  // Paint screen in dark blue
-  //200 = blue;
-
   gDisplay.renderBitmap->Clear(mSkyColorIndex);
-//  gDisplay.renderBitmap->FillRect(ENull, 0, 0, 128, 100, COLOR_SHMOO);
   mStarfieldProcess->Render();
 
 //  TRect rect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());

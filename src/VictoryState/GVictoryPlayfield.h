@@ -72,7 +72,6 @@ protected:
   BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
   BBitmap *mBgWalkingPath;
-  BBitmap *mBgLogo;
   GPlayerSprite *mPlayer;
 
   GStarFieldProcess *mStarfieldProcess;
