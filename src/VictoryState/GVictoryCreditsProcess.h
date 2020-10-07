@@ -9,7 +9,7 @@ public:
     mColorIndex = aColorIndex;
     mText  = TEXT_PRE_ROLL;
     mState = STATE_FADEIN;
-    mColorFloor = 30;
+    mColorFloor = 60;
     mColorDivider = 90;
     mColor = mColorFloor;
 
@@ -101,6 +101,10 @@ public:
         y += CenterText8("DIRECTOR", y, mColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
         y += CenterText8("Jay Garcia", y, mColorIndex, COLOR_TEXT_TRANSPARENT);
         break;
+      case TEXT_THANK_YOU:
+        y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16))  / 2);
+        y += CenterText8("Thanks for playing!", y, mColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+        break;
     }
   }
 
@@ -137,7 +141,7 @@ protected:
 
     if (mColor == 255) {
       mState = STATE_WAIT;
-      mTimer = 6 * 30;
+      mTimer = 10 * 30;
     }
     return ETrue;
   }
@@ -178,7 +182,7 @@ protected:
           mText = TEXT_DIRECTOR;
           break;
         case TEXT_DIRECTOR:
-          mText = TEXT_MODUS_LABS;
+          mText = TEXT_THANK_YOU;
           break;
       }
     }
@@ -193,8 +197,6 @@ protected:
     }
     return ETrue;
   }
-
-
 
   TUint8  mColorIndex;
   TInt mTimer, mColor;
@@ -220,6 +222,7 @@ protected:
     TEXT_PM,
     TEXT_SOUND,
     TEXT_DIRECTOR,
+    TEXT_THANK_YOU,
   } mText;
 
 };

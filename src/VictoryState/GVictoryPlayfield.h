@@ -14,8 +14,12 @@ public:
   void Animate() OVERRIDE;
   void Render() OVERRIDE;
   void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset);
+  void RenderAnimatedBackground();
+  void StartState();
+  void FadeInState();
+  void RunState();
+  void HoldState();
 
-  TInt  mState;
 
 protected:
 
@@ -23,7 +27,6 @@ protected:
     for (TInt16 i = 0; i < 255; i++) {
       TRGB color = mBgColors[i];
 
-      // Reduce color cache
       TUint16 red = (TFloat) color.r * mFadePct;
       color.r = (TUint8) ((red > 0xFF) ? 0xFF : red);
 
@@ -67,7 +70,7 @@ protected:
 
   GGameState *mGameState;
 
-  BBitmap *mBgSky;
+//  BBitmap *mBgSky;
   BBitmap *mBgMountains;
   BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
@@ -82,10 +85,16 @@ protected:
   TFloat mMoonOffset;
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
-  TRGB mSavedPalette[256];
-  TInt8 mFadeState;
   TInt32 mStateTimer;
 
+  TInt mTimer;
+
+  enum {
+    STATE_START,
+    STATE_FADEIN,
+    STATE_RUN,
+    STATE_HOLD,
+  } mState;
 };
 
 #endif //MODITE_GVICTORYPLAYFIELD_H

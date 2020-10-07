@@ -4,7 +4,7 @@
 class GVictoryProcess : public BProcess {
 public:
   GVictoryProcess() : BProcess(0) {
-//    gSoundPlayer.PlayMusic(ENDING_THEME_XM);
+    gSoundPlayer.PlayMusic(ENDING_THEME_XM);
   }
 
 protected:

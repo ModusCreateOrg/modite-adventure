@@ -19,7 +19,7 @@ public:
 
   void Render() {
     Animate();
-    gDisplay.SetColor(COLOR_EXPERIENCE, mStarsColor);
+//    gDisplay.SetColor(COLOR_EXPERIENCE, mStarsColor);
 
     for (TInt i = 0; i < NUM_STARS; i++) {
       gDisplay.renderBitmap->DrawFastHLine(ENull, mStarX[i], mStarY[i], mStarWidth[i], COLOR_EXPERIENCE);
@@ -32,7 +32,7 @@ protected:
 
   void InitStar(TInt aIndex, TInt32 aXStartIndex = 319) {
     mStarX[aIndex] = Random(aXStartIndex, 480);
-    mStarY[aIndex] = Random(0, 80);
+    mStarY[aIndex] = Random(0, 110);
     mStarWidth[aIndex] = Random(1, 3);
 
     if (mStarWidth[aIndex] >= 3) {
