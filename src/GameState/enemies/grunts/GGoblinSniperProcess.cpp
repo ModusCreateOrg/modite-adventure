@@ -470,23 +470,21 @@ void GGoblinSniperProcess::Walk(DIRECTION aDirection) {
 void GGoblinSniperProcess::Attack(DIRECTION aDirection) {
 
   // fire 1-3 projectiles
-  TFloat xx = mSprite->x,
-         yy = mSprite->y;
-
+  const TPoint center = mSprite->Center(), playerCenter = GPlayer::mSprite->Center();
   // Angles are in radians
-  const TFloat angleToPlayer = atan2(GPlayer::mSprite->y - yy, GPlayer::mSprite->x - xx);
+  const TFloat angleToPlayer = atan2(playerCenter.y - center.y, playerCenter.x - center.x);
 
   TInt attackType = Random() & TUint8(3);
 
   // 25% chance for multi-arrow attack
   if (attackType < 3) {
-    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, xx + 16, yy - 16, angleToPlayer, PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, center.x, center.y, angleToPlayer, PROJECTILE_ARROW_SLOT));
   } else {
     const TFloat step = 22.5 * (M_PI/180);
     const TFloat angles[3] = { angleToPlayer, angleToPlayer + step, angleToPlayer - step };
-    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, xx + 16, yy - 16, angles[0], PROJECTILE_ARROW_SLOT));
-    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, xx + 16, yy - 16, angles[1], PROJECTILE_ARROW_SLOT));
-    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, xx + 16, yy - 16, angles[2], PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, center.x, center.y, angles[0], PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, center.x, center.y, angles[1], PROJECTILE_ARROW_SLOT));
+    mGameState->AddProcess(new GEnemyArrowProcess(mGameState, center.x, center.y, angles[2], PROJECTILE_ARROW_SLOT));
   }
 
   mSprite->StartAnimationInDirection(attackAnimations, aDirection);
