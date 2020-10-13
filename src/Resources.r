@@ -25,8 +25,8 @@ BITMAP logo.bmp
 #### Ending
 PATH resources/ending/
 BITMAP clouds_top.bmp
-
-
+BITMAP modus_labs_logo_white.bmp
+BITMAP sun_with_logo.bmp
 #
 ### HERO
 #

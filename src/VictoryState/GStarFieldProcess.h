@@ -9,7 +9,7 @@ const TInt8 NUM_STARS = 45;
 class GStarFieldProcess {
 public:
   explicit GStarFieldProcess() {
-    mStarsColor.Set(TUint8(200), TUint8(200), TUint8(200));
+    mStopSpawn = EFalse;
     for (TInt i = 0; i < NUM_STARS; i++) {
       InitStar(i, 0);
     }
@@ -18,7 +18,7 @@ public:
   ~GStarFieldProcess() = default;
 
   void Render() {
-    Animate();
+//    Animate();
 //    gDisplay.SetColor(COLOR_EXPERIENCE, mStarsColor);
 
     for (TInt i = 0; i < NUM_STARS; i++) {
@@ -26,11 +26,27 @@ public:
     }
   };
 
+  void StopSpawn() {
+    mStopSpawn = ETrue;
+  }
+  void Animate() {
+    for (TInt i = 0; i < NUM_STARS; i++) {
+      if (mStarX[i] < -10) {
+        InitStar(i);
+      }
+      else {
+        mStarX[i] -= mStarSpeed[i];
+      }
+    }
+  }
+
 
 protected:
-  TRGB mStarsColor;
 
   void InitStar(TInt aIndex, TInt32 aXStartIndex = 319) {
+    if (mStopSpawn) {
+      return;
+    }
     mStarX[aIndex] = Random(aXStartIndex, 480);
     mStarY[aIndex] = Random(0, 110);
     mStarWidth[aIndex] = Random(1, 3);
@@ -46,17 +62,8 @@ protected:
     }
 
   }
-  void Animate() {
-    for (TInt i = 0; i < NUM_STARS; i++) {
-      if (mStarX[i] < -10) {
-        InitStar(i);
-      }
-      else {
-        mStarX[i] -= mStarSpeed[i];
-      }
-    }
-  }
 
+  TBool mStopSpawn;
   TFloat mStarX[NUM_STARS]{};
   TFloat mStarY[NUM_STARS]{};
   TFloat mStarWidth[NUM_STARS]{};

@@ -10,17 +10,33 @@ const TInt16 WALK_SPEED = 10 * FACTOR;
 static TBool sunHitTop = EFalse;
 
 ANIMSCRIPT walkAnimation[] = {
-    ABITMAP(PLAYER_SLOT),
-    ALABEL,
-    ADELTA(1, 0),
-    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 0),
-    ADELTA(-1, 0),
-    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 1),
-    ADELTA(0, 0),
-    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 2),
-    ADELTA(0, 0),
-    ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 3),
-    ALOOP,
+  ABITMAP(PLAYER_SLOT),
+  ALABEL,
+  ADELTA(1, 0),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 0),
+  ADELTA(-1, 0),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 2),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_WALK_RIGHT + 3),
+  ALOOP,
+};
+
+
+const TUint16 HOLD_SPEED = 7 * FACTOR;
+ANIMSCRIPT victoryAnimation[] = {
+  ABITMAP(PLAYER_SLOT),
+  ADELTA(1, 0),
+  ASTEP(HOLD_SPEED, 39),
+  ADELTA(0, 0),
+  ASTEP(HOLD_SPEED, 35),
+  ADELTA(-1, 0),
+  ASTEP(HOLD_SPEED, 47),
+  ALABEL,
+  ADELTA(0, 0),
+  ASTEP(HOLD_SPEED, 3),
+  ALOOP
 };
 
 
@@ -84,7 +100,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mPlayer = new GPlayerSprite(aGameState);
   mPlayer->ClearFlags(SFLAG_RENDER_DEBUG);
   mPlayer->StartAnimation(walkAnimation);
-  mPlayer->x = 10;
+  mPlayer->x = -70;
   mPlayer->y = SCREEN_HEIGHT - 20;
 
   mSkyOffset = 0;
@@ -103,7 +119,6 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   for (int i = 0; i < bm->CountUsedColors(); ++i) {
     TRGB srcColor = bm->GetColor(i);
     if (srcColor.r == 0x00 && srcColor.g == 0xFF && srcColor.b == 0xFF) {
-      printf("Found first color\n");
       mCreditsProcess->SetLabsForegroundIndex(i);
       gDisplay.SetColor(i, 0xFF, 0xFF, 0xFF); // Force to white
       sourcePalette[i].Set(0xFF, 0xFF, 0xFF);
@@ -111,7 +126,6 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
       found++;
     }
     if (srcColor.r == 0x00 && srcColor.g == 0xFF && srcColor.b == 0xFE) {
-      printf("Found SECOND color\n");
       mCreditsProcess->SetLabsBackgroundIndex(i);
       sourcePalette[i].Set(0x40, 0x40, 0x40); // Force to dark gray
       found++;
@@ -152,7 +166,20 @@ GVictoryPlayfield::~GVictoryPlayfield() {
 
 
 void GVictoryPlayfield::Animate() {
+
   mPlayer->Animate();
+
+
+  if (mState == STATE_HOLD) {
+    return;
+  }
+  mStarfieldProcess->Animate();
+
+  mPlayer->x += .03;
+
+  if (mPlayer->x > 144) {
+    mPlayer->x = 144;
+  }
 
   const TFloat pathSpeed = .75,
                nearTreesSpeed = pathSpeed - .70;
@@ -189,7 +216,6 @@ void GVictoryPlayfield::Animate() {
 
 void GVictoryPlayfield::RenderAnimatedBackground() {
   mStateTimer++;
-
   mStarfieldProcess->Render();
 
   TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
@@ -210,13 +236,13 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
   mPlayer->Render(gViewPort);
 }
 
+
+
 void GVictoryPlayfield::HoldState() {
   RenderAnimatedBackground();
 }
 
 void GVictoryPlayfield::RunState() {
-
-
   RenderAnimatedBackground();
 }
 
@@ -246,6 +272,7 @@ void GVictoryPlayfield::FadeInFinalState() {
     mStateTimer = 0;
     mState = STATE_HOLD;
     mTimer = 0;
+    mPlayer->StartAnimation(victoryAnimation);
   }
   else {
     FadeColors();
@@ -267,8 +294,8 @@ void GVictoryPlayfield::Render() {
   gDisplay.renderBitmap->Clear(mSkyColorIndex);
   if (mCreditsProcess->GetText() == 9) {
     mState = STATE_FADEIN_FINAL;
+    mStarfieldProcess->StopSpawn();
   }
-
 
 
   switch (mState) {
