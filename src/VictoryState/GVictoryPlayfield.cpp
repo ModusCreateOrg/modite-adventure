@@ -7,7 +7,7 @@
 
 const TInt16 WALK_SPEED = 10 * FACTOR;
 
-static TBool moonHitTop = EFalse;
+static TBool sunHitTop = EFalse;
 
 ANIMSCRIPT walkAnimation[] = {
     ABITMAP(PLAYER_SLOT),
@@ -26,6 +26,7 @@ ANIMSCRIPT walkAnimation[] = {
 
 GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mGameState = aGameState;
+  sunHitTop = EFalse;
   mStarfieldProcess = new GStarFieldProcess();
   mCreditsProcess = new GVictoryCreditsProcess(COLOR_TEXT);
   mBgColors = new TRGB[256];
@@ -44,6 +45,15 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 //  mBgSky = gResourceManager.GetBitmap(MAIN_MENU_SLOT0);
 //  mBgSky->Remap(bm);
 
+
+
+
+  gResourceManager.ReleaseBitmapSlot(ENVIRONMENT_SLOT);
+  gResourceManager.LoadBitmap(MODUS_LABS_LOGO_WHITE_BMP, ENVIRONMENT_SLOT, IMAGE_ENTIRE);
+  mBgLabsLogo = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
+  mBgLabsLogo->Remap(bm);
+
+
   gResourceManager.LoadBitmap(NEAR_TREES_BMP, MAIN_MENU_SLOT1, IMAGE_ENTIRE);
   mBgNearTrees = gResourceManager.GetBitmap(MAIN_MENU_SLOT1);
   mBgNearTrees->Remap(bm);
@@ -56,10 +66,12 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mBgMountains = gResourceManager.GetBitmap(MAIN_MENU_SLOT3);
   mBgMountains->Remap(bm);
 
-  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, MAIN_MENU_SLOT4, IMAGE_ENTIRE);
-  mBgMoon = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
-  mMoonOffset = SCREEN_WIDTH - mBgMoon->Width() - 10;
-  mBgMoon->Remap(bm);
+
+  gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT4);
+  gResourceManager.LoadBitmap(SUN_WITH_LOGO_BMP, MAIN_MENU_SLOT4, IMAGE_ENTIRE);
+  mBgRisingSun = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
+  mBgRisingSun->Remap(bm);
+
 
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
@@ -71,22 +83,46 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 
   mPlayer = new GPlayerSprite(aGameState);
   mPlayer->ClearFlags(SFLAG_RENDER_DEBUG);
-
   mPlayer->StartAnimation(walkAnimation);
-  mPlayer->x = 20;
+  mPlayer->x = 10;
   mPlayer->y = SCREEN_HEIGHT - 20;
 
   mSkyOffset = 0;
-  mMountainsOffset = 0;
-  mMoonOffset = moonHitTop ? 10 : 65;
+  mMountainsOffset = 10;
+  mSunOffset = 125;
   mNearTreesOffset = 0;
   mPathOffset = 0;
 
   /** Set Sky Color **/
-
   mSkyColorIndex = 200;
   TRGB *sourcePalette = bm->GetPalette();
 
+  // Find the Modus Labs logo foreground color (0x00FFFF) and cache the
+  // index so we can fade it in and out.
+  TUint8 found = 0;
+  for (int i = 0; i < bm->CountUsedColors(); ++i) {
+    TRGB srcColor = bm->GetColor(i);
+    if (srcColor.r == 0x00 && srcColor.g == 0xFF && srcColor.b == 0xFF) {
+      printf("Found first color\n");
+      mCreditsProcess->SetLabsForegroundIndex(i);
+      gDisplay.SetColor(i, 0xFF, 0xFF, 0xFF); // Force to white
+      sourcePalette[i].Set(0xFF, 0xFF, 0xFF);
+
+      found++;
+    }
+    if (srcColor.r == 0x00 && srcColor.g == 0xFF && srcColor.b == 0xFE) {
+      printf("Found SECOND color\n");
+      mCreditsProcess->SetLabsBackgroundIndex(i);
+      sourcePalette[i].Set(0x40, 0x40, 0x40); // Force to dark gray
+      found++;
+    }
+
+    if (found > 1) {
+      break;
+    }
+  }
+
+  // Set palette colors initially
   sourcePalette[mSkyColorIndex].Set(0x66, 0x99, 0xCC);
   sourcePalette[COLOR_TEXT].Set(255, 255, 255);
   sourcePalette[COLOR_TEXT_SHADOW].Set(60, 60, 60);
@@ -99,6 +135,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 }
 
 GVictoryPlayfield::~GVictoryPlayfield() {
+  gResourceManager.ReleaseBitmapSlot(ENVIRONMENT_SLOT);
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT0);
@@ -125,11 +162,13 @@ void GVictoryPlayfield::Animate() {
 //    mSkyOffset = 0;
 //  }
 
-  if ((TInt) mMoonOffset > 10) {
-    mMoonOffset -= .05;
-  }
-  else {
-    moonHitTop = ETrue;
+  if (mState == STATE_FADEIN_FINAL) {
+    if ((TInt) mSunOffset > 10) {
+      mSunOffset -= .05;
+    }
+    else {
+      sunHitTop = ETrue;
+    }
   }
 
   mNearTreesOffset += nearTreesSpeed;
@@ -141,17 +180,21 @@ void GVictoryPlayfield::Animate() {
   if ((TInt)mPathOffset >= mBgWalkingPath->Width()) {
     mPathOffset = 0;
   }
-
-  mMountainsOffset += .001;
-  if ((TInt)mMountainsOffset >= mBgMountains->Width()) {
-    mMountainsOffset = 0;
-  }
+//
+//  mMountainsOffset += .001;
+//  if ((TInt)mMountainsOffset >= mBgMountains->Width()) {
+//    mMountainsOffset = 0;
+//  }
 }
 
 void GVictoryPlayfield::RenderAnimatedBackground() {
   mStateTimer++;
 
   mStarfieldProcess->Render();
+
+  TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
+  const TInt sunX = SCREEN_WIDTH - mBgRisingSun->Width() - 30;
+  gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBgRisingSun, rect, sunX, mSunOffset);
 
   const TInt walkingPathOffset = DISPLAY_HEIGHT - mBgWalkingPath->Height();
 
@@ -160,7 +203,7 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
   DrawScrolledBackground(mBgNearTrees, mNearTreesOffset, 80);
   DrawScrolledBackground(mBgWalkingPath, mPathOffset, walkingPathOffset);
 
-  if (mState == STATE_RUN) {
+  if (mState == STATE_RUN  || mState == STATE_FADEIN_FINAL) {
     mCreditsProcess->Run();
   }
 
@@ -172,6 +215,8 @@ void GVictoryPlayfield::HoldState() {
 }
 
 void GVictoryPlayfield::RunState() {
+
+
   RenderAnimatedBackground();
 }
 
@@ -180,23 +225,33 @@ void GVictoryPlayfield::FadeInState() {
   mFadePct += mFadeStep;
   if (mFadePct > .4) {
     mFadePct = .4;
-    mFadeStep = .0001; // Slower Fade
+    mFadeStep = .00021; // Slower Fade
     mStateTimer = 0;
     mState = STATE_RUN;
     mTimer = 0;
   }
   else {
-    FadeInColors();
+    FadeColors();
   }
 
   RenderAnimatedBackground();
-//
-//  mTimer--;
-//  if (mTimer < 0) {
-//    mStateTimer = 0;
-//    mState = STATE_RUN;
-//  }
+}
 
+void GVictoryPlayfield::FadeInFinalState() {
+
+  mFadePct += mFadeStep;
+
+  if (mFadePct > 1) {
+    mFadePct = 1;
+    mStateTimer = 0;
+    mState = STATE_HOLD;
+    mTimer = 0;
+  }
+  else {
+    FadeColors();
+  }
+
+  RenderAnimatedBackground();
 }
 
 void GVictoryPlayfield::StartState() {
@@ -204,29 +259,32 @@ void GVictoryPlayfield::StartState() {
   if (mTimer < 0) {
     mTimer = 120;
     mStateTimer = 0;
-    mState = STATE_FADEIN;
+    mState = STATE_FADEIN_INITIAL;
   }
 }
 
 void GVictoryPlayfield::Render() {
   gDisplay.renderBitmap->Clear(mSkyColorIndex);
+  if (mCreditsProcess->GetText() == 9) {
+    mState = STATE_FADEIN_FINAL;
+  }
+
+
 
   switch (mState) {
     case STATE_START:
       return StartState();
-    case STATE_FADEIN:
+    case STATE_FADEIN_INITIAL:
       return FadeInState();
     case STATE_RUN:
       return  RunState();
+    case STATE_FADEIN_FINAL:
+      return FadeInFinalState();
     case STATE_HOLD:
       return HoldState();
     default:
       Panic("TextProcess invalid state");
   }
-
-//  TRect rect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
-//  const TInt moonX = SCREEN_WIDTH - mBgMoon->Width() - 20;
-//  gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, rect, moonX, (TInt)mMoonOffset);
 
 }
 

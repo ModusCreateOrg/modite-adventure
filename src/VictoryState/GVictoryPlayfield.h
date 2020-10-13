@@ -11,19 +11,20 @@ public:
   explicit GVictoryPlayfield(GGameState *aGameState);
   ~GVictoryPlayfield() OVERRIDE;
 
-  void Animate() OVERRIDE;
   void Render() OVERRIDE;
-  void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset);
-  void RenderAnimatedBackground();
-  void StartState();
-  void FadeInState();
-  void RunState();
-  void HoldState();
 
 
 protected:
+    void Animate() OVERRIDE;
+    void DrawScrolledBackground(BBitmap *aBitmap, TFloat aOffsetX, TUint aVerticalOffset);
+    void RenderAnimatedBackground();
+    void StartState();
+    void FadeInState();
+    void FadeInFinalState();
+    void RunState();
+    void HoldState();
 
-  void FadeInColors() {
+  void FadeColors() {
     for (TInt16 i = 0; i < 255; i++) {
       TRGB color = mBgColors[i];
 
@@ -71,8 +72,11 @@ protected:
   GGameState *mGameState;
 
 //  BBitmap *mBgSky;
+  BBitmap *mBgLabsLogo;
+  BBitmap *mBgRisingSun;
+
   BBitmap *mBgMountains;
-  BBitmap *mBgMoon;
+//  BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
   BBitmap *mBgWalkingPath;
   GPlayerSprite *mPlayer;
@@ -82,7 +86,7 @@ protected:
 
   TFloat mSkyOffset;
   TFloat mMountainsOffset;
-  TFloat mMoonOffset;
+  TFloat mSunOffset;
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
   TInt32 mStateTimer;
@@ -91,8 +95,9 @@ protected:
 
   enum {
     STATE_START,
-    STATE_FADEIN,
+    STATE_FADEIN_INITIAL,
     STATE_RUN,
+    STATE_FADEIN_FINAL,
     STATE_HOLD,
   } mState;
 };

@@ -11,10 +11,6 @@ protected:
 
 public:
   TBool RunBefore() OVERRIDE {
-//    gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
-//    gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
-//    CenterText16("You won!", 120, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
-//    CenterText8("> QUIT", 180, COLOR_TEXT, COLOR_TEXT_TRANSPARENT);
     return ETrue;
   }
   TBool RunAfter() OVERRIDE {
