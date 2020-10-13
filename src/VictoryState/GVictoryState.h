@@ -5,7 +5,7 @@
 
 class GVictoryState : public BGameEngine {
 public:
-  GVictoryState();
+  explicit GVictoryState(GGameState *aGameState);
   ~GVictoryState() OVERRIDE;
 };
 

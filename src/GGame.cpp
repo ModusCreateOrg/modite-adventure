@@ -240,7 +240,7 @@ void GGame::Run() {
           break;
         case GAME_STATE_VICTORY:
           delete gGameEngine;
-          gGameEngine = new GVictoryState();
+          gGameEngine = new GVictoryState((GGameState *)gGameEngine);
           break;
         case GAME_STATE_QUIT:
           done = ETrue;
