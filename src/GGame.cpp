@@ -57,7 +57,7 @@ GGame::GGame() {
   mGameMenu = ENull;
   mDebugMenu = ENull;
   mInventory = ENull;
-  SetState(GAME_STATE_VICTORY);
+  SetState(GAME_STATE_SPLASH);
   start = Milliseconds();
   mShmoo.Set(0, 0, 0);
 }
