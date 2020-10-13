@@ -267,7 +267,7 @@ void GEnemyArrowProcess::ConfigSprite(TFloat aAngle, TBool aParry) {
 
   // Find the closest angle to the player
   for (TUint8 i = 0; i < 16; i++) {
-    const TFloat delta = ABS(aAngle - ARROW_ANGLES[i]);
+    const TFloat delta = MIN(ABS(aAngle - ARROW_ANGLES[i]), ABS(aAngle + 2 * M_PI - ARROW_ANGLES[i]));
     if (delta < deltaMin) {
       deltaMin = delta;
       angle = ARROW_ANGLES[i];
