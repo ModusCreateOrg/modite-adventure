@@ -217,8 +217,6 @@ SPRITESHEET 32x32 GLOBAL_OBJECT_LAYER.bmp
 PATH resources/tilemaps/OW2,3/common/
 SPRITESHEET 32x32 OW2_3_DGN_OBJECT_LAYER.bmp
 
-PATH resources/tilemaps/OW5,7/common/
-SPRITESHEET 32x32 OW5_7_DGN_OBJECT_LAYER.bmp
 
 ########### SOUND :: MUSIC ###########
 PATH resources/music/
