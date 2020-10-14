@@ -114,7 +114,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O2 D1",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 0
         OW2_DGN1_1280_OW2_DGN1_L1_MAP, // 1
@@ -135,7 +135,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O2 D2",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 0
         OW2_DGN2_1536_OW2_DGN2_L1_MAP, // 1
@@ -156,7 +156,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O2 D3",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 0
         OW2_DGN3_1792_OW2_DGN3_L1_MAP, // 1
@@ -177,7 +177,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O2 D4",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 0
         OW2_DGN4_2048_OW2_DGN4_L1_MAP, // 1
@@ -198,7 +198,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O3 D1",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 0
         OW3_DGN1_2304_OW3_DGN1_L1_MAP, // 1
@@ -219,7 +219,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O3 D2",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 0
         OW3_DGN2_2560_OW3_DGN2_L1_MAP, // 1
@@ -240,7 +240,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O3 D3",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 0
         OW3_DGN3_2816_OW3_DGN3_L1_MAP, // 1
@@ -261,7 +261,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O3 D4",
     {
-      OW2_3_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 0
         OW3_DGN4_3072_OW3_DGN4_L1_MAP, // 1
@@ -366,7 +366,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O5 D1",
     {
-      OW5_7_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN1_4352_OW5_DGN1_L1_MAP, // 0
         OW5_DGN1_4352_OW5_DGN1_L1_MAP, // 1
@@ -387,7 +387,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O5 D2",
     {
-      OW5_7_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN2_4608_OW5_DGN2_L1_MAP, // 0
         OW5_DGN2_4608_OW5_DGN2_L1_MAP, // 1
@@ -408,7 +408,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O5 D3",
     {
-      OW5_7_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 0
         OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 1
@@ -429,7 +429,7 @@ struct TDungeonInfo gDungeonDefs[] = {
   { 
     "O5 D4",
     {
-      OW5_7_DGN_OBJECT_LAYER_BMP,
+      GLOBAL_OBJECT_LAYER_BMP,
       {
         OW5_DGN4_5120_OW5_DGN4_L1_MAP, // 0
         OW5_DGN4_5120_OW5_DGN4_L1_MAP, // 1
