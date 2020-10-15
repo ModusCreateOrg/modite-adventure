@@ -13,6 +13,7 @@
 #undef DEBUGME
 
 enum {
+  STATE_INITIALIZE,
   STATE_IDLE,
   STATE_WALK,
   STATE_PROJECTILE,
@@ -34,6 +35,7 @@ static const char *direction_names[] = {
 
 const TFloat WALK_VELOCITY = 1.4;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
+const TInt INITIALIZE_HEALTH_RATE = 20 / FACTOR;
 
 const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
@@ -276,8 +278,9 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mHitTimer = HIT_SPAM_TIME;
   mAttackType = EFalse;
   SetAttackTimer();
-  SetState(STATE_IDLE, DIRECTION_DOWN);
-};
+  SetStatMultipliers(10.0, 2.0, 0.0);
+  mState = STATE_INITIALIZE;
+}
 
 // destructor
 GFinalBossProcess::~GFinalBossProcess() {
@@ -443,6 +446,26 @@ TBool GFinalBossProcess::MaybeAttack() {
     return ETrue;
   }
   return EFalse;
+}
+
+TBool GFinalBossProcess::InitializeState() {
+  if (!mInvulnerable) {
+    mInvulnerable = ETrue;
+    return ETrue;
+  }
+  mHitPoints += INITIALIZE_HEALTH_RATE;
+  if (mHitPoints > mMaxHitPoints) {
+    if (mHealthBarCount < 4) {
+      mHitPoints = 0;
+      mHealthBarCount++;
+      mCurrentHealthBar++;
+    } else {
+      mHitPoints = mMaxHitPoints;
+      SetState(STATE_IDLE, DIRECTION_DOWN);
+    }
+  }
+
+  return ETrue;
 }
 
 TBool GFinalBossProcess::IdleState() {
@@ -671,6 +694,8 @@ TBool GFinalBossProcess::DeathState() {
 
 TBool GFinalBossProcess::RunBefore() {
   switch (mState) {
+    case STATE_INITIALIZE:
+      return InitializeState();
     case STATE_IDLE:
       return IdleState();
     case STATE_WALK:

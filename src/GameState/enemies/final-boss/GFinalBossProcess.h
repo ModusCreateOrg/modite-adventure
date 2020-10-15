@@ -27,6 +27,7 @@ protected:
   TBool MaybeAttack();
   TBool MaybeHit();
 
+  TBool InitializeState();
   TBool IdleState();
   TBool WalkState();
   TBool ProjectileState();

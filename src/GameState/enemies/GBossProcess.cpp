@@ -7,6 +7,7 @@ GBossProcess::GBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16
   mDeathCounter = 0;
   mSpellCounter = 0;
   mSprite->mMeter = -1;
+  mHealthBarCount = mCurrentHealthBar = 1;
   GPlayer::mActiveBoss = this;
 }
 
