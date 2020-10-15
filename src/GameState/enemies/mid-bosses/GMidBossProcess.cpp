@@ -326,64 +326,20 @@ TBool GMidBossProcess::BallState() {
 
 TBool GMidBossProcess::MaybeBounce() {
   TFloat vx = mSprite->vx, vy = mSprite->vy;
-  TRect r;
-  mSprite->GetRect(r);
-  r.Offset(-vx, -vy);
-
   TBool bouncedX = EFalse, bouncedY = EFalse;
 
-  if (vx > 0) {
-    // check right edge (upper right, lower right corners)
-    if (!mSprite->IsFloorTile(r.x2, r.y1 + 8)) {
-      mSprite->vx = -vx;
-      bouncedX = ETrue;
-      mSprite->x = mSprite->mLastX;
-      mSprite->y = mSprite->mLastY;
-      mSprite->GetRect(r);
-    } else if (!mSprite->IsFloorTile(r.x2, r.y2 - 8)) {
-      mSprite->vx = -vx;
-      bouncedX = ETrue;
-      mSprite->x = mSprite->mLastX;
-      mSprite->y = mSprite->mLastY;
-      mSprite->GetRect(r);
-    }
-  } else {
-    // check left edge (upper left, lower left corners)
-    if (!mSprite->IsFloorTile(r.x1, r.y1 + 8)) {
-      mSprite->vx = -vx;
-      bouncedX = ETrue;
-      mSprite->x = mSprite->mLastX;
-      mSprite->y = mSprite->mLastY;
-      mSprite->GetRect(r);
-    } else if (!mSprite->IsFloorTile(r.x1, r.y2 - 8)) {
-      mSprite->vx = -vx;
-      bouncedX = ETrue;
-      mSprite->x = mSprite->mLastX;
-      mSprite->y = mSprite->mLastY;
-      mSprite->GetRect(r);
-    }
+  if (vx > 0 ? !mSprite->CanWalkInDirection(DIRECTION_RIGHT, vx, vy) :
+      !mSprite->CanWalkInDirection(DIRECTION_LEFT, vx, vy)) {
+    mSprite->vx = -vx;
+    bouncedX = ETrue;
+    mSprite->x = mSprite->mLastX;
   }
 
-  if (vy > 0) {
-    // check bottom edge (lower left, lower right corners)
-    if (!mSprite->IsFloorTile(r.x1, r.y2)) {
-      mSprite->vy = -vy;
-      bouncedY = ETrue;
-    }
-    if (!mSprite->IsFloorTile(r.x2, r.y2)) {
-      mSprite->vy = -vy;
-      bouncedY = ETrue;
-    }
-  } else {
-    // check top edge (upper left, upper right corners)
-    if (!mSprite->IsFloorTile(r.x1, r.y1)) {
-      mSprite->vy = -vy;
-      bouncedY = ETrue;
-    }
-    if (!mSprite->IsFloorTile(r.x2, r.y1)) {
-      mSprite->vy = -vy;
-      bouncedY = ETrue;
-    }
+  if (vy > 0 ? !mSprite->CanWalkInDirection(DIRECTION_DOWN, vx, vy) :
+      !mSprite->CanWalkInDirection(DIRECTION_UP, vx, vy)) {
+    mSprite->vy = -vy;
+    bouncedY = ETrue;
+    mSprite->y = mSprite->mLastY;
   }
 
   if (bouncedX || bouncedY) {
