@@ -46,6 +46,7 @@ const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
 const TInt16 HIT_SPEED = 5;
 const TInt16 IDLE_SPEED = 1;
+const TInt16 INITIALIZE_SPEED = 20;
 const TInt16 ATTACK_SPEED = 5;
 const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
 
@@ -73,6 +74,20 @@ static ANIMSCRIPT hitAnimation[] = {
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 2),
   AEND,
+};
+
+static ANIMSCRIPT initializeAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ALABEL,
+  ADELTA(0, 0),
+  ASTEP(INITIALIZE_SPEED * 4, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ADELTA(0, 0),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ALOOP,
 };
 
 static ANIMSCRIPT idleDownAnimation[] = {
@@ -333,7 +348,7 @@ static ANIMSCRIPT* landAnimations[] = {landUpAnimation, landDownAnimation, landL
 GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
-  mSprite->StartAnimation(idleDownAnimation);
+  mSprite->StartAnimation(initializeAnimation);
   mHitTimer = HIT_SPAM_TIME;
   mAttackType = EFalse;
   SetAttackTimer();
