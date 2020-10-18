@@ -111,6 +111,12 @@ void GSavedGameList::RemoveGame(GSavedGameNode *aGameNode){
   LoadSavedGameList();
 }
 
+void GSavedGameList::RemoveAllGames() {
+  for (GSavedGameNode *n = First(); !End(n); n = Next(n)) {
+    RemoveGame(n);
+  }
+}
+
 void GSavedGameList::Dump() {
   for (GSavedGameNode *n = First(); !End(n); n = Next(n)) {
     n->Dump();

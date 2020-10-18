@@ -45,6 +45,7 @@ public:
   BMemoryStream *LoadSavedGame(GSavedGameNode *aNode);
   void RemoveGame(const char *aGameName);
   void RemoveGame(GSavedGameNode *aGameNode);
+  void RemoveAllGames();
 
   void Dump();
 
