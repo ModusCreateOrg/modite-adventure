@@ -35,6 +35,9 @@ TInt GResetAllWidget::Render(TInt aX, TInt aY) {
 void GResetAllWidget::Select() {
   gOptions->Reset();
 
+  // Reset saved games
+  gSavedGameList.RemoveAllGames();
+
   // Go Back
   gGame->SetState(GAME_STATE_MAIN_OPTIONS);
 
