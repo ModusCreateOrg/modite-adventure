@@ -4,6 +4,7 @@
 #include "GProcess.h"
 #include "GAnchorSprite.h"
 #include "GGameState.h"
+#include "GFinalBossPillarSprite.h"
 
 class GFinalBossPillarProcess : public GProcess {
 public:
@@ -20,6 +21,7 @@ protected:
   TUint16 mFrame;
   TUint16 mStartDelay;
   TBool mFollowPlayer;
+  GFinalBossPillarSprite *mSprite;
 
 };
 

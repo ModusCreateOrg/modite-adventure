@@ -5,6 +5,7 @@
 #include "GAnchorSprite.h"
 #include "GGameState.h"
 #include "GPlayerProcess.h"
+#include "GFinalBossShieldProcess.h"
 
 class GFinalBossProcess : public GBossProcess {
 public:
@@ -43,8 +44,12 @@ protected:
   TBool DeathState();
   void SetState(TInt aNewState, DIRECTION aNewDirection);
 
+  void RaiseShield();
+  void LowerShield();
+
 protected:
   TBool mAttackType;
+  GFinalBossShieldProcess *mShieldProcess;
 };
 
 #endif

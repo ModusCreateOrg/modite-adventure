@@ -349,11 +349,15 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
   mSprite->StartAnimation(initializeAnimation);
+  mSprite->h = 32;
+  mSprite->cy = 8;
+  mSprite->ResetShadow();
   mHitTimer = HIT_SPAM_TIME;
   mAttackType = EFalse;
   SetAttackTimer();
   SetStatMultipliers(10.0, 2.0, 0.0);
   mState = STATE_INITIALIZE;
+  mShieldProcess = ENull;
 }
 
 // destructor
@@ -361,6 +365,24 @@ GFinalBossProcess::~GFinalBossProcess() {
 #ifdef DEBUGME
   printf("GFinalBoss died!\n ");
 #endif
+}
+
+void GFinalBossProcess::RaiseShield() {
+  if (mShieldProcess) {
+    LowerShield();
+  }
+  mShieldProcess = new GFinalBossShieldProcess(mGameState, EARTH_FINAL_BOSS_PILLAR_SLOT + Random(0, 3));
+  mGameState->AddProcess(mShieldProcess);
+  mShieldProcess->UpdateCenter(mSprite->Center());
+  mInvulnerable = ETrue;
+}
+
+void GFinalBossProcess::LowerShield() {
+  if (mShieldProcess) {
+    mShieldProcess->KillShield();
+    mShieldProcess = ENull;
+  }
+  mInvulnerable = EFalse;
 }
 
 void GFinalBossProcess::SetAttackTimer() {
@@ -557,7 +579,7 @@ TBool GFinalBossProcess::MaybeBounce() {
 
 TBool GFinalBossProcess::InitializeState() {
   if (!mInvulnerable) {
-    mInvulnerable = ETrue;
+    RaiseShield();
     return ETrue;
   }
   mHitPoints += INITIALIZE_HEALTH_RATE;
@@ -636,6 +658,7 @@ TBool GFinalBossProcess::ChargeState() {
       mStateTimer++;
       mSprite->vx *= WALK_VELOCITY / CHARGE_VELOCITY;
       mSprite->vy *= WALK_VELOCITY / CHARGE_VELOCITY;
+      LowerShield();
     }
     if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
       SetState(STATE_IDLE, mSprite->mDirection);
@@ -745,5 +768,8 @@ TBool GFinalBossProcess::RunBefore() {
 
 TBool GFinalBossProcess::RunAfter() {
   UpdateBlink();
+  if (mShieldProcess) {
+    mShieldProcess->UpdateCenter(mSprite->Center());
+  }
   return ETrue;
 }
