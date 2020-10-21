@@ -41,6 +41,7 @@ const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 const TInt INITIALIZE_HEALTH_RATE = 20 / FACTOR;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 4;
 const TFloat HOP_FRICTION = 0.2 / TFloat(FACTOR);
+const TInt16 LEAP_DURATION = FRAMES_PER_SECOND;
 
 const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
@@ -404,6 +405,10 @@ void GFinalBossProcess::Charge(DIRECTION aDirection) {
   mStep = !mStep;
 }
 
+void GFinalBossProcess::Leap(DIRECTION aDirection) {
+  mSprite->StartAnimationInDirection(landAnimations, aDirection);
+}
+
 void GFinalBossProcess::Land(DIRECTION aDirection) {
   mSprite->StartAnimationInDirection(landAnimations, aDirection);
 }
@@ -492,6 +497,11 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
       mStateTimer = -FRAMES_PER_SECOND;
       Charge(mDirection);
       break;
+    case STATE_LEAP:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = -1;
+      Leap(mDirection);
+      break;
     case STATE_PROJECTILE:
       Projectile(mDirection);
       break;
@@ -545,7 +555,7 @@ TBool GFinalBossProcess::MaybeAttack() {
     printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
 #endif
     //    SetState(STATE_TELEPORT, mDirection);
-    SetState(mAttackType ? STATE_CHARGE : STATE_PROJECTILE, mDirection);
+    SetState(mAttackType ? STATE_CHARGE : STATE_LEAP, mDirection);
     mAttackType = !mAttackType;
     return ETrue;
   }
@@ -685,6 +695,46 @@ TBool GFinalBossProcess::ChargeState() {
   return ETrue;
 }
 
+TBool GFinalBossProcess::LeapState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer < 0) {
+    TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+      yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+    mDirection = GAnchorSprite::VectorToDirection(xx, yy);
+    Leap(mDirection);
+    mStateTimer++;
+  } else if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+        yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+      mSprite->vx = xx / LEAP_DURATION;
+      mSprite->vy = yy / LEAP_DURATION;
+      mSprite->ClearFlags(SFLAG_CHECK);
+      LowerShield();
+      mStateTimer++;
+    }
+  } else if (mStateTimer < LEAP_DURATION) {
+    mSprite->mDy = GRAVITY * TFloat(mStateTimer) * (TFloat(mStateTimer) - LEAP_DURATION);
+    printf("%f,\n", mSprite->mDy);
+    mStateTimer++;
+  } else if (mStateTimer == LEAP_DURATION) {
+    mSprite->mDy = 0;
+    mSprite->SetFlags(SFLAG_CHECK);
+    mSprite->vx = mSprite->vy = 0;
+    Land(mDirection);
+    mStateTimer++;
+  } else {
+    if (mSprite->AnimDone()) {
+      SetState(STATE_IDLE, DIRECTION_DOWN);
+    }
+  }
+
+  return ETrue;
+}
+
 TBool GFinalBossProcess::ProjectileState() {
   if (MaybeHit()) {
     return ETrue;
@@ -754,6 +804,8 @@ TBool GFinalBossProcess::RunBefore() {
       return WalkState();
     case STATE_CHARGE:
       return ChargeState();
+    case STATE_LEAP:
+      return LeapState();
     case STATE_PROJECTILE:
       return ProjectileState();
     case STATE_SPELL:
