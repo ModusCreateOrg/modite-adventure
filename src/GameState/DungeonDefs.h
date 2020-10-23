@@ -412,8 +412,8 @@ struct TDungeonInfo gDungeonDefs[] = {
       {
         OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 0
         OW5_DGN3_4864_OW5_DGN3_L1_MAP, // 1
-        -1, //OW5_DGN3_4864_OW5_DGN3_L2_MAP, // 2
-        -1, //OW5_DGN3_4864_OW5_DGN3_L3_MAP, // 3
+        OW5_DGN3_4864_OW5_DGN3_L2_MAP, // 2
+        OW5_DGN3_4864_OW5_DGN3_L3_MAP, // 3
         -1, //OW5_DGN3_4864_OW5_DGN3_L4_MAP, // 4
         -1, //OW5_DGN3_4864_OW5_DGN3_L5_MAP, // 5
         -1, //OW5_DGN3_4864_OW5_DGN3_L6_MAP, // 6
