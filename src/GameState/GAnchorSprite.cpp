@@ -169,11 +169,13 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
     }
-    TRect r = mShadow;
-    r.Offset(x - aViewPort->mWorldX + aViewPort->mOffsetX, y - aViewPort->mWorldY + aViewPort->mOffsetY);
-    if (aViewPort->GetRect().Overlaps(r)) {
+    TRect collisionRect;
+    GetRect(collisionRect);
+    collisionRect.Offset(-aViewPort->mWorldX + aViewPort->mOffsetX, -aViewPort->mWorldY + aViewPort->mOffsetY);
+    if (aViewPort->GetRect().Overlaps(collisionRect)) {
       // render shadow beneath sprite
-//    gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 40, 40, 60);
+      TRect r = mShadow;
+      r.Offset(x - aViewPort->mWorldX + aViewPort->mOffsetX, y - aViewPort->mWorldY + aViewPort->mOffsetY);
 
       TFloat chord;
       for (TInt i = 0; i < r.Height(); i++) {
