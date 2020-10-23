@@ -680,6 +680,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         break;
 
       case ATTR_GOBLIN_SNIPER:
+      case ATTR_GOBLIN_SNIPER_TURRET:
         RemapSlot(CHARA_GOBLIN_SNIPER_BMP, GOBLIN_SNIPER_SLOT);
         RemapSlot(PROJECTILE_ARROW_BMP, PROJECTILE_ARROW_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {

@@ -502,18 +502,18 @@ void GGoblinSniperProcess::Death(DIRECTION aDirection) {
   mSprite->StartAnimationInDirection(deathAnimations, aDirection);
 }
 
-TBool GGoblinSniperProcess::MaybeAttack() {
-  if (mGameState->IsGameOver() || GPlayer::mInvulnerable) {
-    return EFalse;
-  }
-
+TBool GGoblinSniperProcess::IsInRange() {
   const TFloat distance = sqrt(pow(GPlayer::mSprite->x - mSprite->x, 2) + pow(GPlayer::mSprite->y - mSprite->y, 2));
 
 #ifdef DEBUG_MODE
   // printf("Distance from sniper to player %f\n", distance);
 #endif
 
-  if (distance > ATTACK_DISTANCE || distance < FLEE_DISTANCE) {
+  return !(distance > ATTACK_DISTANCE || distance < FLEE_DISTANCE);
+}
+
+TBool GGoblinSniperProcess::MaybeAttack() {
+  if (mGameState->IsGameOver() || GPlayer::mInvulnerable || !IsInRange()) {
     return EFalse;
   }
 
