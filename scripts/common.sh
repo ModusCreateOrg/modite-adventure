@@ -90,7 +90,7 @@ function ensure_creative_engine {
 
 function ensure_resources {
     if [[ ! -d "$RESOURCES_DIR" ]]; then
-        git clone https://$MAR_ACCESS_TOKEN@github.com/ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
+        git clone https://github.com/ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
     fi
 }
 
@@ -244,8 +244,8 @@ EOF
             mkdir -p "$APP_RES_DIR"
             cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
 
-            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
-            || echo "Codesign has keychain dependencies, run this on your workstation!"
+            #codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
+            #|| echo "Codesign has keychain dependencies, run this on your workstation!"
 
         fi
     fi
