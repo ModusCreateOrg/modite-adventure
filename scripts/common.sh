@@ -232,11 +232,11 @@ function patch_mac_build {
             # CREATE WRAPPER
             mv "$APP_MACOSX_DIR/Modite" "$APP_MACOSX_DIR/Modite.bin"
 
-            #tee "$APP_MACOSX_DIR/Modite" <<"EOF"
-            #!/usr/bin/env bash
-            #MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
-            #(cd "$MY_DIR" && ./Modite.bin)
-            #EOF
+            tee "$APP_MACOSX_DIR/Modite" <<"EOF"
+#!/usr/bin/env bash
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
+(cd "$MY_DIR" && ./Modite.bin)
+EOF
             chmod 0755 "${APP_DIR}/Contents/MacOS/Modite"
          
             # INSTALL APP.PLIST & ETC
