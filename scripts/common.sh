@@ -232,11 +232,11 @@ function patch_mac_build {
             # CREATE WRAPPER
             mv "$APP_MACOSX_DIR/Modite" "$APP_MACOSX_DIR/Modite.bin"
 
-            tee "$APP_MACOSX_DIR/Modite" <<"EOF"
-#!/usr/bin/env bash
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
-(cd "$MY_DIR" && ./Modite.bin)
-EOF
+            #tee "$APP_MACOSX_DIR/Modite" <<"EOF"
+            #!/usr/bin/env bash
+            #MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" && pwd )"
+            #(cd "$MY_DIR" && ./Modite.bin)
+            #EOF
             chmod 0755 "${APP_DIR}/Contents/MacOS/Modite"
          
             # INSTALL APP.PLIST & ETC
@@ -244,8 +244,8 @@ EOF
             mkdir -p "$APP_RES_DIR"
             cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
 
-            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
-             || echo "Codesign has keychain dependencies, run this on your workstation!"
+           # codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
+           #  || echo "Codesign has keychain dependencies, run this on your workstation!"
 
         fi
     fi
