@@ -244,8 +244,8 @@ EOF
             mkdir -p "$APP_RES_DIR"
             cp "$BASE_DIR/resources/desktop-icon/Modite.icns" "$APP_RES_DIR"
 
-           # codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
-           #  || echo "Codesign has keychain dependencies, run this on your workstation!"
+            codesign --force --sign "Developer ID Application: Modus Create, Inc." "$BASE_DIR/build/Modite.app" \
+            || echo "Codesign has keychain dependencies, run this on your workstation!"
 
         fi
     fi
