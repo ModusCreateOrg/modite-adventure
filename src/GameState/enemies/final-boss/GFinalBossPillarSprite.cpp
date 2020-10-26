@@ -110,8 +110,12 @@ GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX
     default:
       Panic("%s invalid slot %d\n", Name(), aSlot);
   }
+  mExploding = EFalse;
 }
 
 void GFinalBossPillarSprite::Explode() {
-  StartAnimation(explodeAnimation);
+  if (!mExploding) {
+    StartAnimation(explodeAnimation);
+    mExploding = ETrue;
+  }
 }

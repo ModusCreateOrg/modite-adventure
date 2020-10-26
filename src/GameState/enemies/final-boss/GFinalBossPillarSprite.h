@@ -10,6 +10,9 @@ public:
 
 public:
   void Explode();
+
+protected:
+  TBool mExploding;
 };
 
 #endif

@@ -25,6 +25,7 @@ protected:
   TPoint mCenter{};
   GFinalBossPillarSprite *mSprites[SPRITE_COUNT]{};
   TFloat mAngle;
+  TBool mExploding;
 };
 
 
