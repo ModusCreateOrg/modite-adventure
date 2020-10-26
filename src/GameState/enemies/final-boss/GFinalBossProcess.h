@@ -27,6 +27,7 @@ protected:
   void Land(DIRECTION aDirection);
   void Projectile(DIRECTION aDirection);
   void Spell(DIRECTION aDirection);
+  void Stun(DIRECTION aDirection);
   void Death(DIRECTION aDirection);
 
 protected:
@@ -41,6 +42,7 @@ protected:
   TBool LeapState();
   TBool ProjectileState();
   TBool SpellState();
+  TBool StunState();
   TBool DeathState();
   void SetState(TInt aNewState, DIRECTION aNewDirection);
 

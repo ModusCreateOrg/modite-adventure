@@ -42,6 +42,7 @@ const TInt INITIALIZE_HEALTH_RATE = 20 / FACTOR;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 4;
 const TFloat HOP_FRICTION = 0.2 / TFloat(FACTOR);
 const TInt16 LEAP_DURATION = FRAMES_PER_SECOND;
+const TInt16 STUN_DURATION = 3.0 * FRAMES_PER_SECOND;
 
 const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
@@ -54,6 +55,48 @@ const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
   ASTEP(IDLE_SPEED, IMG_FINAL_BOSS_IDLE + 1),
+  AEND,
+};
+
+static ANIMSCRIPT stunAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  AFLIP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  AFLIP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ASTEP1(IMG_FINAL_BOSS_SPELL_START),
+  AEND,
+};
+
+static ANIMSCRIPT recoverAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED * 4, IMG_FINAL_BOSS_IDLE + 1),
+  AEND,
+};
+
+static ANIMSCRIPT spellFireAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 4),
   AEND,
 };
 
@@ -372,10 +415,9 @@ void GFinalBossProcess::RaiseShield() {
   if (mShieldProcess) {
     LowerShield();
   }
-  mShieldProcess = new GFinalBossShieldProcess(mGameState, EARTH_FINAL_BOSS_PILLAR_SLOT + Random(0, 3));
+  mShieldProcess = new GFinalBossShieldProcess(mGameState, FIRE_FINAL_BOSS_PILLAR_SLOT);
   mGameState->AddProcess(mShieldProcess);
   mShieldProcess->UpdateCenter(mSprite->Center());
-  mInvulnerable = ETrue;
 }
 
 void GFinalBossProcess::LowerShield() {
@@ -383,7 +425,6 @@ void GFinalBossProcess::LowerShield() {
     mShieldProcess->KillShield();
     mShieldProcess = ENull;
   }
-  mInvulnerable = EFalse;
 }
 
 void GFinalBossProcess::SetAttackTimer() {
@@ -460,6 +501,10 @@ void GFinalBossProcess::Spell(DIRECTION aDirection) {
   mGameState->AddProcess(p);
 }
 
+void GFinalBossProcess::Stun(DIRECTION aDirection) {
+  mSprite->StartAnimation(stunAnimation);
+}
+
 void GFinalBossProcess::Death(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->type = STYPE_OBJECT;
@@ -508,6 +553,11 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
     case STATE_SPELL:
       Spell(mDirection);
       break;
+    case STATE_STUN:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = -STUN_DURATION;
+      Stun(mDirection);
+      break;
     case STATE_DEATH:
       Death(mDirection);
       break;
@@ -524,13 +574,15 @@ TBool GFinalBossProcess::MaybeHit() {
       printf("FINAL BOSS DEATH\n");
     }
 #endif
-    StartBlink(BLINK_DURATION);
     SetState(STATE_SPELL, mSprite->mDirection);
     return ETrue;
   }
 
-  if (BasicDamageCheck()) {
-    StartBlink(BLINK_DURATION);
+  if (!mShieldProcess && BasicDamageCheck()) {
+    if (mState != STATE_STUN && mState != STATE_IDLE) {
+      SetState(STATE_STUN, mSprite->mDirection);
+      return ETrue;
+    }
   }
 
   if (mHitPoints <= 0) {
@@ -544,7 +596,7 @@ TBool GFinalBossProcess::MaybeHit() {
     return ETrue;
   }
 
-  mSprite->ClearCType(STYPE_PLAYER);
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
 
   return EFalse;
 }
@@ -588,7 +640,7 @@ TBool GFinalBossProcess::MaybeBounce() {
 }
 
 TBool GFinalBossProcess::InitializeState() {
-  if (!mInvulnerable) {
+  if (!mShieldProcess) {
     RaiseShield();
     return ETrue;
   }
@@ -608,6 +660,9 @@ TBool GFinalBossProcess::InitializeState() {
 }
 
 TBool GFinalBossProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
   if (MaybeAttack()) {
     return ETrue;
   }
@@ -718,7 +773,9 @@ TBool GFinalBossProcess::LeapState() {
     }
   } else if (mStateTimer < LEAP_DURATION) {
     mSprite->mDy = GRAVITY * TFloat(mStateTimer) * (TFloat(mStateTimer) - LEAP_DURATION);
-    printf("%f,\n", mSprite->mDy);
+    if (!mSprite->CanWalk(mSprite->vx, mSprite->vy, true)) {
+      mSprite->vx = mSprite->vy = 0;
+    }
     mStateTimer++;
   } else if (mStateTimer == LEAP_DURATION) {
     mSprite->mDy = 0;
@@ -785,6 +842,31 @@ TBool GFinalBossProcess::SpellState() {
   return ETrue;
 }
 
+TBool GFinalBossProcess::StunState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer < 0) {
+    mStateTimer++;
+  } else if (mStateTimer == 0) {
+    mSprite->StartAnimation(recoverAnimation);
+    mStateTimer++;
+  } else if (mStateTimer == 1) {
+    if (mSprite->AnimDone()) {
+      mSprite->StartAnimation(spellFireAnimation);
+      mStateTimer++;
+    }
+  } else if (mStateTimer == 2) {
+    if (mSprite->AnimDone()) {
+      RaiseShield();
+      SetState(STATE_IDLE, DIRECTION_DOWN);
+    }
+  }
+
+  return ETrue;
+}
+
 TBool GFinalBossProcess::DeathState() {
   if (mDeathCounter <= 3) {
     gGame->SetState(GAME_STATE_VICTORY);
@@ -810,6 +892,8 @@ TBool GFinalBossProcess::RunBefore() {
       return ProjectileState();
     case STATE_SPELL:
       return SpellState();
+    case STATE_STUN:
+      return StunState();
     case STATE_DEATH:
       return DeathState();
     default:
