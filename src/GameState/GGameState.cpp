@@ -999,7 +999,7 @@ TBool GGameState::PlayMusicForCurrentLevel() {
 TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
 
   TUint16 song = EMPTYSONG_XM;
-  printf("aNextDungeon = %i\n", aNextDungeon);
+//  printf("\n\n\naNextDungeon = %i\n\n\n\n", aNextDungeon);
   // For levels -- bosses get their own treatment!
   if (aSpawnedBoss == -1) {
     if (aNextDungeon == 0) {
@@ -1011,10 +1011,32 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
     else if (aNextDungeon >= 2 && aNextDungeon <= 4) {
       song = DUNGEON1_XM;
     }
-    else if (aNextDungeon >= 13 && aNextDungeon <= 18) {
+    else if (aNextDungeon >= 5 && aNextDungeon <= 8) {
+//      song = DUNGEON2_XM;
+      song = EMPTYSONG_XM;
+    }
+    else if (aNextDungeon >= 9 && aNextDungeon <= 12) {
+      song = DUNGEON3_XM;
+    }
+    else if (aNextDungeon >= 13 && aNextDungeon <= 16) {
       song = DUNGEON4_XM;
     }
-    else if (aNextDungeon >= 36 && aNextDungeon <= 40) {
+    else if (aNextDungeon >= 17 && aNextDungeon <= 20) {
+      song = DUNGEON5_XM;
+    }
+    else if (aNextDungeon >= 21 && aNextDungeon <= 24) {
+//      song = DUNGEON6_XM;
+      song = EMPTYSONG_XM;
+    }
+    else if (aNextDungeon >= 25 && aNextDungeon <= 28) {
+//      song = DUNGEON7_XM;
+      song = EMPTYSONG_XM;
+    }
+    else if (aNextDungeon >= 29 && aNextDungeon <= 32) {
+//      song = DUNGEON8_XM;
+      song = EMPTYSONG_XM;
+    }
+    else if (aNextDungeon >= 33 && aNextDungeon <= 37) {
       song = DUNGEON9_XM;
     }
   }
