@@ -4,6 +4,7 @@
 #include "GameState/enemies/grunts/GBatProcess.h"
 #include "GameState/enemies/grunts/GGoblinProcess.h"
 #include "GameState/enemies/grunts/GGoblinSniperProcess.h"
+#include "GameState/enemies/grunts/GGoblinSniperTurretProcess.h"
 #include "GameState/enemies/grunts/GOrcProcess.h"
 #include "GameState/enemies/grunts/GRatProcess.h"
 #include "GameState/enemies/grunts/GSlimeProcess.h"
@@ -108,6 +109,8 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return aGameState->AddProcess(new GGoblinProcess(aGameState, ip, xx, yy, params));
     case ATTR_GOBLIN_SNIPER:
       return aGameState->AddProcess(new GGoblinSniperProcess(aGameState, ip, xx, yy, params));
+    case ATTR_GOBLIN_SNIPER_TURRET:
+      return aGameState->AddProcess(new GGoblinSniperTurretProcess(aGameState, ip, xx, yy, params));
     case ATTR_TURRET:
       return aGameState->AddProcess(new GTurretProcess(aGameState, ip, xx, yy, params));
     case ATTR_ORC:
