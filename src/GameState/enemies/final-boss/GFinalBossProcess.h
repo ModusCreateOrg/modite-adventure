@@ -50,7 +50,7 @@ protected:
   void LowerShield();
 
 protected:
-  TBool mAttackType;
+  TInt mAttackIndex;
   GFinalBossShieldProcess *mShieldProcess;
 };
 

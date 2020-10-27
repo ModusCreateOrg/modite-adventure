@@ -19,6 +19,7 @@ enum {
   STATE_CHARGE,
   STATE_LEAP,
   STATE_PROJECTILE,
+  STATE_PILLAR,
   STATE_SPELL,
   STATE_STUN,
   STATE_RESET_SHIELD,
@@ -51,6 +52,40 @@ const TInt16 IDLE_SPEED = 1;
 const TInt16 INITIALIZE_SPEED = 20;
 const TInt16 ATTACK_SPEED = 5;
 const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
+
+enum {
+  CHARGE_ATTACK,
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  PILLAR_ATTACK,
+};
+
+static TInt8 phaseOneAttacks[] = {
+  PROJECTILE_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  -1, // sentinel value
+};
+
+static TInt8 phaseTwoAttacks[] = {
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  LEAP_ATTACK,
+  CHARGE_ATTACK,
+  PROJECTILE_ATTACK,
+  -1,
+};
+
+static TInt8 phaseThreeAttacks[] = {
+  PILLAR_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  PILLAR_ATTACK,
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  -1,
+};
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
@@ -397,7 +432,7 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mSprite->cy = 8;
   mSprite->ResetShadow();
   mHitTimer = HIT_SPAM_TIME;
-  mAttackType = EFalse;
+  mAttackIndex = 0;
   SetAttackTimer();
   SetStatMultipliers(10.0, 2.0, 0.0);
   mState = STATE_INITIALIZE;
@@ -588,6 +623,7 @@ TBool GFinalBossProcess::MaybeHit() {
     if (mCurrentHealthBar > 1) {
       mCurrentHealthBar--;
       mHitPoints = mMaxHitPoints;
+      mAttackIndex = 0;
       SetState(STATE_IDLE, mSprite->mDirection);
     } else {
       SetState(STATE_DEATH, mSprite->mDirection);
@@ -606,8 +642,30 @@ TBool GFinalBossProcess::MaybeAttack() {
     printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
 #endif
     //    SetState(STATE_TELEPORT, mDirection);
-    SetState(mAttackType ? STATE_CHARGE : STATE_LEAP, mDirection);
-    mAttackType = !mAttackType;
+    auto *attackSet = mCurrentHealthBar == 4 ? phaseOneAttacks :
+                      mCurrentHealthBar == 3 ? phaseTwoAttacks :
+                                               phaseThreeAttacks;
+    if (attackSet[mAttackIndex] < 0) {
+      mAttackIndex = 0;
+    }
+    switch (attackSet[mAttackIndex]) {
+      case CHARGE_ATTACK:
+        SetState(STATE_CHARGE, mDirection);
+        break;
+      case LEAP_ATTACK:
+        SetState(STATE_LEAP, mDirection);
+        break;
+      case PROJECTILE_ATTACK:
+        SetState(STATE_PROJECTILE, mDirection);
+        break;
+      case PILLAR_ATTACK:
+        SetState(STATE_PILLAR, mDirection);
+        break;
+      default:
+        Panic("Invalid attack %d", attackSet[mAttackIndex]);
+    }
+    mAttackIndex++;
+
     return ETrue;
   }
   return EFalse;
