@@ -1026,8 +1026,7 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
       song = DUNGEON5_XM;
     }
     else if (aNextDungeon >= 21 && aNextDungeon <= 24) {
-//      song = DUNGEON6_XM;
-      song = EMPTYSONG_XM;
+      song = DUNGEON6_XM;
     }
     else if (aNextDungeon >= 25 && aNextDungeon <= 28) {
 //      song = DUNGEON7_XM;

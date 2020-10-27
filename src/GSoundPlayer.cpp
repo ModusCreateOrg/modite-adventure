@@ -83,7 +83,7 @@ static const TUint16 allSongs[] = {
   DUNGEON3_XM,
   DUNGEON4_XM,
   DUNGEON5_XM,
-//  DUNGEON6_XM,
+  DUNGEON6_XM,
 //  DUNGEON7_XM,
 //  DUNGEON8_XM,
   DUNGEON9_XM,
