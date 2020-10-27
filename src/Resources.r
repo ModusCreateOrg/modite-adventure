@@ -224,7 +224,7 @@ RAW Dungeon3.xm
 RAW Dungeon4.xm
 RAW Dungeon5.xm
 RAW Dungeon6.xm
-//RAW Dungeon7.xm
+RAW Dungeon7.xm
 //RAW Dungeon8.xm
 RAW Dungeon9.xm
 RAW GameOver.xm
