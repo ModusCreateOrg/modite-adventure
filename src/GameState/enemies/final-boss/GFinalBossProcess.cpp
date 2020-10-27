@@ -21,7 +21,7 @@ enum {
   STATE_PROJECTILE,
   STATE_SPELL,
   STATE_STUN,
-  STATE_NEXT_PHASE,
+  STATE_RESET_SHIELD,
   STATE_DEATH,
 };
 
@@ -501,10 +501,6 @@ void GFinalBossProcess::Spell(DIRECTION aDirection) {
   mGameState->AddProcess(p);
 }
 
-void GFinalBossProcess::Stun(DIRECTION aDirection) {
-  mSprite->StartAnimation(stunAnimation);
-}
-
 void GFinalBossProcess::Death(DIRECTION aDirection) {
   mSprite->vx = mSprite->vy = 0;
   mSprite->type = STYPE_OBJECT;
@@ -556,7 +552,10 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
     case STATE_STUN:
       mSprite->vx = mSprite->vy = 0;
       mStateTimer = -STUN_DURATION;
-      Stun(mDirection);
+      mSprite->StartAnimation(stunAnimation);
+      break;
+    case STATE_RESET_SHIELD:
+      mSprite->StartAnimation(spellFireAnimation);
       break;
     case STATE_DEATH:
       Death(mDirection);
@@ -579,7 +578,7 @@ TBool GFinalBossProcess::MaybeHit() {
   }
 
   if (!mShieldProcess && BasicDamageCheck()) {
-    if (mState != STATE_STUN && mState != STATE_IDLE) {
+    if (mState != STATE_STUN && mState != STATE_RESET_SHIELD) {
       SetState(STATE_STUN, mSprite->mDirection);
       return ETrue;
     }
@@ -589,7 +588,7 @@ TBool GFinalBossProcess::MaybeHit() {
     if (mCurrentHealthBar > 1) {
       mCurrentHealthBar--;
       mHitPoints = mMaxHitPoints;
-      SetState(STATE_NEXT_PHASE, mSprite->mDirection);
+      SetState(STATE_IDLE, mSprite->mDirection);
     } else {
       SetState(STATE_DEATH, mSprite->mDirection);
     }
@@ -661,6 +660,10 @@ TBool GFinalBossProcess::InitializeState() {
 
 TBool GFinalBossProcess::IdleState() {
   if (MaybeHit()) {
+    return ETrue;
+  }
+  if (!mShieldProcess) {
+    SetState(STATE_RESET_SHIELD, DIRECTION_DOWN);
     return ETrue;
   }
   if (MaybeAttack()) {
@@ -854,14 +857,21 @@ TBool GFinalBossProcess::StunState() {
     mStateTimer++;
   } else if (mStateTimer == 1) {
     if (mSprite->AnimDone()) {
-      mSprite->StartAnimation(spellFireAnimation);
-      mStateTimer++;
+      SetState(STATE_RESET_SHIELD, DIRECTION_DOWN);
     }
-  } else if (mStateTimer == 2) {
-    if (mSprite->AnimDone()) {
-      RaiseShield();
-      SetState(STATE_IDLE, DIRECTION_DOWN);
-    }
+  }
+
+  return ETrue;
+}
+
+TBool GFinalBossProcess::ResetShieldState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mSprite->AnimDone()) {
+    RaiseShield();
+    SetState(STATE_IDLE, DIRECTION_DOWN);
   }
 
   return ETrue;
@@ -894,6 +904,8 @@ TBool GFinalBossProcess::RunBefore() {
       return SpellState();
     case STATE_STUN:
       return StunState();
+    case STATE_RESET_SHIELD:
+      return ResetShieldState();
     case STATE_DEATH:
       return DeathState();
     default:
