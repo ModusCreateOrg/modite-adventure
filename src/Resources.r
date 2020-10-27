@@ -220,6 +220,8 @@ RAW EmptySong.xm
 RAW Dungeon_Home.xm
 RAW Dungeon1.xm
 RAW Dungeon4.xm
+RAW Dungeon3.xm
+RAW Dungeon5.xm
 RAW Dungeon9.xm
 RAW GameOver.xm
 RAW Main_Menu.xm
