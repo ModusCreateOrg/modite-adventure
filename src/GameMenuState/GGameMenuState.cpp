@@ -2,11 +2,7 @@
 #include "GGameMenuState.h"
 #include "GGameMenuContainer.h"
 
-#ifdef __XTENSA__
-#define PAUSE_MODAL_Y 50
-#else
 #define PAUSE_MODAL_Y 60
-#endif
 
 GGameMenuState::GGameMenuState(GGameState *aGameState) : BGameEngine(gViewPort) {
   mGameState = aGameState;

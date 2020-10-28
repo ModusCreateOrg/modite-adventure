@@ -2,24 +2,18 @@
 #include "GMusicWidget.h"
 #include "GSfxWidget.h"
 #include "GResetWidget.h"
+#include "GSeeCreditsWidget.h"
 #include "GExitWidget.h"
 
-#ifdef __XTENSA__
-#include "GBrightnessWidget.h"
-#define WIDGET_CONTAINER_Y 50
-#else
-#define WIDGET_CONTAINER_Y 60
-#endif
+ static const TUint16 WIDGET_CONTAINER_Y = 60;
 
 class OptionsContainer : public GDialogWidget {
 public:
-    OptionsContainer(TInt aX, TInt aY) : GDialogWidget("Options", aX, aY) {
-#ifdef __XTENSA__
-      AddWidget((BWidget &) *new GBrightnessWidget());
-#endif
+    OptionsContainer(TInt aX, TInt aY) : GDialogWidget("SHIT", aX, aY) {
       AddWidget((BWidget &) *new GMusicWidget());
       AddWidget((BWidget &) *new GSfxWidget());
       AddWidget((BWidget &) *new GResetWidget());
+      AddWidget((BWidget &) *new GSeeCreditsWidget());
       AddWidget((BWidget &) *new GExitWidget());
     }
 };

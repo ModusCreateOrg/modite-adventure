@@ -1,19 +1,15 @@
 #include "GExitWidget.h"
 
 GExitWidget::GExitWidget() : GButtonWidget("Back") {
-  mHeight = 20;
+  mHeight = 24;
 }
 
 GExitWidget::~GExitWidget() = default;
 
 TInt GExitWidget::Render(TInt aX, TInt aY) {
-#ifdef __XTENSA__
-  aY += 16;
-#else
-  aY += 18;
-#endif
+  aY += mHeight;
   GButtonWidget::Render(aX, aY);
-  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 4;
+  return gWidgetTheme.GetFont(WIDGET_TITLE_FONT)->mHeight - 0;
 }
 
 void GExitWidget::Select() {

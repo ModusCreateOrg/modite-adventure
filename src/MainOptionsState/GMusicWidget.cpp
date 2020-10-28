@@ -6,7 +6,7 @@ static const TRange music_options = {
 };
 
 GMusicWidget::GMusicWidget() : GSoundSliderWidget("Music", &music_options, COLOR_TEXT, COLOR_TEXT_BG) {
-  mHeight = 20;
+  mHeight = 14;
 }
 
 GMusicWidget::~GMusicWidget() = default;

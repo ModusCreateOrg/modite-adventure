@@ -12,12 +12,10 @@ extern "C" void app_main() {
     delete gGame;
 }
 
-#ifndef __XTENSA
 
 int main() {
     app_main();
     return 0;
 }
 
-#endif
 
