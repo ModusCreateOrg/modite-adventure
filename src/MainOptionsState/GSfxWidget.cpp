@@ -6,7 +6,7 @@ static const TRange sfx_options = {
 };
 
 GSfxWidget::GSfxWidget() : GSoundSliderWidget("SFX", &sfx_options, COLOR_TEXT, COLOR_TEXT_BG) {
-  mHeight = 20;
+  mHeight = 11;
 }
 
 GSfxWidget::~GSfxWidget() = default;

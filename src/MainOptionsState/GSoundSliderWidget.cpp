@@ -37,31 +37,23 @@ TInt GSoundSliderWidget::RenderTitle(TInt aX, TInt aY, TBool aActive) {
       COLOR_TEXT_TRANSPARENT,
       -6);
 
-#ifdef __XTENSA__
-  return f->mHeight;
-#else
   return f->mHeight + 4;
-#endif
 }
 
 TInt GSoundSliderWidget::Render(TInt aX, TInt aY) {
   aX += 60;
-#ifdef __XTENSA__
-  aY -= 16;
-#else
   aY -= 20;
-#endif
 
   const BFont  *f = gWidgetTheme.GetFont(WIDGET_TITLE_FONT);
   const TUint8 fg = gWidgetTheme.GetInt(WIDGET_SLIDER_FG),
                bg = gWidgetTheme.GetInt(WIDGET_SLIDER_BG);
 
   for (TInt i = 0; i < mRange->end; i += mRange->step) {
-    gDisplay.renderBitmap->DrawFastVLine(ENull, aX+10, aY - 1, 16, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 1, aY + 14, 9, COLOR_TEXT_SHADOW);
-    gDisplay.renderBitmap->FillRect(ENull, aX, aY - 2, aX + 9, aY + 13, i < mSelectedValue ? fg : bg);
+    gDisplay.renderBitmap->DrawFastVLine(ENull, aX + 10, aY - 1, 16, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->DrawFastHLine(ENull, aX + 1, aY + 13, 9, COLOR_TEXT_SHADOW);
+    gDisplay.renderBitmap->FillRect(ENull, aX, aY - 1, aX + 9, aY + 12, i < mSelectedValue ? fg : bg);
     aX += 10;
   }
 
-  return f->mHeight - 4;
+  return f->mHeight - 11;
 }

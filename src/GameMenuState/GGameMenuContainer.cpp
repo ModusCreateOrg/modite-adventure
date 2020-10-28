@@ -1,7 +1,6 @@
 #include "GGameMenuContainer.h"
 #include "GMusicWidget.h"
 #include "GSfxWidget.h"
-#include "GBrightnessWidget.h"
 #include "GSaveWidget.h"
 #include "GResumeWidget.h"
 #include "GQuitWidget.h"
