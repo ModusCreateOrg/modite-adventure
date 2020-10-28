@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ######################### Function definitions ########################
-
+set -o nounset
 SUDO=${SUDO:-}
 
 function ensure_xcode_installed {
