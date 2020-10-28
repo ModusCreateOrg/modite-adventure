@@ -90,9 +90,9 @@ function ensure_creative_engine {
 
 function ensure_resources {
     if [[ ! -d "$RESOURCES_DIR" ]]; then
-        MAR_ACCESS_TOKEN=${MAR_ACCESS_TOKEN:-''}   
+
         # If the env var is NOT set
-        if [ -z $MAR_ACCESS_TOKEN ]; then
+        if [ "${MAR_ACCESS_TOKEN:-undefined}" = undefined ]; then
             git clone git@github.com:ModusCreateOrg/modite-adventure-resources.git "$RESOURCES_DIR"
         else
             # If the env var IS set
