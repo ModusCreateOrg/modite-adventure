@@ -30,4 +30,5 @@ deploy:
   on:
     repo: ModusCreateOrg/modite-adventure
     tags: true
+    all_branches: true
   skip_cleanup: 'true'
