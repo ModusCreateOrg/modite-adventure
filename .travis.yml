@@ -21,7 +21,7 @@ script:
 before_deploy:
   - rm -rf $RELEASE_NAME || exit 0
   - mkdir $RELEASE_NAME
-  - cp -r build $RELEASE_NAME/
+  - cp -r $TRAVIS_BUILD_DIR/build $RELEASE_NAME/
   - zip -r $RELEASE_NAME-$TRAVIS_TAG.zip $RELEASE_NAME
   - git config --local user.name "TCModus"
   - git config --local user.email "thomas.collins@moduscreate.com"
