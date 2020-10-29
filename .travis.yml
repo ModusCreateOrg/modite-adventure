@@ -31,7 +31,7 @@ deploy:
   provider: releases
   api_key:
     secure: UaqJzNmaL6ctrGEMcqmdO3T7RTUOujTNqDllItA1MdBUZuU7zrJXhvqVuUessfJi1B+rXm2ulWe7PzKjyqYQXVWVg/UoTkn+x47+HX8DHdOTq56V6iiwTXGhh3PnSSSYK809U6vfCS8sYeTIS+yZmguwU1XPLnk/mp8lMyhwK+ASTnRBaNfZlWiWYvsV+qi54ru/X3Ro1WuG/1ckfHDp2batte/dT3rGVbpOJ0mkA4iz5K/M0hPkLTO2Qge/XL2KxqNH/W6XhKgG8XQoi7LpzZLMCOkZzokX/QsDkSlTE40ca/PIv/YenMwbqBofajwBovmaJl0WuzMKJybj+qsAH7Z+7wpQ5fdgC2i5hDqTDf22BzwOu38xezCUS0DnStiqgAvm5NBkfoXyVVphLz0lU635dh+HinTQkW3G+xdhWpuYy7ShP3sdxjsLMW6V4Equ/c6j64BsMWh5Qdxou5aiaPswpqZ3j6ICjtEqeeWvW5+XQLrt5MUpKZVuIFOmL9zD+HQJfWZEEwTjOG0nnuUKQydvfhW7yINS1EmLdgCPoUsKTeScUlWRTHTKXmVqXIeZINQBPl91OiMj725VF+Wjh9pjuAZ3BNEhNd/BCp6JboQv69pTubU1MswZ8ma2LuSN/EstgJvFJ0j0kthso2SJe+5y9VmUEF3b9OvyZQnBoq8=
-  file: Modite.zip
+  file: $RELEASE_NAME-$TRAVIS_TAG.zip
   on:
     all_branches: true
   skip_cleanup: 'true'
