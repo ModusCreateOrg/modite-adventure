@@ -21,12 +21,12 @@ script:
 before_deploy:
   - rm -rf $RELEASE_NAME || exit 0
   - mkdir $RELEASE_NAME
-  - cp -r $TRAVIS_BUILD_DIR/build $RELEASE_NAME/
+  - cp -r /Users/travis/build/ModusCreateOrg/modite-adventure/build $RELEASE_NAME/
   - zip -r $RELEASE_NAME-$TRAVIS_TAG.zip $RELEASE_NAME
   - git config --local user.name "TCModus"
   - git config --local user.email "thomas.collins@moduscreate.com"
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
+  - git tag -f $TRAVIS_TAG
 deploy:
   provider: releases
   api_key:
