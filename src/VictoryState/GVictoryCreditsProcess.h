@@ -85,8 +85,8 @@ public:
           break;
         case TEXT_GAME_TITLE:
           y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
-          y += CenterText8("Modite Adventure", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
-          y += CenterText8("Brought to you by", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("Modite Adventure", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Brought to you by", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_MODUS_LABS:
 //            y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
@@ -96,7 +96,7 @@ public:
         case TEXT_GAME_DESIGN:
           numLines = 4;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("GAME DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("GAME DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -105,7 +105,7 @@ public:
         case TEXT_VISUAL_DESIGN:
           numLines = 4;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("VISUAL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("VISUAL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -113,7 +113,7 @@ public:
         case TEXT_PROGRAMMING:
           numLines = 4;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("PROGRAMMING", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("PROGRAMMING", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Mike Schwartz", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -121,16 +121,16 @@ public:
         case TEXT_CI:
           numLines = 4;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("CONTINUOUS INTEGRATION", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("AUTOMATION", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Don Anderson", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
-          y += CenterText8("Richard Bullington-McGuire", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Thomas Collins", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Richard Bullington-McGuire", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_PM:
           numLines = 5;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("LEVEL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("LEVEL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Lucas Garibaldi", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Sangiago Kent", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -139,38 +139,46 @@ public:
         case TEXT_SOUND:
           numLines = 3;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("MUSIC AND SFX", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("MUSIC AND SFX", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Victor Guzman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_QA:
           numLines = 3;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("QUALITY ASSURANCE", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("QUALITY ASSURANCE", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Samantha Park", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("NAME 2", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("NAME 3", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
+        case TEXT_INSTRUCTIONS:
+          numLines = 2;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
+          y += CenterText16("GAME INSTRUCTIONS", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Shiv Sharma", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          break;
         case TEXT_LOGISTICS:
           numLines = 3;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText8("Ligistics", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("LOGISTICS", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Ashley Benton", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Gabrielle Viot", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_DIRECTOR:
           y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
-          y += CenterText8("DIRECTOR", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("DIRECTOR", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_GREETS:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
-          y += CenterText8("Greetings to the", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
-          y += CenterText8("LDK Game dev community!", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y = (SCREEN_HEIGHT / 2) - ((24 + (2 * 16)) / 2);
+          y += CenterText16("Greets to the LDK", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText16("Game dev community!", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_THANK_YOU:
           y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
-          y += CenterText8("Thanks for playing!", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText16("Thanks for playing!", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           break;
       }
     }
@@ -182,19 +190,21 @@ protected:
     TInt x = TInt((SCREEN_WIDTH - (strlen(s) * 8)) / 2);
     gDisplay.renderBitmap->DrawString(ENull, s, gFont8x8, x + 1, aY + 1, COLOR_SHADOW, aBackground);
     gDisplay.renderBitmap->DrawString(ENull, s, gFont8x8, x, aY, aColor, aBackground);
-    return 8;
+    return 8 + 2;
   }
 
   TInt CenterText16(const char *s, TInt aY, TInt aColor, TInt aBackground) {
     TInt width = aBackground == -1 ? 12 : 16;
     TInt x = TInt((SCREEN_WIDTH - (strlen(s) * width)) / 2);
     if (aBackground != -1) {
+      gDisplay.renderBitmap->DrawString(ENull, s, gFont16x16, x + 1, aY + 1, COLOR_SHADOW, TInt16(aBackground));
       gDisplay.renderBitmap->DrawString(ENull, s, gFont16x16, x, aY, aColor, TInt16(aBackground));
     }
     else {
+      gDisplay.renderBitmap->DrawString(ENull, s, gFont16x16, x + 1, aY + 1, COLOR_SHADOW, TInt16(aBackground), -4);
       gDisplay.renderBitmap->DrawString(ENull, s, gFont16x16, x, aY, aColor, TInt16(aBackground), -4);
     }
-    return 16;
+    return 16 + 4;
   }
 
   TInt mColorDivider;
@@ -215,7 +225,7 @@ protected:
       if (mText != TEXT_THANK_YOU) {
         mState = STATE_POST_FADEIN;
       }
-      mTimer = 11 * 30;
+      mTimer = 10 * 30;
     }
     return ETrue;
   }
@@ -287,12 +297,14 @@ protected:
           mText = TEXT_QA;
           break;
         case TEXT_QA:
-          mText = TEXT_DIRECTOR;
+          mText = TEXT_INSTRUCTIONS;
           break;
-        case TEXT_DIRECTOR:
+        case TEXT_INSTRUCTIONS:
           mText = TEXT_LOGISTICS;
           break;
         case TEXT_LOGISTICS:
+          mText = TEXT_DIRECTOR;
+        case TEXT_DIRECTOR:
           mText = TEXT_GREETS;
           break;
         case TEXT_GREETS:
@@ -337,6 +349,7 @@ protected:
     TEXT_PM,
     TEXT_SOUND,
     TEXT_QA,
+    TEXT_INSTRUCTIONS,
     TEXT_LOGISTICS,
     TEXT_DIRECTOR,
     TEXT_GREETS,

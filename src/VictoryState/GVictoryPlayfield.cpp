@@ -47,7 +47,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mCreditsProcess = new GVictoryCreditsProcess(COLOR_TEXT);
   mBgColors = new TRGB[256];
   mFadePct = 0;
-  mFadeStep = .001;
+  mFadeStep = .0008;
 //  mFadeStep = .01;
 
   mStateTimer = 0;
@@ -88,6 +88,11 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mBgRisingSun = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
   mBgRisingSun->Remap(bm);
 
+  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, MAIN_MENU_SLOT5, IMAGE_ENTIRE);
+  mBgMoon = gResourceManager.GetBitmap(MAIN_MENU_SLOT5);
+  mBgMoon->Remap(bm);
+  mMoonOffset = 10;
+
 
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
@@ -105,7 +110,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 
   mSkyOffset = 0;
   mMountainsOffset = 10;
-  mSunOffset = 125;
+  mSunOffset = 135;
   mNearTreesOffset = 0;
   mPathOffset = 0;
 
@@ -176,8 +181,11 @@ void GVictoryPlayfield::Animate() {
   mStarfieldProcess->Animate();
 
   if (mCreditsProcess->mAnimateCharacterIn == ETrue) {
+    mPlayer->x += .033;
+  }
 
-    mPlayer->x += .03;
+  if (mPlayer->x > -20) {
+    mMoonOffset += .05;
   }
 
   if (mPlayer->x > 144) {
@@ -220,6 +228,17 @@ void GVictoryPlayfield::Animate() {
 void GVictoryPlayfield::RenderAnimatedBackground() {
   mStateTimer++;
   mStarfieldProcess->Render();
+
+
+  if ((TInt) mMoonOffset < 160) {
+    TRect moonRect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
+
+    const TInt moonX = SCREEN_WIDTH - mBgMoon->Width() - 20;
+    gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, moonRect, moonX, (TInt) mMoonOffset);
+  }
+
+
+
 
   TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
   const TInt sunX = SCREEN_WIDTH - mBgRisingSun->Width() - 30;
