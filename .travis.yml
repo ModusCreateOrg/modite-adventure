@@ -11,6 +11,8 @@ language: cpp
 sudo: enabled
 git:
   depth: 1
+before_install:
+  - chmod +x ./scripts/zipping.sh
 install:
 - "./.ci/travis/install_deps.sh"
 before_script: "./.ci/travis/lint.sh"
