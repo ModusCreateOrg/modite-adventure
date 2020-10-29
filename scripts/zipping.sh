@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#CREDIT TO GOOGLE LOLz
 OS="$(uname)"
 
 if [ "$OS" == "Darwin" ]; then
