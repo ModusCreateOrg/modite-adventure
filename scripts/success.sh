@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-cd build/
+cd build
 zip Modite.zip Modite.app
