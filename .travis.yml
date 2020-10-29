@@ -18,7 +18,7 @@ script:
 - "./scripts/build.sh"
 - "./scripts/test.sh"
 before_deploy:
-  - zip --symlinks -r modite.zip /Users/travis/build/ModusCreateOrg/modite-adventure/build
+  - cd /Users/travis/build/ModusCreateOrg/modite-adventure && zip --symlinks -r modite.zip build/ && cd -
   - git config --local user.name "TCModus"
   - git config --local user.email "thomas.collins@moduscreate.com"
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
