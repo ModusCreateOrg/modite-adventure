@@ -5,7 +5,9 @@
 class GVictoryCreditsProcess {
 
 public:
-  void SetLabsForegroundIndex(TUint8 aForegroundIndex) {
+    TBool mAnimateCharacterIn;
+
+    void SetLabsForegroundIndex(TUint8 aForegroundIndex) {
     mModusLogoForegroundIdx = aForegroundIndex;
   }
   void SetLabsBackgroundIndex(TUint8 aBackgroundIndex) {
@@ -23,6 +25,7 @@ public:
     mColorDivider = 80; // Higher is slower
     mColor = mColorFloor;
     mTimer = 30;
+    mAnimateCharacterIn = EFalse;
 
     mStateTimer = 0;
 
@@ -73,7 +76,8 @@ public:
     gDisplay.SetColor(mTextColorIndex, mColor, mColor, mColor);
     gDisplay.SetColor(COLOR_TEXT_SHADOW, 60, 60, 60);
 
-    TInt y;
+    TInt y = 0;
+    TUint8  numLines = 0;
     if (mState != STATE_PRE_FADEIN) {
       switch (mText) {
         case TEXT_EMPTY:
@@ -86,10 +90,12 @@ public:
           break;
         case TEXT_MODUS_LABS:
 //            y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
+          mAnimateCharacterIn = ETrue;
           RenderModusLogo();
           break;
         case TEXT_GAME_DESIGN:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (4 * 16)) / 2);
+          numLines = 4;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("GAME DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -97,21 +103,24 @@ public:
           y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_VISUAL_DESIGN:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (3 * 16)) / 2);
+          numLines = 4;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("VISUAL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_PROGRAMMING:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (3 * 16)) / 2);
+          numLines = 4;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("PROGRAMMING", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Mike Schwartz", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_CI:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (4 * 16)) / 2);
+          numLines = 4;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("CONTINUOUS INTEGRATION", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Don Anderson", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Richard Bullington-McGuire", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -119,24 +128,35 @@ public:
           y += CenterText8("Thomas Collins", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_PM:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (3 * 16)) / 2);
+          numLines = 5;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("LEVEL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Lucas Garibaldi", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Sangiago Kent", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_SOUND:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (2 * 16)) / 2);
+          numLines = 3;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("MUSIC AND SFX", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Victor Guzman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_QA:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (3 * 16)) / 2);
+          numLines = 3;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText8("QUALITY ASSURANCE", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
-          y += CenterText8("NAME 1", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Samantha Park", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("NAME 2", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("NAME 3", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          break;
+        case TEXT_LOGISTICS:
+          numLines = 3;
+          y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
+          y += CenterText8("Ligistics", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT) + 8;
+          y += CenterText8("Ashley Benton", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Gabrielle Viot", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_DIRECTOR:
           y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
@@ -192,8 +212,10 @@ protected:
     gDisplay.SetColor(mModusLogoBackgroundIdx, shadowColor, shadowColor, shadowColor);
 
     if (mColor == 255) {
-      mState = STATE_POST_FADEIN;
-      mTimer = 10 * 30;
+      if (mText != TEXT_THANK_YOU) {
+        mState = STATE_POST_FADEIN;
+      }
+      mTimer = 11 * 30;
     }
     return ETrue;
   }
@@ -268,6 +290,9 @@ protected:
           mText = TEXT_DIRECTOR;
           break;
         case TEXT_DIRECTOR:
+          mText = TEXT_LOGISTICS;
+          break;
+        case TEXT_LOGISTICS:
           mText = TEXT_GREETS;
           break;
         case TEXT_GREETS:
@@ -288,7 +313,6 @@ protected:
   TUint8  mModusLogoForegroundIdx;
   TUint8  mModusLogoBackgroundIdx;
   TInt mTimer, mColor;
-
   BFont *mFont8;
   BFont *mFont16;
 
@@ -313,6 +337,7 @@ protected:
     TEXT_PM,
     TEXT_SOUND,
     TEXT_QA,
+    TEXT_LOGISTICS,
     TEXT_DIRECTOR,
     TEXT_GREETS,
     TEXT_THANK_YOU,

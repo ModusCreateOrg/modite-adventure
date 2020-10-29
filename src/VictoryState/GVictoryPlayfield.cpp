@@ -175,7 +175,10 @@ void GVictoryPlayfield::Animate() {
   }
   mStarfieldProcess->Animate();
 
-  mPlayer->x += .03;
+  if (mCreditsProcess->mAnimateCharacterIn == ETrue) {
+
+    mPlayer->x += .03;
+  }
 
   if (mPlayer->x > 144) {
     mPlayer->x = 144;
@@ -232,8 +235,9 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
   if (mState == STATE_RUN  || mState == STATE_FADEIN_FINAL) {
     mCreditsProcess->Run();
   }
-
-  mPlayer->Render(gViewPort);
+//  if (mCreditsProcess->mAnimateCharacterIn == ETrue) {
+    mPlayer->Render(gViewPort);
+//  }
 }
 
 
