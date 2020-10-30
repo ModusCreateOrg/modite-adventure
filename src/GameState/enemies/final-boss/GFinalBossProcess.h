@@ -41,7 +41,6 @@ protected:
   TBool LeapState();
   TBool ProjectileState();
   TBool PillarState();
-  TBool SpellState();
   TBool StunState();
   TBool ResetShieldState();
   TBool DeathState();

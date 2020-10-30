@@ -20,7 +20,6 @@ enum {
   STATE_LEAP,
   STATE_PROJECTILE,
   STATE_PILLAR,
-  STATE_SPELL,
   STATE_STUN,
   STATE_RESET_SHIELD,
   STATE_DEATH,
@@ -137,19 +136,9 @@ static ANIMSCRIPT spellFireAnimation[] = {
 
 static ANIMSCRIPT hitAnimation[] = {
   ABITMAP(BOSS_SLOT),
-
-  AFILL(COLOR_TEXT),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(COLOR_TEXT),
-  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 2),
   AEND,
@@ -533,9 +522,6 @@ void GFinalBossProcess::Projectile() {
 }
 
 void GFinalBossProcess::Spell(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
-  mSpellCounter++;
   auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
   mGameState->AddProcess(p);
 }
@@ -587,9 +573,6 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
       Projectile();
       mStateTimer = 0;
       break;
-    case STATE_SPELL:
-      Spell(mDirection);
-      break;
     case STATE_STUN:
       mSprite->vx = mSprite->vy = 0;
       mStateTimer = -STUN_DURATION;
@@ -614,7 +597,7 @@ TBool GFinalBossProcess::MaybeHit() {
       printf("FINAL BOSS DEATH\n");
     }
 #endif
-    SetState(STATE_SPELL, mSprite->mDirection);
+    Spell(mDirection);
     return ETrue;
   }
 
@@ -926,20 +909,6 @@ TBool GFinalBossProcess::PillarState() {
   return ETrue;
 }
 
-TBool GFinalBossProcess::SpellState() {
-  if (mSprite->AnimDone() && mSpellCounter <= 0) {
-    if (mHitPoints <= 0) {
-      SetState(STATE_DEATH, mSprite->mDirection);
-    }
-    else {
-      mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      SetState(STATE_IDLE, mSprite->mDirection);
-    }
-  }
-  return ETrue;
-}
-
 TBool GFinalBossProcess::StunState() {
   if (MaybeHit()) {
     return ETrue;
@@ -997,8 +966,6 @@ TBool GFinalBossProcess::RunBefore() {
       return ProjectileState();
     case STATE_PILLAR:
       return PillarState();
-    case STATE_SPELL:
-      return SpellState();
     case STATE_STUN:
       return StunState();
     case STATE_RESET_SHIELD:
