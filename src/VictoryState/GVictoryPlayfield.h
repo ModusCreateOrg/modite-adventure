@@ -76,7 +76,7 @@ protected:
   BBitmap *mBgRisingSun;
 
   BBitmap *mBgMountains;
-//  BBitmap *mBgMoon;
+  BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
   BBitmap *mBgWalkingPath;
   GPlayerSprite *mPlayer;
@@ -87,6 +87,7 @@ protected:
   TFloat mSkyOffset;
   TFloat mMountainsOffset;
   TFloat mSunOffset;
+  TFloat mMoonOffset;
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
   TInt32 mStateTimer;
