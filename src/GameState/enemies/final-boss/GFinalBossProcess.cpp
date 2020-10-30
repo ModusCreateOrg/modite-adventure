@@ -43,6 +43,8 @@ const TInt HOP_DURATION = FRAMES_PER_SECOND / 4;
 const TFloat HOP_FRICTION = 0.2 / TFloat(FACTOR);
 const TInt16 LEAP_DURATION = FRAMES_PER_SECOND;
 const TInt16 STUN_DURATION = 3.0 * FRAMES_PER_SECOND;
+const TInt16 NORMAL_ATTACK_INTERVAL = 5.0 * FRAMES_PER_SECOND;
+const TInt16 LAST_PHASE_ATTACK_INTERVAL = 2.0 * FRAMES_PER_SECOND;
 
 const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
@@ -379,7 +381,11 @@ void GFinalBossProcess::LowerShield() {
 }
 
 void GFinalBossProcess::SetAttackTimer() {
-  mAttackTimer = 5 * 60;
+  if (mCurrentHealthBar == 1) {
+    mAttackTimer = LAST_PHASE_ATTACK_INTERVAL;
+  } else {
+    mAttackTimer = NORMAL_ATTACK_INTERVAL;
+  }
 }
 
 void GFinalBossProcess::Idle(DIRECTION aDirection) {
