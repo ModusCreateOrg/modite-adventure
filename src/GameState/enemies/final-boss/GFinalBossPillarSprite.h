@@ -6,7 +6,7 @@
 
 class GFinalBossPillarSprite : public GAnchorSprite {
 public:
-  GFinalBossPillarSprite(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot);
+  GFinalBossPillarSprite(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement);
 
 public:
   void Explode();

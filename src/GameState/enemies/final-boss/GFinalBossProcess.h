@@ -25,7 +25,7 @@ protected:
   void Charge(DIRECTION aDirection);
   void Leap(DIRECTION aDirection);
   void Land(DIRECTION aDirection);
-  void Projectile(DIRECTION aDirection);
+  void Projectile();
   void Spell(DIRECTION aDirection);
   void Death(DIRECTION aDirection);
 
@@ -40,6 +40,7 @@ protected:
   TBool ChargeState();
   TBool LeapState();
   TBool ProjectileState();
+  TBool PillarState();
   TBool SpellState();
   TBool StunState();
   TBool ResetShieldState();

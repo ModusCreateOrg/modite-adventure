@@ -8,7 +8,7 @@
 
 class GFinalBossPillarProcess : public GProcess {
 public:
-  GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot, TBool aFollowPlayer, TInt aStartDelay);
+  GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement, TBool aFollowPlayer, TInt aStartDelay);
   ~GFinalBossPillarProcess() OVERRIDE;
 
 public:

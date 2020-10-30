@@ -450,7 +450,7 @@ void GFinalBossProcess::RaiseShield() {
   if (mShieldProcess) {
     LowerShield();
   }
-  mShieldProcess = new GFinalBossShieldProcess(mGameState, FIRE_FINAL_BOSS_PILLAR_SLOT);
+  mShieldProcess = new GFinalBossShieldProcess(mGameState, ELEMENT_FIRE);
   mGameState->AddProcess(mShieldProcess);
   mShieldProcess->UpdateCenter(mSprite->Center());
 }
@@ -489,15 +489,15 @@ void GFinalBossProcess::Land(DIRECTION aDirection) {
   mSprite->StartAnimationInDirection(landAnimations, aDirection);
 }
 
-void GFinalBossProcess::Projectile(DIRECTION aDirection) {
+void GFinalBossProcess::Projectile() {
   mSprite->vx = mSprite->vy = 0;
-  mDirection = aDirection;
-  switch (aDirection) {
+  switch (Random(0, 3)) {
     case 0:
 #ifdef DEBUGME
       printf("earthProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(earthProjectileAnimation);
+      mSprite->mElement = ELEMENT_EARTH;
       break;
     case 1:
 #ifdef DEBUGME
@@ -505,18 +505,21 @@ void GFinalBossProcess::Projectile(DIRECTION aDirection) {
 #endif
 
       mSprite->StartAnimation(waterProjectileAnimation);
+      mSprite->mElement = ELEMENT_WATER;
       break;
     case 2:
 #ifdef DEBUGME
       printf("fireProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(fireProjectileAnimation);
+      mSprite->mElement = ELEMENT_FIRE;
       break;
     case 3:
 #ifdef DEBUGME
       printf("energyProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(energyProjectileAnimation);
+      mSprite->mElement = ELEMENT_ENERGY;
       break;
     default:
 #ifdef DEBUGME
@@ -524,6 +527,7 @@ void GFinalBossProcess::Projectile(DIRECTION aDirection) {
 #endif
 
       mSprite->StartAnimation(earthProjectileAnimation);
+      mSprite->mElement = ELEMENT_EARTH;
       break;
   }
 }
@@ -579,7 +583,9 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
       Leap(mDirection);
       break;
     case STATE_PROJECTILE:
-      Projectile(mDirection);
+    case STATE_PILLAR:
+      Projectile();
+      mStateTimer = 0;
       break;
     case STATE_SPELL:
       Spell(mDirection);
@@ -889,6 +895,37 @@ TBool GFinalBossProcess::ProjectileState() {
   return ETrue;
 }
 
+TBool GFinalBossProcess::PillarState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      mStateTimer++;
+    }
+    return ETrue;
+  }
+
+  // spawn pillars
+  for (TInt n = 0; n < 8; n++) {
+    // Follows Player if water or fire
+    if (mSprite->mElement == ELEMENT_WATER || mSprite->mElement == ELEMENT_FIRE) {
+      mGameState->AddProcess(
+        new GFinalBossPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, mSprite->mElement, ETrue,
+                                    (n * 30)));
+    } else {
+      TPoint p = mSprite->Center();
+      p.Offset(Random(-64, 64), Random(-64, 64));
+
+      mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+    }
+  }
+  SetState(STATE_IDLE, mDirection);
+
+  return ETrue;
+}
+
 TBool GFinalBossProcess::SpellState() {
   if (mSprite->AnimDone() && mSpellCounter <= 0) {
     if (mHitPoints <= 0) {
@@ -958,6 +995,8 @@ TBool GFinalBossProcess::RunBefore() {
       return LeapState();
     case STATE_PROJECTILE:
       return ProjectileState();
+    case STATE_PILLAR:
+      return PillarState();
     case STATE_SPELL:
       return SpellState();
     case STATE_STUN:

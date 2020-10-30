@@ -9,7 +9,7 @@
 #undef DEBUGME
 
 // constructor
-GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot, TBool aFollowPlayer, TInt aStartDelay = 0)
+GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement, TBool aFollowPlayer, TInt aStartDelay = 0)
     : GProcess(0, 0) {
   mGameState = aGameState;
   mSaveToStream = EFalse;
@@ -17,7 +17,7 @@ GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat 
   // can't use mSprite->Name() since sprite hasn't been spawned yet
   printf("Final Boss Piller %p slot %d (earth %d)\n", this, aSlot, EARTH_FINAL_BOSS_PILLAR_SLOT);
 #endif
-  mSprite = new GFinalBossPillarSprite(aGameState, aX, aY, aSlot);
+  mSprite = new GFinalBossPillarSprite(aGameState, aX, aY, aElement);
   {
     char buf[128];
     sprintf(buf, "Final Boss Pillar %p", this);

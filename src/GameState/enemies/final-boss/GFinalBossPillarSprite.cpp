@@ -65,12 +65,12 @@ static ANIMSCRIPT explodeAnimation[] = {
 };
 
 // constructor
-GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot)
-  : GAnchorSprite(aGameState, 0, aSlot, 0, STYPE_EBULLET) {
+GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement)
+  : GAnchorSprite(aGameState, 0, EARTH_FINAL_BOSS_PILLAR_SLOT, 0, STYPE_EBULLET) {
   mGameState = aGameState;
+  mElement = aElement;
 #ifdef DEBUGME
-  // can't use mSprite->Name() since sprite hasn't been spawned yet
-  printf("Final Boss Piller %p slot %d (earth %d)\n", this, aSlot, EARTH_FINAL_BOSS_PILLAR_SLOT);
+  printf("Final Boss Pillar %p element %d\n", this, aElement);
 #endif
   x = aX;
   y = aY;
@@ -78,37 +78,41 @@ GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX
   h = 8;
   cy = 4;
   cx = 0;
-  SetFlags(SFLAG_RENDER_SHADOW);
+  SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
   ResetShadow();
   vy = vx = 0;
   mAttackStrength = 55;
-  switch (aSlot) {
-    case FIRE_FINAL_BOSS_PILLAR_SLOT:
+  switch (aElement) {
+    case ELEMENT_FIRE:
 #ifdef DEBUGME
-      printf("%s FIRE PILLAR\n", mSprite->Name());
+      printf("%s FIRE PILLAR\n", Name());
 #endif
       StartAnimation(pillarFireAnimation);
+      mBitmapSlot = FIRE_FINAL_BOSS_PILLAR_SLOT;
       break;
-    case EARTH_FINAL_BOSS_PILLAR_SLOT:
+    case ELEMENT_EARTH:
 #ifdef DEBUGME
-      printf("%s EARTH PILLAR\n", mSprite->Name());
+      printf("%s EARTH PILLAR\n", Name());
 #endif
       StartAnimation(pillarEarthAnimation);
+      mBitmapSlot = EARTH_FINAL_BOSS_PILLAR_SLOT;
       break;
-    case WATER_FINAL_BOSS_PILLAR_SLOT:
+    case ELEMENT_WATER:
 #ifdef DEBUGME
-      printf("%s WATER PILLAR\n", mSprite->Name());
+      printf("%s WATER PILLAR\n", Name());
 #endif
       StartAnimation(pillarWaterAnimation);
+      mBitmapSlot = WATER_FINAL_BOSS_PILLAR_SLOT;
       break;
-    case ENERGY_FINAL_BOSS_PILLAR_SLOT:
+    case ELEMENT_ENERGY:
 #ifdef DEBUGME
-      printf("%s ENERGY PILLAR\n", mSprite->Name());
+      printf("%s ENERGY PILLAR\n", Name());
 #endif
       StartAnimation(pillarEnergyAnimation);
+      mBitmapSlot = ENERGY_FINAL_BOSS_PILLAR_SLOT;
       break;
     default:
-      Panic("%s invalid slot %d\n", Name(), aSlot);
+      Panic("%s invalid element %d\n", Name(), mElement);
   }
   mExploding = EFalse;
 }

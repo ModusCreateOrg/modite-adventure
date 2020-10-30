@@ -1,8 +1,8 @@
 #include "GFinalBossShieldProcess.h"
 
-GFinalBossShieldProcess::GFinalBossShieldProcess(GGameState *aGameState, TInt16 aSlot) : GProcess(0) {
+GFinalBossShieldProcess::GFinalBossShieldProcess(GGameState *aGameState, ELEMENT aElement) : GProcess(0) {
   for (auto &s : mSprites) {
-    s = new GFinalBossPillarSprite(aGameState, 0, 0, aSlot);
+    s = new GFinalBossPillarSprite(aGameState, 0, 0, aElement);
     s->SetFlags(SFLAG_CHECK);
     s->SetCMask(STYPE_PLAYER);
     aGameState->AddSprite(s);

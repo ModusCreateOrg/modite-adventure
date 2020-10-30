@@ -9,7 +9,7 @@ const TFloat ANGULAR_VELOCITY = 2.0 / FRAMES_PER_SECOND; // radians/frame
 
 class GFinalBossShieldProcess : public GProcess {
 public:
-  EXPLICIT GFinalBossShieldProcess(GGameState *aGameState, TInt16 aSlot);
+  EXPLICIT GFinalBossShieldProcess(GGameState *aGameState, ELEMENT aElement);
   ~GFinalBossShieldProcess() OVERRIDE;
 
 public:
