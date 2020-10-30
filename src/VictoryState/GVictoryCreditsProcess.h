@@ -133,7 +133,7 @@ public:
           y += CenterText16("LEVEL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Lucas Garibaldi", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
-          y += CenterText8("Sangiago Kent", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Santiago Kent", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_SOUND:
