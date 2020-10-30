@@ -225,7 +225,7 @@ protected:
       if (mText != TEXT_THANK_YOU) {
         mState = STATE_POST_FADEIN;
       }
-      mTimer = 10 * 30;
+      mTimer = 11 * 30;
     }
     return ETrue;
   }

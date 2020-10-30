@@ -88,7 +88,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mBgRisingSun = gResourceManager.GetBitmap(MAIN_MENU_SLOT4);
   mBgRisingSun->Remap(bm);
 
-  gResourceManager.LoadBitmap(MOON_WITH_LOGO_BMP, MAIN_MENU_SLOT5, IMAGE_ENTIRE);
+  gResourceManager.LoadBitmap(MOON_WITH_LOGO_ENDING_BMP, MAIN_MENU_SLOT5, IMAGE_ENTIRE);
   mBgMoon = gResourceManager.GetBitmap(MAIN_MENU_SLOT5);
   mBgMoon->Remap(bm);
   mMoonOffset = 10;
@@ -162,7 +162,7 @@ GVictoryPlayfield::~GVictoryPlayfield() {
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT2);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT3);
   gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT4);
-
+  gResourceManager.ReleaseBitmapSlot(MAIN_MENU_SLOT5);
   delete mPlayer;
   mPlayer = ENull;
   delete[] mBgColors;
@@ -234,7 +234,7 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
     TRect moonRect = TRect(0, 0, mBgMoon->Width(), mBgMoon->Height());
 
     const TInt moonX = SCREEN_WIDTH - mBgMoon->Width() - 20;
-    gDisplay.renderBitmap->DrawBitmap(ENull, mBgMoon, moonRect, moonX, (TInt) mMoonOffset);
+    gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBgMoon, moonRect, moonX, (TInt) mMoonOffset);
   }
 
 

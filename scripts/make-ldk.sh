@@ -51,7 +51,6 @@ echo "Compiling"
 mkdir -p build/ldk/
 
 make cleanall
-
 md5=''
 
 if [[ ${VERBOSE} -eq 1 ]]; then
