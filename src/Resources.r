@@ -220,7 +220,7 @@ PATH resources/music/
 RAW EmptySong.xm
 RAW Dungeon_Home.xm
 RAW Dungeon1.xm
-#RAW Dungeon2.xm
+RAW Dungeon2.xm
 RAW Dungeon3.xm
 RAW Dungeon4.xm
 RAW Dungeon5.xm
