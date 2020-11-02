@@ -145,11 +145,25 @@ void GFinalBossProjectileProcess::StartExplodeAnimation() {
   }
 }
 // constructor
-GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute)
+GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, ELEMENT aElement)
     : GProcess(0, 0) {
-
-
-  mAttribute = aAttribute;
+  switch (aElement) {
+    case ELEMENT_EARTH:
+      mAttribute = ATTR_FINAL_BOSS_EARTH;
+      break;
+    case ELEMENT_WATER:
+      mAttribute = ATTR_FINAL_BOSS_WATER;
+      break;
+    case ELEMENT_FIRE:
+      mAttribute = ATTR_FINAL_BOSS_FIRE;
+      break;
+    case ELEMENT_ENERGY:
+      mAttribute = ATTR_FINAL_BOSS_ENERGY;
+      break;
+    default:
+      mAttribute = ATTR_FINAL_BOSS_EARTH;
+      break;
+  }
   mSaveToStream = EFalse;
   mStep = 0;
   mTimer = PROJECTILE_TIMEOUT;
@@ -159,6 +173,7 @@ GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState,
     sprintf(buf, "Final Boss Projectile %p", this);
     mSprite->Name(buf);
   }
+  mSprite->mElement = aElement;
   mSprite->type = STYPE_EBULLET;
   mSprite->SetCMask(STYPE_PLAYER);
   mSprite->SetFlags(SFLAG_CHECK | SFLAG_RENDER_SHADOW);

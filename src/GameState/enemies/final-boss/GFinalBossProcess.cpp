@@ -792,30 +792,11 @@ TBool GFinalBossProcess::ProjectileState() {
   }
   if (mSprite->AnimDone()) {
     // fire!
-    TInt16 type = 0;
-    switch (mDirection) {
-      case 0:
-        type = ATTR_FINAL_BOSS_EARTH;
-        break;
-      case 1:
-        type = ATTR_FINAL_BOSS_WATER;
-        break;
-      case 2:
-        type = ATTR_FINAL_BOSS_FIRE;
-        break;
-      case 3:
-        type = ATTR_FINAL_BOSS_ENERGY;
-        break;
-
-      default:
-        type = ATTR_FINAL_BOSS_EARTH;
-        break;
-    }
     TFloat xx = mSprite->x + 48,
            yy = mSprite->y;
     // fire 10 projectiles in a circle pattern with the boss in the center
     for (TInt16 angle = 0; angle < 360; angle += 360 / 10) {
-      mGameState->AddProcess(new GFinalBossProjectileProcess(mGameState, xx, yy, angle, type));
+      mGameState->AddProcess(new GFinalBossProjectileProcess(mGameState, xx, yy, angle, mSprite->mElement));
     }
     SetState(STATE_IDLE, mDirection);
   }
