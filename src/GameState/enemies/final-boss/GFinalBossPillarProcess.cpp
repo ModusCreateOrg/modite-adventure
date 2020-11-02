@@ -31,6 +31,7 @@ GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat 
   mExploding = EFalse;
   mFrame = 0;
   mStartDelay = (aStartDelay > 0) ? (30 + aStartDelay) : 0;
+  gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV, 3);
 }
 
 GFinalBossPillarProcess::~GFinalBossPillarProcess() {

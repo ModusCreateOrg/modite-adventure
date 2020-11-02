@@ -148,6 +148,7 @@ void GFinalBossProjectileProcess::StartExplodeAnimation() {
 GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute)
     : GProcess(0, 0) {
 
+
   mAttribute = aAttribute;
   mSaveToStream = EFalse;
   mStep = 0;

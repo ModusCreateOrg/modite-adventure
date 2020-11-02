@@ -36,7 +36,7 @@ static const char *direction_names[] = {
 #endif
 
 const TFloat WALK_VELOCITY = 1.4;
-const TFloat CHARGE_VELOCITY = 2 * PLAYER_VELOCITY;
+const TFloat CHARGE_VELOCITY = 5 * PLAYER_VELOCITY;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
 const TInt INITIALIZE_HEALTH_RATE = 20 / FACTOR;
 const TInt HOP_DURATION = FRAMES_PER_SECOND / 4;
@@ -349,6 +349,7 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mSprite->h = 32;
   mSprite->cy = 8;
   mSprite->ResetShadow();
+  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mHitTimer = HIT_SPAM_TIME;
   mAttackIndex = 0;
   SetAttackTimer();
@@ -404,10 +405,12 @@ void GFinalBossProcess::Charge(DIRECTION aDirection) {
 }
 
 void GFinalBossProcess::Leap(DIRECTION aDirection) {
+  gSoundPlayer.TriggerSfx(SFX_MIDBOSS_CHARGE_STEP_WAV, 4);
   mSprite->StartAnimationInDirection(landAnimations, aDirection);
 }
 
 void GFinalBossProcess::Land(DIRECTION aDirection) {
+  gSoundPlayer.TriggerSfx(SFX_MIDBOSS_LAND_WAV, 4);
   mSprite->StartAnimationInDirection(landAnimations, aDirection);
 }
 
@@ -419,6 +422,7 @@ void GFinalBossProcess::Projectile() {
       printf("earthProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(earthProjectileAnimation);
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 4);
       mSprite->mElement = ELEMENT_EARTH;
       break;
     case 1:
@@ -427,6 +431,7 @@ void GFinalBossProcess::Projectile() {
 #endif
 
       mSprite->StartAnimation(waterProjectileAnimation);
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV, 4);
       mSprite->mElement = ELEMENT_WATER;
       break;
     case 2:
@@ -434,6 +439,7 @@ void GFinalBossProcess::Projectile() {
       printf("fireProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(fireProjectileAnimation);
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV, 4);
       mSprite->mElement = ELEMENT_FIRE;
       break;
     case 3:
@@ -441,6 +447,7 @@ void GFinalBossProcess::Projectile() {
       printf("energyProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(energyProjectileAnimation);
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV, 4);
       mSprite->mElement = ELEMENT_ENERGY;
       break;
     default:
@@ -449,6 +456,7 @@ void GFinalBossProcess::Projectile() {
 #endif
 
       mSprite->StartAnimation(earthProjectileAnimation);
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 4);
       mSprite->mElement = ELEMENT_EARTH;
       break;
   }
@@ -706,6 +714,7 @@ TBool GFinalBossProcess::ChargeState() {
       mStateTimer++;
       mSprite->vx *= WALK_VELOCITY / CHARGE_VELOCITY;
       mSprite->vy *= WALK_VELOCITY / CHARGE_VELOCITY;
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_BOUNCE_WALL_WAV, 4);
       LowerShield();
     }
     if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
@@ -714,10 +723,12 @@ TBool GFinalBossProcess::ChargeState() {
   } else if (mStateTimer < HOP_DURATION) {
     mStateTimer++;
     mSprite->mDy = GRAVITY * .5 * mStateTimer * (mStateTimer - HOP_DURATION);
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_LAND_WAV, 4);
     MaybeBounce();
   } else if (mStateTimer == HOP_DURATION) {
     Land(mSprite->mDirection);
     mStateTimer++;
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_LAND_WAV, 4);
     MaybeBounce();
   } else {
     mSprite->vx *= 1 - HOP_FRICTION;
@@ -803,7 +814,7 @@ TBool GFinalBossProcess::ProjectileState() {
     TFloat xx = mSprite->x + 48,
            yy = mSprite->y;
     // fire 10 projectiles in a circle pattern with the boss in the center
-    for (TFloat angle = 0; angle < 360; angle += 360 / 10) {
+    for (TInt16 angle = 0; angle < 360; angle += 360 / 10) {
       mGameState->AddProcess(new GFinalBossProjectileProcess(mGameState, xx, yy, angle, type));
     }
     SetState(STATE_IDLE, mDirection);
