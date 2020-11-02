@@ -71,7 +71,8 @@ TBool GItemProcess::RunAfter() {
       return EFalse;
     }
     mGameState->AddProcess(new GStatProcess(STAT_INFO, mSprite->Center(),
-                                        mSprite->mImageNumber, FRAMES_PER_SECOND, itemNames[mItemNumber]));
+                                        mSprite->mImageNumber, FRAMES_PER_SECOND, ""));
+//                                        mSprite->mImageNumber, FRAMES_PER_SECOND, "itemNames[mItemNumber]"));
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
