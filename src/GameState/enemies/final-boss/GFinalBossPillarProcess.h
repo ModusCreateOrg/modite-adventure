@@ -4,10 +4,11 @@
 #include "GProcess.h"
 #include "GAnchorSprite.h"
 #include "GGameState.h"
+#include "GFinalBossPillarSprite.h"
 
 class GFinalBossPillarProcess : public GProcess {
 public:
-  GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot, TBool aFollowPlayer, TInt aStartDelay);
+  GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement, TBool aFollowPlayer, TInt aStartDelay);
   ~GFinalBossPillarProcess() OVERRIDE;
 
 public:
@@ -20,6 +21,7 @@ protected:
   TUint16 mFrame;
   TUint16 mStartDelay;
   TBool mFollowPlayer;
+  GFinalBossPillarSprite *mSprite;
 
 };
 

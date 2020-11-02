@@ -13,12 +13,15 @@
 #undef DEBUGME
 
 enum {
+  STATE_INITIALIZE,
   STATE_IDLE,
   STATE_WALK,
+  STATE_CHARGE,
+  STATE_LEAP,
   STATE_PROJECTILE,
-  STATE_TELEPORT,
-  STATE_HIT,
-  STATE_SPELL,
+  STATE_PILLAR,
+  STATE_STUN,
+  STATE_RESET_SHIELD,
   STATE_DEATH,
 };
 
@@ -33,13 +36,57 @@ static const char *direction_names[] = {
 #endif
 
 const TFloat WALK_VELOCITY = 1.4;
+const TFloat CHARGE_VELOCITY = 2 * PLAYER_VELOCITY;
 const TInt HIT_SPAM_TIME = 2 * FRAMES_PER_SECOND;
+const TInt INITIALIZE_HEALTH_RATE = 20 / FACTOR;
+const TInt HOP_DURATION = FRAMES_PER_SECOND / 4;
+const TFloat HOP_FRICTION = 0.2 / TFloat(FACTOR);
+const TInt16 LEAP_DURATION = FRAMES_PER_SECOND;
+const TInt16 STUN_DURATION = 3.0 * FRAMES_PER_SECOND;
+const TInt16 NORMAL_ATTACK_INTERVAL = 5.0 * FRAMES_PER_SECOND;
+const TInt16 LAST_PHASE_ATTACK_INTERVAL = 2.0 * FRAMES_PER_SECOND;
 
 const TInt16 WALK_SPEED = 10;
 const TInt16 PROJECTILE_SPEED = 30;
 const TInt16 HIT_SPEED = 5;
 const TInt16 IDLE_SPEED = 1;
+const TInt16 INITIALIZE_SPEED = 20;
 const TInt16 ATTACK_SPEED = 5;
+const TInt BLINK_DURATION = FRAMES_PER_SECOND / 4;
+
+enum {
+  CHARGE_ATTACK,
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  PILLAR_ATTACK,
+};
+
+static TInt8 phaseOneAttacks[] = {
+  PROJECTILE_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  -1, // sentinel value
+};
+
+static TInt8 phaseTwoAttacks[] = {
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  LEAP_ATTACK,
+  CHARGE_ATTACK,
+  PROJECTILE_ATTACK,
+  -1,
+};
+
+static TInt8 phaseThreeAttacks[] = {
+  PILLAR_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  PILLAR_ATTACK,
+  LEAP_ATTACK,
+  PROJECTILE_ATTACK,
+  CHARGE_ATTACK,
+  -1,
+};
 
 static ANIMSCRIPT deathAnimation[] = {
   ABITMAP(BOSS_SLOT),
@@ -47,24 +94,60 @@ static ANIMSCRIPT deathAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT hitAnimation[] = {
+static ANIMSCRIPT stunAnimation[] = {
   ABITMAP(BOSS_SLOT),
-
-  AFILL(COLOR_TEXT),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(-1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  AFLIP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(COLOR_TEXT),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  AFLIP(HIT_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
   ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  AFILL(-1),
-  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
-
-  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 2),
+  ASTEP1(IMG_FINAL_BOSS_SPELL_START),
   AEND,
+};
+
+static ANIMSCRIPT recoverAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(HIT_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, 0),
+  ASTEP(HIT_SPEED * 4, IMG_FINAL_BOSS_IDLE + 1),
+  AEND,
+};
+
+static ANIMSCRIPT spellFireAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 1),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 2),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 3),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 4),
+  AEND,
+};
+
+static ANIMSCRIPT initializeAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ALABEL,
+  ADELTA(0, 0),
+  ASTEP(INITIALIZE_SPEED * 4, IMG_FINAL_BOSS_SPELL_START),
+  ADELTA(0, -2),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ADELTA(0, 0),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
+  ASTEP(INITIALIZE_SPEED, IMG_FINAL_BOSS_SPELL_START),
+  ALOOP,
 };
 
 static ANIMSCRIPT idleDownAnimation[] = {
@@ -126,39 +209,55 @@ static ANIMSCRIPT walkRightAnimation2[] = {
   AEND,
 };
 
-static ANIMSCRIPT projectileAnimation[] = {
+static ANIMSCRIPT landUpAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_UP + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_FINAL_BOSS_WALK_UP + 1),
   AEND,
 };
 
-static ANIMSCRIPT teleportAnimation1[] = {
+static ANIMSCRIPT landDownAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_FINAL_BOSS_WALK_DOWN + 1),
   AEND,
 };
 
-static ANIMSCRIPT teleportAnimation2[] = {
+static ANIMSCRIPT landLeftAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
+  ADELTA(0, 2),
+  AFLIP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  AFLIP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 2),
+  AFLIP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  AFLIP(WALK_SPEED * 5, IMG_FINAL_BOSS_WALK_RIGHT + 1),
   AEND,
 };
 
-static ANIMSCRIPT teleportAnimation3[] = {
+static ANIMSCRIPT landRightAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 2),
+  ASTEP(WALK_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 1),
+  ADELTA(0, 0),
+  ASTEP(WALK_SPEED * 5, IMG_FINAL_BOSS_WALK_RIGHT + 1),
   AEND,
 };
 
@@ -238,46 +337,25 @@ static ANIMSCRIPT waterProjectileAnimation[] = {
   AEND,
 };
 
-static ANIMSCRIPT fireDownAnimation[] = {
-  ABITMAP(BOSS_SLOT),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AEND,
-};
-
-static ANIMSCRIPT fireLeftAnimation[] = {
-  ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  AEND,
-};
-
-static ANIMSCRIPT fireRightAnimation[] = {
-  ABITMAP(BOSS_SLOT),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_DOWN + 0),
-  AFLIP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_UP + 0),
-  ASTEP(PROJECTILE_SPEED, IMG_FINAL_BOSS_WALK_RIGHT + 0),
-  AEND,
-};
-
 static ANIMSCRIPT* walkAnimations1[] = {walkUpAnimation1, walkDownAnimation1, walkLeftAnimation1, walkRightAnimation1};
 static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, walkLeftAnimation2, walkRightAnimation2};
+static ANIMSCRIPT* landAnimations[] = {landUpAnimation, landDownAnimation, landLeftAnimation, landRightAnimation};
 
 // constructor
 GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt aIp, TInt16 aParams)
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
-  mSprite->StartAnimation(idleDownAnimation);
+  mSprite->StartAnimation(initializeAnimation);
+  mSprite->h = 32;
+  mSprite->cy = 8;
+  mSprite->ResetShadow();
   mHitTimer = HIT_SPAM_TIME;
-  mAttackType = EFalse;
+  mAttackIndex = 0;
   SetAttackTimer();
-  SetState(STATE_IDLE, DIRECTION_DOWN);
-};
+  SetStatMultipliers(10.0, 2.0, 0.0);
+  mState = STATE_INITIALIZE;
+  mShieldProcess = ENull;
+}
 
 // destructor
 GFinalBossProcess::~GFinalBossProcess() {
@@ -286,29 +364,62 @@ GFinalBossProcess::~GFinalBossProcess() {
 #endif
 }
 
+void GFinalBossProcess::RaiseShield() {
+  if (mShieldProcess) {
+    LowerShield();
+  }
+  mShieldProcess = new GFinalBossShieldProcess(mGameState, ELEMENT_FIRE);
+  mGameState->AddProcess(mShieldProcess);
+  mShieldProcess->UpdateCenter(mSprite->Center());
+}
+
+void GFinalBossProcess::LowerShield() {
+  if (mShieldProcess) {
+    mShieldProcess->KillShield();
+    mShieldProcess = ENull;
+  }
+}
+
+void GFinalBossProcess::SetAttackTimer() {
+  if (mCurrentHealthBar == 1) {
+    mAttackTimer = LAST_PHASE_ATTACK_INTERVAL;
+  } else {
+    mAttackTimer = NORMAL_ATTACK_INTERVAL;
+  }
+}
+
 void GFinalBossProcess::Idle(DIRECTION aDirection) {
-  aDirection = aDirection;
-  mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(idleDownAnimation);
-  mStateTimer = 2 * 60;
 }
 
 void GFinalBossProcess::Walk(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mDirection = aDirection;
-  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
   mSprite->MoveInDirection(WALK_VELOCITY, aDirection);
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
+  mStep = !mStep;
 }
 
-void GFinalBossProcess::Projectile(DIRECTION aDirection) {
+void GFinalBossProcess::Charge(DIRECTION aDirection) {
+  mSprite->StartAnimationInDirection(mStep ? walkAnimations2 : walkAnimations1, aDirection);
+  mStep = !mStep;
+}
+
+void GFinalBossProcess::Leap(DIRECTION aDirection) {
+  mSprite->StartAnimationInDirection(landAnimations, aDirection);
+}
+
+void GFinalBossProcess::Land(DIRECTION aDirection) {
+  mSprite->StartAnimationInDirection(landAnimations, aDirection);
+}
+
+void GFinalBossProcess::Projectile() {
   mSprite->vx = mSprite->vy = 0;
-  mDirection = aDirection;
-  switch (aDirection) {
+  switch (Random(0, 3)) {
     case 0:
 #ifdef DEBUGME
       printf("earthProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(earthProjectileAnimation);
+      mSprite->mElement = ELEMENT_EARTH;
       break;
     case 1:
 #ifdef DEBUGME
@@ -316,18 +427,21 @@ void GFinalBossProcess::Projectile(DIRECTION aDirection) {
 #endif
 
       mSprite->StartAnimation(waterProjectileAnimation);
+      mSprite->mElement = ELEMENT_WATER;
       break;
     case 2:
 #ifdef DEBUGME
       printf("fireProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(fireProjectileAnimation);
+      mSprite->mElement = ELEMENT_FIRE;
       break;
     case 3:
 #ifdef DEBUGME
       printf("energyProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(energyProjectileAnimation);
+      mSprite->mElement = ELEMENT_ENERGY;
       break;
     default:
 #ifdef DEBUGME
@@ -335,27 +449,12 @@ void GFinalBossProcess::Projectile(DIRECTION aDirection) {
 #endif
 
       mSprite->StartAnimation(earthProjectileAnimation);
+      mSprite->mElement = ELEMENT_EARTH;
       break;
   }
 }
 
-void GFinalBossProcess::Teleport(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(teleportAnimation1);
-  mStep = 0;
-  mInvulnerable = ETrue;
-}
-
-void GFinalBossProcess::Hit(DIRECTION aDirection) {
-  mDirection = aDirection;
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
-}
-
 void GFinalBossProcess::Spell(DIRECTION aDirection) {
-  mSprite->vx = mSprite->vy = 0;
-  mSprite->StartAnimation(hitAnimation);
-  mSpellCounter++;
   auto *p = new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y + 1, 0, 0, 0);
   mGameState->AddProcess(p);
 }
@@ -384,25 +483,42 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
   mDirection = aNewDirection;
   switch (aNewState) {
     case STATE_IDLE:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = 2 * 60;
+      SetAttackTimer();
       Idle(mDirection);
       break;
     case STATE_WALK:
       Walk(mDirection);
       break;
+    case STATE_CHARGE:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = -FRAMES_PER_SECOND;
+      Charge(mDirection);
+      break;
+    case STATE_LEAP:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = -1;
+      Leap(mDirection);
+      break;
     case STATE_PROJECTILE:
-      Projectile(mDirection);
+    case STATE_PILLAR:
+      Projectile();
+      mStateTimer = 0;
       break;
-    case STATE_TELEPORT:
-      Teleport(mDirection);
+    case STATE_STUN:
+      mSprite->vx = mSprite->vy = 0;
+      mStateTimer = -STUN_DURATION;
+      mSprite->StartAnimation(stunAnimation);
       break;
-    case STATE_HIT:
-      Hit(mDirection);
-      break;
-    case STATE_SPELL:
-      Spell(mDirection);
+    case STATE_RESET_SHIELD:
+      mSprite->StartAnimation(spellFireAnimation);
       break;
     case STATE_DEATH:
       Death(mDirection);
+      break;
+    default:
+      Panic("invalid state");
       break;
   }
 }
@@ -414,20 +530,30 @@ TBool GFinalBossProcess::MaybeHit() {
       printf("FINAL BOSS DEATH\n");
     }
 #endif
-    SetState(STATE_SPELL, mSprite->mDirection);
+    Spell(mDirection);
     return ETrue;
   }
 
-  if (BasicDamageCheck()) {
-    SetState(STATE_HIT, GAnchorSprite::RotateDirection(mSprite->mCollided.direction, 2));
+  if (!mShieldProcess && BasicDamageCheck()) {
+    if (mState != STATE_STUN && mState != STATE_RESET_SHIELD) {
+      SetState(STATE_STUN, mSprite->mDirection);
+      return ETrue;
+    }
+  }
+
+  if (mHitPoints <= 0) {
+    if (mCurrentHealthBar > 1) {
+      mCurrentHealthBar--;
+      mHitPoints = mMaxHitPoints;
+      mAttackIndex = 0;
+      SetState(STATE_IDLE, mSprite->mDirection);
+    } else {
+      SetState(STATE_DEATH, mSprite->mDirection);
+    }
     return ETrue;
   }
 
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
-    mSprite->Nudge();
-    return ETrue;
-  }
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
 
   return EFalse;
 }
@@ -438,14 +564,88 @@ TBool GFinalBossProcess::MaybeAttack() {
     printf("Attack! %s\n", mAttackType ? "TELEPORT" : "PROJECTILE");
 #endif
     //    SetState(STATE_TELEPORT, mDirection);
-    SetState(mAttackType ? STATE_TELEPORT : STATE_PROJECTILE, mDirection);
-    mAttackType = !mAttackType;
+    auto *attackSet = mCurrentHealthBar == 4 ? phaseOneAttacks :
+                      mCurrentHealthBar == 3 ? phaseTwoAttacks :
+                                               phaseThreeAttacks;
+    if (attackSet[mAttackIndex] < 0) {
+      mAttackIndex = 0;
+    }
+    switch (attackSet[mAttackIndex]) {
+      case CHARGE_ATTACK:
+        SetState(STATE_CHARGE, mDirection);
+        break;
+      case LEAP_ATTACK:
+        SetState(STATE_LEAP, mDirection);
+        break;
+      case PROJECTILE_ATTACK:
+        SetState(STATE_PROJECTILE, mDirection);
+        break;
+      case PILLAR_ATTACK:
+        SetState(STATE_PILLAR, mDirection);
+        break;
+      default:
+        Panic("Invalid attack %d", attackSet[mAttackIndex]);
+    }
+    mAttackIndex++;
+
     return ETrue;
   }
   return EFalse;
 }
 
+TBool GFinalBossProcess::MaybeBounce() {
+  TFloat vx = mSprite->vx, vy = mSprite->vy;
+  TBool bouncedX = EFalse, bouncedY = EFalse;
+
+  if (vx > 0 ? !mSprite->CanWalkInDirection(DIRECTION_RIGHT, vx, vy) :
+      !mSprite->CanWalkInDirection(DIRECTION_LEFT, vx, vy)) {
+    mSprite->vx = -vx;
+    bouncedX = ETrue;
+    mSprite->x = mSprite->mLastX;
+  }
+
+  if (vy > 0 ? !mSprite->CanWalkInDirection(DIRECTION_DOWN, vx, vy) :
+      !mSprite->CanWalkInDirection(DIRECTION_UP, vx, vy)) {
+    mSprite->vy = -vy;
+    bouncedY = ETrue;
+    mSprite->y = mSprite->mLastY;
+  }
+
+  if (bouncedX || bouncedY) {
+    gSoundPlayer.TriggerSfx(SFX_MIDBOSS_BOUNCE_WALL_WAV, 4);
+  }
+
+  return bouncedX || bouncedY;
+}
+
+TBool GFinalBossProcess::InitializeState() {
+  if (!mShieldProcess) {
+    RaiseShield();
+    return ETrue;
+  }
+  mHitPoints += INITIALIZE_HEALTH_RATE;
+  if (mHitPoints > mMaxHitPoints) {
+    if (mHealthBarCount < 4) {
+      mHitPoints = 0;
+      mHealthBarCount++;
+      mCurrentHealthBar++;
+    } else {
+      mHitPoints = mMaxHitPoints;
+      SetState(STATE_IDLE, DIRECTION_DOWN);
+    }
+  }
+
+  return ETrue;
+}
+
 TBool GFinalBossProcess::IdleState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+  if (!mShieldProcess) {
+    SetState(STATE_RESET_SHIELD, DIRECTION_DOWN);
+    return ETrue;
+  }
   if (MaybeAttack()) {
     return ETrue;
   }
@@ -476,6 +676,102 @@ TBool GFinalBossProcess::WalkState() {
     mStep = 1 - mStep;
     Walk(mDirection);
   }
+  return ETrue;
+}
+
+TBool GFinalBossProcess::ChargeState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer < 0) {
+    mStateTimer++;
+    TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+      yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+    DIRECTION direction = GAnchorSprite::VectorToDirection(xx, yy);
+    if (mSprite->AnimDone() || mSprite->mDirection != direction) {
+      mSprite->mDirection = direction;
+      Charge(direction);
+    }
+    if (mStateTimer == 0) {
+      mSprite->vx = CHARGE_VELOCITY * xx / hypot(xx, yy);
+      mSprite->vy = CHARGE_VELOCITY * yy / hypot(xx, yy);
+      mSprite->type = STYPE_EBULLET;
+    }
+  } else if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      Charge(mSprite->mDirection);
+    }
+    if (MaybeBounce()) {
+      mStateTimer++;
+      mSprite->vx *= WALK_VELOCITY / CHARGE_VELOCITY;
+      mSprite->vy *= WALK_VELOCITY / CHARGE_VELOCITY;
+      LowerShield();
+    }
+    if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
+      SetState(STATE_IDLE, mSprite->mDirection);
+    }
+  } else if (mStateTimer < HOP_DURATION) {
+    mStateTimer++;
+    mSprite->mDy = GRAVITY * .5 * mStateTimer * (mStateTimer - HOP_DURATION);
+    MaybeBounce();
+  } else if (mStateTimer == HOP_DURATION) {
+    Land(mSprite->mDirection);
+    mStateTimer++;
+    MaybeBounce();
+  } else {
+    mSprite->vx *= 1 - HOP_FRICTION;
+    mSprite->vy *= 1 - HOP_FRICTION;
+    if (mSprite->AnimDone()) {
+      SetState(STATE_IDLE, mSprite->mDirection);
+    }
+    MaybeBounce();
+  }
+
+  mSprite->ClearCType(STYPE_PLAYER);
+
+  return ETrue;
+}
+
+TBool GFinalBossProcess::LeapState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer < 0) {
+    TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+      yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+    mDirection = GAnchorSprite::VectorToDirection(xx, yy);
+    Leap(mDirection);
+    mStateTimer++;
+  } else if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      TFloat xx = GPlayer::mSprite->Center().x - mSprite->Center().x,
+        yy = GPlayer::mSprite->Center().y - mSprite->Center().y;
+      mSprite->vx = xx / LEAP_DURATION;
+      mSprite->vy = yy / LEAP_DURATION;
+      mSprite->ClearFlags(SFLAG_CHECK);
+      LowerShield();
+      mStateTimer++;
+    }
+  } else if (mStateTimer < LEAP_DURATION) {
+    mSprite->mDy = GRAVITY * TFloat(mStateTimer) * (TFloat(mStateTimer) - LEAP_DURATION);
+    if (!mSprite->CanWalk(mSprite->vx, mSprite->vy, true)) {
+      mSprite->vx = mSprite->vy = 0;
+    }
+    mStateTimer++;
+  } else if (mStateTimer == LEAP_DURATION) {
+    mSprite->mDy = 0;
+    mSprite->SetFlags(SFLAG_CHECK);
+    mSprite->vx = mSprite->vy = 0;
+    Land(mDirection);
+    mStateTimer++;
+  } else {
+    if (mSprite->AnimDone()) {
+      SetState(STATE_IDLE, DIRECTION_DOWN);
+    }
+  }
+
   return ETrue;
 }
 
@@ -510,153 +806,71 @@ TBool GFinalBossProcess::ProjectileState() {
     for (TFloat angle = 0; angle < 360; angle += 360 / 10) {
       mGameState->AddProcess(new GFinalBossProjectileProcess(mGameState, xx, yy, angle, type));
     }
-    SetAttackTimer();
     SetState(STATE_IDLE, mDirection);
   }
   return ETrue;
 }
 
-TBool GFinalBossProcess::TeleportState() {
-  // check to see if boss has met a wall
-  TBool canWalkUp = mSprite->CanWalkInDirection(DIRECTION_UP, mSprite->vx, mSprite->vy),
-        canWalkLt = mSprite->CanWalkInDirection(DIRECTION_LEFT, mSprite->vx, mSprite->vy),
-        canWalkRt = mSprite->CanWalkInDirection(DIRECTION_RIGHT, mSprite->vx, mSprite->vy),
-        canWalkDn = mSprite->CanWalkInDirection(DIRECTION_DOWN, mSprite->vx, mSprite->vy);
-
-  // Bound around the room while the player is being attacked by the spikes/pillars
-  if (!canWalkUp) {
-#ifdef DEBUGME
-    printf("%s can't walk up\n", mSprite->Name());
-#endif
-    mSprite->vy *= -1;
-  }
-  else if (!canWalkDn) {
-#ifdef DEBUGME
-    printf("%s can't walk down\n", mSprite->Name());
-#endif
-    mSprite->vy *= -1;
-  }
-
-  if (!canWalkLt) {
-#ifdef DEBUGME
-    printf("%s can't walk left\n", mSprite->Name());
-#endif
-    mSprite->vx *= -1;
-  }
-  else if (!canWalkRt) {
-#ifdef DEBUGME
-    printf("%s can't walk right\n", mSprite->Name());
-#endif
-    mSprite->vx *= -1;
-  }
-
-  if (!mSprite->AnimDone()) {
+TBool GFinalBossProcess::PillarState() {
+  if (MaybeHit()) {
     return ETrue;
   }
 
-#ifdef DEBUGME
-  printf("%s teleport animation done\n", mSprite->Name());
-#endif
-  if (!mStep) {
-#ifdef DEBUGME
-    printf("%s start teleport animation 2\n", mSprite->Name());
-#endif
-    mSprite->StartAnimation(teleportAnimation2);
-    mSprite->ClearFlags(SFLAG_RENDER | SFLAG_CHECK); // Let's not hit the player.
-    mStep++;
-
-    //    int nTries = 0;
-    while (mSprite->vx == 0) {
-      //      nTries ++;
-      mSprite->vx = (TFloat)Random(-3, 3);
+  if (mStateTimer == 0) {
+    if (mSprite->AnimDone()) {
+      mStateTimer++;
     }
-    //    printf("nTries VX = %i\n", nTries);
-
-    //    nTries = 0;
-    while (mSprite->vy == 0) {
-      //      nTries++;
-      mSprite->vy = (TFloat)Random(-3, 3);
-    }
-    //    printf("nTries VX = %i\n", nTries);
-
-    // spawn pillars
-    TInt type = ATTR_FINAL_BOSS_EARTH + Random(0, 3);
-    TInt16 slot = EARTH_FINAL_BOSS_PILLAR_SLOT + Random(0, 3);
-    for (TInt n = 0; n < 8; n++) {
-      // Follows Player if water or fire
-      if (type == ATTR_FINAL_BOSS_WATER || type == ATTR_FINAL_BOSS_FIRE) {
-        mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, slot, ETrue, (n * 30)));
-      }
-      else {
-        TInt pillarX = mSprite->x + Random(-64, 64),
-             pillarY = mSprite->y + Random(-64, 64);
-
-        mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, pillarX, pillarY, slot, EFalse, 0));
-      }
-    }
-
     return ETrue;
   }
-  else if (mStep == 1 && --mStateTimer < 1) {
-#ifdef DEBUGME
-    printf("%s start teleport animation 3\n", mSprite->Name());
-#endif
-    mState++;
-    mSprite->StartAnimation(teleportAnimation3);
-    mSprite->vx = mSprite->vy = 0;
-    mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
+
+  // spawn pillars
+  for (TInt n = 0; n < 8; n++) {
+    // Follows Player if water or fire
+    if (mSprite->mElement == ELEMENT_WATER || mSprite->mElement == ELEMENT_FIRE) {
+      mGameState->AddProcess(
+        new GFinalBossPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, mSprite->mElement, ETrue,
+                                    (n * 30)));
+    } else {
+      TPoint p = mSprite->Center();
+      p.Offset(Random(-64, 64), Random(-64, 64));
+
+      mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+    }
   }
-  else {
-#ifdef DEBUGME
-    printf("%s start teleport invisible\n", mSprite->Name());
-#endif
-    mSprite->SetFlags(SFLAG_RENDER | SFLAG_CHECK);
-    SetAttackTimer();
-    SetState(STATE_IDLE, mDirection);
+  SetState(STATE_IDLE, mDirection);
+
+  return ETrue;
+}
+
+TBool GFinalBossProcess::StunState() {
+  if (MaybeHit()) {
+    return ETrue;
+  }
+
+  if (mStateTimer < 0) {
+    mStateTimer++;
+  } else if (mStateTimer == 0) {
+    mSprite->StartAnimation(recoverAnimation);
+    mStateTimer++;
+  } else if (mStateTimer == 1) {
+    if (mSprite->AnimDone()) {
+      SetState(STATE_RESET_SHIELD, DIRECTION_DOWN);
+    }
   }
 
   return ETrue;
 }
 
-TBool GFinalBossProcess::HitState() {
-  if (mSprite->TestCType(STYPE_PLAYER)) {
-    mSprite->ClearCType(STYPE_PLAYER);
-    mSprite->Nudge();
-  }
-
-  if (mHitTimer < 0) {
-    mHitTimer = HIT_SPAM_TIME;
-    mInvulnerable = EFalse;
-    mSprite->ClearCType(STYPE_PBULLET);
-    // TODO @michaeltintiuc fix this
-    SetState(STATE_TELEPORT, DIRECTION_DOWN);
+TBool GFinalBossProcess::ResetShieldState() {
+  if (MaybeHit()) {
+    return ETrue;
   }
 
   if (mSprite->AnimDone()) {
-    if (mHitPoints <= 0) {
-      SetState(STATE_DEATH, mSprite->mDirection);
-    }
-    else {
-      mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      SetState(STATE_IDLE, mSprite->mDirection);
-    }
+    RaiseShield();
+    SetState(STATE_IDLE, DIRECTION_DOWN);
   }
 
-  return ETrue;
-}
-
-TBool GFinalBossProcess::SpellState() {
-  if (mSprite->AnimDone() && mSpellCounter <= 0) {
-    if (mHitPoints <= 0) {
-      SetState(STATE_DEATH, mSprite->mDirection);
-    }
-    else {
-      mInvulnerable = EFalse;
-      mSprite->ClearCType(STYPE_PBULLET);
-      SetState(STATE_IDLE, mSprite->mDirection);
-    }
-  }
   return ETrue;
 }
 
@@ -671,18 +885,24 @@ TBool GFinalBossProcess::DeathState() {
 
 TBool GFinalBossProcess::RunBefore() {
   switch (mState) {
+    case STATE_INITIALIZE:
+      return InitializeState();
     case STATE_IDLE:
       return IdleState();
     case STATE_WALK:
       return WalkState();
+    case STATE_CHARGE:
+      return ChargeState();
+    case STATE_LEAP:
+      return LeapState();
     case STATE_PROJECTILE:
       return ProjectileState();
-    case STATE_TELEPORT:
-      return TeleportState();
-    case STATE_HIT:
-      return HitState();
-    case STATE_SPELL:
-      return SpellState();
+    case STATE_PILLAR:
+      return PillarState();
+    case STATE_STUN:
+      return StunState();
+    case STATE_RESET_SHIELD:
+      return ResetShieldState();
     case STATE_DEATH:
       return DeathState();
     default:
@@ -693,5 +913,8 @@ TBool GFinalBossProcess::RunBefore() {
 
 TBool GFinalBossProcess::RunAfter() {
   UpdateBlink();
+  if (mShieldProcess) {
+    mShieldProcess->UpdateCenter(mSprite->Center());
+  }
   return ETrue;
 }
