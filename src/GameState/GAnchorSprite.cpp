@@ -26,8 +26,7 @@ GAnchorSprite::GAnchorSprite(GGameState *aGameState, TInt aPri, TUint16 aBM, TUi
   mCollided = GCollidedData();
   mShadow = TRect();
   mElement = ELEMENT_NONE;
-  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 38, 35, 58);
-
+  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 0x23, 0x28, 0x26);
 }
 
 GAnchorSprite::~GAnchorSprite() = default;
@@ -165,6 +164,7 @@ void GAnchorSprite::ResetShadow() {
 TBool GAnchorSprite::Render(BViewPort *aViewPort) {
   TBool ret, overrideClipped = EFalse;
   BBitmap &bm = *gDisplay.renderBitmap;
+
   if (TestFlags(SFLAG_RENDER_SHADOW) && TestFlags(SFLAG_RENDER)) {
     if (mShadow.x1 == 0 && mShadow.x2 == 0 && mShadow.y1 == 0 && mShadow.y2 == 0) {
       ResetShadow();
