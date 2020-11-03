@@ -4,11 +4,10 @@
 #define FRAME_RATE_INFO 0
 #undef FRAME_RATE_INFO
 
-#define ENABLE_AUDIO
-#undef ENABLE_AUDIO
-
 #define ENABLE_OPTIONS
 // #undef ENABLE_OPTIONS
+
+#define ENABLE_AUDIO
 
 // Debug mode
 #define DEBUG_MODE

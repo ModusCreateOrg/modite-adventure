@@ -3,8 +3,8 @@
 #include "GResources.h"
 #include "Memory.h"
 
-#define DISABLE_AUDIO
-#undef DISABLE_AUDIO
+//#define DISABLE_AUDIO
+//#undef DISABLE_AUDIO
 
 
 GSoundPlayer gSoundPlayer;
