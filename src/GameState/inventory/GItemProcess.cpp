@@ -81,8 +81,10 @@ TBool GItemProcess::RunAfter() {
     if (mIp != -1) {
       mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     }
-    
+
+#ifdef DEBUGME
     GPlayer::mInventoryList.Dump();
+#endif
     gSoundPlayer.SfxItemPickupGeneric();
 
     return EFalse;

@@ -100,7 +100,7 @@ TBool GDoorProcess::RunBefore() {
   // check inventory for key
   if (group && group != OA_GROUP_ITEM && mGameState->mGamePlayfield->mGroupDone[group]) {
     // open door
-    printf("door open group %d\n", group);
+//    printf("door open group %d\n", group);
     gSoundPlayer.TriggerSfx(SFX_DOOR_OPEN_GROUP_WAV, 5);
     ClearWall();
     mGameState->EndProgram(mIp);

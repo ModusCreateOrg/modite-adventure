@@ -147,7 +147,9 @@ static ANIMSCRIPT* walkAnimations2[] = {walkUpAnimation2, walkDownAnimation2, wa
 // constructor
 GWizardProcess::GWizardProcess(GGameState *aGameState, TFloat aX, TFloat aY, TUint16 aSlot, TInt aIp, TInt aType, TUint16 aAttribute, TUint16 aSpriteSheet)
     : GBossProcess(aGameState, aX, aY, aSlot, aAttribute) {
+#ifdef DEBUGME
   printf("GWizardProcess(attribute: %d/$%x)\n", aAttribute, aAttribute);
+#endif
   mSlot = aSlot;
   mIp = aIp;
   mType = aType;
@@ -244,7 +246,9 @@ void GWizardProcess::Walk(DIRECTION aDirection) {
 }
 
 void GWizardProcess::Projectile() {
+#ifdef DEBUGME
   printf("Projectile\n");
+#endif
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(projectileAnimation1);
   mStep = 0;
@@ -254,7 +258,9 @@ void GWizardProcess::Projectile() {
 }
 
 void GWizardProcess::Pillar() {
+#ifdef DEBUGME
   printf("Pillar\n");
+#endif
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(channelingAnimation);
   mChanneling = ETrue;
@@ -267,14 +273,18 @@ void GWizardProcess::Pillar() {
 }
 
 void GWizardProcess::Teleport() {
+#ifdef DEBUGME
   printf("Teleport\n");
+#endif
   mSprite->vx = mSprite->vy = 0;
   mSprite->StartAnimation(teleportAnimation1);
   mStep = 0;
 }
 
 void GWizardProcess::Illusion() {
+#ifdef DEBUGME
   printf("Illusion\n");
+#endif
   mSprite->vx = mSprite->vy = 0;
   for (TInt i = 0; i < 8; i++) {
     RandomLocation();
@@ -299,7 +309,9 @@ void GWizardProcess::Death() {
   //  r.Dump();
   mDeathCounter = 10;
   for (TInt delay = 0; delay < mDeathCounter; delay++) {
+#ifdef DEBUGME
     printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
+#endif
     auto *p = new GWizardDeathProcess(mGameState, this, r.x1, r.y1 - 48, delay);
     mGameState->AddProcess(p);
   }
@@ -363,7 +375,9 @@ TBool GWizardProcess::MaybeDamage() {
 
 TBool GWizardProcess::MaybeAttack() {
   if (!mGameState->IsGameOver() && --mAttackTimer < 0) {
+#ifdef DEBUGME
     printf("Attack!\n");
+#endif
     SetState(Random() & 1u ? STATE_PROJECTILE : STATE_PILLAR, mDirection);
     return ETrue;
   }
@@ -372,7 +386,9 @@ TBool GWizardProcess::MaybeAttack() {
 
 TBool GWizardProcess::MaybeDeath() {
   if (mHitPoints <= 0) {
+#ifdef DEBUGME
     printf("WIZARD DEATH\n");
+#endif
     SetState(STATE_DEATH, mDirection);
     return ETrue;
   }

@@ -4,7 +4,7 @@
 #include "GStatProcess.h"
 
 GItemWidget::GItemWidget(TInt aItem, BGameEngine *aState) : GButtonWidget("") {
-  printf("aItem = %i \n", aItem);
+//  printf("aItem = %i \n", aItem);
   mItem = aItem;
   mState = aState;
 
@@ -57,7 +57,9 @@ void GItemWidget::Run() {
       }
       mText = strdup(s);
     }
+#ifdef DEBUGME
     GPlayer::mInventoryList.Dump();
+#endif
 #ifdef ENABLE_AUDIO
     gSoundPlayer.SfxMenuIn();
 #endif
@@ -65,7 +67,9 @@ void GItemWidget::Run() {
 }
 
 void GItemWidget::Select() {
+#ifdef DEBUGME
   printf("ADD mItem %i\n", mItem);
+#endif
   mState->AddProcess(new GStatProcess(STAT_INFO, GPlayer::mSprite->Center(),
                                       items[mItem], 5 * FRAMES_PER_SECOND, itemNames[mItem]));
   GPlayer::mInventoryList.PickupItem(mItem);
@@ -75,7 +79,9 @@ void GItemWidget::Select() {
   sprintf(s,  "%02d %-18s", i->mCount, itemNames[mItem]);
   mText = strdup(s);
 
+#ifdef DEBUGME
   GPlayer::mInventoryList.Dump();
+#endif
 #ifdef ENABLE_AUDIO
   gSoundPlayer.SfxMenuIn();
 #endif
