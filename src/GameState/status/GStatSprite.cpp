@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "GStatSprite.h"
-
+#include <stdlib.h>
 GStatSprite::GStatSprite(STAT_TYPE aType, const char *aMessage, TInt aImage)
     : mMessageType(aType), mMessage(strdup(aMessage)), BSprite(0, ENVIRONMENT_SLOT, 0, STYPE_DEFAULT) {
 
@@ -9,7 +9,7 @@ GStatSprite::GStatSprite(STAT_TYPE aType, const char *aMessage, TInt aImage)
 }
 
 GStatSprite::~GStatSprite() {
-  delete[] mMessage;
+  free(mMessage);
 }
 
 TBool GStatSprite::Render(BViewPort *aViewPort) {

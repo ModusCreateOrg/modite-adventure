@@ -24,7 +24,7 @@ public:
   TBool Render(BViewPort *aViewPort) OVERRIDE;
 
 protected:
-  const char *mMessage;
+  char *mMessage;
   STAT_TYPE mMessageType;
 };
 

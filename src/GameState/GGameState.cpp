@@ -11,6 +11,7 @@
 #include "GPlayer.h"
 
 #include <BMemoryStream.h>
+#include <stdlib.h>
 
 #define DEBUGME
 //#undef DEBUGME
@@ -83,7 +84,17 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() = default;
+GGameState::~GGameState() {
+  if (mPlayfield) {
+    delete mPlayfield;
+    mPlayfield = ENull;
+  }
+
+  if (mNextGamePlayfield) {
+    delete mNextGamePlayfield;
+    mNextGamePlayfield = ENull;
+  }
+};
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -1273,7 +1284,6 @@ TBool GGameState::LoadState(const char *aGameName) {
   stream.PrintReadIndex();
 
   GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
-
   printf("\n-------- END %s--------\n", __FUNCTION__);
   return ETrue;
 }
