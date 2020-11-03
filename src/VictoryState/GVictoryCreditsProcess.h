@@ -145,7 +145,7 @@ public:
           y += CenterText8("Victor Guzman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_QA:
-          numLines = 5;
+          numLines = 6;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText16("QUALITY ASSURANCE", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Samantha Park", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -153,6 +153,7 @@ public:
           y += CenterText8("Fanny Cespedes", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Miguel Montano", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Pedro Hyvo", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Raul Dan Mocian", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_INSTRUCTIONS:
           numLines = 2;
