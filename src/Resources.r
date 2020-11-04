@@ -59,6 +59,7 @@ SPRITESHEET 32x32 projectile_arrow.bmp
 SPRITESHEET 32x32 projectile_crystal.bmp
 SPRITESHEET 64x64 enemy_death.bmp
 SPRITESHEET 64x64 crystal.bmp
+SPRITESHEET 32x32 chara_elemental_skulls.bmp
 
 #
 ### MID BOSSES

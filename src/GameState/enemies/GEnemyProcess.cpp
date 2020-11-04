@@ -27,7 +27,7 @@ GEnemyProcess::~GEnemyProcess() {
   if (GPlayer::mTargeted == mSprite) {
     GPlayer::mTargeted = ENull;
   }
-  if (mHitPoints <= 0) {
+  if (mHitPoints <= 0 && mExperienceYield > 0) {
     mGameState->AddProcess(new GStatProcess(STAT_EXPERIENCE, mSprite->Center(), "EXP +%d", mExperienceYield));
     GPlayer::AddExperience(mExperienceYield);
   }
@@ -82,9 +82,11 @@ TBool GEnemyProcess::SpellDamageCheck() {
   return ETrue;
 }
 
-void GEnemyProcess::DoDamage(TInt aStrength) {
+void GEnemyProcess::DoDamage(TInt aStrength, TBool aRandomize) {
   // Random +/- 20% damage modifier
-  aStrength = (aStrength * Random(80, 120)) / 100;
+  if (aRandomize) {
+    aStrength = (aStrength * Random(80, 120)) / 100;
+  }
 
   if (aStrength > 0) {
     mHitPoints -= aStrength;
