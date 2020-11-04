@@ -561,7 +561,7 @@ TBool GFinalBossProcess::MaybeHit() {
     return ETrue;
   }
 
-  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET | STYPE_SPELL);
 
   return EFalse;
 }
