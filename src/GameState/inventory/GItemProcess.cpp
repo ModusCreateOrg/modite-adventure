@@ -71,7 +71,8 @@ TBool GItemProcess::RunAfter() {
       return EFalse;
     }
     mGameState->AddProcess(new GStatProcess(STAT_INFO, mSprite->Center(),
-                                        mSprite->mImageNumber, FRAMES_PER_SECOND, itemNames[mItemNumber]));
+                                        mSprite->mImageNumber, FRAMES_PER_SECOND, "  "));
+//                                        mSprite->mImageNumber, FRAMES_PER_SECOND, "itemNames[mItemNumber]"));
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);
     // mark ObjectProgram at mIp that item has been picked up (don't persist it)
@@ -80,8 +81,10 @@ TBool GItemProcess::RunAfter() {
     if (mIp != -1) {
       mGameState->EndProgram(mIp, ATTR_KEEP, ATTR_GONE);
     }
-    
+
+#ifdef DEBUGME
     GPlayer::mInventoryList.Dump();
+#endif
     gSoundPlayer.SfxItemPickupGeneric();
 
     return EFalse;

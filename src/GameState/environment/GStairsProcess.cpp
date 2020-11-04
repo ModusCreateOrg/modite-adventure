@@ -121,11 +121,15 @@ TBool GStairsProcess::RunAfter() {
 
 
     if (level == 10) {
+#ifdef DEBUGME
       printf("USE STAIRS up to OVERWOLD\n");
+#endif
       mGameState->NextLevel(OVERWORLD_DUNGEON, mGameState->LastOverworldLevel());
     }
     else {
+#ifdef DEBUGME
       printf("USE STAIRS down to dungeon %d level %d\n", dungeon, level);
+#endif
       mGameState->NextLevel(dungeon == 0 ? -1 : dungeon,level);
     }
     GPlayer::mSprite->ClearCType(STYPE_OBJECT);

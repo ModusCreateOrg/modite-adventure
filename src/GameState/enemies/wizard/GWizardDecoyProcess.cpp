@@ -29,7 +29,7 @@ GWizardDecoyProcess::GWizardDecoyProcess(GGameState *aGameState, GWizardProcess 
   mSprite->h = 20;
   aGameState->AddSprite(mSprite);
   mSprite->StartAnimation(channelingAnimation);
-  printf("Decoy spawned %f, %f\n", aX, aY);
+//  printf("Decoy spawned %f, %f\n", aX, aY);
 }
 
 GWizardDecoyProcess::~GWizardDecoyProcess() {

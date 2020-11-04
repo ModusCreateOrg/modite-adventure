@@ -102,11 +102,15 @@ TBool GOverworldLevelTransitionProcess::RunAfter() {
         level = TUint16(mLevel & 0xff);
 
     if (level == 10) {
+#ifdef DEBUGME
       printf("USE Transition to OVERWOLD\n");
+#endif
       mGameState->NextLevel(OVERWORLD_DUNGEON, mGameState->LastOverworldLevel());
     }
     else {
+#ifdef DEBUGME
       printf("USE STAIRS to dungeon %d level %d\n", dungeon, level);
+#endif
       mGameState->NextLevel(dungeon == 0 ? -1 : dungeon,level);
     }
     GPlayer::mSprite->ClearCType(STYPE_OBJECT);

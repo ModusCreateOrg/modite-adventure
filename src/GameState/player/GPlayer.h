@@ -67,7 +67,7 @@ struct GEquipped {
 
 struct GPlayer {
   static void Init() {
-    printf("Init GPlayer\n");
+//    printf("Init GPlayer\n");
     mInventoryList.FullReset();
     mLevel = 1;
     mNextLevel = 100;

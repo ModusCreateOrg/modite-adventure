@@ -19,7 +19,9 @@ void GBossProcess::SpawnUniqueItem(TInt16 aIp, TInt16 aItemNumber) {
   if (GPlayer::mInventoryList.ItemCount(aItemNumber)) {
     return;
   }
+#ifdef DEBUGME
   printf("drop $%x %d\n", aItemNumber, aItemNumber);
+#endif
   GItemProcess::SpawnItem(mGameState, aIp, aItemNumber,
                           GPlayer::mSprite->x + 32, GPlayer::mSprite->y);
 }

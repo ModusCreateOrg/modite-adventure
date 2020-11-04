@@ -34,6 +34,9 @@ static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, T
   const TInt innerWidth = METER_WIDTH - 2;
 
   TInt w = (TInt)(pct *  innerWidth);
+  if (w < 2) {
+    w = 2;
+  }
 
   screen->DrawRect(vp, x, y, x + METER_WIDTH - 1, y + METER_HEIGHT - 1, COLOR_METER_OUTLINE);
   screen->DrawFastHLine(vp, x + 1, y + 1, w, color);
@@ -60,7 +63,11 @@ static void render_meter(BViewPort *vp, BBitmap *screen, TUint8 color, TInt x, T
   screen->WritePixel(x + METER_WIDTH - 2, y + METER_HEIGHT - 2, COLOR_METER_OUTLINE);
 }
 
+
+static TUint32 frame = 0;
+static TBool darkHealth = EFalse;
 void GHud::SetColors() {
+  frame = 0;
 
 //  printf("GHud::SetColors()\n");
   gDisplay.renderBitmap->SetColor(COLOR_HUD_BG, 0, 0, 0);
@@ -73,6 +80,8 @@ void GHud::SetColors() {
   gDisplay.renderBitmap->SetColor(COLOR_EXPERIENCE2, 0x2d, 0xa1, 0x2f); // dark
 }
 
+
+
 void GHud::Render() {
   BBitmap *b = gResourceManager.GetBitmap(ENVIRONMENT_SLOT),
           *screen = gDisplay.renderBitmap;
@@ -84,6 +93,31 @@ void GHud::Render() {
 
 
   screen->DrawBitmapTransparent(&vp, b, heart, 8, 0);
+
+  TFloat healthPct = (TFloat)GPlayer::mHitPoints / (TFloat)GPlayer::mMaxHitPoints;
+  frame++;
+
+  if (healthPct < .10f && frame % 30 == 0)  {
+    darkHealth = ! darkHealth;
+    if (darkHealth) {
+      gSoundPlayer.TriggerSfx(SFX_PLAYER_LOW_HEALTH_WAV, 2);
+    }
+
+  }
+
+  if (darkHealth && healthPct > .10f) {
+    darkHealth = EFalse;
+  }
+
+  if (darkHealth) {
+    gDisplay.renderBitmap->SetColor(COLOR_HEALTH, 0xf9 - 50, 0xa4 - 50, 0xa1 - 50);
+    gDisplay.renderBitmap->SetColor(COLOR_HEALTH2, 0xff - 50, 0x59 - 50, 0x43 - 50);     // dark
+  }
+  else{
+    gDisplay.renderBitmap->SetColor(COLOR_HEALTH, 0xf9, 0xa4, 0xa1);
+    gDisplay.renderBitmap->SetColor(COLOR_HEALTH2, 0xff, 0x59, 0x43);     // dark
+  }
+
   render_meter(&vp, screen, COLOR_HEALTH, 26, 2, GPlayer::mHitPoints, GPlayer::mMaxHitPoints);
 
   screen->DrawBitmapTransparent(&vp, b, magic, 91, 0);
