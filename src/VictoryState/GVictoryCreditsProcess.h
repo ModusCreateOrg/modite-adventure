@@ -5,9 +5,11 @@
 class GVictoryCreditsProcess {
 
 public:
-    TBool mAnimateCharacterIn;
+  TBool mAnimateCharacterIn;
+  TUint8 mLogoColorIndices[4]{};
+  TRGB mLogoColors[4]{};
 
-    void SetLabsForegroundIndex(TUint8 aForegroundIndex) {
+  void SetLabsForegroundIndex(TUint8 aForegroundIndex) {
     mModusLogoForegroundIdx = aForegroundIndex;
   }
   void SetLabsBackgroundIndex(TUint8 aBackgroundIndex) {
@@ -17,11 +19,12 @@ public:
   TInt16 GetText() {
     return mText;
   }
+
   GVictoryCreditsProcess(TUint8 aTextColorIndex) {
     mTextColorIndex = aTextColorIndex;
     mText  = TEXT_PREROLL;
     mState = STATE_PRE_FADEIN;
-    mColorFloor = 40;
+    mColorFloor = 45;
     mColorDivider = 80; // Higher is slower
     mColor = mColorFloor;
     mTimer = 30;
@@ -63,13 +66,34 @@ public:
     return ETrue;
   }
 
+  TInt16 RenderGameLogo() {
+    BBitmap *bm = gResourceManager.GetBitmap(BKG_SLOT);
+
+    const TRect rect = TRect(0, 0, bm->Width(), bm->Height());
+    const TInt16 x = (SCREEN_WIDTH / 2) - (bm->Width() / 2);
+    const TInt16 y = (SCREEN_HEIGHT / 2) - (bm->Height() / 2) - 40;
+
+    for (TInt8 i = 0; i < 5; i++) {
+      TFloat pct = ((TFloat)mColor / 255);
+
+      gDisplay.renderBitmap->SetColor(
+        mLogoColorIndices[i],
+        (TFloat)mLogoColors[i].r * pct,
+        (TFloat)mLogoColors[i].g * pct,
+        (TFloat)mLogoColors[i].b * pct
+      );
+    }
+
+    gDisplay.renderBitmap->DrawBitmapTransparent(ENull, bm, rect, x, y);
+    return y + bm->Height() + 10;
+  }
+
   void RenderModusLogo() {
     BBitmap *labsLogo = gResourceManager.GetBitmap(ENVIRONMENT_SLOT);
     const TRect rect = TRect(0, 0, labsLogo->Width(), labsLogo->Height());
     const TInt16 labsLogoX = (SCREEN_WIDTH / 2) - (labsLogo->Width() / 2);
     const TInt16 labsLogoY = (SCREEN_HEIGHT / 2) - (labsLogo->Height() / 2) - 20;
     gDisplay.renderBitmap->DrawBitmapTransparent(ENull, labsLogo, rect, labsLogoX, labsLogoY);
-
   }
 
   void RenderText() {
@@ -85,12 +109,10 @@ public:
           ;;
           break;
         case TEXT_GAME_TITLE:
-          y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
-          y += CenterText16("Modite Adventure", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
-          y += CenterText8("Brought to you by", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y = RenderGameLogo();
+          CenterText16("Brought to you by", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_MODUS_LABS:
-//            y = (SCREEN_HEIGHT / 2) - ((24 + (1 * 16)) / 2);
           mAnimateCharacterIn = ETrue;
           RenderModusLogo();
           break;
