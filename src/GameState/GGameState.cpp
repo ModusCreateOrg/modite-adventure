@@ -11,6 +11,7 @@
 #include "GPlayer.h"
 
 #include <BMemoryStream.h>
+#include <stdlib.h>
 
 #define DEBUGME
 #undef DEBUGME
@@ -87,7 +88,17 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() = default;
+GGameState::~GGameState() {
+  if (mPlayfield) {
+    delete mPlayfield;
+    mPlayfield = ENull;
+  }
+
+  if (mNextGamePlayfield) {
+    delete mNextGamePlayfield;
+    mNextGamePlayfield = ENull;
+  }
+};
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -379,7 +390,10 @@ void GGameState::SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY) {
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aSpawnObjects) {
   mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
 
-  strcpy(mName, aName);
+  // Valgrind "Overlap warning"
+  if (mName != aName) {
+    strcpy(mName, aName);
+  }
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
   const TUint16 exiting_level = mLevel;
@@ -1015,6 +1029,7 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
     }
     else if (aNextDungeon >= 2 && aNextDungeon <= 4) {
       song = DUNGEON1_XM;
+//      song = EMPTYSONG_XM;
     }
     else if (aNextDungeon >= 5 && aNextDungeon <= 8) {
       song = DUNGEON2_XM;

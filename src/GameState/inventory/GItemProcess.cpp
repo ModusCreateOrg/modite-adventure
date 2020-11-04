@@ -71,7 +71,7 @@ TBool GItemProcess::RunAfter() {
       return EFalse;
     }
     mGameState->AddProcess(new GStatProcess(STAT_INFO, mSprite->Center(),
-                                        mSprite->mImageNumber, FRAMES_PER_SECOND, ""));
+                                        mSprite->mImageNumber, FRAMES_PER_SECOND, "  "));
 //                                        mSprite->mImageNumber, FRAMES_PER_SECOND, "itemNames[mItemNumber]"));
 
     GPlayer::mInventoryList.PickupItem(mItemNumber);

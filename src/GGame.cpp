@@ -145,17 +145,18 @@ void GGame::ToggleInventory() {
  *******************************************************************************/
 
 void GGame::SetState(TInt aNewState, TAny *aLocalData, TUint32 aSize) {
+  if (mLocalData != ENull) {
+    delete (TUint8 *) mLocalData;
+    mLocalData = ENull;
+    mLocalDataSize = 0;
+  }
+
   mNextState = aNewState;
+
   if (aLocalData) {
-    delete (TUint8 *)mLocalData;
     mLocalDataSize = aSize;
     mLocalData = new TUint8[mLocalDataSize];
     memcpy((TUint8 *)mLocalData, (TUint8 *)aLocalData, mLocalDataSize);
-  }
-  else {
-    delete (TUint8 *)mLocalData;
-    mLocalData = ENull;
-    mLocalDataSize = 0;
   }
 }
 
@@ -182,7 +183,7 @@ TBool GGame::IsGameState() {
   if (!state) {
     return EFalse;
   }
-  GGameState *s = (GGameState *)gGameEngine;
+  auto *s = (GGameState *)gGameEngine;
   return !s->IsGameOver();
 }
 

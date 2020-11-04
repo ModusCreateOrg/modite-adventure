@@ -10,7 +10,7 @@ static const char *SAVED_GAME_STORE = "ModiteAdventure";
 class GSavedGameNode : public BNodePri {
 public:
   char *mFilename;
-  char mDisplayName[128];
+  char mDisplayName[128]{};
   TInt32 mOrdinal;
 
 public:
