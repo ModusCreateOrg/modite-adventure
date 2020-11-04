@@ -769,6 +769,20 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
         GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY TURRET");
         break;
 
+      case ATTR_ELEMENTAL_SKULL_EARTH:
+      case ATTR_ELEMENTAL_SKULL_WATER:
+      case ATTR_ELEMENTAL_SKULL_FIRE:
+      case ATTR_ELEMENTAL_SKULL_ENERGY:
+        RemapSlot(CHARA_ELEMENTAL_SKULLS_BMP, ELEMENTAL_SKULL_SLOT, IMAGE_32x32);
+        if (!aSpawnObjects) {
+          break;
+        }
+#ifdef DEBUGME
+        printf("ELEMENTAL SKULL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
+#endif
+        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
+        break;
+
         // mid boss
         // only one mid boss can be available
       case ATTR_MID_BOSS_ENERGY:
