@@ -1,11 +1,13 @@
 #include "GMidBossProcess.h"
-#include "GItemProcess.h"
 #include "GMidBossDeathProcess.h"
 #include "GPlayer.h"
 #include "common/GSpellOverlayProcess.h"
 #include "GMidBossProjectileProcess.h"
 #include "Resources.h"
 #include "GGame.h"
+
+#define DEBUGME
+#undef DEBUGME
 
 // see
 // https://github.com/ModusCreateOrg/modite-adventure/wiki/Mid-Boss-Design-Guidelines
@@ -199,7 +201,9 @@ void GMidBossProcess::NewState(TUint16 aState, DIRECTION aDirection) {
       //        r.Dump();
       mDeathCounter = 15;
       for (TInt delay = 0; delay < mDeathCounter; delay++) {
+#ifdef DEBUGME
         printf("DEATH SPRITE @ %d,%d\n", r.x1, r.x2);
+#endif
         auto *p = new GMidBossDeathProcess(mGameState, this, r.x1, r.y1 - 64, delay);
         mGameState->AddProcess(p);
       }
@@ -401,7 +405,9 @@ TBool GMidBossProcess::MoveState() {
 //  TUint32 shouldShoot = Random(1, 50) % 20;
 //  printf("mStateTimer %i\n", mStateTimer);
   if (mStateTimer % mBallAttackModulo == 0) {
+#ifdef DEBUGME
     printf("Shoot %i\n", mStateTimer);
+#endif
     auto *p = (GProcess *)new GMidBossProjectileProcess(mGameState, mSprite->x + 48, mSprite->y);
     mGameState->AddProcess(p);
     TriggerProjectileAttackSfx();
@@ -507,9 +513,11 @@ TBool GMidBossProcess::ChargeState() {
 }
 
 TBool GMidBossProcess::DeathState() {
+#ifdef DEBUGME
   if (mDeathCounter == 1) {
     printf("MID BOSS DEATH\n");
   }
+#endif
   if (mDeathCounter <= 3) {
     SpawnUniqueItem(mIp, mDropsItemAttribute);
     return EFalse;

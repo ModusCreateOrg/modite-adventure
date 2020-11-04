@@ -268,7 +268,9 @@ TBool GGruntProcess::DeathState() {
   if (mSprite->AnimDone() && !p) {
     // If we setup a key for the enemy to drop
     if (mParams) {
+#ifdef DEBUG_MODE
       printf("drop $%x %d\n", mParams, mParams);
+#endif
       GItemProcess::SpawnItem(mGameState, mIp, mParams, mSprite->x + 16, mSprite->y + 16);
       gSoundPlayer.TriggerSfx(SFX_PLAYER_QUAFF_HEALTH_POTION_WAV);
       return EFalse;
