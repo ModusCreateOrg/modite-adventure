@@ -260,6 +260,7 @@ RAW SFX_player_take_damage.wav
 RAW SFX_player_death.wav
 RAW SFX_player_parry_projectile.wav
 RAW SFX_player_level_up.wav
+RAW SFX_player_low_health.wav
 RAW SFX_enemy_attack.wav
 RAW SFX_enemy_death.wav
 RAW SFX_enemy_take_damage.wav

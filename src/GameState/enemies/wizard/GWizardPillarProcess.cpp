@@ -93,7 +93,7 @@ TBool GWizardPillarProcess::RunBefore() {
     mFollowPlayer = EFalse;
     mExploding = ETrue;
     if (mFrame == 0) {
-      printf("PILLAR OBSTRUCTED\n");
+//      printf("PILLAR OBSTRUCTED\n");
       return EFalse;
     }
   }

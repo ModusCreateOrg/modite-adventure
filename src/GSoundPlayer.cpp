@@ -3,8 +3,8 @@
 #include "GResources.h"
 #include "Memory.h"
 
-#define DISABLE_AUDIO
-#undef DISABLE_AUDIO
+//#define DISABLE_AUDIO
+//#undef DISABLE_AUDIO
 
 
 GSoundPlayer gSoundPlayer;
@@ -31,6 +31,7 @@ static const TUint16 effectsList[] = {
   SFX_PLAYER_DEATH_WAV,
   SFX_PLAYER_PARRY_PROJECTILE_WAV,
   SFX_PLAYER_LEVEL_UP_WAV,
+  SFX_PLAYER_LOW_HEALTH_WAV,
   SFX_ENEMY_ATTACK_WAV,
   SFX_ENEMY_DEATH_WAV,
   SFX_ENEMY_HEAL_WAV,
@@ -96,6 +97,9 @@ GSoundPlayer::~GSoundPlayer() {
 }
 
 void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
+#ifdef DISABLE_AUDIO
+  return;
+#endif
   mMaxSongs = sizeof(allSongs) / sizeof(TUint16);
   mMaxEffects = sizeof(effectsList) / sizeof(TUint16);
 
@@ -130,6 +134,9 @@ void GSoundPlayer::Init(TUint8 aNumberFxChannels) {
 }
 
 TBool GSoundPlayer::PlayMusic(TInt16 aResourceId) {
+#ifdef DISABLE_AUDIO
+  return ETrue;
+#endif
   //  aResourceId = EMPTYSONG_XM;
 //  printf("%s %i\n", __PRETTY_FUNCTION__, aResourceId);
 
@@ -166,6 +173,9 @@ BRaw *GSoundPlayer::FindRawSongFileById(TInt16 aResourceId) {
 
 
 TBool GSoundPlayer::LoadEffects() {
+#ifdef DISABLE_AUDIO
+  return ETrue;
+#endif
   for (TUint8 index = 0; index < mMaxEffects; index++) {
     soundEngine.LoadEffect(index, effectsList[index], SFX1_SLOT + index);
 //    return ETrue;
@@ -181,6 +191,9 @@ void  GSoundPlayer::MuteMusic(TBool aMuted) {
 
 
 void GSoundPlayer::TriggerSfx(TUint16 aSfxNumber, TInt8 aChannel) {
+#ifdef DISABLE_AUDIO
+  return;
+#endif
   soundEngine.PlaySfx(FindSfxNumber(aSfxNumber), aChannel);
 }
 

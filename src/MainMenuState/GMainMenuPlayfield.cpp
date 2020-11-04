@@ -102,6 +102,7 @@ GMainMenuPlayfield::GMainMenuPlayfield(GGameState *aGameState) {
 
   gDisplay.SetPalette(sourcePalette, 0, 256);
 
+  delete bm;
 }
 
 GMainMenuPlayfield::~GMainMenuPlayfield() {

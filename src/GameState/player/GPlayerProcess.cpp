@@ -8,8 +8,6 @@
 #include "GPlayerBulletProcess.h"
 #include "GBossProcess.h"
 #include "../../common/GSpellOverlayProcess.h"
-#include "GBossProcess.h"
-#include "../../common/GSpellOverlayProcess.h"
 
 #define DEBUGME
 #undef DEBUGME
@@ -69,7 +67,7 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
     mRespawnAt[1] = aY;
 
     if (aExitingLevel == 0) {
-      printf("aExitingLevel == 0\n");
+//      printf("aExitingLevel == 0\n");
       return;
     }
 
@@ -144,7 +142,9 @@ void GPlayerProcess::StartLevel(GGamePlayfield *aPlayfield, TFloat aX, TFloat aY
           col = program[ip].mCol;
 
       const TInt dungeon = params >> 8;
+#ifdef DEBUGME
       printf("DUNGEON ENTRANCE row,col = %d,%d params = %d/%x %d\n", row, col, params, params, dungeon);
+#endif
       if (aExitingDungeon == dungeon) {
         auto xx = TFloat(col * 32), yy = TFloat(row * 32);
         mSprite->x = xx - 16;
@@ -673,7 +673,7 @@ void GPlayerProcess::SpawnSpellProcesses() {
       }
       break;
     case ELEMENT_FIRE:
-      printf("ELEMENT_FIRE\n");
+//      printf("ELEMENT_FIRE\n");
 
       mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2.5 ,0));
       mGameState->AddProcess(new GSpellOverlayProcess(mGameState, this, mSprite->x, mSprite->y, 0, -2, -2));
@@ -686,7 +686,7 @@ void GPlayerProcess::SpawnSpellProcesses() {
 
       break;
     case ELEMENT_EARTH:
-      printf("ELEMENT_EARTH\n");
+//      printf("ELEMENT_EARTH\n");
       for (int i = 0; i < 5; ++i) {
         TInt16 spellX = mSprite->x + Random(-120, 120);
         TInt16 spellY = mSprite->y + 16 + Random(-120, 120);

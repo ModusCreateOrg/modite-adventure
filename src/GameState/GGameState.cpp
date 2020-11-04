@@ -11,9 +11,10 @@
 #include "GPlayer.h"
 
 #include <BMemoryStream.h>
+#include <stdlib.h>
 
 #define DEBUGME
-//#undef DEBUGME
+#undef DEBUGME
 
 // DEBUG_FINALBOSS causes wizard spawn to become final boss spawn so we can debug the final boss
 #define DEBUG_FINALBOSS
@@ -62,7 +63,9 @@ GGameState::GGameState() : BGameEngine(gViewPort) {
   Init();
   for (TInt i = 2; i < SLOT_MAX; i++) {
     if (gResourceManager.GetBitmap(i)) {
+#ifdef DEBUGME
       printf("Releasing slot %d\n", i);
+#endif
       gResourceManager.ReleaseBitmapSlot(i);
     }
     mSlotRemapState[i] = EFalse;
@@ -75,7 +78,9 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   Init();
   for (TInt i = 2; i < SLOT_MAX; i++) {
     if (gResourceManager.GetBitmap(i)) {
+#ifdef DEBUGME
       printf("Releasing slot %d\n", i);
+#endif
       gResourceManager.ReleaseBitmapSlot(i);
     }
     mSlotRemapState[i] = EFalse;
@@ -83,7 +88,17 @@ GGameState::GGameState(const char *aName) : BGameEngine(gViewPort) {
   LoadState(aName);
 }
 
-GGameState::~GGameState() = default;
+GGameState::~GGameState() {
+  if (mPlayfield) {
+    delete mPlayfield;
+    mPlayfield = ENull;
+  }
+
+  if (mNextGamePlayfield) {
+    delete mNextGamePlayfield;
+    mNextGamePlayfield = ENull;
+  }
+};
 
 GProcess *GGameState::AddProcess(GProcess *p) {
   mProcessList.AddProcess(p);
@@ -115,7 +130,7 @@ void GGameState::TryAgain(TBool aExitDungeon) {
     GAnchorSprite *s = GPlayer::mProcess->Sprite();
     s->x = respawnAt[0];
     s->y = respawnAt[1];
-#ifdef DEBUG_MODE
+#ifdef DEBUGME
     printf("RESPAWNED AT %f %f\n", respawnAt[0], respawnAt[1]);
 #endif
   }
@@ -375,7 +390,10 @@ void GGameState::SetPlayfieldXYFromPlayer(TFloat aPlayerX, TFloat aPlayerY) {
 void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTileMapId, TBool aSpawnObjects) {
   mNextGamePlayfield = new GGamePlayfield(gViewPort, mNextTileMapId);
 
-  strcpy(mName, aName);
+  // Valgrind "Overlap warning"
+  if (mName != aName) {
+    strcpy(mName, aName);
+  }
 
   const TUint16 overworld_exit = mNextDungeon == OVERWORLD_DUNGEON ? mDungeon : OVERWORLD_DUNGEON;
   const TUint16 exiting_level = mLevel;
@@ -1011,6 +1029,7 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
     }
     else if (aNextDungeon >= 2 && aNextDungeon <= 4) {
       song = DUNGEON1_XM;
+//      song = EMPTYSONG_XM;
     }
     else if (aNextDungeon >= 5 && aNextDungeon <= 8) {
       song = DUNGEON2_XM;
@@ -1082,7 +1101,9 @@ void GGameState::EndProgram(TInt aIp, TUint16 aCode, TUint16 aAttr) {
     TUint32 new_code = code | (attr << 16);
     step->mCode = new_code;
   }
+#ifdef DEBUGME
   printf("EndProgram %p (%08x -> %08x)\n", program, sCode, step->mCode);
+#endif
 }
 
 /*******************************************************************************
@@ -1109,7 +1130,9 @@ void GGameState::InitRemapSlots() {
     }
     if (mSlotRemapState[i]) {
       if (gResourceManager.GetBitmap(i)) {
+#ifdef DEBUGME
         printf("Releasing slot %d\n", i);
+#endif
         gResourceManager.ReleaseBitmapSlot(i);
       }
     }
@@ -1141,13 +1164,17 @@ void GGameState::RemapSlot(TUint16 aBMP, TUint16 aSlot, TInt16 aImageSize) {
 }
 
 TBool GGameState::SaveState() {
+#ifdef DEBUGME
   printf("\n======= BEGIN %s =======\n", __FUNCTION__);
+#endif
   BMemoryStream stream;
 
   TUint32 seed = GetRandomSeed();
   stream.Write(&seed, sizeof(TUint32));
 
+#ifdef DEBUGME
   printf("Write BMapPlayfield\n");
+#endif
   stream.PrintMSize();
   BMapPlayfield::WriteToStream(&stream, NUM_RESOURCES);
   stream.Write(&mTileMapId, sizeof(mTileMapId));
@@ -1158,7 +1185,9 @@ TBool GGameState::SaveState() {
   stream.PrintMSize();
 
   //  mGamePlayfield->Restore();
+#ifdef DEBUGME
   printf("Writing Player\n");
+#endif
   stream.PrintMSize();
   GPlayer::WriteToStream(stream);
   stream.PrintMSize();
@@ -1195,30 +1224,42 @@ TBool GGameState::SaveState() {
   TInt16 attr = -1;
   stream.Write(&attr, sizeof(attr));
 
+#ifdef DEBUGME
   printf("Writing Player mSprite\n");
+#endif
   stream.PrintMSize();
   GAnchorSprite *s = GPlayer::mSprite;
   s->WriteToStream(stream);
   stream.PrintMSize();
 
+#ifdef DEBUGME
   printf("SAVE Stream size %i\n", stream.Size());
+#endif
   gSavedGameList.SaveGame(stream.Data(), stream.Size(), mText);
   mTimer = FRAMES_PER_SECOND * 1;
+#ifdef DEBUGME
   printf("\n-------- END %s--------\n", __FUNCTION__);
+#endif
 
   return ETrue;
 }
 
 TBool GGameState::LoadState(const char *aGameName) {
+#ifdef DEBUGME
   printf("\n======= BEGIN %s =======\n", __FUNCTION__);
+#endif
   BMemoryStream stream = *gSavedGameList.LoadSavedGame(aGameName);
+#ifdef DEBUGME
   printf("LOAD Stream size %i\n", stream.Size());
+#endif
 
   TUint32 seed;
   stream.Read(&seed, sizeof(TUint32));
   SeedRandom(seed);
 
+#ifdef DEBUGME
   printf("Reading BMapPlayfield\n");
+#endif
   stream.PrintReadIndex();
   BMapPlayfield::ReadFromStream(&stream, NUM_RESOURCES);
   stream.Read(&mTileMapId, sizeof(mTileMapId));
@@ -1233,20 +1274,28 @@ TBool GGameState::LoadState(const char *aGameName) {
   LoadLevel(mName, mLevel, mNextTileMapId, ETrue);
 
   //  mGamePlayfield->DumpObjectProgram();
+#ifdef DEBUGME
   printf("Reading Player\n");
+#endif
   stream.PrintReadIndex();
   GPlayer::ReadFromStream(stream);
   stream.PrintReadIndex();
 
+#ifdef DEBUGME
   printf("Reading all processes\n");
+#endif
 
   TInt16 attr = 0;
   while (attr != -1) {
+#ifdef DEBUGME
     printf("Read an attribute\n");
+#endif
     stream.PrintReadIndex();
     stream.Read(&attr, sizeof(attr));
     stream.PrintReadIndex();
+#ifdef DEBUGME
     printf("Attribute found: %i\n", attr);
+#endif
 
     if (attr != -1) {
 
@@ -1254,7 +1303,9 @@ TBool GGameState::LoadState(const char *aGameName) {
       if (!p) {
         Panic("GGameState::LoadState Did not spawn process for attribute %i\n", attr);
       }
+#ifdef DEBUGME
       printf("Reading stream for process %i\n", attr);
+#endif
       stream.PrintReadIndex();
       p->ReadFromStream(stream);
       stream.PrintReadIndex();
@@ -1262,7 +1313,9 @@ TBool GGameState::LoadState(const char *aGameName) {
     }
   }
 
+#ifdef DEBUGME
   printf("Reading Player Sprite\n");
+#endif
   stream.PrintReadIndex();
   GAnchorSprite *s = GPlayer::mSprite;
   s->ReadFromStream(stream);
@@ -1270,6 +1323,8 @@ TBool GGameState::LoadState(const char *aGameName) {
 
   GPlayer::mProcess->StartLevel(mGamePlayfield, GPlayer::mSprite->x, GPlayer::mSprite->y);
 
+#ifdef DEBUGME
   printf("\n-------- END %s--------\n", __FUNCTION__);
+#endif
   return ETrue;
 }

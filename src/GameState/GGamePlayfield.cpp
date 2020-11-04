@@ -120,10 +120,12 @@ void GGamePlayfield::WriteToStream(BMemoryStream &aStream) {
   aStream.Write(&mTileMapId, sizeof(mTileMapId));
   aStream.Write(&mGroupDone[0], sizeof(TBool) * 16);
   aStream.Write(&mGroupState[0], sizeof(TBool) * 16);
-  // object proram
+  // object program
   aStream.Write(&mObjectCount, sizeof(mObjectCount));
   aStream.Write(mObjectProgram, sizeof(BObjectProgram) * mObjectCount);
+#ifdef DEBUGME
   printf("BMapPlayfield: %d Objects\n", mObjectCount);
+#endif
   DumpObjectProgram();
 }
 
@@ -131,10 +133,12 @@ void GGamePlayfield::ReadFromStream(BMemoryStream &aStream) {
   aStream.Read(&mTileMapId, sizeof(mTileMapId));
   aStream.Read(&mGroupDone[0], sizeof(TBool) * 16);
   aStream.Read(&mGroupState[0], sizeof(TBool) * 16);
-  // object proram
+  // object program
   aStream.Read(&mObjectCount, sizeof(mObjectCount));
   mObjectProgram = new BObjectProgram[mObjectCount];
   aStream.Read(mObjectProgram, sizeof(BObjectProgram) * mObjectCount);
+#ifdef DEBUGME
   printf("BMapPlayfield: %d Objects\n", mObjectCount);
+#endif
   DumpObjectProgram();
 }

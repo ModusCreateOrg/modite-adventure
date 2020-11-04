@@ -145,7 +145,7 @@ void GLoadGameState::PostRender() {
 
     if (gControls.WasPressed(BUTTON_START)) {
       // select, load it
-      printf("START!\n");
+//      printf("START!\n");
       char name[256];
       mCurrentNode->GameName(name);
       gGame->StartGame(name);

@@ -15,7 +15,7 @@ GInventoryItem::~GInventoryItem() {
 }
 
 void GInventoryItem::Render() {
-  printf("GInventoryItem: item: %d image: %d count: %d\n", mItemNumber, mImage, mCount);
+//  printf("GInventoryItem: item: %d image: %d count: %d\n", mItemNumber, mImage, mCount);
 }
 
 void GInventoryItem::WriteToStream(BMemoryStream &aStream) {
