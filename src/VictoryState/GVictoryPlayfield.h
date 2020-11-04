@@ -79,6 +79,8 @@ protected:
   BBitmap *mBgMoon;
   BBitmap *mBgNearTrees;
   BBitmap *mBgWalkingPath;
+  BBitmap *mGameLogo;
+
   GPlayerSprite *mPlayer;
 
   GStarFieldProcess *mStarfieldProcess;
@@ -91,6 +93,7 @@ protected:
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
   TInt32 mStateTimer;
+  TUint32 mFrame;
 
   TInt mTimer;
 
