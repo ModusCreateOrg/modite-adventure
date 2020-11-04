@@ -27,7 +27,12 @@ TBool GDialogWidget::OnNavigate(TUint16 bits) {
 }
 
 void GDialogWidget::Run() {
-  mList.Run();
+  if (mCurrentWidget == ENull) {
+    return;
+  }
+
+
+    mList.Run();
 
   if (!gControls.IsPressed(JOYUP | JOYDOWN)) {
     mTimer = 0;
@@ -43,6 +48,7 @@ void GDialogWidget::Run() {
       mTimer = REPEAT_INPUT_INTERVAL;
     }
   }
+
 
   if (gControls.IsPressed(JOYUP) && OnNavigate(JOYUP) && mCurrentWidget->OnNavigate(JOYUP)) {
     mCurrentWidget->Deactivate();
