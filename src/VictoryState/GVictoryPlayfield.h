@@ -93,6 +93,7 @@ protected:
   TFloat mNearTreesOffset;
   TFloat mPathOffset;
   TInt32 mStateTimer;
+  TUint32 mFrame;
 
   TInt mTimer;
 

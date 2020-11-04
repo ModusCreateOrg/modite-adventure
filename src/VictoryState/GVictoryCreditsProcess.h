@@ -24,7 +24,7 @@ public:
     mTextColorIndex = aTextColorIndex;
     mText  = TEXT_PREROLL;
     mState = STATE_PRE_FADEIN;
-    mColorFloor = 45;
+    mColorFloor = 30;
     mColorDivider = 80; // Higher is slower
     mColor = mColorFloor;
     mTimer = 30;

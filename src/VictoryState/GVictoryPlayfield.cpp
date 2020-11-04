@@ -43,6 +43,7 @@ ANIMSCRIPT victoryAnimation[] = {
 GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mGameState = aGameState;
   sunHitTop = EFalse;
+  mFrame = 0;
   mStarfieldProcess = new GStarFieldProcess();
   mCreditsProcess = new GVictoryCreditsProcess(COLOR_TEXT);
   mBgColors = new TRGB[256];
@@ -147,7 +148,7 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 
   // Find the Game logo colors(0x00FFFF) and cache the
   // indices so we can fade it in and out.
-  for (TUint8 i = 0; i < bm->CountUsedColors(); ++i) {
+  for (TInt i = 0; i < bm->CountUsedColors(); ++i) {
     TRGB srcColor = bm->GetColor(i);
     if (srcColor.r == 247 && srcColor.g == 181 && srcColor.b == 62) {
       mCreditsProcess->mLogoColorIndices[0] = i;
@@ -266,8 +267,6 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
   }
 
 
-
-
   TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
   const TInt sunX = SCREEN_WIDTH - mBgRisingSun->Width() - 30;
   gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBgRisingSun, rect, sunX, mSunOffset);
@@ -342,10 +341,16 @@ void GVictoryPlayfield::StartState() {
 }
 
 void GVictoryPlayfield::Render() {
+  mFrame++;
+
   gDisplay.renderBitmap->Clear(mSkyColorIndex);
   if (mCreditsProcess->GetText() == 9) {
     mState = STATE_FADEIN_FINAL;
     mStarfieldProcess->StopSpawn();
+  }
+
+  if (mFrame == 8000) {
+    gGame->SetState(GAME_STATE_SPLASH);
   }
 
 
