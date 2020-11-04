@@ -81,6 +81,7 @@ public:
     if (mState != STATE_PRE_FADEIN) {
       switch (mText) {
         case TEXT_EMPTY:
+        case TEXT_PREROLL:
           ;;
           break;
         case TEXT_GAME_TITLE:
