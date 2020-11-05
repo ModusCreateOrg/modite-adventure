@@ -179,6 +179,7 @@ void GGameState::PreRender() {
     }
   }
   gDisplay.SetColor(COLOR_WHITE, 255, 255, 255);
+  gDisplay.SetColor(COLOR_ENEMY_HEALTH, 0xff, 0x59, 0x43);
 }
 
 /*******************************************************************************

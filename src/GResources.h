@@ -385,6 +385,7 @@ const TUint16 IMG_GREEN_BOTTLE3 = 126; // 75% full
 const TUint16 IMG_GREEN_BOTTLE4 = 127; // 100% full
 
 //// RESERVED COLORS
+const TUint8 COLOR_ENEMY_HEALTH = 239;  // for hit/flash animations, etc.
 const TUint8 COLOR_WHITE = 240;  // for hit/flash animations, etc.
 const TUint8 COLOR_SHADOW = 241;
 const TUint8 COLOR_SHMOO_RED = 242;

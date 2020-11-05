@@ -99,7 +99,7 @@ void GHud::Render() {
 
   if (healthPct < .10f && frame % 30 == 0)  {
     darkHealth = ! darkHealth;
-    if (darkHealth) {
+    if (darkHealth && gGame->GetState() == GAME_STATE_GAME) {
       gSoundPlayer.TriggerSfx(SFX_PLAYER_LOW_HEALTH_WAV, 2);
     }
 
@@ -159,7 +159,7 @@ void GHud::Render() {
     gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
     if (boss->mHitPoints > 0) {
       gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + boss->mHitPoints * STAT_WIDTH / boss->mMaxHitPoints,
-                                      h - 12, COLOR_HEALTH2);
+                                      h - 12, COLOR_ENEMY_HEALTH);
     }
   }
 }
