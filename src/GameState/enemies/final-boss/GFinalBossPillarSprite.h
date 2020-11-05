@@ -9,6 +9,8 @@ public:
   GFinalBossPillarSprite(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement);
 
 public:
+  void Persist();
+  void Warn();
   void Explode();
 
 protected:

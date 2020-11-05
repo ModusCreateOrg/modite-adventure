@@ -5,19 +5,7 @@
 
 const TInt16 PILLAR_SPEED = 4;
 
-static ANIMSCRIPT pillarFireAnimation[] = {
-  ABITMAP(FIRE_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-static ANIMSCRIPT pillarEarthAnimation[] = {
-  ABITMAP(EARTH_FINAL_BOSS_PILLAR_SLOT),
+static ANIMSCRIPT persistAnimation[] = {
   ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
   ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
   ALABEL,
@@ -28,30 +16,23 @@ static ANIMSCRIPT pillarEarthAnimation[] = {
   ALOOP,
 };
 
-static ANIMSCRIPT pillarWaterAnimation[] = {
-  ABITMAP(WATER_FINAL_BOSS_PILLAR_SLOT),
+static ANIMSCRIPT warningAnimation[] = {
+  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  ADELTA(2, 4),
+  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  ADELTA(0, 4),
+  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  ADELTA(-2, 4),
+  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  AFLIP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
+  ADELTA(0, 4),
   ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
   ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
+  AEND,
 };
-
-static ANIMSCRIPT pillarEnergyAnimation[] = {
-  ABITMAP(ENERGY_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-
 
 static ANIMSCRIPT explodeAnimation[] = {
   ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 5),
@@ -79,6 +60,7 @@ GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX
   cy = 4;
   cx = 0;
   SetFlags(SFLAG_RENDER_SHADOW | SFLAG_KNOCKBACK);
+  SetCMask(STYPE_PLAYER);
   ResetShadow();
   vy = vx = 0;
   mAttackStrength = 55;
@@ -87,34 +69,38 @@ GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX
 #ifdef DEBUGME
       printf("%s FIRE PILLAR\n", Name());
 #endif
-      StartAnimation(pillarFireAnimation);
       mBitmapSlot = FIRE_FINAL_BOSS_PILLAR_SLOT;
       break;
     case ELEMENT_EARTH:
 #ifdef DEBUGME
       printf("%s EARTH PILLAR\n", Name());
 #endif
-      StartAnimation(pillarEarthAnimation);
       mBitmapSlot = EARTH_FINAL_BOSS_PILLAR_SLOT;
       break;
     case ELEMENT_WATER:
 #ifdef DEBUGME
       printf("%s WATER PILLAR\n", Name());
 #endif
-      StartAnimation(pillarWaterAnimation);
       mBitmapSlot = WATER_FINAL_BOSS_PILLAR_SLOT;
       break;
     case ELEMENT_ENERGY:
 #ifdef DEBUGME
       printf("%s ENERGY PILLAR\n", Name());
 #endif
-      StartAnimation(pillarEnergyAnimation);
       mBitmapSlot = ENERGY_FINAL_BOSS_PILLAR_SLOT;
       break;
     default:
       Panic("%s invalid element %d\n", Name(), mElement);
   }
   mExploding = EFalse;
+}
+
+void GFinalBossPillarSprite::Persist() {
+  StartAnimation(persistAnimation);
+}
+
+void GFinalBossPillarSprite::Warn() {
+  StartAnimation(warningAnimation);
 }
 
 void GFinalBossPillarSprite::Explode() {

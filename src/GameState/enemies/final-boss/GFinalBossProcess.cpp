@@ -821,12 +821,13 @@ TBool GFinalBossProcess::PillarState() {
     if (mSprite->mElement == ELEMENT_WATER || mSprite->mElement == ELEMENT_FIRE) {
       mGameState->AddProcess(
         new GFinalBossPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, mSprite->mElement, ETrue,
-                                    (n * 30)));
+                                    (n * 30) + 1));
     } else {
-      TPoint p = mSprite->Center();
+      TPoint p = GPlayer::mSprite->Center();
       p.Offset(Random(-64, 64), Random(-64, 64));
-
-      mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+      if (mPlayfield->IsFloor(p.x, p.y)) {
+        mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+      }
     }
   }
   SetState(STATE_IDLE, mDirection);
