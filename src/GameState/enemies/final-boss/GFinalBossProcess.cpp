@@ -659,7 +659,9 @@ TBool GFinalBossProcess::IdleState() {
   }
   if (--mStateTimer < 1) {
     mStep = 0;
-    SetState(STATE_WALK, DIRECTION_RIGHT);
+    SetState(STATE_WALK, GAnchorSprite::VectorToDirection(
+      GPlayer::mSprite->Center().x - mSprite->Center().x,
+      GPlayer::mSprite->Center().y - mSprite->Center().y));
   }
   return ETrue;
 }
