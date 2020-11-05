@@ -199,8 +199,8 @@ TBool GAnchorSprite::Render(BViewPort *aViewPort) {
     // render sprite border if sprite is visible
     if (TestFlags(SFLAG_RENDER)) {
       bm.DrawRect(aViewPort, mRect, COLOR_WHITE);
-      bm.DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_HEALTH);
-      bm.DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_HEALTH);
+      bm.DrawFastHLine(aViewPort, mRect.x1 - 5, mRect.y2, 10, COLOR_ENEMY_HEALTH);
+      bm.DrawFastVLine(aViewPort, mRect.x1, mRect.y2 - 5, 10, COLOR_ENEMY_HEALTH);
 //      bm.DrawString(aViewPort, Name(), gFont8x8, mRect.x1 + 1, mRect.y2 + 1, COLOR_TEXT, COLOR_TEXT_TRANSPARENT, -1);
       switch (mDirection) {
         case DIRECTION_UP:
