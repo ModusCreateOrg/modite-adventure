@@ -11,7 +11,8 @@
 const TInt16 IDLE_TIMEOUT = 30 * FACTOR;
 const TInt IDLE_SPEED = 6 * FACTOR;
 const TUint8 BLINK_TIME = 4 * FACTOR;
-const TUint8 OSCILLATE_MAX = 30;
+const TUint8 OSCILLATE_MAX_X = 13;
+const TUint8 OSCILLATE_MAX_Y = 4;
 
 const TBool DAMAGE_MATRIX[4][4] = {
   // water, fire, earth, energy
@@ -92,38 +93,41 @@ GElementalSkullProcess::GElementalSkullProcess(GGameState *aGameState, TInt aIp,
   mSprite->cy = 4;
   mSprite->mSpriteSheet = gResourceManager.LoadSpriteSheet(CHARA_ELEMENTAL_SKULLS_BMP_SPRITES);
   mSprite->SetFlags(SFLAG_KILL_ON_IMPACT);
-
   GElementalSkullProcess::mInstances++;
 
   mTaunt = EFalse;
   mHitPoints = 1;
   mMaxHitPoints = 1;
   mExperienceYield = 0;
-  mTimer = OSCILLATE_MAX;
+  mTimer = OSCILLATE_MAX_X;
 
   switch (aAttribute) {
     case ATTR_ELEMENTAL_SKULL_EARTH:
       mSprite->Name("ENEMY EARTH ELEMENTAL SKULL");
       mSprite->mElement = ELEMENT_EARTH;
-      mSprite->vx = 1;
+      mSprite->vx = .7;
+      mSprite->vy = -.15;
       mAnimation = idleAnimationEarth;
       break;
     case ATTR_ELEMENTAL_SKULL_WATER:
       mSprite->Name("ENEMY WATER ELEMENTAL SKULL");
       mSprite->mElement = ELEMENT_WATER;
-      mSprite->vx = -1.15;
+      mSprite->vx = -.95;
+      mSprite->vy = -.25;
       mAnimation = idleAnimationWater;
       break;
     case ATTR_ELEMENTAL_SKULL_FIRE:
       mSprite->Name("ENEMY FIRE ELEMENTAL SKULL");
       mSprite->mElement = ELEMENT_FIRE;
-      mSprite->vx = 1.35;
+      mSprite->vx = 1.15;
+      mSprite->vy = -.3;
       mAnimation = idleAnimationFire;
       break;
     case ATTR_ELEMENTAL_SKULL_ENERGY:
       mSprite->Name("ENEMY ENERGY ELEMENTAL SKULL");
       mSprite->mElement = ELEMENT_ENERGY;
-      mSprite->vx = -1.55;
+      mSprite->vx = -.6;
+      mSprite->vy = .4;
       mAnimation = idleAnimationEnergy;
       break;
     default:
@@ -131,9 +135,12 @@ GElementalSkullProcess::GElementalSkullProcess(GGameState *aGameState, TInt aIp,
   }
 
   mSprite->StartAnimation(mAnimation);
+
+  mSpriteX = mSprite->x;
+  mSpriteY = mSprite->y;
 }
 
-GElementalSkullProcess::~GElementalSkullProcess() = default;
+GElementalSkullProcess::~GElementalSkullProcess()  = default;
 
 void GElementalSkullProcess::Idle(DIRECTION aDirection) {
   if (mSprite->AnimDone()) {
@@ -168,8 +175,10 @@ TBool GElementalSkullProcess::SpellDamageCheck() {
 
 void GElementalSkullProcess::NewState(TUint16 aState, DIRECTION aDirection) {
   const TFloat lastVx = mSprite->vx;
+  const TFloat lastVy = mSprite->vy;
   GGruntProcess::NewState(aState, DIRECTION_DOWN);
   mSprite->vx = lastVx;
+  mSprite->vy = lastVy;
 }
 
 void GElementalSkullProcess::Hit(DIRECTION aDirection) {
@@ -214,9 +223,23 @@ TBool GElementalSkullProcess::RunBefore() {
 }
 
 TBool GElementalSkullProcess::RunAfter() {
-  if (--mTimer == 0) {
-    mTimer = OSCILLATE_MAX;
+//  if (--mTimer == 0) {
+//    mTimer = OSCILLATE_MAX_X;
+//    mSprite->vx *= -1;
+//  }
+
+  if (mSprite->vx > 0 && mSprite->x > mSpriteX + OSCILLATE_MAX_X) {
     mSprite->vx *= -1;
+  }
+  else if (mSprite->vx < 0 && mSprite->x < mSpriteX - OSCILLATE_MAX_X) {
+    mSprite->vx *= -1;
+  }
+
+  if (mSprite->vy > 0 && mSprite->y > mSpriteY + OSCILLATE_MAX_Y) {
+    mSprite->vy *= -1;
+  }
+  else if (mSprite->vy < 0 && mSprite->y < mSpriteY - OSCILLATE_MAX_Y) {
+    mSprite->vy *= -1;
   }
 
   return GGruntProcess::RunAfter();

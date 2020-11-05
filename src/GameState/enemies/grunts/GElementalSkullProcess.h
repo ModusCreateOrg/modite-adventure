@@ -35,7 +35,8 @@ public:
   static TUint8 mInstances;
 
 protected:
-  TUint8      mTimer;
+  TUint8  mTimer;
+  TFloat mSpriteX, mSpriteY;
   ANIMSCRIPT *mAnimation;
 };
 

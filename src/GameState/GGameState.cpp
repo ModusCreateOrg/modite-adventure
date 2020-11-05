@@ -772,6 +772,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
       case ATTR_ELEMENTAL_SKULL_EARTH:
       case ATTR_ELEMENTAL_SKULL_WATER:
       case ATTR_ELEMENTAL_SKULL_FIRE:
+      break;
       case ATTR_ELEMENTAL_SKULL_ENERGY:
         RemapSlot(CHARA_ELEMENTAL_SKULLS_BMP, ELEMENTAL_SKULL_SLOT, IMAGE_32x32);
         if (!aSpawnObjects) {
@@ -780,7 +781,10 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
 #ifdef DEBUGME
         printf("ELEMENTAL SKULL at %.2f,%.2f %d,%d\n", xx, yy, row, col);
 #endif
-        GProcess::Spawn(this, op, ip, xx - 16, yy + 32, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
+        GProcess::Spawn(this, ATTR_ELEMENTAL_SKULL_EARTH, ip, xx, yy, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
+        GProcess::Spawn(this, ATTR_ELEMENTAL_SKULL_WATER, ip, xx, yy, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
+        GProcess::Spawn(this, ATTR_ELEMENTAL_SKULL_FIRE, ip, xx, yy, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
+        GProcess::Spawn(this, ATTR_ELEMENTAL_SKULL_ENERGY, ip, xx, yy, params, DIRECTION_DOWN, "ENEMY ELEMENTAL SKULL");
         break;
 
         // mid boss
@@ -1043,7 +1047,6 @@ TBool GGameState::PlayLevelMusic(TInt16 aNextDungeon, TInt16 aSpawnedBoss) {
     }
     else if (aNextDungeon >= 2 && aNextDungeon <= 4) {
       song = DUNGEON1_XM;
-//      song = EMPTYSONG_XM;
     }
     else if (aNextDungeon >= 5 && aNextDungeon <= 8) {
       song = DUNGEON2_XM;
