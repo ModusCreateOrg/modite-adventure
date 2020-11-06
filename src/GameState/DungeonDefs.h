@@ -11,8 +11,8 @@ struct TDungeonInfo gDungeonDefs[] = {
     {
       GLOBAL_OBJECT_LAYER_BMP,
       {
-          OW2_DGN5_9472_OW2_DGN5_L9_MAP, // 0
-          OW2_DGN5_9472_OW2_DGN5_L9_MAP, // 1
+        OVERWORLD_OVERWORLD_L1_MAP, // 0
+        OVERWORLD_OVERWORLD_L1_MAP, // 1
         OVERWORLD_OVERWORLD_L2_MAP, // 2
         OVERWORLD_OVERWORLD_L3_MAP, // 3
         OVERWORLD_OVERWORLD_L4_MAP, // 4

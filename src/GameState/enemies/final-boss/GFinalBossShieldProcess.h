@@ -5,7 +5,7 @@
 #include "GFinalBossPillarSprite.h"
 
 const TInt SPRITE_COUNT = 8;
-const TFloat ANGULAR_VELOCITY = 3.0 / FRAMES_PER_SECOND; // radians/frame
+const TFloat ANGULAR_VELOCITY = 2.75 / FRAMES_PER_SECOND; // radians/frame
 
 class GFinalBossShieldProcess : public GProcess {
 public:
@@ -22,6 +22,7 @@ public:
   void KillShield();
 
 protected:
+
   TPoint mCenter{};
   GFinalBossPillarSprite *mSprites[SPRITE_COUNT]{};
   TFloat mAngle;
