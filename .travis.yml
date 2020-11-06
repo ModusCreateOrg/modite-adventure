@@ -8,7 +8,6 @@ os:
 osx_image: xcode11.2
 dist: bionic
 language: cpp
-sudo: enabled
 git:
   depth: 1
 before_install:
@@ -31,7 +30,6 @@ deploy:
   - /Users/travis/build/ModusCreateOrg/modite-adventure/build/modite-mac.zip
   on:
     branch: master
-  skip_cleanup: 'true'
   overwrite: true
   draft: true
 notifications:
