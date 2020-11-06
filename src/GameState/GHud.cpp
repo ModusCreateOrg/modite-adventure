@@ -152,14 +152,22 @@ void GHud::Render() {
   GBossProcess *boss = GPlayer::mActiveBoss;
   if (boss) {
     TInt h = gViewPort->mRect.Height();
-    gDisplay.renderBitmap->DrawStringShadow(gViewPort, boss->mSprite->Name(), gFont8x8, 21, h - 24, COLOR_TEXT, COLOR_TEXT_SHADOW,
-                                            COLOR_TEXT_TRANSPARENT);
-    gDisplay.renderBitmap->DrawFastHLine(gViewPort, 21, h - 11, STAT_WIDTH + 1, COLOR_METER_OUTLINE);
-    gDisplay.renderBitmap->DrawFastVLine(gViewPort, 22 + STAT_WIDTH, h - 15, 5, COLOR_METER_OUTLINE);
-    gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
-    if (boss->mHitPoints > 0) {
-      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + boss->mHitPoints * STAT_WIDTH / boss->mMaxHitPoints,
-                                      h - 12, COLOR_ENEMY_HEALTH);
+    for (TInt i = 1; i <= boss->mHealthBarCount; i++) {
+      gDisplay.renderBitmap->DrawFastHLine(gViewPort, 21, h - 11, STAT_WIDTH + 1, COLOR_METER_OUTLINE);
+      gDisplay.renderBitmap->DrawFastVLine(gViewPort, 22 + STAT_WIDTH, h - 15, 5, COLOR_METER_OUTLINE);
+      gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_TEXT);
+      if (boss->mCurrentHealthBar == i) {
+        if (boss->mHitPoints > 0) {
+          gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + boss->mHitPoints * STAT_WIDTH / boss->mMaxHitPoints,
+                                          h - 12, COLOR_ENEMY_HEALTH);
+        }
+      } else if (boss->mCurrentHealthBar > i) {
+        gDisplay.renderBitmap->FillRect(gViewPort, 20, h - 16, 21 + STAT_WIDTH, h - 12, COLOR_ENEMY_HEALTH);
+      }
+      h -= 7;
     }
+    gDisplay.renderBitmap->DrawStringShadow(gViewPort, boss->mSprite->Name(), gFont8x8, 21, h - 18, COLOR_TEXT,
+                                            COLOR_TEXT_SHADOW,
+                                            COLOR_TEXT_TRANSPARENT);
   }
 }
