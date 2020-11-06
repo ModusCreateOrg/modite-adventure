@@ -64,6 +64,7 @@ GFinalBossPillarSprite::GFinalBossPillarSprite(GGameState *aGameState, TFloat aX
   ResetShadow();
   vy = vx = 0;
   mAttackStrength = 55;
+//  printf("GFinalBossPillarSprite -> aElement = %i\n", aElement);
   switch (aElement) {
     case ELEMENT_FIRE:
 #ifdef DEBUGME

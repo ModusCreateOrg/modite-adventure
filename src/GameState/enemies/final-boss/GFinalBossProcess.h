@@ -28,6 +28,7 @@ protected:
   void Projectile();
   void Spell(DIRECTION aDirection);
   void Death(DIRECTION aDirection);
+  ELEMENT RandomElement();
 
 protected:
   TBool MaybeAttack();

@@ -126,13 +126,38 @@ static ANIMSCRIPT recoverAnimation[] = {
 
 static ANIMSCRIPT spellFireAnimation[] = {
   ABITMAP(BOSS_SLOT),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_START + 1),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 1),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 2),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 3),
-  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_SPELL_FIRE + 4),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 21),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 22),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 23),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 24),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 25),
+  AEND,
+};
+static ANIMSCRIPT spellWaterAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 26),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 27),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 28),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 29),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 30),
+  AEND,
+};
+static ANIMSCRIPT spellEarthAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 11),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 12),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 13),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 14),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 15),
+  AEND,
+};
+static ANIMSCRIPT spellEnergyAnimation[] = {
+  ABITMAP(BOSS_SLOT),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 16),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 17),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 18),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 19),
+  ASTEP(ATTACK_SPEED, IMG_FINAL_BOSS_IDLE + 20),
   AEND,
 };
 
@@ -348,6 +373,9 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
   mSprite->StartAnimation(initializeAnimation);
   mSprite->h = 16;
   mSprite->ResetShadow();
+
+  RandomElement();
+
 //  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mHitTimer = HIT_SPAM_TIME;
   mAttackIndex = 0;
@@ -368,7 +396,8 @@ void GFinalBossProcess::RaiseShield() {
   if (mShieldProcess) {
     LowerShield();
   }
-  mShieldProcess = new GFinalBossShieldProcess(mGameState, ELEMENT_FIRE);
+  RandomElement();
+  mShieldProcess = new GFinalBossShieldProcess(mGameState, mSprite->mElement);
   mGameState->AddProcess(mShieldProcess);
   mShieldProcess->UpdateCenter(mSprite->Center());
 }
@@ -413,50 +442,68 @@ void GFinalBossProcess::Land(DIRECTION aDirection) {
   mSprite->StartAnimationInDirection(landAnimations, aDirection);
 }
 
+ELEMENT GFinalBossProcess::RandomElement() {
+  TInt16 newElement = Random(1, 4);
+
+  switch (newElement) {
+    default:
+    case 1:
+      printf("NEW Element ELEMENT_WATER(%i)\n", newElement);
+      mSprite->mElement = ELEMENT_WATER;
+      return ELEMENT_WATER;
+    case 2:
+      printf("NEW Element ELEMENT_FIRE(%i)\n", newElement);
+      mSprite->mElement = ELEMENT_FIRE;
+      return ELEMENT_FIRE;
+    case 3:
+      printf("NEW Element ELEMENT_EARTH(%i)\n", newElement);
+      mSprite->mElement = ELEMENT_EARTH;
+      return ELEMENT_EARTH;
+    case 4:
+      printf("NEW Element ELEMENT_ENERGY(%i)\n", newElement);
+      mSprite->mElement = ELEMENT_ENERGY;
+      return ELEMENT_ENERGY;
+  }
+}
+
 void GFinalBossProcess::Projectile() {
   mSprite->vx = mSprite->vy = 0;
-  switch (Random(0, 3)) {
-    case 0:
+  switch (RandomElement()) {
+    case ELEMENT_EARTH:
 #ifdef DEBUGME
       printf("earthProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(earthProjectileAnimation);
-      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 4);
-      mSprite->mElement = ELEMENT_EARTH;
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_EARTH_WAV, 4);
       break;
-    case 1:
+    case ELEMENT_WATER:
 #ifdef DEBUGME
       printf("waterProjectileAnimation\n");
 #endif
-
       mSprite->StartAnimation(waterProjectileAnimation);
-      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV, 4);
-      mSprite->mElement = ELEMENT_WATER;
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_WATER_WAV, 4);
       break;
-    case 2:
+    case ELEMENT_FIRE:
 #ifdef DEBUGME
       printf("fireProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(fireProjectileAnimation);
-      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV, 4);
-      mSprite->mElement = ELEMENT_FIRE;
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_FIRE_WAV, 4);
       break;
-    case 3:
+    case ELEMENT_ENERGY:
 #ifdef DEBUGME
       printf("energyProjectileAnimation\n");
 #endif
       mSprite->StartAnimation(energyProjectileAnimation);
-      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV, 4);
-      mSprite->mElement = ELEMENT_ENERGY;
+      gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_ENERGY_WAV, 4);
       break;
     default:
 #ifdef DEBUGME
       printf("DEFAULT energyProjectileAnimation\n");
 #endif
-
+      printf("DEFAULT ANIMATION WTF\n");
       mSprite->StartAnimation(earthProjectileAnimation);
       gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 4);
-      mSprite->mElement = ELEMENT_EARTH;
       break;
   }
 }
@@ -519,7 +566,39 @@ void GFinalBossProcess::SetState(TInt aNewState, DIRECTION aNewDirection) {
       mSprite->StartAnimation(stunAnimation);
       break;
     case STATE_RESET_SHIELD:
-      mSprite->StartAnimation(spellFireAnimation);
+      switch (mSprite->mElement) {
+        default:
+        case ELEMENT_EARTH:
+#ifdef DEBUGME
+          printf("spellEarthAnimation\n");
+#endif
+          mSprite->StartAnimation(spellEarthAnimation);
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_EARTH_WAV, 3);
+          break;
+        case ELEMENT_WATER:
+#ifdef DEBUGME
+          printf("spellWaterAnimation\n");
+#endif
+          mSprite->StartAnimation(spellWaterAnimation);
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_WATER_WAV, 3);
+          break;
+        case ELEMENT_FIRE:
+#ifdef DEBUGME
+          printf("spellFireAnimation\n");
+#endif
+          mSprite->StartAnimation(spellFireAnimation);
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_FIRE_WAV, 3);
+          break;
+        case ELEMENT_ENERGY:
+#ifdef DEBUGME
+          printf("spellEarthAnimation\n");
+#endif
+          mSprite->StartAnimation(spellEarthAnimation);
+          gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_PILLAR_ENERGY_WAV, 3);
+          break;
+      }
+
+
       break;
     case STATE_DEATH:
       Death(mDirection);
@@ -792,13 +871,31 @@ TBool GFinalBossProcess::ProjectileState() {
     return ETrue;
   }
   if (mSprite->AnimDone()) {
-    // fire!
     TFloat xx = mSprite->x + 48,
            yy = mSprite->y;
-    // fire 10 projectiles in a circle pattern with the boss in the center
+    // shoot 10 projectiles in a circle pattern with the boss in the center
     for (TInt16 angle = 0; angle < 360; angle += 360 / 10) {
       mGameState->AddProcess(new GFinalBossProjectileProcess(mGameState, xx, yy, angle, mSprite->mElement));
     }
+
+    switch (mSprite->mElement) {
+      default:
+      case ELEMENT_EARTH:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_EARTH_WAV, 3);
+        break;
+      case ELEMENT_WATER:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_WATER_WAV, 3);
+        break;
+      case ELEMENT_FIRE:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV, 3);
+        break;
+      case ELEMENT_ENERGY:
+        gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_ENERGY_WAV, 3);
+        break;
+    }
+
+
+
     SetState(STATE_IDLE, mDirection);
   }
   return ETrue;

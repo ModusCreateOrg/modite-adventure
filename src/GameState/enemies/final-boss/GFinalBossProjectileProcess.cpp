@@ -141,27 +141,30 @@ void GFinalBossProjectileProcess::StartExplodeAnimation() {
       mSprite->StartAnimation(explodeWaterAnimation);
       break;
     default:
-      Panic("StartExplision: invalid mAttribute: %d\n", mAttribute);
+      Panic("Start Explosion: invalid mAttribute: %d\n", mAttribute);
   }
 }
 // constructor
 GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, ELEMENT aElement)
     : GProcess(0, 0) {
+
   switch (aElement) {
+    default:
     case ELEMENT_EARTH:
+      printf("GFinalBossProjectileProcess aElement = ELEMENT_EARTH\n");
       mAttribute = ATTR_FINAL_BOSS_EARTH;
       break;
     case ELEMENT_WATER:
+      printf("GFinalBossProjectileProcess aElement = ELEMENT_WATER\n");
       mAttribute = ATTR_FINAL_BOSS_WATER;
       break;
     case ELEMENT_FIRE:
+      printf("GFinalBossProjectileProcess aElement = ELEMENT_FIRE\n");
       mAttribute = ATTR_FINAL_BOSS_FIRE;
       break;
     case ELEMENT_ENERGY:
+      printf("GFinalBossProjectileProcess aElement = ELEMENT_ENERGY\n");
       mAttribute = ATTR_FINAL_BOSS_ENERGY;
-      break;
-    default:
-      mAttribute = ATTR_FINAL_BOSS_EARTH;
       break;
   }
   mSaveToStream = EFalse;
