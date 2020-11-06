@@ -151,19 +151,15 @@ GFinalBossProjectileProcess::GFinalBossProjectileProcess(GGameState *aGameState,
   switch (aElement) {
     default:
     case ELEMENT_EARTH:
-      printf("GFinalBossProjectileProcess aElement = ELEMENT_EARTH\n");
       mAttribute = ATTR_FINAL_BOSS_EARTH;
       break;
     case ELEMENT_WATER:
-      printf("GFinalBossProjectileProcess aElement = ELEMENT_WATER\n");
       mAttribute = ATTR_FINAL_BOSS_WATER;
       break;
     case ELEMENT_FIRE:
-      printf("GFinalBossProjectileProcess aElement = ELEMENT_FIRE\n");
       mAttribute = ATTR_FINAL_BOSS_FIRE;
       break;
     case ELEMENT_ENERGY:
-      printf("GFinalBossProjectileProcess aElement = ELEMENT_ENERGY\n");
       mAttribute = ATTR_FINAL_BOSS_ENERGY;
       break;
   }

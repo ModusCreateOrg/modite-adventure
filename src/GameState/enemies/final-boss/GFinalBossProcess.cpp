@@ -975,6 +975,8 @@ TBool GFinalBossProcess::DeathState() {
 }
 
 TBool GFinalBossProcess::RunBefore() {
+  gDisplay.renderBitmap->SetColor(COLOR_SHADOW, 0x35, 0x40, 0x48);
+
   switch (mState) {
     case STATE_INITIALIZE:
       return InitializeState();
