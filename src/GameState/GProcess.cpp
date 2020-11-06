@@ -10,6 +10,7 @@
 #include "GameState/enemies/grunts/GSlimeProcess.h"
 #include "GameState/enemies/grunts/GTrollProcess.h"
 #include "GameState/enemies/grunts/GTurretProcess.h"
+#include "GameState/enemies/grunts/GElementalSkullProcess.h"
 #include "GameState/environment/GStairsProcess.h"
 #include "GameState/environment/GOverworldLevelTransitionProcess.h"
 #include "GameState/environment/GPotProcess.h"
@@ -121,6 +122,11 @@ GProcess *GProcess::Spawn(GGameState *aGameState, TInt16 mAttribute, TInt aIp, T
       return aGameState->AddProcess(new GSlimeProcess(aGameState, ip, xx, yy, params));
     case ATTR_TROLL:
       return aGameState->AddProcess(new GTrollProcess(aGameState, ip, xx, yy, params));
+    case ATTR_ELEMENTAL_SKULL_EARTH:
+    case ATTR_ELEMENTAL_SKULL_WATER:
+    case ATTR_ELEMENTAL_SKULL_FIRE:
+    case ATTR_ELEMENTAL_SKULL_ENERGY:
+      return aGameState->AddProcess(new GElementalSkullProcess(aGameState, ip, xx, yy, params, mAttribute));
 
       // mid bosses
     case ATTR_MID_BOSS_ENERGY:

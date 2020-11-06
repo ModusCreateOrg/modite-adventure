@@ -43,6 +43,7 @@ ANIMSCRIPT victoryAnimation[] = {
 GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   mGameState = aGameState;
   sunHitTop = EFalse;
+  mFrame = 0;
   mStarfieldProcess = new GStarFieldProcess();
   mCreditsProcess = new GVictoryCreditsProcess(COLOR_TEXT);
   mBgColors = new TRGB[256];
@@ -60,9 +61,6 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
 //  gResourceManager.LoadBitmap(CLOUDS_TOP_BMP, MAIN_MENU_SLOT0, IMAGE_ENTIRE);
 //  mBgSky = gResourceManager.GetBitmap(MAIN_MENU_SLOT0);
 //  mBgSky->Remap(bm);
-
-
-
 
   gResourceManager.ReleaseBitmapSlot(ENVIRONMENT_SLOT);
   gResourceManager.LoadBitmap(MODUS_LABS_LOGO_WHITE_BMP, ENVIRONMENT_SLOT, IMAGE_ENTIRE);
@@ -97,6 +95,13 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
   gResourceManager.ReleaseBitmapSlot(PLAYER_SLOT);
   gResourceManager.LoadBitmap(CHARA_HERO_BMP, PLAYER_SLOT, IMAGE_64x64);
   gResourceManager.GetBitmap(PLAYER_SLOT)->Remap(bm);
+
+  gResourceManager.ReleaseBitmapSlot(BKG_SLOT);
+  gResourceManager.LoadBitmap(LOGO_BMP, BKG_SLOT, IMAGE_ENTIRE);
+  mGameLogo = gResourceManager.GetBitmap(BKG_SLOT);
+
+
+  mGameLogo->Remap(bm);
 
   gViewPort->mWorldX = 0;
   gViewPort->mWorldY = 0;
@@ -140,6 +145,30 @@ GVictoryPlayfield::GVictoryPlayfield(GGameState *aGameState) {
       break;
     }
   }
+
+  // Find the Game logo colors(0x00FFFF) and cache the
+  // indices so we can fade it in and out.
+  for (TInt i = 0; i < bm->CountUsedColors(); ++i) {
+    TRGB srcColor = bm->GetColor(i);
+    if (srcColor.r == 247 && srcColor.g == 181 && srcColor.b == 62) {
+      mCreditsProcess->mLogoColorIndices[0] = i;
+      mCreditsProcess->mLogoColors[0] = srcColor;
+    }
+     if (srcColor.r == 164 && srcColor.g == 105 && srcColor.b == 34) {
+       mCreditsProcess->mLogoColorIndices[1] = i;
+       mCreditsProcess->mLogoColors[1] = srcColor;
+     }
+     if (srcColor.r == 243 && srcColor.g == 112 && srcColor.b == 94) {
+       mCreditsProcess->mLogoColorIndices[2] = i;
+       mCreditsProcess->mLogoColors[2] = srcColor;
+     }
+     if (srcColor.r == 132 && srcColor.g == 35 && srcColor.b == 69) {
+       mCreditsProcess->mLogoColorIndices[3] = i;
+       mCreditsProcess->mLogoColors[3] = srcColor;
+     }
+  }
+
+
 
   // Set palette colors initially
   sourcePalette[mSkyColorIndex].Set(0x66, 0x99, 0xCC);
@@ -238,8 +267,6 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
   }
 
 
-
-
   TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
   const TInt sunX = SCREEN_WIDTH - mBgRisingSun->Width() - 30;
   gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBgRisingSun, rect, sunX, mSunOffset);
@@ -314,10 +341,16 @@ void GVictoryPlayfield::StartState() {
 }
 
 void GVictoryPlayfield::Render() {
+  mFrame++;
+
   gDisplay.renderBitmap->Clear(mSkyColorIndex);
   if (mCreditsProcess->GetText() == 9) {
     mState = STATE_FADEIN_FINAL;
     mStarfieldProcess->StopSpawn();
+  }
+
+  if (mFrame == 8000) {
+    gGame->SetState(GAME_STATE_SPLASH);
   }
 
 

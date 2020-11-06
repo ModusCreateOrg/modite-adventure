@@ -18,8 +18,7 @@ public:
 protected:
   GGameState *mGameState;
   TBool mExploding;
-  TUint16 mFrame;
-  TUint16 mStartDelay;
+  TInt16 mStartDelay;
   TBool mFollowPlayer;
   GFinalBossPillarSprite *mSprite;
 

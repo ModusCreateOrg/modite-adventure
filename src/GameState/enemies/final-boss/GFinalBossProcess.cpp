@@ -346,10 +346,9 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
   mSprite->StartAnimation(initializeAnimation);
-  mSprite->h = 32;
-  mSprite->cy = 8;
+  mSprite->h = 16;
   mSprite->ResetShadow();
-  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
+//  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mHitTimer = HIT_SPAM_TIME;
   mAttackIndex = 0;
   SetAttackTimer();
@@ -561,7 +560,7 @@ TBool GFinalBossProcess::MaybeHit() {
     return ETrue;
   }
 
-  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET);
+  mSprite->ClearCType(STYPE_PLAYER | STYPE_PBULLET | STYPE_SPELL);
 
   return EFalse;
 }
@@ -659,7 +658,9 @@ TBool GFinalBossProcess::IdleState() {
   }
   if (--mStateTimer < 1) {
     mStep = 0;
-    SetState(STATE_WALK, DIRECTION_RIGHT);
+    SetState(STATE_WALK, GAnchorSprite::VectorToDirection(
+      GPlayer::mSprite->Center().x - mSprite->Center().x,
+      GPlayer::mSprite->Center().y - mSprite->Center().y));
   }
   return ETrue;
 }
@@ -821,12 +822,13 @@ TBool GFinalBossProcess::PillarState() {
     if (mSprite->mElement == ELEMENT_WATER || mSprite->mElement == ELEMENT_FIRE) {
       mGameState->AddProcess(
         new GFinalBossPillarProcess(mGameState, GPlayer::mSprite->mLastX, GPlayer::mSprite->mLastY, mSprite->mElement, ETrue,
-                                    (n * 30)));
+                                    (n * 30) + 1));
     } else {
-      TPoint p = mSprite->Center();
+      TPoint p = GPlayer::mSprite->Center();
       p.Offset(Random(-64, 64), Random(-64, 64));
-
-      mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+      if (mPlayfield->IsFloor(p.x, p.y)) {
+        mGameState->AddProcess(new GFinalBossPillarProcess(mGameState, p.x, p.y, mSprite->mElement, EFalse, 0));
+      }
     }
   }
   SetState(STATE_IDLE, mDirection);
