@@ -19,10 +19,10 @@ protected:
   }
   void UpdateBlink();
 
-  TBool BasicDamageCheck();
-  TBool SpellDamageCheck();
+  virtual TBool BasicDamageCheck();
+  virtual TBool SpellDamageCheck();
 
-  void DoDamage(TInt aStrength);
+  void DoDamage(TInt aStrength, TBool aRandomize = ETrue);
   void DoHeal(TInt aAmount);
 
 public:

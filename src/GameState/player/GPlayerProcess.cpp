@@ -348,8 +348,9 @@ TBool GPlayerProcess::MaybeHit() {
     // Random +/- 20% variation
     hitAmount = (hitAmount * Random(80, 120)) / 100;
 
-
-    if (GPlayer::mEquipped.mAmuletElement && other.element) {
+    if (other.flags & SFLAG_KILL_ON_IMPACT) {
+      hitAmount = GPlayer::mHitPoints;
+    } else if (GPlayer::mEquipped.mAmuletElement && other.element) {
       hitAmount *= AMULET_MATRIX[GPlayer::mEquipped.mAmuletElement - 1][other.element - 1];
     }
 
