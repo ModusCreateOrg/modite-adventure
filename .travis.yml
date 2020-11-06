@@ -21,7 +21,7 @@ script:
 - "./scripts/test.sh"
 before_deploy:
   - "./scripts/zipping.sh"
-  - git tag -f v0.1.0
+  - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
   api_key:
