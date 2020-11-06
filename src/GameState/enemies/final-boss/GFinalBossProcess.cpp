@@ -346,10 +346,9 @@ GFinalBossProcess::GFinalBossProcess(GGameState *aGameState, TFloat aX, TFloat a
     : GBossProcess(aGameState, aX, aY, BOSS_SLOT, aParams) {
   mSprite->Name("Final Boss");
   mSprite->StartAnimation(initializeAnimation);
-  mSprite->h = 32;
-  mSprite->cy = 8;
+  mSprite->h = 16;
   mSprite->ResetShadow();
-  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
+//  mSprite->ClearFlags(SFLAG_RENDER_SHADOW);
   mHitTimer = HIT_SPAM_TIME;
   mAttackIndex = 0;
   SetAttackTimer();
