@@ -12,6 +12,7 @@ git:
   depth: 1
 before_install:
   - chmod +x ./scripts/zipping.sh
+  - chmod +x ./scripts/notarize.sh
 install:
 - "./.ci/travis/install_deps.sh"
 before_script: "./.ci/travis/lint.sh"
@@ -20,6 +21,7 @@ script:
 - "./scripts/test.sh"
 before_deploy:
   - "./scripts/zipping.sh"
+  - "./scripts/notarize.sh"
   - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
