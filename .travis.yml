@@ -2,6 +2,9 @@ env:
   global:
   - secure: fZn0UgO43HCCWkJEeL37gwPZylbUngLFxYfVxw23oVJpp2QcksHUJxO1pzgNyTm7GMJl3xxbYa4dK6a72oMsmPsb7xl6jA8L7kQA1Xo+J29QQLxP8WWYP2SyZNxANyyvWpmoMcVnTHZ4UYQMEMiDRNMx4b4iN8ytyQsJj5df9uTOmcr2pNcyTlLTFL1nT43q+MA8nRtKU7sVyDr037CLppxXuY+AUwenCeBHAVpBecfnizRTaItd7qfWYcw27xQZ5Z1M4b6bHWZpwSPdelRsqchLBxIhx50zbBph5xbB4Ov9d6RTcS7J9F3QxMzkCAdT0YuLiIC4TfSZExWUYoOg4/kRm7Vz0LSovmBQMW9FxrKBf7rWoafhqfT83Rz4rssquTICB68U0R4fhUNIctptYgwT2UIfBWGIRwJSGhwsrEnC626uX/bL6B5VslWg2+CjEz1tfqyg88XO/sFcr79IWtVNKuqA/CHu1SCChRlyN9Di7fzvOW7HAAwcnLyCVWNQ9qNjc2c84+ufdhxPBGJxiaeN14+9YmgggjETryMz4JM4VF+J7H5wDmEbOFmEofmb0G7B/0jtJX0i/qBaA/Ow9JDg4JZBr+JfGLRmRmnfl+P0vMgAYspVW5qmHRWXxpKHBmlrvCK+Aw/RKWJ8DiRKn7Dq8LpUpneLYtqd9uBa+CA=
   - secure: BWOZXDSg6t6ie0BWXrMj30wNQlB0IbNJkEV/KOx7rFuNVeBeSUOa69fZ1Kk7fGyhExvMY/CgAMxXIWZGYuFgP2TcITDHhFPOtNDE2k7MTqQDQ6/f4svFR8B7H9Nms0qHmHXc2UXWT+0VNvHCuoMD99zJzG5AP2H68b5um9x6LZPNOrkVwincBOpH1yL2Ed++UCQDoGSN1LjlFOOsGpMD5Q9DRldzAPOI5YqdJkHzmnVyhAbWXbDNkVm7eRqnS4WHe9sNkyAXEd1R3w+TYCaOEHarKFU2w9FqYTAlK0HriVI9BdsowNnaHAERrlwxaqLb7BuEA1j4EkowYClSmCR2tAVJqkTWYTNZXmI/vjJxdap9+PT2kwOkq4ntig7FbcV/NKXVI2ckFgF/NTFvAEoTIWOvIlRvO0Tk7zdSkfR0QnEs4kZ3JeUJpj9wrZ4ISSy6uIh3v9H/cslakAAdkuj0V3J4VGVgih3VllAj8k2mFKWFUBUK4PKmmXMVHZkeTWyqIjm56Jnb+9AaUxmj54IJw50AXqF8eizuYPO55/ZOMPPhqyNqyhCj4hQpipkzYCl25p11AIIzntlgwbEVA7GHdwnGuwXQz2OK0ZZ6QB/8Y05VduSnCB5qsXBo1OKlOSAcEwpM8aLmKcA8ZkjCjVQ3hsCqTe9vz2nTudI1HeK0DOw=
+  - secure: B4pb0992JuN74EORhDUziWepH7vIZdf+UKElpsX565Wm8VSxY3JGzGEcIOpsR3xpeaPPzVHsg1bI1s5/DWss2TheepujgXqq6xhN81gZ7ivU81tBvTvs6XEnSyiAD+4s18rF/nM5z4Bs1+0FiN6UxEJXQy9QgS1aF3iMfw1Jnboxt7zCI58PWWXRfjnRx829Tl/XWCDEcXGLMIlPuovGs3vjziP2QScUeWTTzRhO3toagLuEJGxgUd94Y7co3ND8R0yZ21+hmxc10b+4+ZD8hZvLHaMBVMFhg73y6S5idMpjdKO+W0VR93cd4dKhSeFhF2KRHYsN1oyhjCo4NPmDmsn+uxIXmARdyEsQRJT2OwZ4o82r90KEPu6iMSe9wpXSq5arXQSLxaAPn9ZEonGEPdm/1VEa1bHILZoEAMTiuoxgZsQ0Fz6uXlj5ZrjunK5hEzcpLEhPY7Da2C4H5l5u67PQ2NbE2FhF/90n7s8aRrQGEx124kRgXSxhpiRf7cRsaqMad16UNwf91ebqgTrRQ0orQn1AZcxu+fogCx1P3iaSxJ6WM3T+YJV+Z41kqhhLb4vPlhWJZUXSxbBNQW2IZ80Yy2QVpilYPWw1kg9qzu7+savouQLyvHEnNlOtO+TImkfM9ZU6R/04D+QHiKT3HUfDkT7OTRYuQZRS6O96Ukw=
+  - APP_NAME="Modite-Adventure"
+  - PROFILE_NAME="ModiteAdventure"
 os:
 - linux
 - osx
@@ -17,13 +20,17 @@ before_install:
   - chmod +x ./scripts/zipping.sh
   - chmod +x ./scripts/code-signing.sh
   - chmod +x ./scripts/notarize.sh
+  - chmod +x ./scripts/add-key.sh
 install:
 - "./.ci/travis/install_deps.sh"
-before_script: "./.ci/travis/lint.sh"
+before_script:
+  - "./.ci/travis/lint.sh"
+  - "./scripts/add-key.sh"
 script:
 - "./scripts/build.sh"
-- "./scripts/code-signing.sh"
 - "./scripts/test.sh"
+after_success:
+  - "./scripts/code-signing.sh"
 before_deploy:
   - "./scripts/zipping.sh"
   - "./scripts/notarize.sh"
