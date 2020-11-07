@@ -6,7 +6,7 @@ DEVELOPER_NAME="Developer ID Application: Modus Create, Inc. (287TS9B2H2)"
 if [[ "$OS" == "Darwin" ]]; then
   echo "Code signing..."
 
-  codesign -f --timestamp --options runtime -s "Developer ID Application: Modus Create, Inc. (287TS9B2H2)" /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
+  codesign -f --timestamp --options runtime -s $DEVELOPER_NAME /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
 
   echo "Verifying signature..."
 
