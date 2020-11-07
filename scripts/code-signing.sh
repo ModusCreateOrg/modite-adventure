@@ -3,5 +3,5 @@
 OS="$(uname)"
 
 if [[ "$OS" == "Darwin" ]]; then
-  echo "notarizing..."
+  echo "Code signing..."
 fi
