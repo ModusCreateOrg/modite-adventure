@@ -35,6 +35,7 @@ after_success:
 before_deploy:
   - "./scripts/zipping.sh"
   - "./scripts/notarize.sh"
+  - git fetch --tags -f
   - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
@@ -46,3 +47,4 @@ deploy:
   on:
     branch: master
   overwrite: true
+  draft: true
