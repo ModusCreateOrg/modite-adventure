@@ -102,6 +102,7 @@ void GGame::ToggleInGameMenu() {
   gControls.dKeys = 0;
 }
 
+#ifdef DEBUG_MODE
 void GGame::ToggleDebugMenu() {
   if (GPlayer::mGameOver || mGameMenu || mInventory) {
     return;
@@ -117,7 +118,7 @@ void GGame::ToggleDebugMenu() {
   }
   gControls.dKeys = 0;
 }
-
+#endif
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/

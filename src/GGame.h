@@ -40,7 +40,10 @@ public:
 
   void ToggleInGameMenu();
   void ToggleInventory();
+
+#ifdef DEBUG_MODE
   void ToggleDebugMenu();
+#endif
   TBool IsGameState();
   BGameEngine *CurrentState();
 

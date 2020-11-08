@@ -11,7 +11,7 @@
 
 // Debug mode
 #define DEBUG_MODE
-// #undef DEBUG_MODE
+//#undef DEBUG_MODE
 
 // special characters
 #define STR_LEFT_ARROW "\xf"
@@ -42,7 +42,9 @@ const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
 #include "GCreditsState.h"
 #include "GGameMenuState.h"
 #include "GVictoryState.h"
+#ifdef DEBUG_MODE
 #include "DebugMenuState/GDebugMenuState.h"
+#endif
 //#include "GInventory.h"
 
 extern BViewPort   *gViewPort;
