@@ -7,7 +7,7 @@ PATH="/Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app"
 if [[ "$OS" == "Darwin" ]]; then
   echo "Code signing..."
 
-  codesign -f -s $DEVELOPER_NAME --timestamp --options runtime --keychain /Users/travis/Library/Keychains/ios-build.keychain $PATH
+  codesign --force -s $DEVELOPER_NAME --keychain /Users/travis/Library/Keychains/ios-build.keychain $PATH
 
   echo "Verifying signature..."
 
