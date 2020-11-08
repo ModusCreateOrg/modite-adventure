@@ -227,7 +227,7 @@ RAW Dungeon4.xm
 RAW Dungeon5.xm
 RAW Dungeon6.xm
 RAW Dungeon7.xm
-#RAW Dungeon8.xm
+RAW Dungeon8.xm
 RAW Dungeon9.xm
 RAW GameOver.xm
 RAW Main_Menu.xm
@@ -277,7 +277,8 @@ RAW SFX_midboss_attack_energy.wav
 RAW SFX_midboss_attack_fire.wav
 RAW SFX_midboss_attack_water.wav
 RAW SFX_midboss_attack_earth.wav
-RAW SFX_midboss_attack_pillar_energy.wav
+RAW SFX_midbo
+ss_attack_pillar_energy.wav
 RAW SFX_midboss_attack_pillar_fire.wav
 RAW SFX_midboss_attack_pillar_water.wav
 RAW SFX_midboss_attack_pillar_earth.wav
