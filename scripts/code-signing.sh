@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 OS="$(uname)"
-DEVELOPER_NAME="Developer ID Application: Modus Create, Inc. (287TS9B2H2)"
 
 if [[ "$OS" == "Darwin" ]]; then
   echo "Code signing..."
 
-  codesign -s $DEVELOPER_NAME --keychain /Users/travis/Library/Keychains/ios-build.keychain /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
+  codesign --force -s "Developer ID Application: Modus Create, Inc. (287TS9B2H2)" --keychain /Users/travis/Library/Keychains/ios-build.keychain /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
 
   echo "Verifying signature..."
 
