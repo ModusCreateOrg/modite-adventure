@@ -5,7 +5,7 @@ OS="$(uname)"
 if [[ "$OS" == "Darwin" ]]; then
   echo "Code signing..."
 
-  codesign --force --deep --verbose=2 -s "Developer ID Application: Modus Create, Inc. (287TS9B2H2)" --keychain /Users/travis/Library/Keychains/ios-build.keychain /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
+  codesign --force --deep --verbose --timestamp -s "Developer ID Application: Modus Create, Inc. (287TS9B2H2)" --keychain /Users/travis/Library/Keychains/ios-build.keychain /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
 
   echo "Verifying signature..."
 
