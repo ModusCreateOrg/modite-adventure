@@ -29,7 +29,7 @@ before_script:
 script:
 - "./scripts/build.sh"
 - "./scripts/test.sh"
-after_success:
+after_success: travis_wait 15
 - "./scripts/code-signing.sh"
 before_deploy:
 - "./scripts/zipping.sh"
