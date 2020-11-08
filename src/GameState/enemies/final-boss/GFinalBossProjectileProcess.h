@@ -6,7 +6,7 @@
 
 class GFinalBossProjectileProcess : public GProcess {
 public:
-  GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, TInt16 aAttribute);
+  GFinalBossProjectileProcess(GGameState *aGameState, TFloat aX, TFloat aY, TFloat aAngle, ELEMENT aElement);
   ~GFinalBossProjectileProcess() OVERRIDE;
 
 public:

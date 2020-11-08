@@ -277,6 +277,10 @@ RAW SFX_midboss_attack_energy.wav
 RAW SFX_midboss_attack_fire.wav
 RAW SFX_midboss_attack_water.wav
 RAW SFX_midboss_attack_earth.wav
+RAW SFX_midboss_attack_pillar_energy.wav
+RAW SFX_midboss_attack_pillar_fire.wav
+RAW SFX_midboss_attack_pillar_water.wav
+RAW SFX_midboss_attack_pillar_earth.wav
 RAW SFX_door_open.wav
 RAW SFX_door_open_group.wav
 RAW SFX_tower_projectile_death.wav

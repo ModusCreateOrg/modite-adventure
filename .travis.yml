@@ -28,13 +28,14 @@ before_script:
 - "./scripts/add-key.sh"
 script:
 - "./scripts/build.sh"
+- "./scripts/code-signing.sh"
 - "./scripts/test.sh"
 after_success:
 - "./scripts/code-signing.sh"
 before_deploy:
-- "./scripts/zipping.sh"
-- "./scripts/notarize.sh"
-- git tag -f v0.1.0-alpha
+  - "./scripts/zipping.sh"
+  - "./scripts/notarize.sh"
+  - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
   api_key:

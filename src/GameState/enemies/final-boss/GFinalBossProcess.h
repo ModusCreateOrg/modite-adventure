@@ -4,6 +4,8 @@
 #include "GBossProcess.h"
 #include "GAnchorSprite.h"
 #include "GGameState.h"
+#include "GPlayerProcess.h"
+#include "GFinalBossShieldProcess.h"
 
 class GFinalBossProcess : public GBossProcess {
 public:
@@ -15,30 +17,42 @@ public:
   TBool RunAfter() OVERRIDE;
 
 protected:
+  void SetAttackTimer();
+
+protected:
   void Idle(DIRECTION aDirection);
   void Walk(DIRECTION aDirection);
-  void Projectile(DIRECTION aDirection);
-  void Teleport(DIRECTION aDirection);
-  void Hit(DIRECTION aDirection);
+  void Charge(DIRECTION aDirection);
+  void Leap(DIRECTION aDirection);
+  void Land(DIRECTION aDirection);
+  void Projectile();
   void Spell(DIRECTION aDirection);
   void Death(DIRECTION aDirection);
+  ELEMENT RandomElement();
 
 protected:
   TBool MaybeAttack();
   TBool MaybeHit();
+  TBool MaybeBounce();
 
+  TBool InitializeState();
   TBool IdleState();
   TBool WalkState();
+  TBool ChargeState();
+  TBool LeapState();
   TBool ProjectileState();
-  TBool TeleportState();
-  TBool HitState();
-  TBool SpellState();
+  TBool PillarState();
+  TBool StunState();
+  TBool ResetShieldState();
   TBool DeathState();
   void SetState(TInt aNewState, DIRECTION aNewDirection);
 
+  void RaiseShield();
+  void LowerShield();
+
 protected:
-  TBool mAttackType;
-  void SetAttackTimer() { mAttackTimer = 5 * 60; }
+  TInt mAttackIndex;
+  GFinalBossShieldProcess *mShieldProcess;
 };
 
 #endif

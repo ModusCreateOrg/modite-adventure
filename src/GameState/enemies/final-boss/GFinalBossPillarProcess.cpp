@@ -8,69 +8,8 @@
 #define DEBUGME
 #undef DEBUGME
 
-const TInt16 PILLAR_SPEED = 4;
-
-static ANIMSCRIPT pillarFireAnimation[] = {
-  ABITMAP(FIRE_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-static ANIMSCRIPT pillarEarthAnimation[] = {
-  ABITMAP(EARTH_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-
-static ANIMSCRIPT pillarWaterAnimation[] = {
-  ABITMAP(WATER_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-
-static ANIMSCRIPT pillarEnergyAnimation[] = {
-  ABITMAP(ENERGY_FINAL_BOSS_PILLAR_SLOT),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 0),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 1),
-  ALABEL,
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 2),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 4),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 3),
-  ALOOP,
-};
-
-
-static ANIMSCRIPT explodeAnimation[] = {
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 5),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 6),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 7),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 8),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 9),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 10),
-  ASTEP(PILLAR_SPEED, IMG_FINAL_BOSS_PILLAR + 11),
-  AEND,
-};
-
 // constructor
-GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, TInt16 aSlot, TBool aFollowPlayer, TInt aStartDelay = 0)
+GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat aX, TFloat aY, ELEMENT aElement, TBool aFollowPlayer, TInt aStartDelay = 0)
     : GProcess(0, 0) {
   mGameState = aGameState;
   mSaveToStream = EFalse;
@@ -78,56 +17,21 @@ GFinalBossPillarProcess::GFinalBossPillarProcess(GGameState *aGameState, TFloat 
   // can't use mSprite->Name() since sprite hasn't been spawned yet
   printf("Final Boss Piller %p slot %d (earth %d)\n", this, aSlot, EARTH_FINAL_BOSS_PILLAR_SLOT);
 #endif
-  mSprite = new GAnchorSprite(mGameState, aSlot, 0);
+  mSprite = new GFinalBossPillarSprite(aGameState, aX, aY, aElement);
+  mSprite->ClearFlags(SFLAG_CHECK | SFLAG_RENDER | SFLAG_RENDER_SHADOW);
   {
     char buf[128];
     sprintf(buf, "Final Boss Pillar %p", this);
     mSprite->Name(buf);
   }
-  mSprite->x = aX;
-  mSprite->y = aY;
-  mSprite->w = 24;
-  mSprite->h = 24;
-  mSprite->cy = 0;
-  mSprite->cx = -8;
-  mSprite->vy = mSprite->vx = 0;
   //  mSprite->type = STYPE_EBULLET;
   mFollowPlayer = aFollowPlayer;
   //  mSprite->SetCMask(STYPE_PLAYER);
   //  mSprite->SetFlags(SFLAG_CHECK);
-  mSprite->mAttackStrength = 55;
   mGameState->AddSprite(mSprite);
-  switch (aSlot) {
-    case FIRE_FINAL_BOSS_PILLAR_SLOT:
-#ifdef DEBUGME
-      printf("%s FIRE PILLER\n", mSprite->Name());
-#endif
-      mSprite->StartAnimation(pillarFireAnimation);
-      break;
-    case EARTH_FINAL_BOSS_PILLAR_SLOT:
-#ifdef DEBUGME
-      printf("%s EARTH PILLER\n", mSprite->Name());
-#endif
-      mSprite->StartAnimation(pillarEarthAnimation);
-      break;
-    case WATER_FINAL_BOSS_PILLAR_SLOT:
-#ifdef DEBUGME
-      printf("%s WATER PILLER\n", mSprite->Name());
-#endif
-      mSprite->StartAnimation(pillarWaterAnimation);
-      break;
-    case ENERGY_FINAL_BOSS_PILLAR_SLOT:
-#ifdef DEBUGME
-      printf("%s ENERGY PILLER\n", mSprite->Name());
-#endif
-      mSprite->StartAnimation(pillarEnergyAnimation);
-      break;
-    default:
-      Panic("%s invalid slot %d\n", mSprite->Name(), aSlot);
-  }
   mExploding = EFalse;
-  mFrame = 0;
-  mStartDelay = (aStartDelay > 0) ? (30 + aStartDelay) : 0;
+  mStartDelay = aStartDelay;
+  gSoundPlayer.TriggerSfx(SFX_MIDBOSS_ATTACK_FIRE_WAV, 3);
 }
 
 GFinalBossPillarProcess::~GFinalBossPillarProcess() {
@@ -140,81 +44,42 @@ GFinalBossPillarProcess::~GFinalBossPillarProcess() {
 
 TBool GFinalBossPillarProcess::RunBefore() {
   if (mSprite->Clipped() || (mExploding && mSprite->AnimDone())) {
-#ifdef DEBUGME
-    printf("%s REJECTED Clipped or Explosion done %d\n", mSprite->Name(), mFrame);
-#endif
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(0, -10)) {
-#ifdef DEBUGME
-    printf("%s REJECTED DIRECTION_UP %d\n", mSprite->Name(), mFrame);
-#endif
+  if (!mFollowPlayer && !mSprite->CanWalk(0, 0, ETrue)) {
     return EFalse;
   }
 
-  if (!mFollowPlayer && !mSprite->CanWalk(32, 0)) {
-#ifdef DEBUGME
-    printf("%s REJECTED DIRECTION_RIGHT %d\n", mSprite->Name(), mFrame);
-#endif
-    return EFalse;
-  }
-
-  if (!mFollowPlayer && !mSprite->CanWalk(-32, 0)) {
-#ifdef DEBUGME
-    printf("%s REJECTED DIRECTION_LEFT %d\n", mSprite->Name(), mFrame);
-#endif
-
-    return EFalse;
-  }
-
-  if (!mFollowPlayer && !mSprite->CanWalk(0, 10)) {
-#ifdef DEBUGME
-    printf("%s REJECTED DIRECTION_DOWN %d\n", mSprite->Name(), mFrame);
-#endif
-    return EFalse;
-  }
-
-  if (mStartDelay > 0) {
-    mStartDelay--;
-
-    if (mFollowPlayer) {
-      mSprite->x = GPlayer::mSprite->x + 16;
-      mSprite->y = GPlayer::mSprite->y;
+  if (mStartDelay >= 0) {
+    if (mStartDelay == 0) {
+      mSprite->SetFlags(SFLAG_RENDER | SFLAG_RENDER_SHADOW);
+      mSprite->Warn();
+      if (mFollowPlayer) {
+        mSprite->x = GPlayer::mSprite->x + 16;
+        mSprite->y = GPlayer::mSprite->y + 1;
+      }
     }
+    mStartDelay--;
     return ETrue;
   }
 
-  //  if (mFrame == 0 && !mExploding) {
-  //    mSprite->StartAnimation(pillarAnimation);
-  //  }
-
-  if (mFrame > 30) {
-    mSprite->SetCMask(STYPE_PLAYER);
+  if (mSprite->AnimDone()) {
+    mExploding = ETrue;
+    mSprite->Explode();
     mSprite->SetFlags(SFLAG_CHECK);
-    mSprite->type = STYPE_EBULLET;
   }
 
-  mFrame++;
+  if (!mExploding && mFollowPlayer) {
+    mSprite->x = ((mSprite->x * 20 * FACTOR) + GPlayer::mSprite->mLastX + 16) / (20 * FACTOR + 1);
+    mSprite->y = ((mSprite->y * 20 * FACTOR) + GPlayer::mSprite->mLastY) / (20 * FACTOR + 1);
+  }
 
   return ETrue;
 }
 
 TBool GFinalBossPillarProcess::RunAfter() {
-  if (!mExploding) {
-    const TUint16 mFrameMax = 20;
-    if (mFrame > mFrameMax) {
-#ifdef DEBUGME
-      printf("%s timed out\n", mSprite->Name());
-#endif
-      mSprite->StartAnimation(explodeAnimation);
-      return mExploding = ETrue;
-    }
+  mSprite->ClearCType(STYPE_PLAYER);
 
-    if (mSprite->TestAndClearCType(STYPE_PLAYER)) {
-      mSprite->StartAnimation(explodeAnimation);
-      mExploding = ETrue;
-    }
-  }
   return ETrue;
 }
