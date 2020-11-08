@@ -2,12 +2,11 @@
 
 OS="$(uname)"
 DEVELOPER_NAME="Developer ID Application: Modus Create, Inc. (287TS9B2H2)"
-PATH=/Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
 
 if [[ "$OS" == "Darwin" ]]; then
   echo "Code signing..."
 
-  codesign -s $DEVELOPER_NAME --keychain /Users/travis/Library/Keychains/ios-build.keychain $PATH
+  codesign -s $DEVELOPER_NAME --keychain /Users/travis/Library/Keychains/ios-build.keychain /Users/travis/build/ModusCreateOrg/modite-adventure/build/Modite.app
 
   echo "Verifying signature..."
 
