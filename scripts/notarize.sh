@@ -2,6 +2,8 @@
 
 OS="$(uname)"
 USER="thomas.collins@moduscreate.com"
+
+#need keypass secret here
 PASS=""
 
 if [[ "$OS" == "Darwin" ]]; then
