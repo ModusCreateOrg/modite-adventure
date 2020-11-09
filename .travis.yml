@@ -47,4 +47,5 @@ deploy:
   on:
     all_branches: true
   overwrite: false
+  cleanup: true
   draft: true
