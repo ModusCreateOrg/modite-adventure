@@ -22,6 +22,7 @@ before_install:
 - chmod +x ./scripts/code-signing.sh
 - chmod +x ./scripts/notarize.sh
 - chmod +x ./scripts/add-key.sh
+- chmod +x ./scripts/staple.sh
 install:
 - "./.ci/travis/install_deps.sh"
 before_script:
@@ -35,6 +36,9 @@ after_success:
 before_deploy:
 - "./scripts/zipping.sh"
 - "./scripts/notarize.sh"
+- "./scripts/staple.sh"
+- rm /Users/travis/build/ModusCreateOrg/modite-adventure/build/modite-mac.zip
+- "./scripts/zipping.sh"
 - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
