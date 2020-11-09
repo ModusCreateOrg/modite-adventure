@@ -29,7 +29,6 @@ before_script:
 - "./scripts/add-key.sh"
 script:
 - "./scripts/build.sh"
-- "./scripts/code-signing.sh"
 - "./scripts/test.sh"
 before_deploy:
 - "./scripts/zipping.sh"
