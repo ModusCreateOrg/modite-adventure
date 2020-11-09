@@ -46,6 +46,6 @@ deploy:
   - "/Users/travis/build/ModusCreateOrg/modite-adventure/build/modite-mac.zip"
   on:
     all_branches: true
-  overwrite: false
+  overwrite: true
   skip_cleanup: true
   draft: true
