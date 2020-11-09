@@ -21,6 +21,7 @@ before_install:
 - chmod +x ./scripts/code-signing.sh
 - chmod +x ./scripts/notarize.sh
 - chmod +x ./scripts/add-key.sh
+- rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install dpl
 install:
 - "./.ci/travis/install_deps.sh"
 before_script:
@@ -35,9 +36,6 @@ after_success:
 before_deploy:
   - "./scripts/zipping.sh"
   - "./scripts/notarize.sh"
-  - git fetch --tags -f
-  - git stash --all
-  - git stash clear
   - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
@@ -50,4 +48,3 @@ deploy:
     all_branches: true
   overwrite: true
   draft: true
-  skip_cleanup: true
