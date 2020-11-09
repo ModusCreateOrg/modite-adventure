@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 OS="$(uname)"
-USER=""
+USER="thomas.collins@moduscreate.com"
 PASS=""
 
 if [[ "$OS" == "Darwin" ]]; then
