@@ -47,3 +47,4 @@ deploy:
   on:
     all_branches: true
   overwrite: true
+  skip_cleanup: 'true'
