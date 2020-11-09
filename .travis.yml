@@ -37,7 +37,7 @@ before_deploy:
 - "./scripts/zipping.sh"
 - "./scripts/notarize.sh"
 - "./scripts/staple.sh"
-- git tag -f v0.1.0-alpha
+- git tag -f v0.1.0-alpha.1
 deploy:
   provider: releases
   api_key:
@@ -46,6 +46,6 @@ deploy:
   - "/home/travis/build/ModusCreateOrg/modite-adventure/build/modite-linux.zip"
   - "/Users/travis/build/ModusCreateOrg/modite-adventure/build/modite-mac.zip"
   on:
-    branch: master
+    all_branches: true
   overwrite: true
   skip_cleanup: 'true'
