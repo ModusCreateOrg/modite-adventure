@@ -37,7 +37,7 @@ before_deploy:
   - "./scripts/notarize.sh"
   - git fetch --tags -f
   - git stash --all
-  - git stash --clear
+  - git stash clear
   - git tag -f v0.1.0-alpha
 deploy:
   provider: releases
