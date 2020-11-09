@@ -31,12 +31,7 @@ before_script:
 script:
 - "./scripts/build.sh"
 - "./scripts/test.sh"
-after_success:
-- "./scripts/code-signing.sh"
 before_deploy:
-- "./scripts/zipping.sh"
-- "./scripts/notarize.sh"
-- "./scripts/staple.sh"
 - "./scripts/zipping.sh"
 - git tag -f v0.1.0-alpha
 deploy:
