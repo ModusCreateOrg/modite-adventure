@@ -36,7 +36,6 @@ after_success:
 before_deploy:
 - "./scripts/zipping.sh"
 - "./scripts/notarize.sh"
-- "./scripts/staple.sh"
 - git tag -f v0.1.0-alpha.1
 deploy:
   provider: releases
