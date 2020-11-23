@@ -268,7 +268,7 @@ void GVictoryPlayfield::RenderAnimatedBackground() {
 
 
   TRect rect = TRect(0, 0, mBgRisingSun->Width(), mBgRisingSun->Height());
-  const TInt sunX = SCREEN_WIDTH - mBgRisingSun->Width() - 30;
+  const TInt sunX = mBgRisingSun->Width();
   gDisplay.renderBitmap->DrawBitmapTransparent(ENull, mBgRisingSun, rect, sunX, mSunOffset);
 
   const TInt walkingPathOffset = DISPLAY_HEIGHT - mBgWalkingPath->Height();

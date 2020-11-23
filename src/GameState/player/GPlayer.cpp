@@ -26,10 +26,11 @@ GAnchorSprite *GPlayer::mTargeted;
 GAnchorSprite *GPlayer::mClosestEnemy;
 
 void GPlayer::WriteToStream(BMemoryStream &stream) {
+  stream.Write(&mAttackStrength, sizeof(mAttackStrength));
   stream.Write(&mLevel, sizeof(mLevel));
   stream.Write(&mNextLevel, sizeof(mNextLevel));
   stream.Write(&mExperience, sizeof(mExperience));
-//  stream.Write(&mHitPoints, sizeof(mHitPoints));
+  stream.Write(&mHitPoints, sizeof(mHitPoints));
 // stream.Write(&mMaxMana, sizeof(mMaxMana));
   stream.Write(&mMaxHitPoints, sizeof(mMaxHitPoints));
   stream.Write(&mManaPotion, sizeof(mManaPotion));
@@ -51,10 +52,11 @@ void GPlayer::WriteToStream(BMemoryStream &stream) {
 }
 
 void GPlayer::ReadFromStream(BMemoryStream &stream) {
+  stream.Read(&mAttackStrength, sizeof(mAttackStrength));
   stream.Read(&mLevel, sizeof(mLevel));
   stream.Read(&mNextLevel, sizeof(mNextLevel));
   stream.Read(&mExperience, sizeof(mExperience));
-//  stream.Read(&mHitPoints, sizeof(mHitPoints));
+  stream.Read(&mHitPoints, sizeof(mHitPoints));
 // stream.Read(&mManaPotion, sizeof(mManaPotion));
   stream.Read(&mMaxHitPoints, sizeof(mMaxHitPoints));
   stream.Read(&mMaxMana, sizeof(mMaxMana));
