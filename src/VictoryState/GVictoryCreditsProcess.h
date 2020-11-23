@@ -117,10 +117,11 @@ public:
           RenderModusLogo();
           break;
         case TEXT_GAME_DESIGN:
-          numLines = 4;
+          numLines = 5;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText16("GAME DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Mike Schwartz", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Dmytro Kovalenko", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
@@ -152,12 +153,13 @@ public:
           y += CenterText8("Richard Bullington-McGuire", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_PM:
-          numLines = 5;
+          numLines = 6;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
           y += CenterText16("LEVEL DESIGN", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Aaron Goldman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Lucas Garibaldi", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Santiago Kent", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Michael Tintiuc", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_SOUND:
