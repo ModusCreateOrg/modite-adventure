@@ -27,8 +27,10 @@ const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
+// DEBUG_AUTO_START_ALL_POWERUPS - This allows you to start the game with all powerups w/out the need
+// for the debug menu
 #define DEBUG_AUTO_START_ALL_POWERUPS 1
-//#undef DEBUG_AUTO_START_ALL_POWERUPS
+#undef DEBUG_AUTO_START_ALL_POWERUPS
 
 void GGameState::Init() {
   strcpy(mText, "");
@@ -86,7 +88,7 @@ void GGameState::Init() {
     }
   }
 
-  for (TUint8 i = 0; i < 5; i++) {
+  for (TUint8 i = 0; i < 7; i++) {
     GPlayer::AddExperience(GPlayer::mNextLevel);
   }
 
