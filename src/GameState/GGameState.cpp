@@ -27,6 +27,10 @@ const TInt NUM_DUNGEONS = sizeof(gDungeonDefs) / sizeof(TDungeonInfo);
 /*******************************************************************************
  *******************************************************************************
  *******************************************************************************/
+// DEBUG_AUTO_START_ALL_POWERUPS - This allows you to start the game with all powerups w/out the need
+// for the debug menu
+#define DEBUG_AUTO_START_ALL_POWERUPS 1
+#undef DEBUG_AUTO_START_ALL_POWERUPS
 
 void GGameState::Init() {
   strcpy(mText, "");
@@ -56,6 +60,39 @@ void GGameState::Init() {
   gDisplay.SetColor(COLOR_TEXT_BG, 0, 0, 0);
   gDisplay.SetColor(COLOR_TEXT, 255, 255, 255);
   GPlayer::Init();
+
+
+#ifdef DEBUG_AUTO_START_ALL_POWERUPS
+
+  // Pick up ONE item of item type 1 through 4
+  for (TInt8 i = 1; i < 5; i++) {
+    if (!GPlayer::mInventoryList.FindItem(i)) {
+      GPlayer::mInventoryList.PickupItem(i);
+    }
+  }
+
+  // ** // Skip Items 5 (silver key) and 6 (gold key)
+
+  // Pick up ONE item of item type 7 through 18
+  for (TInt8 i = 7; i < 18; i++) {
+    if (!GPlayer::mInventoryList.FindItem(i)) {
+      GPlayer::mInventoryList.PickupItem(i);
+    }
+  }
+
+  // Pick up 20x items of item types 18 - 21 (life and mana potions)
+  // If you spam this widget, you'll rack up more mana and life potions
+  for (TInt8 i = 18; i < 22; i++) {
+    for (TUint8 j = 0; j < 255; ++j) {
+      GPlayer::mInventoryList.PickupItem(i);
+    }
+  }
+
+  for (TUint8 i = 0; i < 7; i++) {
+    GPlayer::AddExperience(GPlayer::mNextLevel);
+  }
+
+#endif
 }
 
 // Constructor
@@ -440,7 +477,7 @@ void GGameState::LoadLevel(const char *aName, const TInt16 aLevel, TUint16 aTile
   // Reset spike group counter on level load
   memset(GSpikesProcess::mGroups, 0, sizeof(GSpikesProcess::mGroups));
   TBool startedPlayer = EFalse;
-  TInt spikesMatrix[70][70] = {{0}}; // max level size
+  TInt spikesMatrix[255][255] = {{0}}; // max level size
   TInt16 spikeGroup = 1;
 
   // Set spikes matrix
