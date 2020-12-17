@@ -163,11 +163,13 @@ public:
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_SOUND:
-          numLines = 3;
+          numLines = 4;
           y = (SCREEN_HEIGHT / 2) - ((24 + (numLines * 16)) / 2);
-          y += CenterText16("MUSIC AND SFX", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText16("MUSIC", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Jay Garcia", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           y += CenterText8("Victor Guzman", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("raina", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
+          y += CenterText8("Darkman007", y, mTextColorIndex, COLOR_TEXT_TRANSPARENT);
           break;
         case TEXT_QA:
           numLines = 9;
