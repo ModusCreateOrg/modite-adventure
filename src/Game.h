@@ -39,7 +39,6 @@ const TUint16 FACTOR = FRAMES_PER_SECOND / 30;
 #include "LoadGameState/GLoadGameState.h"
 #include "GMainOptionsState.h"
 #include "GResetOptionsState.h"
-#include "GCreditsState.h"
 #include "GGameMenuState.h"
 #include "GVictoryState.h"
 #ifdef DEBUG_MODE

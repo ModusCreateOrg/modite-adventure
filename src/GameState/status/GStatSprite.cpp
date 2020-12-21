@@ -6,9 +6,13 @@ GStatSprite::GStatSprite(STAT_TYPE aType, const char *aMessage, TInt aImage)
 
   SetFlags(SFLAG_BELOW);
   mImageNumber = aImage;
+
+//  printf("GStatSprite Allocating %p (mImageNumber %i)\n", this, mImageNumber);
+
 }
 
 GStatSprite::~GStatSprite() {
+//  printf("GStatSprite Freeing %p\n", this);
   free(mMessage);
 }
 
