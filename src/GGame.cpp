@@ -237,10 +237,6 @@ void GGame::Run() {
           delete gGameEngine;
           gGameEngine = new GGameState((char *)mLocalData);
           break;
-        case GAME_STATE_CREDITS:
-          delete gGameEngine;
-          gGameEngine = new GCreditsState();
-          break;
         case GAME_STATE_VICTORY:
           delete gGameEngine;
           gGameEngine = new GVictoryState((GGameState *)gGameEngine);
