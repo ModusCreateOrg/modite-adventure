@@ -9,7 +9,7 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-implicit-exception-spec
 include(ProcessorCount)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/cmake.files)
-
+SET(RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/resources)
 
 #ADD_COMPILE_DEFINITIONS(__DINGUX__=true)
 ADD_COMPILE_DEFINITIONS(__MODUS_TARGET_SDL2_AUDIO__=true)
@@ -21,11 +21,15 @@ ADD_COMPILE_DEFINITIONS(__MODUS_TARGET_DESKTOP_DISPLAY__=true)
 # ${CREATIVE_ENGINE_INCLUDE_DIRS} - used in INCLUDE_DIRECTORIES(...)
 # ${CREATIVE_ENGINE_SOURCE_FILES} - used in ADD_EXECUTABLE(...)
 # ${CREATIVE_ENGINE_LINK_LIBRARIES} - used in TARGET_LINK_LIBRARIES(...)
+
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/creative-engine/CreativeEngine.cmake)
-
-
-
-
+# Compiles RCOMP and resources, but only if ${RESOURCES_DIR} exists
+IF(EXISTS ${RESOURCES_DIR})
+  SET(RESOURCES_BIN_FILE "Resources.bin")
+compile_rcomp_and_resources()  # Only used when we are in development mode (AND you have access to licensed resource files)
+else()
+  SET(RESOURCES_BIN_FILE "${CMAKE_SOURCE_DIR}/src/Resources.bin")
+ENDIF()
 ### LDK END   ####
 
 SET(MODITE_INCLUDE_DIRS
@@ -52,7 +56,7 @@ SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/CreditsState
     ${CMAKE_SOURCE_DIR}/src/ResetState
     ${CMAKE_BINARY_DIR}/usr/local/include
-    )
+)
 
 INCLUDE_DIRECTORIES(
     ${MODITE_INCLUDE_DIRS}
@@ -64,7 +68,7 @@ FILE(GLOB_RECURSE MODITE_SRC RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 
 ADD_EXECUTABLE(
     ${PROJECT_NAME}
-    Resources.bin
+    ${RESOURCES_BIN_FILE}
     ${CREATIVE_ENGINE_SOURCE_FILES}
     ${MODITE_SRC}
 )
@@ -91,4 +95,4 @@ endif (APPLE)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${CREATIVE_ENGINE_LINK_LIBRARIES})
 
-INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cmake )
+#INCLUDE( ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cmake )
