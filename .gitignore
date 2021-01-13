@@ -43,7 +43,6 @@ Thumbs.db*
 *.jar
 *.rar
 *.tar
-*.zip
 !mipsel-linux-uclibc_x64.tar.gz
 
 # ignore common folders (uncomment to enable)

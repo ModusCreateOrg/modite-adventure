@@ -126,12 +126,12 @@ cleanobjects:
 
 
 rcomp: FORCE
-	echo "Building rcomp"
+	echo "Building rcomp (MAKEFILE)"
 	cd ${CREATIVE_ENGINE_PATH}/tools/rcomp-src && make clean && make -j 4
 	rm ${CREATIVE_ENGINE_PATH}/tools/rcomp-src/rcomp
 
 resources: rcomp FORCE
-	echo "Compiling resources"
+	echo "Compiling resources (MAKEFILE)"
 	cd src && ${CREATIVE_ENGINE_PATH}/tools/rcomp Resources.r
 
 
