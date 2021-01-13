@@ -4,7 +4,7 @@
 
 Modite Adventure is a cross-platform a action/adventure created by [Modus Create](https://moduscreate.com) for the 2020 holiday season. Modite Adventure's target platform is the [LDK Game](https://retromimi.com/products/ldk-game) console, and can compile and run on macOS and Linux (Ubuntu and Arch distributions).
 
-For build instructions, take a look at our [development documentation.](./md/developing.md)
+For build instructions, take a look at our [development documentation].(https://github.com/ModusCreateOrg/modite-adventure/wiki)
 
 ![header_image.jpg](./md/images/header_image.jpg)
 
@@ -66,4 +66,4 @@ This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=la
 Genus is licensed under [GPL v3](./LICENSE).
 
 # Contributing
-Interested in contributing to Genus? Please see our [developing](./md/DEVELOPING.md) and [contributions](./md/CONTRIBUTIONS.MD) guidelines. 
+Interested in contributing to Genus? Please see our [developing](https://github.com/ModusCreateOrg/modite-adventure/wiki) wiki and [contributions](./md/CONTRIBUTIONS.MD) guidelines. 
