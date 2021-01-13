@@ -56,7 +56,7 @@ SET(MODITE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src/CreditsState
     ${CMAKE_SOURCE_DIR}/src/ResetState
     ${CMAKE_BINARY_DIR}/usr/local/include
-    )
+)
 
 INCLUDE_DIRECTORIES(
     ${MODITE_INCLUDE_DIRS}
