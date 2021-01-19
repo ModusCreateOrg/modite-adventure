@@ -1,6 +1,7 @@
 ## Music
 Click below to listen to the entire Modite Adventure Sound track.
-[![Sound Cloud Link](./images/modite-adventure-ost-soundcloud.png)](https://soundcloud.com/moduscreate/sets/modite-adventure-ost-2020)]
+
+[![Sound Cloud Link](./images/modite-adventure-ost-soundcloud.png)](https://soundcloud.com/moduscreate/sets/modite-adventure-ost-2020)
 
 **Composer: Jay Garcia**
 - [Dungeon1.xm](https://soundcloud.com/moduscreate/dungeon1?in=moduscreate/sets/modite-adventure-ost-2020)
