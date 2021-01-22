@@ -9,9 +9,11 @@ For build instructions, take a look at our [development documentation](https://g
 
 ![header_image.jpg](./md/images/header_image.jpg)
 
-Click the image below to watch the trailer.
+Check out our Videos.
 
 [![Modite Adventure Trailer](https://img.youtube.com/vi/JZKUSzS0ncY/0.jpg)](https://www.youtube.com/watch?v=JZKUSzS0ncY)
+
+[![How we made music for Modite Adventure](https://img.youtube.com/vi/iMLFIozcGMg/0.jpg)](https://www.youtube.com/watch?v=iMLFIozcGMg)
 
 We really hope you enjoy playing this game as much as we enjoyed making it! ❤️
 
