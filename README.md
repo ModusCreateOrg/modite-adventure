@@ -68,5 +68,67 @@ This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=la
 ## License
 Genus is licensed under [GPL v3](./LICENSE).
 
+<br/>
+
+# Contributors
+
+<table>
+  <tr>
+    <td align="center"><a href="https://www.linkedin.com/in/jaydgarcia/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/180031?s=460&u=f5ad4d529a6c05b57429d68e85f27150afcf69a3&v=4" width="100px;" alt=""/><br /><sub><b>Jay Garcia</b></sub></a><br />
+    <a href="https://github.com/jaygarcia" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/329637?s=460&u=784a0653912a31fac72fd72900085ed56932bb83&v=4" width="100px;" alt=""/><br /><sub><b>Mike Schwartz</b></sub></a><br /><a href="https://github.com/mschwartz" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/michaeltintiuc/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/1321256?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Michael Tintiuc</b></sub></a><br /><a href="https://github.com/michaeltintiuc" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/32408212?s=460&u=e31fc696a68c79a3b767a8eb4f66795867c79ee7&v=4" width="100px;" alt=""/><br /><sub><b>Aaron Goldman</b></sub></a><br /><a href="https://github.com/Aaron-Goldman" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/29556061?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Dmytro Kovalenko</b></sub></a><br /><a href="https://github.com/tasteofdalife" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-U4WD8EANN-aebcb2834f39-512" width="100px;" alt=""/><br /><sub><b>Don Anderson</b></sub></a><br />
+    </td>  
+  </tr>
+
+  <tr>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/63469617?s=460&u=666630b68e261d4437d0b21dec0a5a7e26e55e01&v=4" width="100px;" alt=""/><br /><sub><b>Thomas Collins</b></sub></a><br /><a href="https://github.com/TCModus" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/341082?s=460&u=e2f10254f1b77171bc264dba26b82fc5036e85be&v=4" width="100px;" alt=""/><br /><sub><b>Richard Bullington</b></sub></a><br /><a href="https://github.com/obscurerichard" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/lucas-garibaldi-alves/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/25598587?s=460&u=370761dcb031e7e70cc4767f494c8596dfe40d05&v=4" width="100px;" alt=""/><br /><sub><b>Lucas Garibaldi</b></sub></a><br /><a href="https://github.com/lgaribaldi/" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/20978394?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Santiago Kent</b></sub></a><br /><a href="https://github.com/InfraK" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/4602847?s=460&u=6f2d3e1d8c7622f2cf63f0f2b769e1863441828a&v=4" width="100px;" alt=""/><br /><sub><b>Victor Guzman</b></sub></a><br /><a href="https://github.com/VictorGuzman" title="Github">👨‍🚀</a>
+    </td>
+     <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="100px;" alt=""/><br /><sub><b>raina</b></sub></a><br />
+     </td>
+  </tr>
+
+  <tr>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="100px;" alt=""/><br /><sub><b>Darkman007</b></sub></a><br /></td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-UT2LWMZT9-b4aafe0458bd-512" width="100px;" alt=""/><br /><sub><b>Raul Dan Mocian</b></sub></a><br />
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/fanny-cespedes/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/13201299?s=400&u=9a0bb936ebb19e067b4e8141e34ed897e6d672df&v=4" width="100px;" alt=""/><br /><sub><b>Fanny Cespedes</b></sub></a><br /><a href="https://github.com/fcespedes" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/miguelmontano/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/5264458?s=400&u=9bd9a91c026916fbd49b4f81b56c50496fe7917e&v=4" width="100px;" alt=""/><br /><sub><b>Miguel Montano</b></sub></a><br /><a href="https://github.com/miguelmontanod" title="Github">👨‍🚀</a>
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/pedrohyvo/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/15241188?s=460&u=0be3e01077591ebf3f788ccfa516e7b538975013&v=4" width="100px;" alt=""/><br /><sub><b>Pedro Hyvo</b></sub></a><br /><a href="https://github.com/pedrohyvo" title="Github">👨‍🚀</a>
+    </td>
+     <td align="center"><a href="https://www.linkedin.com/in/samanthamparkpmpcsm/"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/22775911?s=460&u=f8f5b077a4e57e0d29971c9a2e650ceba891b7f7&v=4" width="100px;" alt=""/><br /><sub><b>Samantha Park</b></sub></a><br /><a href="https://github.com/samanthampark" title="Github">👨‍🚀</a></td>
+  </tr>
+
+  <tr>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-UTGMSE0HF-93f392a33acd-512" width="100px;" alt=""/><br /><sub><b>Josh Kochelek</b></sub></a><br />
+    </td>
+    <td align="center"><a href="https://www.linkedin.com/in/shiv-sharma-cdm/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-U01C8D8MU9X-82a10c26d17f-512" width="100px;" alt=""/><br /><sub><b>Shiv Sharma</b></sub></a><br />
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-U48BC5U10-2174b6629718-512" width="100px;" alt=""/><br /><sub><b>Ashley Benton</b></sub></a><br />
+    </td>
+    <td align="center"><a href="https://moduscreate.com/"><img style="border-radius: 50%;" src="https://ca.slack-edge.com/T025W8CSY-U018F2T10MD-849bbc273734-512" width="100px;" alt=""/><br /><sub><b>Gabrielle Viot</b></sub></a><br />
+    </td>
+  </tr>
+</table>
+<br/>
+
 # Contributing
 Interested in contributing to Genus? Please see our [developing](https://github.com/ModusCreateOrg/modite-adventure/wiki) wiki and [contributions](./md/CONTRIBUTIONS.MD) guidelines. 
