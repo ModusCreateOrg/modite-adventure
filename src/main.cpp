@@ -11,22 +11,22 @@ GGame *gGame;
 #endif
 
 // app_main
-extern "C" void app_main(const char *file[]) {
+extern "C" void app_main(char *fileName) {
 
     gGame = new GGame();
 #ifdef __MODUS_TARGET_NETWORK_DISPLAY__
     NetworkDisplay *display = (NetworkDisplay*)&gDisplay;
-    const char *fileName = "/home/jgarcia/modite-rgb.ini";
+//    const char *fileName = "/home/jgarcia/modite-rgb.ini";
     display->ConfigureFromIniFile(fileName);
 #endif
     gGame->Run();
-
     delete gGame;
 }
 
 
-int main(int argc, const char *file[]) {
-    app_main(file);
+int main(int argc, char *argv[]) {
+
+    app_main(argv[0]);
     return 0;
 }
 
