@@ -25,8 +25,14 @@ extern "C" void app_main(char *fileName) {
 
 
 int main(int argc, char *argv[]) {
+#ifdef __MODUS_TARGET_NETWORK_DISPLAY__
+  if (argc < 2) {
+    printf("Usage: ./%s <path.to.ini.file>\n", argv[1]);
+    return 1;
+  }
+#endif
 
-    app_main(argv[0]);
+    app_main(argv[1]);
     return 0;
 }
 
